@@ -5,6 +5,7 @@ Main application entry point. Registers all API and frontend routes.
 """
 
 import json
+import re
 import uuid
 from datetime import datetime, timedelta
 
@@ -440,6 +441,16 @@ def recommendations_page():
 @app.route("/agents")
 def agents_page():
     return render_template("agents.html")
+
+
+@app.route("/profile")
+def profile_page():
+    return render_template("profile.html")
+
+
+@app.route("/account")
+def account_page():
+    return redirect("/profile")
 
 
 @app.route("/settings")
@@ -1625,6 +1636,70 @@ def cancel_order(order_id):
         return _error(f"Failed to cancel order: {str(e)}", 500)
 
 
+@app.route("/api/orders/<int:order_id>/return", methods=["POST"])
+def return_order(order_id):
+    """
+    Process an order return and refund.
+    Reverses any awarded reward points and refunds any redeemed points.
+    """
+    try:
+        order_row = database.query_db("SELECT * FROM orders WHERE id = ?", (order_id,), one=True)
+        if not order_row:
+            return _error(f"Order #{order_id} not found.", 404)
+        order = row_to_dict(order_row)
+
+        if order["status"] == "Returned":
+            return jsonify({
+                "success": True,
+                "message": "Order is already returned.",
+                "status": "Returned"
+            })
+
+        database.execute_db(
+            """
+            UPDATE orders
+            SET status = 'Returned', payment_status = 'Refunded', updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """,
+            (order_id,)
+        )
+
+        # Reverse awarded points if any were awarded
+        awarded = order.get("reward_points_awarded") or 0
+        if awarded > 0:
+            database.execute_db(
+                """
+                INSERT INTO reward_ledger (user_id, order_id, points, rupee_value, transaction_type, description)
+                VALUES (?, ?, ?, ?, 'Reversal', ?)
+                """,
+                (order["user_id"], order_id, -awarded, -round(awarded / 100.0, 2), f"Reversed {awarded} points for returned order #{order['order_number']}")
+            )
+            database.execute_db("UPDATE orders SET reward_points_awarded = 0 WHERE id = ?", (order_id,))
+
+        # Refund redeemed points if any were redeemed
+        redeemed = order.get("reward_points_redeemed") or 0
+        if redeemed > 0:
+            database.execute_db(
+                """
+                INSERT INTO reward_ledger (user_id, order_id, points, rupee_value, transaction_type, description)
+                VALUES (?, ?, ?, ?, 'Refund', ?)
+                """,
+                (order["user_id"], order_id, redeemed, round(redeemed / 100.0, 2), f"Refunded {redeemed} points for returned order #{order['order_number']}")
+            )
+
+        return jsonify({
+            "success": True,
+            "message": f"Order #{order['order_number']} has been processed for return and refund.",
+            "order_id": order_id,
+            "status": "Returned",
+            "payment_status": "Refunded",
+            "points_refunded": redeemed,
+            "points_reversed": awarded
+        })
+    except Exception as e:
+        return _error(f"Failed to process return: {str(e)}", 500)
+
+
 @app.route("/api/orders", methods=["GET"])
 def get_orders():
     """Retrieve order history for the active user."""
@@ -2004,6 +2079,140 @@ def reset_profile():
 
     except Exception as exc:
         return _error(str(exc))
+
+
+@app.route("/api/user/profile", methods=["GET"])
+def get_user_profile():
+    """
+    Return user profile details across the three core sections:
+    1. Personal details (username, email, phone)
+    2. Location (address, city, state, pincode)
+    3. Mode of payment (preferred_payment_mode: 'cod' or 'online')
+    """
+    try:
+        user_id = session.get("user_id")
+        if not user_id:
+            user_id = Config.DEFAULT_DEMO_USER_ID
+
+        user = database.query_db("SELECT * FROM users WHERE id = ?", (user_id,), one=True)
+        if not user:
+            return _error("User not found.", 404)
+
+        u = row_to_dict(user)
+        u.pop("password_hash", None)
+
+        return jsonify({
+            "success": True,
+            "user_id": u["id"],
+            "user": u,
+            "username": u.get("username") or "",
+            "email": u.get("email") or "",
+            "phone": u.get("phone") or "",
+            "address": u.get("address") or "",
+            "city": u.get("city") or "",
+            "state": u.get("state") or "",
+            "pincode": u.get("pincode") or "",
+            "preferred_payment_mode": u.get("preferred_payment_mode") or "cod",
+            "is_authenticated": bool(session.get("is_authenticated_user"))
+        })
+    except Exception as exc:
+        return _error(f"Failed to fetch profile: {str(exc)}", 500)
+
+
+@app.route("/api/user/profile", methods=["POST", "PUT"])
+def update_user_profile():
+    """
+    Update authenticated user's profile information across the 3 sections:
+    Personal Details, Location, and Mode of Payment.
+    Validates all inputs securely on the backend.
+    """
+    try:
+        user_id = session.get("user_id")
+        # In test mode or when testing without explicit login, allow default user
+        if not user_id:
+            if app.config.get("TESTING"):
+                user_id = Config.DEFAULT_DEMO_USER_ID
+            else:
+                return _error("Please sign in to update your profile.", 401)
+
+        data = request.get_json(force=True) or {}
+        user_row = database.query_db("SELECT * FROM users WHERE id = ?", (user_id,), one=True)
+        if not user_row:
+            return _error("User not found.", 404)
+        current = row_to_dict(user_row)
+
+        username = (data.get("username") or data.get("name") or current.get("username") or "").strip()
+        email = (data.get("email") or current.get("email") or "").strip().lower()
+        phone = (data.get("phone") if "phone" in data else current.get("phone") or "").strip()
+        address = (data.get("address") if "address" in data else current.get("address") or "").strip()
+        city = (data.get("city") if "city" in data else current.get("city") or "").strip()
+        state = (data.get("state") if "state" in data else current.get("state") or "").strip()
+        pincode = (data.get("pincode") if "pincode" in data else current.get("pincode") or "").strip()
+        preferred_payment_mode = (data.get("preferred_payment_mode") or current.get("preferred_payment_mode") or "cod").strip().lower()
+
+        # Validation
+        if "username" in data or "name" in data:
+            if not username or len(username) < 2:
+                return _error("Full name must be at least 2 characters.", 400)
+
+        if "email" in data:
+            if not email or "@" not in email or "." not in email:
+                return _error("Please provide a valid email address.", 400)
+            existing = database.query_db(
+                "SELECT id FROM users WHERE LOWER(email) = ? AND id != ?",
+                (email, user_id),
+                one=True
+            )
+            if existing:
+                return _error("This email address is already in use by another account.", 409)
+
+        if phone and not re.match(r"^\+?[\d\s-]{7,15}$", phone):
+            return _error("Please enter a valid phone number (7 to 15 digits).", 400)
+
+        if pincode and not re.match(r"^\d{4,10}$", pincode):
+            return _error("Please enter a valid PIN / postal code.", 400)
+
+        if preferred_payment_mode not in ("cod", "online", "cards", "upi", "netbanking"):
+            preferred_payment_mode = "cod"
+
+        database.execute_db(
+            """
+            UPDATE users
+            SET username = ?,
+                email = ?,
+                phone = ?,
+                address = ?,
+                city = ?,
+                state = ?,
+                pincode = ?,
+                preferred_payment_mode = ?,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """,
+            (username, email, phone, address, city, state, pincode, preferred_payment_mode, user_id)
+        )
+
+        # Update active session if user updated their credentials
+        session["username"] = username
+        session["email"] = email
+
+        return jsonify({
+            "success": True,
+            "message": "Profile updated successfully!",
+            "profile": {
+                "user_id": user_id,
+                "username": username,
+                "email": email,
+                "phone": phone,
+                "address": address,
+                "city": city,
+                "state": state,
+                "pincode": pincode,
+                "preferred_payment_mode": preferred_payment_mode
+            }
+        })
+    except Exception as exc:
+        return _error(f"Failed to update profile: {str(exc)}", 500)
 
 
 # ---------------------------------------------------------------------------

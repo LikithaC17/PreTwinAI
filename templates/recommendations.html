@@ -1,86 +1,141 @@
 {% extends "base.html" %}
 
-{% block title %}Smart Recommendations - PreTwinShop AI{% endblock %}
-{% block page_title %}Budget-Aware Smart Recommendations (Agent E &amp; F){% endblock %}
+{% block title %}For You — All Products &amp; AI Recommendations — PreTwin AI{% endblock %}
+{% block page_title %}For You — Complete Product Catalog &amp; AI Recommendations{% endblock %}
 
 {% block content %}
-<div class="recommendations-page">
-  <!-- Budget Ceiling Status Header -->
-  <section class="card budget-summary-card">
-    <div class="budget-summary-grid">
-      <div class="budget-stat-box">
-        <span class="stat-title">Estimated Basket Total</span>
-        <h2 class="stat-number text-primary" id="recTotalCost">₹0</h2>
-        <span class="stat-sub" id="recItemCount">0 items proposed</span>
+<div class="for-you-page fk-container" style="padding-top: 16px; padding-bottom: 48px;">
+
+  <!-- Header Banner -->
+  <div style="background: linear-gradient(135deg, #2e1065 0%, #3b0764 50%, #1e1b4b 100%); border-radius: 12px; padding: 24px 28px; color: #ffffff; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+          <span style="font-size: 26px;">✨</span>
+          <h1 style="font-size: 24px; font-weight: 800; color: #ffffff; margin: 0;">For You</h1>
+          <span style="background: rgba(254, 240, 138, 0.2); color: #fef08a; border: 1px solid rgba(254, 240, 138, 0.35); font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px;">
+            Complete Catalog &bull; AI Powered
+          </span>
+        </div>
+        <p style="font-size: 13.5px; color: #e9d5ff; margin: 0; max-width: 680px;">
+          Explore all available products in our catalog. Personalized ranking and budget-optimized recommendations tailored to your taste profile.
+        </p>
       </div>
 
-      <div class="budget-stat-box">
-        <span class="stat-title">User Budget Ceiling</span>
-        <h2 class="stat-number text-secondary" id="recBudgetCeiling">₹5,000</h2>
-        <span class="stat-sub">Strict hard threshold</span>
-      </div>
-
-      <div class="budget-stat-box">
-        <span class="stat-title">Remaining Budget</span>
-        <h2 class="stat-number text-success" id="recRemainingBudget">₹5,000</h2>
-        <span class="stat-sub" id="recBudgetFitBadge"><span class="badge badge-success">Budget Compliant</span></span>
-      </div>
-
-      <div class="budget-action-box">
-        <button class="btn btn-primary btn-lg w-100" id="regenerateRecsBtn" onclick="runAiAnalysis()">
-          <span class="btn-icon">⚡</span>
-          <span>Regenerate Recommendations</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Progress Bar -->
-    <div class="budget-progress-container mt-3">
-      <div class="flex-between text-muted text-sm mb-1">
-        <span>Basket Budget Utilization: <strong id="budgetPercentText">0%</strong></span>
-        <span>Hard limit: <strong id="budgetCeilingText">₹5,000</strong></span>
-      </div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" id="budgetProgressBar" style="width: 0%;"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Overall AI Synthesis Summary -->
-  <section class="card mt-4" id="aiSummaryCard">
-    <div class="card-header">
-      <h3 class="card-title">💡 Orchestrator Synthesis &amp; Key Insights (Agent F)</h3>
-      <p class="card-subtitle">Transparent justification linking stated preferences, history, and financial bounds</p>
-    </div>
-    <div class="card-body">
-      <div class="summary-content" id="aiSummaryContent">
-        <div class="loading-state">
-          <div class="spinner"></div>
-          <p>Synthesizing multi-agent evidence...</p>
+      <!-- Quick Stats -->
+      <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+        <div style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 10px 16px; text-align: center;">
+          <div style="font-size: 11px; text-transform: uppercase; color: #c4b5fd; font-weight: 600;">Total Catalog</div>
+          <div style="font-size: 20px; font-weight: 800; color: #ffffff;" id="statTotalCatalog">1,000+</div>
+        </div>
+        <div style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 10px 16px; text-align: center;">
+          <div style="font-size: 11px; text-transform: uppercase; color: #c4b5fd; font-weight: 600;">Personal Twin Fit</div>
+          <div style="font-size: 20px; font-weight: 800; color: #34d399;" id="statTwinFit">98% Match</div>
         </div>
       </div>
-      <div class="improvements-box mt-3" id="improvementsBox">
-        <!-- Suggestions on what would improve predictions -->
-      </div>
     </div>
-  </section>
+  </div>
 
-  <!-- Ranked Recommendations List -->
-  <section class="mt-4">
-    <div class="flex-between mb-3">
-      <h3 class="section-heading">Ranked Proposed Items (<span id="recsCount">0</span>)</h3>
-      <div class="flex-align-gap">
-        <span class="text-muted text-sm">Sort: Relevance &amp; Value</span>
+  <!-- AI Spotlight Section: Top Personalized Picks -->
+  <section class="card mb-4" id="aiSpotlightCard" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 20px;">🎯</span>
+        <h2 style="font-size: 17px; font-weight: 700; color: #1e293b; margin: 0;">AI Top Recommendations Spotlight</h2>
       </div>
+      <span style="font-size: 12.5px; color: #64748b;" id="spotlightBudgetNote">Budget compliant selection</span>
     </div>
 
-    <div class="recommendations-stack" id="recommendationsList">
-      <div class="loading-state">
+    <div class="row" id="spotlightRow" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+      <div style="grid-column: 1/-1; text-align: center; padding: 24px; color: #64748b;">
         <div class="spinner"></div>
-        <p>Loading ranked recommendations...</p>
+        <p style="margin-top: 8px; font-size: 13px;">Analyzing your Twin preferences and catalog...</p>
       </div>
     </div>
   </section>
+
+  <!-- Main Catalog Controls: Search, Category Filter, and Sorting -->
+  <section class="card mb-4" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 24px;">
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <!-- Search & Sort Row -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <!-- Search input -->
+        <div style="position: relative; flex: 1; min-width: 260px; max-width: 480px;">
+          <input
+            type="text"
+            id="forYouSearchInput"
+            class="form-control"
+            placeholder="Search products across entire catalog..."
+            oninput="handleForYouSearch(this.value)"
+            style="width: 100%; padding: 10px 14px 10px 38px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px;"
+          />
+          <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #94a3b8;">🔍</span>
+        </div>
+
+        <!-- Sort Select -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <label style="font-size: 13px; font-weight: 600; color: #475569; white-space: nowrap;">Sort by:</label>
+          <select
+            id="forYouSortSelect"
+            class="form-control"
+            onchange="handleForYouSort(this.value)"
+            style="padding: 9px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13.5px; background: #ffffff; cursor: pointer;"
+          >
+            <option value="featured">✨ Recommended For You</option>
+            <option value="price_low">💰 Price: Low to High</option>
+            <option value="price_high">💎 Price: High to Low</option>
+            <option value="rating">⭐ Top Rated</option>
+            <option value="title">🔤 Name A to Z</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; border-top: 1px solid #f1f5f9; padding-top: 14px;" id="forYouCategoryPills">
+        <button class="for-you-cat-btn active" onclick="filterForYouCategory('all')">All Products</button>
+        <button class="for-you-cat-btn" onclick="filterForYouCategory('Fashion')">👗 Fashion</button>
+        <button class="for-you-cat-btn" onclick="filterForYouCategory('Mobiles')">📱 Mobiles</button>
+        <button class="for-you-cat-btn" onclick="filterForYouCategory('Electronics')">🎧 Electronics</button>
+        <button class="for-you-cat-btn" onclick="filterForYouCategory('Home & Kitchen')">🏡 Home &amp; Kitchen</button>
+        <button class="for-you-cat-btn" onclick="filterForYouCategory('Appliances')">🔌 Appliances</button>
+        <button class="for-you-cat-btn" onclick="filterForYouCategory('Groceries')">🍎 Groceries</button>
+        <button class="for-you-cat-btn" onclick="filterForYouCategory('Books & Media')">📚 Books</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Complete Catalog Product Grid -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+    <h2 style="font-size: 18px; font-weight: 700; color: #1e293b; margin: 0;">
+      Available Products (<span id="forYouProductCount">0</span>)
+    </h2>
+    <div style="font-size: 13px; color: #64748b;" id="forYouPageInfo">
+      Showing Page 1
+    </div>
+  </div>
+
+  <!-- Product Cards Grid -->
+  <div id="forYouProductGrid" class="fk-product-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; margin-bottom: 32px;">
+    <!-- Rendered via recommendations.js -->
+    <div style="grid-column: 1/-1; text-align: center; padding: 48px; color: #64748b;">
+      <div class="spinner"></div>
+      <p style="margin-top: 12px; font-size: 14px;">Loading full product catalog...</p>
+    </div>
+  </div>
+
+  <!-- Pagination Bar -->
+  <div class="card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;" id="forYouPaginationBar">
+    <button class="btn btn-outline" id="btnPrevPage" onclick="changeForYouPage(-1)" disabled style="padding: 8px 18px; font-weight: 600;">
+      &larr; Previous Page
+    </button>
+    <div style="display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: #475569;" id="forYouPageSelector">
+      <span>Page <strong id="currentPageNum">1</strong> of <strong id="totalPagesNum">1</strong></span>
+    </div>
+    <button class="btn btn-outline" id="btnNextPage" onclick="changeForYouPage(1)" style="padding: 8px 18px; font-weight: 600;">
+      Next Page &rarr;
+    </button>
+  </div>
+
 </div>
 {% endblock %}
 

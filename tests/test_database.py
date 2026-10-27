@@ -46,8 +46,9 @@ EXPECTED_TABLES = {
 def db_path(tmp_path, monkeypatch):
     """
     Patch DATABASE_PATH to a fresh temp file and reload config + database
-    modules so they pick up the new path.
+    modules so they pick up the new path. Restores environment on teardown.
     """
+    orig_db = os.environ.get("DATABASE_PATH")
     path = str(tmp_path / "test.db")
     monkeypatch.setenv("DATABASE_PATH", path)
 
@@ -57,7 +58,14 @@ def db_path(tmp_path, monkeypatch):
     import database as db_mod
     importlib.reload(db_mod)
 
-    return path
+    yield path
+
+    if orig_db is not None:
+        os.environ["DATABASE_PATH"] = orig_db
+    else:
+        os.environ.pop("DATABASE_PATH", None)
+    importlib.reload(cfg)
+    importlib.reload(db_mod)
 
 
 @pytest.fixture()

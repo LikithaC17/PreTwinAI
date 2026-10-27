@@ -110,13 +110,14 @@ def test_first_navigation_bar_structure(app_client):
     assert "/savings" in navbar
     assert "Savings Plan" in navbar
 
-    # Smart Cart was moved from first navbar shortcuts to Features menu
-    assert "pretwinFeaturesBtn" in navbar
-    assert "pretwinMoreContainer" in navbar
-
-    # Verify Profile icon / Account element is present alongside the shortcuts
-    assert "pretwinAccountItem" in navbar
-    assert "pretwinProfileBtn" in navbar
+    # Second Navigation Bar has Features, More, and Profile at the end
+    second_nav_start = html.find('class="pretwin-second-navbar"')
+    assert second_nav_start != -1
+    second_nav = html[second_nav_start:html.find('</nav>', second_nav_start)]
+    assert "pretwinFeaturesBtn" in second_nav
+    assert "pretwinMoreContainer" in second_nav
+    assert "pretwinAccountItem" in second_nav
+    assert "pretwinProfileBtn" in second_nav
 
 
 def test_all_six_shopping_shortcuts_endpoints(app_client):

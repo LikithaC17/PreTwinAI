@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile — PreTwin AI{% endblock %}
+{% block page_title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="pretwin-profile-page-wrapper" style="max-width: 900px; margin: 32px auto; padding: 0 16px;">
+
+  <!-- Page Header Breadcrumb & Title -->
+  <div style="margin-bottom: 24px;">
+    <div style="font-size: 13px; color: #64748b; margin-bottom: 6px;">
+      <a href="/" style="color: #64748b; text-decoration: none;">Home</a> &rsaquo;
+      <span style="color: #1e293b; font-weight: 600;">My Profile</span>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+      <div>
+        <h1 style="font-size: 26px; font-weight: 800; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 10px;">
+          <span>👤 My Account Profile</span>
+        </h1>
+        <p style="font-size: 14px; color: #64748b; margin: 4px 0 0 0;">
+          Manage your personal details, saved delivery location, and preferred checkout payment mode.
+        </p>
+      </div>
+      <div id="profileAuthBadge">
+        {% if is_authenticated and current_user %}
+          <span style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 6px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+            <span>●</span> Verified PreTwin User
+          </span>
+        {% else %}
+          <a href="/login?next=/profile" class="btn btn-primary" style="font-size: 13px; padding: 6px 16px;">Sign In to Save</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Alert Banner -->
+  <div id="profileStatusAlert" style="display: none; padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; margin-bottom: 20px;"></div>
+
+  <!-- SECTION 1: Personal Details -->
+  <div class="card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
+      <span style="font-size: 22px;">👤</span>
+      <div>
+        <h2 style="font-size: 18px; font-weight: 700; color: #1e293b; margin: 0;">1. Personal Details</h2>
+        <p style="font-size: 12.5px; color: #64748b; margin: 2px 0 0 0;">Your identity and communication contact information</p>
+      </div>
+    </div>
+
+    <form id="personalDetailsForm" onsubmit="handleSavePersonalDetails(event)">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-bottom: 18px;">
+        <div class="form-group">
+          <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;">
+            Full Name <span style="color: #ef4444;">*</span>
+          </label>
+          <input
+            type="text"
+            id="profileFullName"
+            class="form-control"
+            placeholder="e.g. Alex Johnson"
+            value="{{ current_user.username if current_user else '' }}"
+            required
+            style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;"
+          />
+        </div>
+
+        <div class="form-group">
+          <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;">
+            Email Address <span style="color: #ef4444;">*</span>
+          </label>
+          <input
+            type="email"
+            id="profileEmail"
+            class="form-control"
+            placeholder="e.g. alex@example.com"
+            value="{{ current_user.email if current_user else '' }}"
+            required
+            style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;"
+          />
+        </div>
+
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;">
+            Phone Number <span style="font-weight: 400; color: #94a3b8;">(for order delivery updates)</span>
+          </label>
+          <input
+            type="tel"
+            id="profilePhone"
+            class="form-control"
+            placeholder="e.g. +91 9876543210"
+            style="width: 100%; max-width: 380px; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;"
+          />
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end;">
+        <button type="submit" class="btn btn-primary" id="btnSavePersonal" style="font-weight: 600; padding: 8px 20px;">
+          Save Personal Details
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- SECTION 2: Location -->
+  <div class="card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 22px;">📍</span>
+        <div>
+          <h2 style="font-size: 18px; font-weight: 700; color: #1e293b; margin: 0;">2. Delivery Location</h2>
+          <p style="font-size: 12.5px; color: #64748b; margin: 2px 0 0 0;">Manage your shipping address and doorstep delivery destination</p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="pretwin-use-gps-btn"
+        onclick="detectProfileLocation()"
+        id="btnProfileGPS"
+        style="display: inline-flex; align-items: center; gap: 6px; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;"
+      >
+        <span>🎯</span>
+        <span>Use my current location</span>
+      </button>
+    </div>
+
+    <!-- GPS Message -->
+    <div id="profileLocMessage" style="display: none; padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-bottom: 14px;"></div>
+
+    <form id="locationForm" onsubmit="handleSaveLocation(event)">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-bottom: 18px;">
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;">
+            Flat / House No. / Building / Street Address
+          </label>
+          <input
+            type="text"
+            id="profileAddress"
+            class="form-control"
+            placeholder="e.g. Flat 402, PreTwin Residency, Outer Ring Road"
+            style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;"
+          />
+        </div>
+
+        <div class="form-group">
+          <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;">
+            City / District
+          </label>
+          <input
+            type="text"
+            id="profileCity"
+            class="form-control"
+            placeholder="e.g. Bengaluru"
+            style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;"
+          />
+        </div>
+
+        <div class="form-group">
+          <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;">
+            State / Region
+          </label>
+          <input
+            type="text"
+            id="profileState"
+            class="form-control"
+            placeholder="e.g. Karnataka"
+            style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;"
+          />
+        </div>
+
+        <div class="form-group">
+          <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;">
+            Postal / PIN Code
+          </label>
+          <input
+            type="text"
+            id="profilePincode"
+            class="form-control"
+            placeholder="e.g. 560103"
+            style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;"
+          />
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end;">
+        <button type="submit" class="btn btn-primary" id="btnSaveLocation" style="font-weight: 600; padding: 8px 20px;">
+          Save Location
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- SECTION 3: Mode of Payment -->
+  <div class="card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
+      <span style="font-size: 22px;">💳</span>
+      <div>
+        <h2 style="font-size: 18px; font-weight: 700; color: #1e293b; margin: 0;">3. Mode of Payment</h2>
+        <p style="font-size: 12.5px; color: #64748b; margin: 2px 0 0 0;">Manage your preferred payment mode for quick checkout</p>
+      </div>
+    </div>
+
+    <!-- Security Guarantee Badge -->
+    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: 20px;">🛡️</span>
+      <div style="font-size: 12.5px; color: #475569;">
+        <strong>Bank-Grade Privacy:</strong> PreTwin never stores credit card numbers, CVVs, passwords, or UPI PINs. We store only your preferred default payment method for faster checkout.
+      </div>
+    </div>
+
+    <form id="paymentModeForm" onsubmit="handleSavePaymentMode(event)">
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+        <!-- Option 1: Cash on Delivery -->
+        <label class="profile-pay-choice" style="display: flex; align-items: flex-start; gap: 14px; padding: 16px; border: 2px solid #cbd5e1; border-radius: 8px; cursor: pointer; transition: all 0.2s ease;">
+          <input type="radio" name="preferredPaymentMode" value="cod" id="payModeCOD" checked style="margin-top: 4px; width: 18px; height: 18px;" />
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 18px;">💵</span>
+              <strong style="color: #1e293b; font-size: 14.5px;">Cash on Delivery (COD)</strong>
+              <span style="background: #dcfce7; color: #15803d; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px;">Recommended</span>
+            </div>
+            <p style="font-size: 13px; color: #64748b; margin: 4px 0 0 0;">
+              Pay via cash or UPI scan on doorstep delivery. Zero advance payment required.
+            </p>
+          </div>
+        </label>
+
+        <!-- Option 2: Online Payment -->
+        <label class="profile-pay-choice" style="display: flex; align-items: flex-start; gap: 14px; padding: 16px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; transition: all 0.2s ease;">
+          <input type="radio" name="preferredPaymentMode" value="online" id="payModeOnline" style="margin-top: 4px; width: 18px; height: 18px;" />
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 18px;">⚡</span>
+              <strong style="color: #1e293b; font-size: 14.5px;">Online Payment (UPI, Cards, Net Banking)</strong>
+              <span style="background: #eff6ff; color: #2563eb; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px;">Secure Gateway</span>
+            </div>
+            <p style="font-size: 13px; color: #64748b; margin: 4px 0 0 0;">
+              Pay via Razorpay / Sandbox gateway with Google Pay, PhonePe, Paytm, Visa, or Mastercard.
+            </p>
+          </div>
+        </label>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end;">
+        <button type="submit" class="btn btn-primary" id="btnSavePayment" style="font-weight: 600; padding: 8px 20px;">
+          Save Payment Preference
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Master Action Bar -->
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 18px 24px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;">
+    <div style="font-size: 13px; color: #64748b;">
+      Changes are saved securely to your personal PreTwin profile.
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <a href="/" class="btn btn-outline" style="padding: 10px 18px; font-weight: 600; text-decoration: none;">Continue Shopping</a>
+      <button type="button" class="btn btn-primary" onclick="handleSaveAllProfile()" id="btnSaveAllProfile" style="padding: 10px 24px; font-weight: 700;">
+        💾 Save All Changes
+      </button>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Highlight active payment choice card
+document.querySelectorAll('input[name="preferredPaymentMode"]').forEach(radio => {
+  radio.addEventListener('change', function() {
+    document.querySelectorAll('.profile-pay-choice').forEach(card => {
+      card.style.borderColor = '#cbd5e1';
+      card.style.borderWidth = '1px';
+    });
+    const parent = this.closest('.profile-pay-choice');
+    if (parent) {
+      parent.style.borderColor = '#7c3aed';
+      parent.style.borderWidth = '2px';
+    }
+  });
+});
+
+async function loadProfileData() {
+  try {
+    const res = await fetch('/api/user/profile');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.username) document.getElementById('profileFullName').value = data.username;
+    if (data.email) document.getElementById('profileEmail').value = data.email;
+    if (data.phone) document.getElementById('profilePhone').value = data.phone;
+    if (data.address) document.getElementById('profileAddress').value = data.address;
+    if (data.city) document.getElementById('profileCity').value = data.city;
+    if (data.state) document.getElementById('profileState').value = data.state;
+    if (data.pincode) document.getElementById('profilePincode').value = data.pincode;
+
+    if (data.preferred_payment_mode === 'online') {
+      const r = document.getElementById('payModeOnline');
+      if (r) { r.checked = true; r.dispatchEvent(new Event('change')); }
+    } else {
+      const r = document.getElementById('payModeCOD');
+      if (r) { r.checked = true; r.dispatchEvent(new Event('change')); }
+    }
+  } catch (e) {
+    console.error('Failed to load profile data:', e);
+  }
+}
+
+function showProfileStatus(msg, isSuccess = true) {
+  const el = document.getElementById('profileStatusAlert');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.style.background = isSuccess ? '#ecfdf5' : '#fef2f2';
+  el.style.color = isSuccess ? '#065f46' : '#991b1b';
+  el.style.border = isSuccess ? '1px solid #a7f3d0' : '1px solid #fecaca';
+  setTimeout(() => {
+    el.style.display = 'none';
+  }, 4000);
+}
+
+async function saveProfilePayload(payload) {
+  try {
+    const res = await fetch('/api/user/profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showProfileStatus(data.message || 'Profile saved successfully!', true);
+      // Update global navigation display if name changed
+      if (payload.username) {
+        const navText = document.querySelector('.pretwin-account-item .pretwin-shortcut-text, .pretwin-account-item .pretwin-second-nav-text');
+        if (navText) navText.textContent = payload.username.split(' ')[0];
+      }
+      return true;
+    } else {
+      showProfileStatus(data.error || 'Failed to save profile changes.', false);
+      return false;
+    }
+  } catch (err) {
+    showProfileStatus('Network error while saving profile: ' + err.message, false);
+    return false;
+  }
+}
+
+function handleSavePersonalDetails(e) {
+  if (e) e.preventDefault();
+  const username = document.getElementById('profileFullName').value.trim();
+  const email = document.getElementById('profileEmail').value.trim();
+  const phone = document.getElementById('profilePhone').value.trim();
+  return saveProfilePayload({ username, email, phone });
+}
+
+function handleSaveLocation(e) {
+  if (e) e.preventDefault();
+  const address = document.getElementById('profileAddress').value.trim();
+  const city = document.getElementById('profileCity').value.trim();
+  const state = document.getElementById('profileState').value.trim();
+  const pincode = document.getElementById('profilePincode').value.trim();
+  return saveProfilePayload({ address, city, state, pincode });
+}
+
+function handleSavePaymentMode(e) {
+  if (e) e.preventDefault();
+  const radio = document.querySelector('input[name="preferredPaymentMode"]:checked');
+  const preferred_payment_mode = radio ? radio.value : 'cod';
+  return saveProfilePayload({ preferred_payment_mode });
+}
+
+function handleSaveAllProfile() {
+  const username = document.getElementById('profileFullName').value.trim();
+  const email = document.getElementById('profileEmail').value.trim();
+  const phone = document.getElementById('profilePhone').value.trim();
+  const address = document.getElementById('profileAddress').value.trim();
+  const city = document.getElementById('profileCity').value.trim();
+  const state = document.getElementById('profileState').value.trim();
+  const pincode = document.getElementById('profilePincode').value.trim();
+  const radio = document.querySelector('input[name="preferredPaymentMode"]:checked');
+  const preferred_payment_mode = radio ? radio.value : 'cod';
+
+  return saveProfilePayload({
+    username, email, phone, address, city, state, pincode, preferred_payment_mode
+  });
+}
+
+function detectProfileLocation() {
+  const msgEl = document.getElementById('profileLocMessage');
+  const btn = document.getElementById('btnProfileGPS');
+  
+  if (!navigator.geolocation) {
+    if (msgEl) {
+      msgEl.style.display = 'block';
+      msgEl.style.background = '#fef2f2';
+      msgEl.style.color = '#991b1b';
+      msgEl.style.border = '1px solid #fecaca';
+      msgEl.textContent = 'Geolocation is not supported by your browser. Please enter location manually.';
+    }
+    return;
+  }
+
+  if (btn) btn.disabled = true;
+  if (msgEl) {
+    msgEl.style.display = 'block';
+    msgEl.style.background = '#eff6ff';
+    msgEl.style.color = '#1e40af';
+    msgEl.style.border = '1px solid #bfdbfe';
+    msgEl.textContent = 'Requesting location permission...';
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      if (btn) btn.disabled = false;
+      // In web demo without external reverse geocoding API, supply detected coordinates and default city
+      const lat = pos.coords.latitude.toFixed(2);
+      const lon = pos.coords.longitude.toFixed(2);
+      
+      const cityEl = document.getElementById('profileCity');
+      const stateEl = document.getElementById('profileState');
+      const pinEl = document.getElementById('profilePincode');
+      
+      if (cityEl && !cityEl.value) cityEl.value = 'Bengaluru';
+      if (stateEl && !stateEl.value) stateEl.value = 'Karnataka';
+      if (pinEl && !pinEl.value) pinEl.value = '560001';
+
+      if (msgEl) {
+        msgEl.style.background = '#ecfdf5';
+        msgEl.style.color = '#065f46';
+        msgEl.style.border = '1px solid #a7f3d0';
+        msgEl.textContent = `Location detected (${lat}°N, ${lon}°E). Please confirm your street address and PIN code.`;
+      }
+    },
+    (err) => {
+      if (btn) btn.disabled = false;
+      let msg = 'Could not access location.';
+      if (err.code === 1) msg = 'Location permission was denied. You can enter your delivery address manually below.';
+      else if (err.code === 2) msg = 'Location position is currently unavailable.';
+      else if (err.code === 3) msg = 'Location detection request timed out.';
+      
+      if (msgEl) {
+        msgEl.style.display = 'block';
+        msgEl.style.background = '#fffbeb';
+        msgEl.style.color = '#92400e';
+        msgEl.style.border = '1px solid #fde68a';
+        msgEl.textContent = msg;
+      }
+    },
+    { timeout: 10000, enableHighAccuracy: true }
+  );
+}
+
+document.addEventListener('DOMContentLoaded', loadProfileData);
+</script>
+{% endblock %}

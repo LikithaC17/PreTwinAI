@@ -1,12 +1,13 @@
 import sqlite3
 import os
 from contextlib import contextmanager
+import config
 from config import Config
 
 
 def init_db():
     """Initialize the database by creating all tables if they don't exist."""
-    db_path = Config.DATABASE_PATH
+    db_path = config.Config.DATABASE_PATH
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
@@ -27,11 +28,17 @@ def init_db():
         )
     """)
 
-    # Safe migration: ensure password_hash and google_id columns exist on existing users table
+    # Safe migration: ensure password_hash, google_id, avatar_url, and profile columns exist on existing users table
     for ucol, utype in [
         ("password_hash", "TEXT DEFAULT ''"),
         ("google_id", "TEXT DEFAULT ''"),
         ("avatar_url", "TEXT DEFAULT ''"),
+        ("phone", "TEXT DEFAULT ''"),
+        ("address", "TEXT DEFAULT ''"),
+        ("city", "TEXT DEFAULT ''"),
+        ("state", "TEXT DEFAULT ''"),
+        ("pincode", "TEXT DEFAULT ''"),
+        ("preferred_payment_mode", "TEXT DEFAULT 'cod'"),
     ]:
         try:
             cursor.execute(f"ALTER TABLE users ADD COLUMN {ucol} {utype}")
@@ -490,7 +497,7 @@ def init_db():
 @contextmanager
 def get_db():
     """Context manager that yields a sqlite3 connection with Row factory."""
-    conn = sqlite3.connect(Config.DATABASE_PATH)
+    conn = sqlite3.connect(config.Config.DATABASE_PATH)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys=ON")
     try:

@@ -62,11 +62,9 @@ def test_first_navbar_elements_and_smart_cart_removed(client):
     assert 'fk-search-box' in navbar_html
     assert 'fkSearchInput' in navbar_html
 
-    # Location selector
-    assert 'pretwin-location-container' in navbar_html
-    assert 'pretwinLocationBtn' in navbar_html
-    assert 'Deliver to' in navbar_html
-    assert 'pretwinNavLocationText' in navbar_html
+    # Location selector is removed from navbar (moved to profile page)
+    assert 'pretwin-location-container' not in navbar_html
+    assert 'pretwinLocationBtn' not in navbar_html
 
     # Wishlist, Cart, My Orders, Rewards, Savings
     assert 'href="/wishlist"' in navbar_html
@@ -78,37 +76,44 @@ def test_first_navbar_elements_and_smart_cart_removed(client):
     # Smart Cart shortcut must NOT be in the first navigation bar
     assert 'Smart Cart' not in navbar_html, "Smart Cart must be removed from first navigation bar"
 
+    # Second Navigation Bar holds Features, More, and Profile at the end
+    second_nav_start = html.find('class="pretwin-second-navbar"')
+    assert second_nav_start != -1
+    second_nav_html = html[second_nav_start:html.find('</nav>', second_nav_start)]
+
     # Features menu dropdown
-    assert 'pretwinFeaturesBtn' in navbar_html
-    assert 'pretwinFeaturesDropdown' in navbar_html
-
-    # Notifications button & dropdown
-    assert 'pretwinNotificationsBtn' in navbar_html
-    assert 'pretwinNotificationsDropdown' in navbar_html
-
-    # Profile / Account icon
-    assert 'pretwinAccountItem' in navbar_html
+    assert 'pretwinFeaturesBtn' in second_nav_html
+    assert 'pretwinFeaturesDropdown' in second_nav_html
 
     # More menu dropdown
-    assert 'pretwinMoreBtn' in navbar_html
-    assert 'pretwinMoreDropdown' in navbar_html
-    assert 'href="/seller"' in navbar_html
-    assert 'Become a Seller' in navbar_html
-    assert 'Customer Service' in navbar_html
-    assert 'href="/customer-service"' in navbar_html
+    assert 'pretwinMoreBtn' in second_nav_html
+    assert 'pretwinMoreDropdown' in second_nav_html
+    assert 'href="/seller"' in second_nav_html
+    assert 'Become a Seller' in second_nav_html
+    assert 'Customer Service' in second_nav_html
+    assert 'href="/customer-service"' in second_nav_html
+
+    # Profile / Account icon at end of second navbar
+    assert 'pretwinAccountItem' in second_nav_html
 
 
-def test_location_modal_structure(client):
-    res = client.get("/")
+def test_location_management_in_profile(client):
+    """Location selection and management is situated in the Profile page."""
+    res = client.get("/profile")
     assert res.status_code == 200
     html = res.data.decode("utf-8")
 
-    assert 'id="pretwinLocationModal"' in html
-    assert 'id="pretwinLocationBackdrop"' in html
-    assert 'requestBrowserLocation()' in html
+    # Three core sections in Profile
+    assert "Personal Details" in html
+    assert "Delivery Location" in html
+    assert "Mode of Payment" in html
+
+    # Location controls: manual entry and browser geolocation
+    assert 'id="profileAddress"' in html
+    assert 'id="profileCity"' in html
+    assert 'id="profilePincode"' in html
+    assert 'detectProfileLocation()' in html
     assert 'Use my current location' in html
-    assert 'manualLocationInput' in html
-    assert 'applyManualLocation(event)' in html
 
 
 def test_features_menu_contains_all_eight_features(client):

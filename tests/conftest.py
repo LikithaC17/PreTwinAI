@@ -46,6 +46,12 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash TEXT DEFAULT '',
     google_id TEXT DEFAULT '',
     avatar_url TEXT DEFAULT '',
+    phone TEXT DEFAULT '',
+    address TEXT DEFAULT '',
+    city TEXT DEFAULT '',
+    state TEXT DEFAULT '',
+    pincode TEXT DEFAULT '',
+    preferred_payment_mode TEXT DEFAULT 'cod',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -190,26 +196,47 @@ CREATE TABLE IF NOT EXISTS orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     order_number TEXT NOT NULL UNIQUE,
-    total_amount REAL NOT NULL,
-    discount_amount REAL DEFAULT 0.0,
-    shipping_amount REAL DEFAULT 0.0,
-    reward_points_redeemed INTEGER DEFAULT 0,
-    payment_method TEXT DEFAULT 'ONLINE',
-    payment_status TEXT DEFAULT 'pending',
+    customer_name TEXT DEFAULT '',
+    customer_email TEXT DEFAULT '',
+    customer_phone TEXT DEFAULT '',
     shipping_address TEXT DEFAULT '',
-    status TEXT DEFAULT 'placed',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    city TEXT DEFAULT '',
+    state TEXT DEFAULT '',
+    pincode TEXT DEFAULT '',
+    subtotal REAL DEFAULT 0.0,
+    tax REAL DEFAULT 0.0,
+    shipping_fee REAL DEFAULT 0.0,
+    discount REAL DEFAULT 0.0,
+    reward_points_redeemed INTEGER DEFAULT 0,
+    reward_discount_amount REAL DEFAULT 0.0,
+    reward_points_awarded INTEGER DEFAULT 0,
+    cod_amount_due REAL DEFAULT 0.0,
+    total_amount REAL NOT NULL,
+    status TEXT DEFAULT 'Confirmed',
+    payment_status TEXT DEFAULT 'Pending',
+    payment_method TEXT DEFAULT 'Razorpay',
+    gateway_name TEXT DEFAULT 'Razorpay',
+    gateway_order_id TEXT DEFAULT '',
+    gateway_payment_id TEXT DEFAULT '',
+    gateway_signature TEXT DEFAULT '',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS order_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     order_id INTEGER NOT NULL,
-    product_id INTEGER,
-    product_name TEXT,
+    product_id INTEGER NOT NULL,
+    product_name TEXT NOT NULL,
+    category TEXT DEFAULT '',
+    brand TEXT DEFAULT '',
     price REAL NOT NULL,
     quantity INTEGER DEFAULT 1,
+    total_price REAL NOT NULL,
     image_url TEXT DEFAULT '',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS cart_items (
@@ -251,9 +278,10 @@ CREATE TABLE IF NOT EXISTS reward_ledger (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     points INTEGER NOT NULL,
-    reason TEXT DEFAULT '',
-    source_type TEXT DEFAULT 'earned',
+    rupee_value REAL DEFAULT 0.0,
+    transaction_type TEXT DEFAULT 'Earned',
     order_id INTEGER,
+    description TEXT DEFAULT '',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -422,6 +450,7 @@ def app_client(tmp_path, monkeypatch):
     so that Flask's request-scoped DB helpers (which re-open connections)
     all point to the same seeded file.
     """
+    orig_db = os.environ.get("DATABASE_PATH")
     db_file = str(tmp_path / "test_pretwinshop.db")
 
     # Patch environment BEFORE importing app / config so the DB path is correct
@@ -453,8 +482,19 @@ def app_client(tmp_path, monkeypatch):
     flask_app.config["TESTING"] = True
     flask_app.config["SECRET_KEY"] = "test-secret-key"
 
-    with flask_app.test_client() as client:
-        yield client
+    try:
+        with flask_app.test_client() as client:
+            yield client
+    finally:
+        if orig_db is not None:
+            os.environ["DATABASE_PATH"] = orig_db
+        else:
+            os.environ.pop("DATABASE_PATH", None)
+        importlib.reload(cfg_module)
+        if "database" in sys.modules:
+            importlib.reload(sys.modules["database"])
+        if "app" in sys.modules:
+            importlib.reload(sys.modules["app"])
 
 
 @pytest.fixture

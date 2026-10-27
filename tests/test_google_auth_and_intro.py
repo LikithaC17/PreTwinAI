@@ -24,26 +24,27 @@ def test_first_navbar_has_profile_icon_and_shortcuts(app_client):
     assert "pretwin-top-branding-bar" in html
     assert "PreTwin AI" in html
 
-    # The navbar header section must contain pretwinAccountItem and shortcuts
+    # The first navbar header section contains search and shopping shortcuts
     header_start = html.find('<header class="fk-navbar">')
     header_end = html.find('</header>')
     assert header_start != -1 and header_end != -1
     navbar_html = html[header_start:header_end]
 
-    # Verify profile icon / account item
-    assert "pretwinAccountItem" in navbar_html
-    assert "pretwinProfileBtn" in navbar_html
-
     # Verify shopping shortcuts in the first navigation bar
+    assert "fkSearchInput" in navbar_html
     assert "/wishlist" in navbar_html
     assert "openCartModal" in navbar_html
     assert "/orders" in navbar_html
     assert "/rewards" in navbar_html
     assert "/savings" in navbar_html
 
-    # Features menu and search box are intact
-    assert "pretwinFeaturesBtn" in navbar_html
-    assert "fkSearchInput" in navbar_html
+    # Second navigation bar contains Features, More, and Profile at the end
+    sec_nav_start = html.find('class="pretwin-second-navbar"')
+    assert sec_nav_start != -1
+    sec_nav_html = html[sec_nav_start:html.find('</nav>', sec_nav_start)]
+    assert "pretwinFeaturesBtn" in sec_nav_html
+    assert "pretwinAccountItem" in sec_nav_html
+    assert "pretwinProfileBtn" in sec_nav_html
 
 
 def test_login_screen_structure_with_tabs_and_google(app_client):
