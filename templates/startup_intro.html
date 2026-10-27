@@ -35,7 +35,17 @@
   <!-- Central Stage: Crescent Moon with Seated Fairy & Magical Reveal -->
   <div class="pretwin-moon-stage" id="introMoonStage">
     
-    <!-- Fairy Sitting Gracefully on Crescent Half-Moon -->
+    <!-- Official PreTwin AI Fairy Scene Banner (Derived directly from uploaded reference image with project branding) -->
+    <div class="pretwin-intro-banner-container" id="introBannerContainer">
+      <div class="pretwin-banner-glow-halo"></div>
+      <img src="{{ url_for('static', filename='images/pretwin_fairy_banner.png') }}" 
+           alt="PreTwin AI - Your Future. Your Style. Your Twin." 
+           class="pretwin-intro-banner-image" 
+           id="introBannerImage" />
+      <div class="pretwin-banner-light-sweep" id="bannerLightSweep"></div>
+    </div>
+
+    <!-- Fairy Sitting Gracefully on Crescent Half-Moon Component -->
     <div class="pretwin-moon-fairy-wrap" id="moonFairyContainer">
       <svg class="pretwin-moon-fairy-svg pretwin-fairy-svg" viewBox="0 0 420 380" width="380" height="344" aria-label="PreTwin Fairy Sitting on Crescent Moon">
         <defs>

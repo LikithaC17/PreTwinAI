@@ -141,3 +141,6 @@ pretwinshop.db*
 # OS
 .DS_Store
 Thumbs.db
+
+# Scratch and temporary scripts
+scratch/
