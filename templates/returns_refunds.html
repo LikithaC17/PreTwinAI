@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Returns &amp; Refunds Policy — PreTwin AI{% endblock %}
+
+{% block content %}
+<div class="fk-container" style="padding-top: 24px; padding-bottom: 60px; max-width: 960px; margin: 0 auto;">
+  <!-- Header -->
+  <div style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border-radius: 12px; padding: 32px 36px; color: #ffffff; margin-bottom: 28px;">
+    <h1 style="font-size: 24px; font-weight: 800; margin: 0 0 8px 0; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+      <span>🔄</span> PreTwin Returns &amp; Refund Policy
+    </h1>
+    <p style="color: #c7d2fe; font-size: 14.5px; margin: 0; line-height: 1.6;">
+      Transparent, customer-friendly replacement and refund guidelines for all orders placed on PreTwin AI.
+    </p>
+  </div>
+
+  <div style="background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; padding: 28px 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 24px;">
+    <section>
+      <h3 style="font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 8px 0;">1. 7-Day Doorstep Replacement Guarantee</h3>
+      <p style="font-size: 14px; color: #475569; line-height: 1.7; margin: 0;">
+        Eligible products delivered with defects, transit damage, missing accessories, or incorrect specifications can be replaced free of charge within 7 calendar days of delivery.
+      </p>
+    </section>
+
+    <section>
+      <h3 style="font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 8px 0;">2. Order Cancellation Prior to Dispatch</h3>
+      <p style="font-size: 14px; color: #475569; line-height: 1.7; margin: 0;">
+        You can cancel any pending order directly from your <a href="/orders" style="color: #7c3aed; font-weight: 600;">My Orders</a> page prior to dispatch. When an order is cancelled:
+      </p>
+      <ul style="font-size: 13.5px; color: #475569; line-height: 1.7; margin-top: 6px; padding-left: 20px;">
+        <li>Any redeemed <strong>PreTwin Reward Points</strong> are refunded back into your points ledger immediately.</li>
+        <li>Online payments (Razorpay/Cards/UPI) are reversed to the original source within 3–5 working days.</li>
+        <li>Cash on Delivery (COD) orders require zero cancellation fee.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h3 style="font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 8px 0;">3. Refund Processing Timelines</h3>
+      <div style="overflow-x: auto; margin-top: 10px;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13.5px;">
+          <thead>
+            <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left; color: #64748b;">
+              <th style="padding: 10px 14px; font-weight: 700;">Payment Mode</th>
+              <th style="padding: 10px 14px; font-weight: 700;">Refund Method</th>
+              <th style="padding: 10px 14px; font-weight: 700;">Expected Turnaround</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 10px 14px; font-weight: 600; color: #1e293b;">PreTwin Reward Points</td>
+              <td style="padding: 10px 14px; color: #15803d; font-weight: 600;">Points Ledger Credited</td>
+              <td style="padding: 10px 14px; color: #64748b;">Instant (Immediate)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 10px 14px; font-weight: 600; color: #1e293b;">UPI / Google Pay / PhonePe</td>
+              <td style="padding: 10px 14px; color: #1e293b;">Original VPA / Bank Account</td>
+              <td style="padding: 10px 14px; color: #64748b;">24–48 hours</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 10px 14px; font-weight: 600; color: #1e293b;">Credit / Debit Cards</td>
+              <td style="padding: 10px 14px; color: #1e293b;">Original Issuing Bank Card</td>
+              <td style="padding: 10px 14px; color: #64748b;">3–5 business days</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 14px; font-weight: 600; color: #1e293b;">Cash on Delivery (COD)</td>
+              <td style="padding: 10px 14px; color: #1e293b;">NEFT Bank Transfer / Store Credit</td>
+              <td style="padding: 10px 14px; color: #64748b;">2–3 business days after pickup</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h3 style="font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 8px 0;">4. How to Initiate a Return</h3>
+      <p style="font-size: 14px; color: #475569; line-height: 1.7; margin: 0;">
+        Visit your <a href="/orders" style="color: #7c3aed; font-weight: 600;">Orders page</a>, select the delivered order, and click "Request Return / Replacement". Or reach our 24x7 desk at <a href="/customer-service" style="color: #7c3aed; font-weight: 600;">Customer Service</a>.
+      </p>
+    </section>
+  </div>
+</div>
+{% endblock %}

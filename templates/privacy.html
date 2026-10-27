@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy — PreTwin AI{% endblock %}
+
+{% block content %}
+<div class="fk-container" style="padding-top: 24px; padding-bottom: 60px; max-width: 960px; margin: 0 auto;">
+  <!-- Header -->
+  <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 32px 36px; color: #ffffff; margin-bottom: 28px;">
+    <h1 style="font-size: 24px; font-weight: 800; margin: 0 0 8px 0; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+      <span>🔒</span> PreTwin AI Privacy Policy
+    </h1>
+    <p style="color: #cbd5e1; font-size: 14.5px; margin: 0; line-height: 1.6;">
+      How we safeguard your shopping twin taste models, location data, and order credentials.
+    </p>
+  </div>
+
+  <div style="background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; padding: 30px 34px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 22px; font-size: 14px; color: #475569; line-height: 1.7;">
+    <section>
+      <h3 style="font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 8px 0;">1. Overview</h3>
+      <p style="margin: 0;">
+        PreTwin Technologies Private Limited ("PreTwin", "we", "us") values your privacy. This policy explains what information is collected when you interact with PreTwin AI, your digital shopping twin, and our e-commerce platform.
+      </p>
+    </section>
+
+    <section>
+      <h3 style="font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 8px 0;">2. Information We Collect</h3>
+      <ul style="margin: 6px 0 0 0; padding-left: 20px;">
+        <li><strong>Account Information:</strong> Name, email address, password hashes (via secure bcrypt), and Google OAuth profile IDs when explicitly authenticated.</li>
+        <li><strong>Shopping Preferences:</strong> Product categories, brand affinities, budget ceilings, and frequency indicators used exclusively to personalize your shopping twin.</li>
+        <li><strong>Delivery Information:</strong> Pincode, city, state, and street address provided during checkout for order fulfillment.</li>
+        <li><strong>Location Data:</strong> We never track GPS coordinates automatically in the background. Geolocation is requested only when you click "Use my current location", and manual city/pincode entry is always available.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h3 style="font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 8px 0;">3. How AI Models Use Your Data</h3>
+      <p style="margin: 0;">
+        Your personal twin predictions and reorder cycles are calculated in an isolated, privacy-preserving session. We do not sell your personal taste profiles or search queries to third-party ad brokers.
+      </p>
+    </section>
+
+    <section>
+      <h3 style="font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 8px 0;">4. Data Security &amp; Encryption</h3>
+      <p style="margin: 0;">
+        All transmissions are secured with 256-bit SSL encryption. Payment transactions are processed directly via PCI-DSS compliant gateways (Razorpay) without storing your card CVVs or net banking credentials.
+      </p>
+    </section>
+
+    <section>
+      <h3 style="font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 8px 0;">5. Contact Our Privacy Officer</h3>
+      <p style="margin: 0;">
+        If you have questions regarding your data or wish to export/delete your twin profile, contact <a href="mailto:privacy@pretwin.ai" style="color: #7c3aed; font-weight: 600;">privacy@pretwin.ai</a>.
+      </p>
+    </section>
+  </div>
+</div>
+{% endblock %}

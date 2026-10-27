@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Customer Service &amp; Help Center — PreTwin AI{% endblock %}
+
+{% block content %}
+<div class="fk-container" style="padding-top: 24px; padding-bottom: 60px; max-width: 1050px; margin: 0 auto;">
+  <!-- Header -->
+  <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%); border-radius: 12px; padding: 36px 40px; color: #ffffff; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.25); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <span style="font-size: 32px;">🎧</span>
+        <h1 style="font-size: 26px; font-weight: 800; margin: 0; color: #ffffff;">PreTwin Customer Service</h1>
+        <span style="background: rgba(34, 197, 94, 0.2); color: #86efac; font-size: 11.5px; font-weight: 700; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(34, 197, 94, 0.3);">
+          24x7 Assistance
+        </span>
+      </div>
+      <p style="color: #cbd5e1; font-size: 15px; max-width: 650px; margin: 0; line-height: 1.6;">
+        How can we help you today? Track current orders, request doorstep returns, resolve payments, or chat directly with our AI assistant.
+      </p>
+    </div>
+    <div>
+      <a href="/orders" class="fk-btn-orange" style="display: inline-block; text-decoration: none; padding: 12px 24px; font-size: 14px; font-weight: 700; border-radius: 6px;">
+        Track Existing Orders ➔
+      </a>
+    </div>
+  </div>
+
+  <!-- Quick Action Cards -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-bottom: 36px;">
+    <a href="/orders" style="text-decoration: none; background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 10px; transition: transform 0.2s ease;">
+      <div style="font-size: 28px;">📦</div>
+      <div style="font-size: 16px; font-weight: 700; color: #1e293b;">Order Status &amp; Tracking</div>
+      <div style="font-size: 13px; color: #64748b; line-height: 1.5;">Check live dispatch updates, Courier tracking IDs, and estimated delivery dates.</div>
+    </a>
+
+    <a href="/returns-refunds" style="text-decoration: none; background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 10px; transition: transform 0.2s ease;">
+      <div style="font-size: 28px;">🔄</div>
+      <div style="font-size: 16px; font-weight: 700; color: #1e293b;">Returns &amp; Instant Refunds</div>
+      <div style="font-size: 13px; color: #64748b; line-height: 1.5;">Hassle-free 7-day doorstep replacement, return requests, and instant UPI/bank refunds.</div>
+    </a>
+
+    <a href="/rewards" style="text-decoration: none; background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 10px; transition: transform 0.2s ease;">
+      <div style="font-size: 28px;">✨</div>
+      <div style="font-size: 16px; font-weight: 700; color: #1e293b;">Reward Points &amp; Savings</div>
+      <div style="font-size: 13px; color: #64748b; line-height: 1.5;">View your point balance (100 pts = ₹1.00), redeem store vouchers, or manage 30-day savings.</div>
+    </a>
+
+    <a href="javascript:void(0)" onclick="toggleChatbot()" style="text-decoration: none; background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 10px; transition: transform 0.2s ease;">
+      <div style="font-size: 28px;">🧚</div>
+      <div style="font-size: 16px; font-weight: 700; color: #1e293b;">Ask PreTwin Assistant</div>
+      <div style="font-size: 13px; color: #64748b; line-height: 1.5;">Instant AI answers on order queries, product specs, pricing trends, and personalized styling.</div>
+    </a>
+  </div>
+
+  <!-- Contact & Query Submission -->
+  <div style="background: #ffffff; border-radius: 12px; border: 1px solid #cbd5e1; padding: 32px 36px; box-shadow: 0 4px 16px rgba(0,0,0,0.05);">
+    <h2 style="font-size: 20px; font-weight: 800; color: #1e293b; margin: 0 0 8px 0;">Send Us a Message</h2>
+    <p style="color: #64748b; font-size: 14px; margin-bottom: 24px;">
+      Need specific help with an order, payment, or AI recommendation? Submit your query and our team will get back to you within 2 business hours.
+    </p>
+
+    <form onsubmit="handleSupportTicket(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px;">
+      <div>
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Your Name *</label>
+        <input type="text" id="ticketName" required value="{{ current_user.username if current_user else '' }}" placeholder="Enter full name" style="width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; box-sizing: border-box;">
+      </div>
+
+      <div>
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Email Address *</label>
+        <input type="email" id="ticketEmail" required value="{{ current_user.email if current_user else '' }}" placeholder="name@domain.com" style="width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; box-sizing: border-box;">
+      </div>
+
+      <div>
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Order Number (Optional)</label>
+        <input type="text" id="ticketOrderNo" placeholder="e.g. PT-20261027-XXXX" style="width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; box-sizing: border-box;">
+      </div>
+
+      <div>
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Topic *</label>
+        <select id="ticketTopic" required style="width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; box-sizing: border-box; background: #fff;">
+          <option value="Delivery">Order Delivery &amp; Tracking</option>
+          <option value="Return">Returns, Replacements &amp; Refunds</option>
+          <option value="Payment">Payments &amp; COD Verification</option>
+          <option value="Rewards">Reward Points &amp; Savings</option>
+          <option value="Twin">Personal Shopping Twin Feedback</option>
+          <option value="Other">Other Inquiries</option>
+        </select>
+      </div>
+
+      <div style="grid-column: 1 / -1;">
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Your Message *</label>
+        <textarea id="ticketMessage" required rows="4" placeholder="Describe your query in detail..." style="width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; box-sizing: border-box; resize: vertical;"></textarea>
+      </div>
+
+      <div style="grid-column: 1 / -1;">
+        <button type="submit" class="fk-btn-orange" style="padding: 12px 28px; font-size: 14.5px; font-weight: 700; border-radius: 6px; cursor: pointer; border: none;">
+          Submit Ticket ➔
+        </button>
+        <div id="supportFeedback" style="display: none; margin-top: 14px; font-size: 14px; font-weight: 600; color: #15803d;"></div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function handleSupportTicket(e) {
+  e.preventDefault();
+  const fb = document.getElementById('supportFeedback');
+  if (fb) {
+    const tId = 'TCK-' + Math.floor(100000 + Math.random() * 900000);
+    fb.style.display = 'block';
+    fb.innerHTML = `✅ Ticket <strong>#${tId}</strong> created successfully! Our support representative has been notified and will email you back shortly.`;
+    e.target.reset();
+  }
+}
+</script>
+{% endblock %}

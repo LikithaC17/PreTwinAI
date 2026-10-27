@@ -3330,3 +3330,683 @@ input, select, textarea {
   transition: width 0.4s ease;
 }
 
+
+/* ==========================================================================
+   PRETWIN AI DEDICATED TOP BRANDING BAR (Above First Navigation Bar)
+   ========================================================================== */
+.pretwin-top-branding-bar {
+  background: linear-gradient(135deg, #1e1035 0%, #2e1065 45%, #3b0764 100%);
+  border-bottom: 1px solid rgba(192, 132, 252, 0.22);
+  padding: 8px 16px;
+  color: #ffffff;
+  width: 100%;
+  position: relative;
+  z-index: 1001;
+}
+
+.pretwin-top-branding-inner {
+  max-width: 1248px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pretwin-top-brand-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.pretwin-top-brand-logo {
+  height: 38px;
+  width: auto;
+  filter: drop-shadow(0 2px 8px rgba(167, 139, 250, 0.45));
+  transition: transform 0.3s ease;
+}
+
+.pretwin-top-brand-link:hover .pretwin-top-brand-logo {
+  transform: translateY(-1px) scale(1.03);
+}
+
+.pretwin-top-brand-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.pretwin-top-brand-title {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -0.4px;
+  line-height: 1.15;
+}
+
+.pretwin-name-main {
+  color: #ffffff;
+}
+
+.pretwin-name-ai {
+  background: linear-gradient(135deg, #fef08a, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+  margin-left: 2px;
+}
+
+.pretwin-name-sparkle {
+  font-size: 14px;
+  margin-left: 2px;
+}
+
+.pretwin-top-brand-tagline {
+  font-size: 11.5px;
+  color: #e9d5ff;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  margin-top: 1px;
+}
+
+.pretwin-top-branding-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pretwin-top-badge-pill {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(233, 213, 255, 0.28);
+  color: #f3e8ff;
+  padding: 3px 10px;
+  border-radius: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ==========================================================================
+   LOCATION SELECTOR IN FIRST NAVIGATION BAR
+   ========================================================================== */
+.pretwin-location-container {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.pretwin-location-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  line-height: 1.2;
+}
+
+.pretwin-location-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.pretwin-loc-pin {
+  font-size: 16px;
+}
+
+.pretwin-loc-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.pretwin-loc-label {
+  font-size: 10px;
+  color: #c7d2fe;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.pretwin-loc-current {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+  max-width: 110px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pretwin-loc-caret {
+  font-size: 9px;
+  color: #c7d2fe;
+  margin-left: 2px;
+}
+
+/* Location Modal & Backdrop */
+.pretwin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(2px);
+  z-index: 10000;
+}
+
+.pretwin-location-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+  width: 90%;
+  max-width: 440px;
+  z-index: 10001;
+  overflow: hidden;
+  animation: pretwinModalFadeIn 0.2s ease-out;
+}
+
+@keyframes pretwinModalFadeIn {
+  from { opacity: 0; transform: translate(-50%, -46%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+.pretwin-loc-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #f8fafc;
+}
+
+.pretwin-loc-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #64748b;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+}
+
+.pretwin-loc-modal-close:hover {
+  color: #0f172a;
+}
+
+.pretwin-loc-modal-body {
+  padding: 20px;
+}
+
+.pretwin-use-gps-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: 6px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pretwin-use-gps-btn:hover {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+/* ==========================================================================
+   NAVBAR DROPDOWNS: FEATURES, NOTIFICATIONS, MORE
+   ========================================================================== */
+.pretwin-dropdown-container {
+  position: relative;
+}
+
+/* Features Mega-Menu Dropdown */
+.pretwin-features-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: -80px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+  width: 580px;
+  padding: 16px;
+  z-index: 2000;
+  display: none;
+  animation: pretwinDropFade 0.18s ease-out;
+}
+
+.pretwin-features-dropdown.is-open {
+  display: block;
+}
+
+@keyframes pretwinDropFade {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pretwin-features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.pretwin-feature-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #1e293b;
+  transition: all 0.2s ease;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+}
+
+.pretwin-feature-card:hover {
+  background: #faf5ff;
+  border-color: #d8b4fe;
+  transform: translateY(-1px);
+}
+
+.feat-icon-box {
+  font-size: 22px;
+  line-height: 1;
+  padding-top: 2px;
+}
+
+.feat-info {
+  flex: 1;
+}
+
+.feat-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+
+.pretwin-feature-card:hover .feat-title {
+  color: #7c3aed;
+}
+
+.feat-desc {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+/* Notifications Dropdown */
+.pretwin-notif-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: -60px;
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.16);
+  width: 340px;
+  z-index: 2000;
+  display: none;
+  animation: pretwinDropFade 0.18s ease-out;
+  overflow: hidden;
+}
+
+.pretwin-notif-dropdown.is-open {
+  display: block;
+}
+
+.notif-dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #f8fafc;
+}
+
+.notif-dropdown-list {
+  display: flex;
+  flex-direction: column;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notif-drop-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  text-decoration: none;
+  color: #1e293b;
+  transition: background 0.15s ease;
+}
+
+.notif-drop-item:hover {
+  background: #faf5ff;
+}
+
+.notif-drop-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 2px;
+}
+
+.notif-drop-sub {
+  font-size: 11.5px;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+.notif-dropdown-footer {
+  padding: 10px 16px;
+  background: #f8fafc;
+  text-align: center;
+  border-top: 1px solid #f1f5f9;
+}
+
+.notif-see-all-btn {
+  font-size: 12px;
+  font-weight: 700;
+  color: #7c3aed;
+  text-decoration: none;
+}
+
+/* More Dropdown */
+.pretwin-more-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.16);
+  width: 250px;
+  z-index: 2000;
+  display: none;
+  padding: 8px 0;
+  animation: pretwinDropFade 0.18s ease-out;
+}
+
+.pretwin-more-dropdown.is-open {
+  display: block;
+}
+
+.pretwin-more-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  text-decoration: none;
+  color: #1e293b;
+  transition: background 0.15s ease;
+}
+
+.pretwin-more-item:hover {
+  background: #faf5ff;
+}
+
+.more-item-icon {
+  font-size: 18px;
+}
+
+.more-item-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.2;
+}
+
+.pretwin-more-item:hover .more-item-title {
+  color: #7c3aed;
+}
+
+.more-item-desc {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+/* Caret icon inside navbar buttons */
+.nav-caret {
+  font-size: 8px;
+  opacity: 0.7;
+  margin-left: 2px;
+}
+
+/* ==========================================================================
+   REDESIGNED PRETWIN 5-COLUMN FOOTER
+   ========================================================================== */
+.pretwin-footer {
+  background: #172337;
+  color: #ffffff;
+  padding: 40px 16px 20px 16px;
+  border-top: 1px solid #28354a;
+  font-family: inherit;
+}
+
+.pretwin-footer-inner {
+  max-width: 1248px;
+  margin: 0 auto;
+}
+
+.pretwin-footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1.3fr 1.1fr 1.1fr;
+  gap: 32px;
+  margin-bottom: 36px;
+}
+
+.pretwin-footer-col h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: #878787;
+  margin: 0 0 16px 0;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.pretwin-footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pretwin-footer-col ul li a {
+  color: #ffffff;
+  font-size: 12.5px;
+  text-decoration: none;
+  transition: color 0.15s ease;
+  line-height: 1.4;
+  display: inline-block;
+}
+
+.pretwin-footer-col ul li a:hover {
+  color: #2874f0;
+  text-decoration: underline;
+}
+
+/* Column 1 — About PreTwin */
+.pretwin-footer-about {
+  display: flex;
+  flex-direction: column;
+}
+
+.pretwin-footer-logo-link {
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.pretwin-footer-logo {
+  height: 36px;
+  width: auto;
+  filter: drop-shadow(0 2px 6px rgba(167, 139, 250, 0.3));
+}
+
+.pretwin-footer-brand-title {
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  margin: 0 0 4px 0 !important;
+  text-transform: none !important;
+  letter-spacing: -0.3px !important;
+}
+
+.pretwin-footer-tagline {
+  font-size: 13px;
+  color: #fef08a;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+}
+
+.pretwin-footer-desc {
+  font-size: 12px;
+  color: #878787;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Category Quick Tag Strip */
+.pretwin-footer-categories-strip {
+  border-top: 1px solid #28354a;
+  border-bottom: 1px solid #28354a;
+  padding: 16px 0;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pretwin-footer-cat-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #878787;
+  letter-spacing: 0.5px;
+}
+
+.pretwin-footer-cat-pills {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pretwin-footer-cat-pills a {
+  color: #b0bec5;
+  font-size: 12px;
+  text-decoration: none;
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.pretwin-footer-cat-pills a:hover {
+  background: rgba(40, 116, 240, 0.2);
+  color: #ffffff;
+}
+
+/* Footer Bottom Bar */
+.pretwin-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 12px;
+  color: #878787;
+}
+
+.pretwin-footer-copy {
+  line-height: 1.5;
+}
+
+.pretwin-footer-copy strong {
+  color: #cbd5e1;
+}
+
+.pretwin-footer-badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pretwin-footer-badge {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .pretwin-footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .pretwin-features-dropdown {
+    width: 380px;
+    right: 0;
+  }
+  .pretwin-features-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .pretwin-top-branding-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .pretwin-top-branding-badge {
+    display: none;
+  }
+  .pretwin-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .pretwin-features-dropdown {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+}

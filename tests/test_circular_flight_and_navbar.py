@@ -78,10 +78,15 @@ def test_circular_flight_keyframes_in_stylesheet():
 
 
 def test_first_navigation_bar_structure(app_client):
-    """Verify first navigation bar contains the profile icon/button alongside the 6 shopping shortcuts."""
+    """Verify separate branding above navbar and redesigned first navigation bar structure."""
     res = app_client.get("/")
     assert res.status_code == 200
     html = res.data.decode("utf-8")
+
+    # Verify dedicated branding section above the first navbar
+    assert "pretwin-top-branding-bar" in html
+    assert "PreTwin AI" in html
+    assert "Your Future. Your Style. Your Twin." in html
 
     # Extract first navbar header
     start = html.find('<header class="fk-navbar">')
@@ -89,11 +94,11 @@ def test_first_navigation_bar_structure(app_client):
     assert start != -1 and end != -1
     navbar = html[start:end]
 
-    # Verify brand logo and search box
-    assert "pretwin-header-logo" in navbar
+    # Verify duplicated logo is removed from first navbar and search box is present
+    assert "pretwin-branding-logo" not in navbar
     assert "fkSearchInput" in navbar
 
-    # Verify all 6 shopping shortcuts are intact in first navbar
+    # Verify shortcuts in first navbar
     assert "/wishlist" in navbar
     assert "Wishlist" in navbar
     assert "openCartModal" in navbar
@@ -104,8 +109,10 @@ def test_first_navigation_bar_structure(app_client):
     assert "Reward Points" in navbar
     assert "/savings" in navbar
     assert "Savings Plan" in navbar
-    assert "/smart-cart" in navbar
-    assert "Smart Cart" in navbar
+
+    # Smart Cart was moved from first navbar shortcuts to Features menu
+    assert "pretwinFeaturesBtn" in navbar
+    assert "pretwinMoreContainer" in navbar
 
     # Verify Profile icon / Account element is present alongside the shortcuts
     assert "pretwinAccountItem" in navbar

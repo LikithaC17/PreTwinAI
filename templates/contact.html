@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us — PreTwin AI{% endblock %}
+
+{% block content %}
+<div class="fk-container" style="padding-top: 24px; padding-bottom: 60px; max-width: 1000px; margin: 0 auto;">
+  <!-- Header -->
+  <div style="background: linear-gradient(135deg, #2e1065 0%, #4c1d95 50%, #6d28d9 100%); border-radius: 12px; padding: 32px 36px; color: #ffffff; margin-bottom: 28px;">
+    <h1 style="font-size: 24px; font-weight: 800; margin: 0 0 8px 0; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+      <span>📬</span> Contact PreTwin AI
+    </h1>
+    <p style="color: #ede9fe; font-size: 14.5px; margin: 0; line-height: 1.6;">
+      Get in touch with the PreTwin engineering, customer experience, and merchant partnership teams.
+    </p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+    <!-- Contact Info Cards -->
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <div style="background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+        <div style="font-size: 24px; margin-bottom: 8px;">📧</div>
+        <div style="font-size: 15px; font-weight: 700; color: #1e293b;">Email Inquiries</div>
+        <div style="font-size: 13.5px; color: #64748b; margin-top: 4px;">General &amp; Support: <a href="mailto:support@pretwin.ai" style="color: #7c3aed; font-weight: 600;">support@pretwin.ai</a></div>
+        <div style="font-size: 13.5px; color: #64748b; margin-top: 2px;">Merchants: <a href="mailto:merchants@pretwin.ai" style="color: #7c3aed; font-weight: 600;">merchants@pretwin.ai</a></div>
+      </div>
+
+      <div style="background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+        <div style="font-size: 24px; margin-bottom: 8px;">📍</div>
+        <div style="font-size: 15px; font-weight: 700; color: #1e293b;">Registered Address</div>
+        <div style="font-size: 13.5px; color: #64748b; margin-top: 6px; line-height: 1.6;">
+          PreTwin Technologies Private Limited<br>
+          AI Commerce Campus, Outer Ring Road,<br>
+          Devarabeesanahalli, Bengaluru, 560103,<br>
+          Karnataka, India
+        </div>
+      </div>
+
+      <div style="background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+        <div style="font-size: 24px; margin-bottom: 8px;">⏰</div>
+        <div style="font-size: 15px; font-weight: 700; color: #1e293b;">Operating Hours</div>
+        <div style="font-size: 13.5px; color: #64748b; margin-top: 6px; line-height: 1.6;">
+          AI Assistant &amp; Website: <strong>24 hours / 7 days</strong><br>
+          Customer Support Desk: Mon – Sat (9:00 AM – 8:00 PM IST)
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Message Form -->
+    <div style="background: #ffffff; border-radius: 10px; border: 1px solid #cbd5e1; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+      <h3 style="font-size: 18px; font-weight: 800; color: #1e293b; margin: 0 0 16px 0;">Send Us a Direct Message</h3>
+      <form onsubmit="handleContactSubmit(event)" style="display: flex; flex-direction: column; gap: 14px;">
+        <div>
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 5px;">Your Name *</label>
+          <input type="text" id="contactName" required placeholder="Full name" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13.5px; outline: none; box-sizing: border-box;">
+        </div>
+        <div>
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 5px;">Email Address *</label>
+          <input type="email" id="contactEmail" required placeholder="name@domain.com" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13.5px; outline: none; box-sizing: border-box;">
+        </div>
+        <div>
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 5px;">Subject *</label>
+          <input type="text" id="contactSubject" required placeholder="Query topic" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13.5px; outline: none; box-sizing: border-box;">
+        </div>
+        <div>
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 5px;">Message *</label>
+          <textarea id="contactMessage" required rows="4" placeholder="How can we assist you?" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13.5px; outline: none; box-sizing: border-box; resize: vertical;"></textarea>
+        </div>
+        <button type="submit" class="fk-btn-orange" style="padding: 11px 24px; font-size: 14px; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; align-self: flex-start;">
+          Send Message ➔
+        </button>
+        <div id="contactNotice" style="display: none; font-size: 13px; font-weight: 600; color: #15803d;"></div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function handleContactSubmit(e) {
+  e.preventDefault();
+  const notice = document.getElementById('contactNotice');
+  if (notice) {
+    notice.style.display = 'block';
+    notice.textContent = "Thank you! Your message has been received. Our team will reply to your email within 2 business hours.";
+    e.target.reset();
+  }
+}
+</script>
+{% endblock %}

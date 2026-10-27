@@ -164,7 +164,7 @@ def test_navbar_feature_order_and_link(app_client):
         ("Budget and Price Intelligence", "/budget"),
         ("Product Comparison and Decision Support", "/comparison"),
         ("Future Predictive Calendar", "/calendar"),
-        ("Smart Cart and Shopping Automation", "/smart-cart"),
+        ("Smart Shopping Card", "/smart-cart"),
         ("Advanced Features for Future Development", "/advanced-ai"),
     ]
 

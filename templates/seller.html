@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Become a Seller — PreTwin AI Merchant Hub{% endblock %}
+
+{% block content %}
+<div class="fk-container" style="padding-top: 24px; padding-bottom: 60px; max-width: 1100px; margin: 0 auto;">
+  <!-- Header Banner -->
+  <div style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%); border-radius: 12px; padding: 36px 40px; color: #ffffff; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(49, 46, 129, 0.25); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <span style="font-size: 32px;">💼</span>
+        <h1 style="font-size: 26px; font-weight: 800; margin: 0; color: #ffffff;">PreTwin AI Merchant Hub</h1>
+        <span style="background: rgba(254, 240, 138, 0.2); color: #fef08a; font-size: 11.5px; font-weight: 700; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(254, 240, 138, 0.3);">
+          Partner Program
+        </span>
+      </div>
+      <p style="color: #e0e7ff; font-size: 15px; max-width: 650px; margin: 0; line-height: 1.6;">
+        Reach millions of predictive shopping twins. Leverage PreTwin AI's autonomous replenishment demand modeling and direct catalogue integration.
+      </p>
+    </div>
+    <div>
+      <a href="#registerSection" class="fk-btn-orange" style="display: inline-block; text-decoration: none; padding: 12px 28px; font-size: 14.5px; font-weight: 700; border-radius: 6px; box-shadow: 0 4px 14px rgba(255, 97, 0, 0.35);">
+        Register as Seller ➔
+      </a>
+    </div>
+  </div>
+
+  <!-- Benefits Grid -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 36px;">
+    <div style="background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+      <div style="font-size: 28px; margin-bottom: 12px;">🔮</div>
+      <h3 style="font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 8px 0;">Predictive Demand Matching</h3>
+      <p style="font-size: 13.5px; color: #64748b; line-height: 1.6; margin: 0;">
+        Our AI twins actively recommend your listings to customers right when their reorder cycle is predicted to run low.
+      </p>
+    </div>
+
+    <div style="background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+      <div style="font-size: 28px; margin-bottom: 12px;">⚡</div>
+      <h3 style="font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 8px 0;">0% Commission on Early Orders</h3>
+      <p style="font-size: 13.5px; color: #64748b; line-height: 1.6; margin: 0;">
+        Start selling with zero commission for your first 30 days. Fast doorstep dispatch and automated settlement via Razorpay.
+      </p>
+    </div>
+
+    <div style="background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+      <div style="font-size: 28px; margin-bottom: 12px;">🛡️</div>
+      <h3 style="font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 8px 0;">PreTwin Assured Protection</h3>
+      <p style="font-size: 13.5px; color: #64748b; line-height: 1.6; margin: 0;">
+        Fraud protection, verified customer profiles, transit insurance, and automated inventory sync with real-time stock notifications.
+      </p>
+    </div>
+  </div>
+
+  <!-- Registration Form Section -->
+  <div id="registerSection" style="background: #ffffff; border-radius: 12px; border: 1px solid #cbd5e1; padding: 32px 36px; box-shadow: 0 4px 16px rgba(0,0,0,0.05);">
+    <h2 style="font-size: 20px; font-weight: 800; color: #1e293b; margin: 0 0 8px 0;">Start Your Seller Journey</h2>
+    <p style="color: #64748b; font-size: 14px; margin-bottom: 24px;">
+      Fill in your business details. Our onboarding team will verify your GSTIN/PAN and activate your catalog within 24 hours.
+    </p>
+
+    <form onsubmit="handleSellerRegister(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px;">
+      <div>
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Business / Store Name *</label>
+        <input type="text" id="sellerStoreName" required placeholder="e.g. Apex Electronics India" style="width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; box-sizing: border-box;">
+      </div>
+
+      <div>
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Contact Email Address *</label>
+        <input type="email" id="sellerEmail" required placeholder="contact@yourbusiness.com" style="width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; box-sizing: border-box;">
+      </div>
+
+      <div>
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Mobile Number *</label>
+        <input type="tel" id="sellerPhone" required placeholder="10-digit mobile number" style="width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; box-sizing: border-box;">
+      </div>
+
+      <div>
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Primary Product Category *</label>
+        <select id="sellerCategory" required style="width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; box-sizing: border-box; background: #fff;">
+          <option value="Electronics">Electronics &amp; Mobiles</option>
+          <option value="Fashion">Fashion &amp; Apparel</option>
+          <option value="Home & Kitchen">Home &amp; Kitchen</option>
+          <option value="Beauty & Personal Care">Beauty &amp; Personal Care</option>
+          <option value="Books & Stationery">Books &amp; Stationery</option>
+          <option value="Other">Other Categories</option>
+        </select>
+      </div>
+
+      <div style="grid-column: 1 / -1; margin-top: 8px;">
+        <button type="submit" class="fk-btn-orange" style="padding: 13px 32px; font-size: 15px; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; box-shadow: 0 4px 12px rgba(255, 97, 0, 0.3);">
+          Submit Seller Application ➔
+        </button>
+        <div id="sellerNotice" style="display: none; margin-top: 14px; font-size: 14px; font-weight: 600; color: #15803d;"></div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function handleSellerRegister(e) {
+  e.preventDefault();
+  const notice = document.getElementById('sellerNotice');
+  const store = document.getElementById('sellerStoreName').value;
+  if (notice) {
+    notice.style.display = 'block';
+    notice.textContent = `Thank you! Your seller application for "${store}" has been received. Our merchant onboarding team will contact you shortly.`;
+    e.target.reset();
+  }
+}
+</script>
+{% endblock %}

@@ -1051,3 +1051,205 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   initBannerCarousel();
 });
+
+// ===========================================================================
+// PRETWIN LOCATION ACCESS & SELECTOR
+// ===========================================================================
+const PRETWIN_LOC_KEY = 'pretwin_delivery_location';
+
+function loadSavedLocation() {
+  const textEl = document.getElementById('pretwinNavLocationText');
+  const stored = localStorage.getItem(PRETWIN_LOC_KEY);
+  if (textEl) {
+    textEl.textContent = stored ? stored : 'Select location';
+  }
+}
+
+function toggleLocationModal(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  const modal = document.getElementById('pretwinLocationModal');
+  const backdrop = document.getElementById('pretwinLocationBackdrop');
+  if (!modal) return;
+  const isHidden = modal.style.display === 'none' || !modal.style.display;
+  if (isHidden) {
+    closeAllNavDropdowns();
+    modal.style.display = 'block';
+    if (backdrop) backdrop.style.display = 'block';
+    const inp = document.getElementById('manualLocationInput');
+    if (inp) inp.focus();
+  } else {
+    closeLocationModal();
+  }
+}
+
+function closeLocationModal() {
+  const modal = document.getElementById('pretwinLocationModal');
+  const backdrop = document.getElementById('pretwinLocationBackdrop');
+  if (modal) modal.style.display = 'none';
+  if (backdrop) backdrop.style.display = 'none';
+}
+
+function applyManualLocation(e) {
+  if (e) e.preventDefault();
+  const inp = document.getElementById('manualLocationInput');
+  if (!inp || !inp.value.trim()) return;
+  const val = inp.value.trim();
+  localStorage.setItem(PRETWIN_LOC_KEY, val);
+  const textEl = document.getElementById('pretwinNavLocationText');
+  if (textEl) textEl.textContent = val;
+  if (typeof showToast === 'function') {
+    showToast(`Delivery location set to ${val}`, 'success');
+  }
+  closeLocationModal();
+}
+
+function requestBrowserLocation() {
+  const statusMsg = document.getElementById('locStatusMessage');
+  if (!navigator.geolocation) {
+    if (statusMsg) {
+      statusMsg.style.display = 'block';
+      statusMsg.style.background = '#fef2f2';
+      statusMsg.style.color = '#991b1b';
+      statusMsg.style.border = '1px solid #fecaca';
+      statusMsg.textContent = 'Geolocation is not supported by your browser. Please enter your city or PIN code manually.';
+    }
+    return;
+  }
+
+  if (statusMsg) {
+    statusMsg.style.display = 'block';
+    statusMsg.style.background = '#eff6ff';
+    statusMsg.style.color = '#1e40af';
+    statusMsg.style.border = '1px solid #bfdbfe';
+    statusMsg.textContent = 'Detecting location... Please confirm browser permission.';
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const lat = position.coords.latitude.toFixed(2);
+      const lon = position.coords.longitude.toFixed(2);
+      const locLabel = `GPS (${lat}, ${lon})`;
+      localStorage.setItem(PRETWIN_LOC_KEY, locLabel);
+      const textEl = document.getElementById('pretwinNavLocationText');
+      if (textEl) textEl.textContent = locLabel;
+      if (statusMsg) {
+        statusMsg.style.background = '#f0fdf4';
+        statusMsg.style.color = '#166534';
+        statusMsg.style.border = '1px solid #bbf7d0';
+        statusMsg.textContent = `Location updated: ${locLabel}`;
+      }
+      if (typeof showToast === 'function') {
+        showToast('Location updated via browser GPS', 'success');
+      }
+      setTimeout(closeLocationModal, 800);
+    },
+    (err) => {
+      let errText = 'Location permission was denied or unavailable. Please enter your city or PIN code manually.';
+      if (err.code === err.PERMISSION_DENIED) {
+        errText = 'Location permission was denied. You can still enter your city or PIN code manually below.';
+      }
+      if (statusMsg) {
+        statusMsg.style.display = 'block';
+        statusMsg.style.background = '#fef2f2';
+        statusMsg.style.color = '#991b1b';
+        statusMsg.style.border = '1px solid #fecaca';
+        statusMsg.textContent = errText;
+      }
+    },
+    { timeout: 10000, enableHighAccuracy: false }
+  );
+}
+
+// ===========================================================================
+// PRETWIN NAVBAR DROPDOWNS (Features, Notifications, More)
+// ===========================================================================
+function closeAllNavDropdowns() {
+  document.querySelectorAll('.pretwin-features-dropdown, .pretwin-notif-dropdown, .pretwin-more-dropdown, .pretwin-account-dropdown').forEach(el => {
+    el.classList.remove('is-open');
+  });
+  document.querySelectorAll('[aria-expanded="true"]').forEach(el => {
+    el.setAttribute('aria-expanded', 'false');
+  });
+}
+
+function toggleFeaturesMenu(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  const dropdown = document.getElementById('pretwinFeaturesDropdown');
+  const btn = document.getElementById('pretwinFeaturesBtn');
+  if (!dropdown) return;
+  const isOpen = dropdown.classList.contains('is-open');
+  closeAllNavDropdowns();
+  if (!isOpen) {
+    dropdown.classList.add('is-open');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  }
+}
+
+function toggleNotificationsMenu(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  const dropdown = document.getElementById('pretwinNotificationsDropdown');
+  const btn = document.getElementById('pretwinNotificationsBtn');
+  if (!dropdown) return;
+  const isOpen = dropdown.classList.contains('is-open');
+  closeAllNavDropdowns();
+  if (!isOpen) {
+    dropdown.classList.add('is-open');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  }
+}
+
+function toggleMoreMenu(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  const dropdown = document.getElementById('pretwinMoreDropdown');
+  const btn = document.getElementById('pretwinMoreBtn');
+  if (!dropdown) return;
+  const isOpen = dropdown.classList.contains('is-open');
+  closeAllNavDropdowns();
+  if (!isOpen) {
+    dropdown.classList.add('is-open');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  }
+}
+
+// Global outside-click listener for all dropdowns & location modal
+document.addEventListener('click', (e) => {
+  const containers = [
+    document.getElementById('pretwinFeaturesContainer'),
+    document.getElementById('pretwinNotificationsContainer'),
+    document.getElementById('pretwinMoreContainer'),
+    document.getElementById('pretwinAccountItem'),
+    document.getElementById('pretwinLocationContainer')
+  ];
+
+  const clickedInside = containers.some(c => c && c.contains(e.target));
+  if (!clickedInside) {
+    closeAllNavDropdowns();
+  }
+});
+
+// Escape key listener
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' || e.key === 'Esc') {
+    closeAllNavDropdowns();
+    closeLocationModal();
+  }
+});
+
+// Initialize Location on load
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    loadSavedLocation();
+  });
+}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications &amp; Price Alerts — PreTwin AI{% endblock %}
+
+{% block content %}
+<div class="fk-container" style="padding-top: 24px; padding-bottom: 60px; max-width: 900px; margin: 0 auto;">
+  <!-- Header -->
+  <div style="background: linear-gradient(135deg, #2e1065 0%, #581c87 50%, #7e22ce 100%); border-radius: 12px; padding: 32px 36px; color: #ffffff; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+    <div>
+      <h1 style="font-size: 24px; font-weight: 800; margin: 0 0 8px 0; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+        <span>🔔</span> Notifications &amp; Alerts
+      </h1>
+      <p style="color: #e9d5ff; font-size: 14.5px; margin: 0;">
+        Real-time order dispatches, price-drop triggers, and replenishment forecasts from your twin.
+      </p>
+    </div>
+    <div>
+      <button onclick="markAllNotificationsRead()" class="fk-btn" style="background: rgba(255, 255, 255, 0.15); color: #fff; border: 1px solid rgba(255, 255, 255, 0.3); padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">
+        Mark All as Read ✓
+      </button>
+    </div>
+  </div>
+
+  <!-- Notification Feed -->
+  <div id="notificationsFeed" style="display: flex; flex-direction: column; gap: 14px;">
+    <!-- Notification 1 -->
+    <div class="notif-card" style="background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 4px solid #7c3aed; padding: 20px 24px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); display: flex; gap: 16px; align-items: flex-start;">
+      <div style="font-size: 26px; line-height: 1;">✨</div>
+      <div style="flex: 1;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+          <h3 style="font-size: 15.5px; font-weight: 700; color: #1e293b; margin: 0;">500 Welcome Bonus Reward Points Active</h3>
+          <span style="font-size: 12px; color: #94a3b8;">Just now</span>
+        </div>
+        <p style="font-size: 13.5px; color: #64748b; margin: 0 0 10px 0; line-height: 1.5;">
+          Your PreTwin joining bonus of <strong>500 points (₹5.00)</strong> is ready to be redeemed at checkout!
+        </p>
+        <a href="/rewards" style="color: #7c3aed; font-size: 13px; font-weight: 700; text-decoration: none;">View Reward Points ➔</a>
+      </div>
+    </div>
+
+    <!-- Notification 2 -->
+    <div class="notif-card" style="background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 4px solid #0284c7; padding: 20px 24px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); display: flex; gap: 16px; align-items: flex-start;">
+      <div style="font-size: 26px; line-height: 1;">🔮</div>
+      <div style="flex: 1;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+          <h3 style="font-size: 15.5px; font-weight: 700; color: #1e293b; margin: 0;">Twin Replenishment Forecast Updated</h3>
+          <span style="font-size: 12px; color: #94a3b8;">2 hours ago</span>
+        </div>
+        <p style="font-size: 13.5px; color: #64748b; margin: 0 0 10px 0; line-height: 1.5;">
+          Your monthly essentials cycle has been recalculated. Check out forecasted replenishment dates in your Future Predictive Calendar.
+        </p>
+        <a href="/calendar" style="color: #0284c7; font-size: 13px; font-weight: 700; text-decoration: none;">View Predictive Calendar ➔</a>
+      </div>
+    </div>
+
+    <!-- Notification 3 -->
+    <div class="notif-card" style="background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 4px solid #16a34a; padding: 20px 24px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); display: flex; gap: 16px; align-items: flex-start;">
+      <div style="font-size: 26px; line-height: 1;">📦</div>
+      <div style="flex: 1;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+          <h3 style="font-size: 15.5px; font-weight: 700; color: #1e293b; margin: 0;">PreTwin Delivery Network Status</h3>
+          <span style="font-size: 12px; color: #94a3b8;">1 day ago</span>
+        </div>
+        <p style="font-size: 13.5px; color: #64748b; margin: 0 0 10px 0; line-height: 1.5;">
+          Express doorstep delivery and Cash on Delivery (COD) services are fully operational across all major pin codes in India.
+        </p>
+        <a href="/orders" style="color: #16a34a; font-size: 13px; font-weight: 700; text-decoration: none;">Track Orders ➔</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function markAllNotificationsRead() {
+  document.querySelectorAll('.notif-card').forEach(c => {
+    c.style.opacity = '0.7';
+    c.style.borderLeftColor = '#94a3b8';
+  });
+  const badge = document.getElementById('pretwinNotifBadge');
+  if (badge) badge.style.display = 'none';
+  if (typeof showToast === 'function') {
+    showToast('All notifications marked as read', 'success');
+  }
+}
+</script>
+{% endblock %}

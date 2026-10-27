@@ -28,16 +28,47 @@
   {% include "startup_intro.html" %}
 
   <!-- ======================================================================
-       1. PRETWIN TOP NAVIGATION HEADER
+       0. PRETWIN DEDICATED TOP BRANDING BAR (Above First Navigation Bar)
+       ====================================================================== -->
+  <div class="pretwin-top-branding-bar" role="banner">
+    <div class="pretwin-top-branding-inner">
+      <a href="/" class="pretwin-top-brand-link" title="PreTwin AI — Predictive Personal Shopping Twin">
+        <img src="/static/images/pretwin-logo.svg" alt="PreTwin AI Logo" class="pretwin-top-brand-logo">
+        <div class="pretwin-top-brand-meta">
+          <div class="pretwin-top-brand-title">
+            <span class="pretwin-name-main">PreTwin</span><span class="pretwin-name-ai">AI</span>
+            <span class="pretwin-name-sparkle">✨</span>
+          </div>
+          <div class="pretwin-top-brand-tagline">Your Future. Your Style. Your Twin.</div>
+        </div>
+      </a>
+      <div class="pretwin-top-branding-badge">
+        <span class="pretwin-top-badge-pill">✨ Agentic Shopping Twin</span>
+        <span class="pretwin-top-badge-pill">🛡️ 100 Pts = ₹1.00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       1. REDESIGNED FIRST NAVIGATION BAR
+       Search, Location, Wishlist, Cart, Orders, Rewards, Savings, Features,
+       Notifications, Profile, More Menu
        ====================================================================== -->
   <header class="fk-navbar">
     <div class="fk-navbar-inner">
-      <!-- PreTwin Logo with Flying Fairytale Wing Animation -->
-      <a href="/" class="fk-brand pretwin-brand-link" title="PreTwin — Predictive Personal Shopping Twin">
-        <img src="/static/images/pretwin-logo.svg" alt="PreTwin Logo" class="pretwin-header-logo">
-      </a>
+      <!-- 1. Location Access / Selector -->
+      <div class="pretwin-location-container" id="pretwinLocationContainer">
+        <button type="button" class="pretwin-location-btn" id="pretwinLocationBtn" onclick="toggleLocationModal(event)" aria-haspopup="dialog" aria-expanded="false" title="Choose Delivery Location">
+          <span class="pretwin-loc-pin">📍</span>
+          <div class="pretwin-loc-text">
+            <span class="pretwin-loc-label">Deliver to</span>
+            <span class="pretwin-loc-current" id="pretwinNavLocationText">Select location</span>
+          </div>
+          <span class="pretwin-loc-caret">▼</span>
+        </button>
+      </div>
 
-      <!-- Search Bar -->
+      <!-- 2. Search Bar with Working Product Search -->
       <div class="fk-search-box">
         <form class="fk-search-form" onsubmit="handlePreTwinSearch(event)">
           <input 
@@ -62,11 +93,10 @@
         </div>
       </div>
 
-      <!-- Navigation Actions: 6 Shopping Shortcuts + User Account Control -->
+      <!-- 3. Navigation Actions & Shortcuts -->
       <div class="pretwin-nav-right">
-        <!-- 6 Shopping Shortcuts Group (Icons Above Titles, Consistent Size & Alignment) -->
         <nav class="pretwin-shortcuts-group" aria-label="Shopping Shortcuts">
-          <!-- 1. Wishlist -->
+          <!-- Wishlist -->
           <a href="/wishlist" class="pretwin-shortcut-btn {% if request.path == '/wishlist' %}active{% endif %}" title="My Saved Wishlist">
             <div class="pretwin-shortcut-icon-box">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
@@ -77,7 +107,7 @@
             <span class="pretwin-shortcut-text">Wishlist</span>
           </a>
 
-          <!-- 2. Cart -->
+          <!-- Cart -->
           <a href="javascript:void(0)" onclick="openCartModal()" class="pretwin-shortcut-btn" title="Shopping Cart">
             <div class="pretwin-shortcut-icon-box">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
@@ -90,7 +120,7 @@
             <span class="pretwin-shortcut-text">Cart</span>
           </a>
 
-          <!-- 3. My Orders -->
+          <!-- My Orders -->
           <a href="/orders" class="pretwin-shortcut-btn {% if request.path == '/orders' %}active{% endif %}" title="Order History &amp; Tracking">
             <div class="pretwin-shortcut-icon-box">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
@@ -103,7 +133,7 @@
             <span class="pretwin-shortcut-text">My Orders</span>
           </a>
 
-          <!-- 4. Reward Points -->
+          <!-- Reward Points -->
           <a href="/rewards" class="pretwin-shortcut-btn {% if request.path == '/rewards' %}active{% endif %}" title="PreTwin Reward Points (100 = ₹1)">
             <div class="pretwin-shortcut-icon-box">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
@@ -114,10 +144,10 @@
                 <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
               </svg>
             </div>
-            <span class="pretwin-shortcut-text">Reward Points</span>
+            <span class="pretwin-shortcut-text">Rewards</span>
           </a>
 
-          <!-- 5. Savings Plan -->
+          <!-- Savings Plan -->
           <a href="/savings" class="pretwin-shortcut-btn {% if request.path == '/savings' %}active{% endif %}" title="Smart Shopping Savings Plan">
             <div class="pretwin-shortcut-icon-box">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
@@ -126,23 +156,150 @@
                 <path d="M12 5V2"></path>
               </svg>
             </div>
-            <span class="pretwin-shortcut-text">Savings Plan</span>
+            <span class="pretwin-shortcut-text">Savings</span>
           </a>
 
-          <!-- 6. Smart Cart -->
-          <a href="/smart-cart" class="pretwin-shortcut-btn {% if request.path == '/smart-cart' %}active{% endif %}" title="Smart Cart &amp; Automation Intelligence">
-            <div class="pretwin-shortcut-icon-box">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="9" cy="21" r="1"></circle>
-                <circle cx="20" cy="21" r="1"></circle>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                <path d="M17 1l1 2 2 1-2 1-1 2-1-2-2-1 2-1z" fill="currentColor"></path>
-              </svg>
+          <!-- Features Menu (Dropdown containing all 8 Intelligent Features) -->
+          <div class="pretwin-nav-item pretwin-dropdown-container" id="pretwinFeaturesContainer">
+            <button type="button" class="pretwin-shortcut-btn" id="pretwinFeaturesBtn" onclick="toggleFeaturesMenu(event)" aria-haspopup="true" aria-expanded="false" title="Explore PreTwin AI Shopping Features">
+              <div class="pretwin-shortcut-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+              </div>
+              <span class="pretwin-shortcut-text">Features <span class="nav-caret">▼</span></span>
+            </button>
+
+            <!-- Features Mega-Menu Dropdown -->
+            <div class="pretwin-features-dropdown" id="pretwinFeaturesDropdown">
+              <div class="pretwin-features-grid">
+                <!-- 1. Personalization and Digital Twin -->
+                <a href="/twin" class="pretwin-feature-card">
+                  <div class="feat-icon-box">👤</div>
+                  <div class="feat-info">
+                    <div class="feat-title">Personalization and Digital Twin</div>
+                    <div class="feat-desc">Taste Modeling &amp; Multi-Profile Twin</div>
+                  </div>
+                </a>
+
+                <!-- 2. Predictive Shopping Intelligence -->
+                <a href="/predictions" class="pretwin-feature-card">
+                  <div class="feat-icon-box">🔮</div>
+                  <div class="feat-info">
+                    <div class="feat-title">Predictive Shopping Intelligence</div>
+                    <div class="feat-desc">Reorder Cycles &amp; Event Forecasts</div>
+                  </div>
+                </a>
+
+                <!-- 3. Smart Product Discovery -->
+                <a href="/discovery" class="pretwin-feature-card">
+                  <div class="feat-icon-box">🔍</div>
+                  <div class="feat-info">
+                    <div class="feat-title">Smart Product Discovery</div>
+                    <div class="feat-desc">Natural-Language Finder &amp; Visual Search</div>
+                  </div>
+                </a>
+
+                <!-- 4. Budget and Price Intelligence -->
+                <a href="/budget" class="pretwin-feature-card">
+                  <div class="feat-icon-box">💰</div>
+                  <div class="feat-info">
+                    <div class="feat-title">Budget and Price Intelligence</div>
+                    <div class="feat-desc">Price Drops, History &amp; Best Value</div>
+                  </div>
+                </a>
+
+                <!-- 5. Product Comparison and Decision Support -->
+                <a href="/comparison" class="pretwin-feature-card">
+                  <div class="feat-icon-box">⚖️</div>
+                  <div class="feat-info">
+                    <div class="feat-title">Product Comparison and Decision Support</div>
+                    <div class="feat-desc">Weighted Multi-Factor Tradeoffs</div>
+                  </div>
+                </a>
+
+                <!-- 6. Future Predictive Calendar -->
+                <a href="/calendar" class="pretwin-feature-card">
+                  <div class="feat-icon-box">📅</div>
+                  <div class="feat-info">
+                    <div class="feat-title">Future Predictive Calendar</div>
+                    <div class="feat-desc">Milestone Forecasts &amp; Replenishment</div>
+                  </div>
+                </a>
+
+                <!-- 7. Smart Shopping Card -->
+                <a href="/smart-cart" class="pretwin-feature-card">
+                  <div class="feat-icon-box">🛒✨</div>
+                  <div class="feat-info">
+                    <div class="feat-title">Smart Shopping Card</div>
+                    <div class="feat-desc">Duplicate Alerts, Missing Add-ons &amp; Bundles</div>
+                  </div>
+                </a>
+
+                <!-- 8. Advanced Features for Future Development -->
+                <a href="/advanced-ai" class="pretwin-feature-card">
+                  <div class="feat-icon-box">🚀</div>
+                  <div class="feat-info">
+                    <div class="feat-title">Advanced Features for Future Development</div>
+                    <div class="feat-desc">Gift Finder, Voice, AR Try-on &amp; Roadmap</div>
+                  </div>
+                </a>
+              </div>
             </div>
-            <span class="pretwin-shortcut-text">Smart Cart</span>
-          </a>
+          </div>
 
-          <!-- 7. Profile / Account Icon & Menu -->
+          <!-- Notifications Button & Dropdown -->
+          <div class="pretwin-nav-item pretwin-dropdown-container" id="pretwinNotificationsContainer">
+            <button type="button" class="pretwin-shortcut-btn" id="pretwinNotificationsBtn" onclick="toggleNotificationsMenu(event)" aria-haspopup="true" aria-expanded="false" title="Notifications &amp; Price Alerts">
+              <div class="pretwin-shortcut-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span class="pretwin-shortcut-badge" id="pretwinNotifBadge">3</span>
+              </div>
+              <span class="pretwin-shortcut-text">Alerts</span>
+            </button>
+
+            <!-- Notifications Dropdown -->
+            <div class="pretwin-notif-dropdown" id="pretwinNotificationsDropdown">
+              <div class="notif-dropdown-header">
+                <span style="font-weight:700; font-size:13px; color:#1e293b;">Recent Alerts &amp; Updates</span>
+                <a href="/notifications" style="font-size:12px; color:#7c3aed; text-decoration:none; font-weight:600;">View All</a>
+              </div>
+              <div class="notif-dropdown-list">
+                <a href="/rewards" class="notif-drop-item">
+                  <span style="font-size:18px;">✨</span>
+                  <div>
+                    <div class="notif-drop-title">500 Welcome Points Ready</div>
+                    <div class="notif-drop-sub">₹5.00 discount available for checkout</div>
+                  </div>
+                </a>
+                <a href="/calendar" class="notif-drop-item">
+                  <span style="font-size:18px;">🔮</span>
+                  <div>
+                    <div class="notif-drop-title">Twin Replenishment Cycle</div>
+                    <div class="notif-drop-sub">Essentials forecasted for upcoming reorder</div>
+                  </div>
+                </a>
+                <a href="/orders" class="notif-drop-item">
+                  <span style="font-size:18px;">📦</span>
+                  <div>
+                    <div class="notif-drop-title">Doorstep Express Live</div>
+                    <div class="notif-drop-sub">Fast dispatch and Cash on Delivery active</div>
+                  </div>
+                </a>
+              </div>
+              <div class="notif-dropdown-footer">
+                <a href="/notifications" class="notif-see-all-btn">Go to Notification Center ➔</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile / Account Icon & Menu -->
           <div class="pretwin-account-item" id="pretwinAccountItem" style="position:relative;">
             {% if is_authenticated and current_user %}
               <button
@@ -219,125 +376,90 @@
               </a>
             {% endif %}
           </div>
+
+          <!-- More Menu Dropdown -->
+          <div class="pretwin-nav-item pretwin-dropdown-container" id="pretwinMoreContainer">
+            <button type="button" class="pretwin-shortcut-btn" id="pretwinMoreBtn" onclick="toggleMoreMenu(event)" aria-haspopup="true" aria-expanded="false" title="More Options">
+              <div class="pretwin-shortcut-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="2.1"></circle>
+                  <circle cx="12" cy="12" r="2.1"></circle>
+                  <circle cx="12" cy="19" r="2.1"></circle>
+                </svg>
+              </div>
+              <span class="pretwin-shortcut-text">More <span class="nav-caret">▼</span></span>
+            </button>
+
+            <!-- More Menu Dropdown -->
+            <div class="pretwin-more-dropdown" id="pretwinMoreDropdown">
+              <a href="/seller" class="pretwin-more-item">
+                <span class="more-item-icon">💼</span>
+                <div>
+                  <div class="more-item-title">Become a Seller</div>
+                  <div class="more-item-desc">Join PreTwin Merchant Partner Hub</div>
+                </div>
+              </a>
+              <a href="/notifications" class="pretwin-more-item">
+                <span class="more-item-icon">🔔</span>
+                <div>
+                  <div class="more-item-title">Notifications</div>
+                  <div class="more-item-desc">Price drop alerts &amp; order updates</div>
+                </div>
+              </a>
+              <a href="/customer-service" class="pretwin-more-item">
+                <span class="more-item-icon">🎧</span>
+                <div>
+                  <div class="more-item-title">Customer Service</div>
+                  <div class="more-item-desc">24x7 Help Center, FAQs &amp; Returns</div>
+                </div>
+              </a>
+            </div>
+          </div>
         </nav>
       </div>
     </div>
   </header>
 
-  <!-- ======================================================================
-       1.5 PRETWIN AI NAVIGATION BAR (Directly Above Product Categories)
-       Exactly 8 Intelligent Shopping Feature Categories in Order:
-       1. Personalization and Digital Twin
-       2. Predictive Shopping Intelligence
-       3. Smart Product Discovery
-       4. Budget and Price Intelligence
-       5. Product Comparison and Decision Support
-       6. Future Predictive Calendar
-       7. Smart Cart and Shopping Automation
-       8. Advanced Features for Future Development
-       ====================================================================== -->
-  <nav class="pretwin-ai-nav-bar" aria-label="PreTwin AI Intelligence Hub">
-    <div class="pretwin-ai-nav-inner">
-      <!-- 1. Personalization and Digital Twin -->
-      <a href="/twin" class="pretwin-ai-nav-item {% if request.path == '/twin' %}active{% endif %}" title="Personalization &amp; Digital Twin: Multi-Profile &amp; Taste Modeling">
-        <div class="pretwin-ai-icon-bubble">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
-        </div>
-        <span class="pretwin-ai-nav-title">Personalization and Digital Twin</span>
-      </a>
-
-      <!-- 2. Predictive Shopping Intelligence -->
-      <a href="/predictions" class="pretwin-ai-nav-item {% if request.path == '/predictions' %}active{% endif %}" title="Predictive Shopping Intelligence: Reorder Cycles &amp; Event Forecasts">
-        <div class="pretwin-ai-icon-bubble">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-          </svg>
-        </div>
-        <span class="pretwin-ai-nav-title">Predictive Shopping Intelligence</span>
-      </a>
-
-      <!-- 3. Smart Product Discovery -->
-      <a href="/discovery" class="pretwin-ai-nav-item {% if request.path == '/discovery' %}active{% endif %}" title="Smart Product Discovery: Natural-Language Finder &amp; Visual Search">
-        <div class="pretwin-ai-icon-bubble">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            <polygon points="11 8 13 12 9 12 11 8" fill="currentColor"></polygon>
-          </svg>
-        </div>
-        <span class="pretwin-ai-nav-title">Smart Product Discovery</span>
-      </a>
-
-      <!-- 4. Budget and Price Intelligence -->
-      <a href="/budget" class="pretwin-ai-nav-item {% if request.path == '/budget' %}active{% endif %}" title="Budget and Price Intelligence: Price Drops, Price History &amp; Best Value">
-        <div class="pretwin-ai-icon-bubble">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="1" x2="12" y2="23"></line>
-            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-            <polyline points="19 19 22 19 22 16"></polyline>
-          </svg>
-        </div>
-        <span class="pretwin-ai-nav-title">Budget and Price Intelligence</span>
-      </a>
-
-      <!-- 5. Product Comparison and Decision Support -->
-      <a href="/comparison" class="pretwin-ai-nav-item {% if request.path == '/comparison' %}active{% endif %}" title="Product Comparison and Decision Support: Weighted Multi-Factor Tradeoffs">
-        <div class="pretwin-ai-icon-bubble">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="20" x2="18" y2="10"></line>
-            <line x1="12" y1="20" x2="12" y2="4"></line>
-            <line x1="6" y1="20" x2="6" y2="14"></line>
-            <circle cx="12" cy="4" r="2"></circle>
-          </svg>
-        </div>
-        <span class="pretwin-ai-nav-title">Product Comparison and Decision Support</span>
-      </a>
-
-      <!-- 6. Future Predictive Calendar -->
-      <a href="/calendar" class="pretwin-ai-nav-item {% if request.path == '/calendar' %}active{% endif %}" title="Future Predictive Calendar: Milestone Forecasts, Festive Deadlines &amp; Replenishment">
-        <div class="pretwin-ai-icon-bubble">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-            <path d="m9 16 2 2 4-4"></path>
-          </svg>
-        </div>
-        <span class="pretwin-ai-nav-title">Future Predictive Calendar</span>
-      </a>
-
-      <!-- 7. Smart Cart and Shopping Automation -->
-      <a href="/smart-cart" class="pretwin-ai-nav-item {% if request.path == '/smart-cart' %}active{% endif %}" title="Smart Cart &amp; Automation: Duplicate Alerts, Missing Add-ons &amp; Bundles">
-        <div class="pretwin-ai-icon-bubble">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="9" cy="21" r="1"></circle>
-            <circle cx="20" cy="21" r="1"></circle>
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            <path d="m13 11 2-3 2 3"></path>
-          </svg>
-        </div>
-        <span class="pretwin-ai-nav-title">Smart Cart and Shopping Automation</span>
-      </a>
-
-      <!-- 8. Advanced Features for Future Development -->
-      <a href="/advanced-ai" class="pretwin-ai-nav-item {% if request.path == '/advanced-ai' %}active{% endif %}" title="Advanced Features: Gift Finder, Calendar, Voice, AR Try-on &amp; Roadmap">
-        <div class="pretwin-ai-icon-bubble">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-            <line x1="12" y1="8" x2="12" y2="14"></line>
-          </svg>
-        </div>
-        <span class="pretwin-ai-nav-title">Advanced Features for Future Development</span>
-      </a>
+  <!-- Location Modal & Backdrop -->
+  <div class="pretwin-modal-backdrop" id="pretwinLocationBackdrop" style="display:none;" onclick="closeLocationModal()"></div>
+  <div class="pretwin-location-modal" id="pretwinLocationModal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="locModalTitle">
+    <div class="pretwin-loc-modal-header">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:20px;">📍</span>
+        <h3 id="locModalTitle" style="margin:0; font-size:16px; font-weight:700; color:#1e293b;">Choose your delivery location</h3>
+      </div>
+      <button type="button" class="pretwin-loc-modal-close" onclick="closeLocationModal()" aria-label="Close location selector">&times;</button>
     </div>
-  </nav>
+    <div class="pretwin-loc-modal-body">
+      <p style="font-size:12.5px; color:#64748b; margin:0 0 14px 0;">
+        Enter your PIN code or city to see accurate product delivery availability and doorstep timelines.
+      </p>
+      
+      <button type="button" class="pretwin-use-gps-btn" onclick="requestBrowserLocation()">
+        <span>🎯</span>
+        <span>Use my current location</span>
+      </button>
+      
+      <div id="locStatusMessage" style="display:none; font-size:12.5px; margin:10px 0; padding:8px 12px; border-radius:6px;"></div>
+
+      <div style="display:flex; align-items:center; gap:8px; margin:14px 0; color:#94a3b8; font-size:12px; font-weight:600;">
+        <span style="flex:1; height:1px; background:#e2e8f0;"></span>
+        <span>OR ENTER MANUALLY</span>
+        <span style="flex:1; height:1px; background:#e2e8f0;"></span>
+      </div>
+
+      <form onsubmit="applyManualLocation(event)" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; gap:8px;">
+          <input type="text" id="manualLocationInput" placeholder="Enter PIN code or City (e.g. 560001, Bengaluru)" required style="flex:1; padding:9px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:13.5px; outline:none;">
+          <button type="submit" class="fk-btn-orange" style="padding:9px 18px; border-radius:6px; font-size:13px; font-weight:700; border:none; cursor:pointer;">
+            Apply
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
 
   <!-- ======================================================================
        2. FLIPKART WHITE CATEGORY STRIP (All 20 E-Commerce Categories)
@@ -348,6 +470,18 @@
       <button class="fk-cat-nav-btn prev" onclick="scrollCatBar(-320)" aria-label="Previous Categories">❮</button>
 
       <div class="fk-cat-inner" id="fkCatInner">
+        <!-- 0. For You (Personalized Recommendations First) -->
+        <div class="fk-cat-item fk-cat-for-you">
+          <a href="/recommendations" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background: linear-gradient(135deg, #7c3aed, #9333ea); color: #ffffff; box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="currentColor"></polygon>
+              </svg>
+            </div>
+            <span class="fk-cat-title" style="font-weight: 800; color: #7c3aed;">For You ✨</span>
+          </a>
+        </div>
+
         <!-- 1. Fashion -->
         <div class="fk-cat-item">
           <a href="/discovery?category=Fashion" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
@@ -895,152 +1029,103 @@
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- ======================================================================
-       7. OFFICIAL PRETWIN FOOTER
+       7. REDESIGNED PRETWIN AI 5-COLUMN FOOTER
        ====================================================================== -->
-  <footer class="fk-footer">
-    <!-- Category Directory in Footer -->
-    <div class="fk-footer-categories">
-      <div class="fk-footer-cat-inner">
-        <h4 class="fk-footer-cat-heading">MOST SEARCHED CATEGORIES ON PRETWIN:</h4>
-        <div class="fk-footer-cat-tags">
+  <footer class="pretwin-footer">
+    <div class="pretwin-footer-inner">
+      <div class="pretwin-footer-grid">
+        <!-- Column 1 — About PreTwin -->
+        <div class="pretwin-footer-col pretwin-footer-about">
+          <a href="/" class="pretwin-footer-logo-link" title="PreTwin AI — Home">
+            <img src="/static/images/pretwin-logo.svg" alt="PreTwin AI Logo" class="pretwin-footer-logo">
+          </a>
+          <h4 class="pretwin-footer-brand-title">PreTwin AI</h4>
+          <p class="pretwin-footer-tagline"><strong>Your Future. Your Style. Your Twin.</strong></p>
+          <p class="pretwin-footer-desc">
+            An agentic predictive personal shopping twin that anticipates your replenishment needs, protects your budget, and automates intelligent e-commerce decisions.
+          </p>
+        </div>
+
+        <!-- Column 2 — Shop -->
+        <div class="pretwin-footer-col">
+          <h4>SHOP</h4>
+          <ul>
+            <li><a href="/recommendations">For You ✨</a></li>
+            <li><a href="/discovery">All Products</a></li>
+            <li><a href="/discovery?category=Fashion">Product Categories</a></li>
+            <li><a href="/wishlist">Wishlist</a></li>
+            <li><a href="javascript:void(0)" onclick="openCartModal()">Cart</a></li>
+            <li><a href="/orders">My Orders</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3 — AI Shopping Features -->
+        <div class="pretwin-footer-col">
+          <h4>AI SHOPPING FEATURES</h4>
+          <ul>
+            <li><a href="/twin">Personalization and Digital Twin</a></li>
+            <li><a href="/predictions">Predictive Shopping Intelligence</a></li>
+            <li><a href="/discovery">Smart Product Discovery</a></li>
+            <li><a href="/budget">Budget and Price Intelligence</a></li>
+            <li><a href="/comparison">Product Comparison and Decision Support</a></li>
+            <li><a href="/calendar">Future Predictive Calendar</a></li>
+            <li><a href="/smart-cart">Smart Shopping Card</a></li>
+            <li><a href="/advanced-ai">Advanced Features for Future Development</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4 — Customer Support -->
+        <div class="pretwin-footer-col">
+          <h4>CUSTOMER SUPPORT</h4>
+          <ul>
+            <li><a href="/customer-service">Customer Service</a></li>
+            <li><a href="/faq">FAQs</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+            <li><a href="/orders">Order Tracking</a></li>
+            <li><a href="/returns-refunds">Returns and Refunds</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 5 — Account and Information -->
+        <div class="pretwin-footer-col">
+          <h4>ACCOUNT &amp; INFORMATION</h4>
+          <ul>
+            <li><a href="/twin">My Profile</a></li>
+            <li><a href="/login">Sign Up / Login</a></li>
+            <li><a href="/seller">Become a Seller</a></li>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms and Conditions</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Category Quick Directory Strip -->
+      <div class="pretwin-footer-categories-strip">
+        <span class="pretwin-footer-cat-label">POPULAR CATEGORIES:</span>
+        <div class="pretwin-footer-cat-pills">
           <a href="/discovery?category=Fashion">Fashion</a>
           <a href="/discovery?category=Mobiles">Mobiles</a>
           <a href="/discovery?category=Electronics">Electronics</a>
-          <a href="/discovery?category=Beauty%2C+Toys+%26+More">Beauty, Toys &amp; More</a>
           <a href="/discovery?category=Home+%26+Kitchen">Home &amp; Kitchen</a>
+          <a href="/discovery?category=Beauty%2C+Toys+%26+More">Beauty &amp; Toys</a>
           <a href="/discovery?category=Appliances">Appliances</a>
-          <a href="/discovery?category=Toys+%26+Baby+Products">Toys &amp; Baby Products</a>
           <a href="/discovery?category=Food+%26+Grocery">Food &amp; Grocery</a>
-          <a href="/discovery?category=Sports+%26+Fitness">Sports &amp; Fitness</a>
-          <a href="/discovery?category=Books+%26+Stationery">Books &amp; Stationery</a>
-          <a href="/discovery?category=Furniture">Furniture</a>
+          <a href="/discovery?category=Laptops+%26+Computers">Laptops</a>
           <a href="/discovery?category=Footwear">Footwear</a>
-          <a href="/discovery?category=Watches+%26+Accessories">Watches &amp; Accessories</a>
-          <a href="/discovery?category=Laptops+%26+Computers">Laptops &amp; Computers</a>
-          <a href="/discovery?category=TVs+%26+Home+Entertainment">TVs &amp; Home Entertainment</a>
-          <a href="/discovery?category=Personal+Care">Personal Care</a>
-          <a href="/discovery?category=Automotive+Accessories">Automotive Accessories</a>
-          <a href="/discovery?category=Health+%26+Wellness">Health &amp; Wellness</a>
-          <a href="/discovery?category=Pet+Supplies">Pet Supplies</a>
-          <a href="/discovery?category=Travel+%26+Luggage">Travel &amp; Luggage</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="fk-footer-top">
-      <!-- 4 Columns of Links -->
-      <div class="fk-footer-links-grid">
-        <div class="fk-footer-col">
-          <h4>ABOUT PRETWIN</h4>
-          <ul>
-            <li><a href="/twin">AI Shopping Twin</a></li>
-            <li><a href="/predictions">Predictive Analytics</a></li>
-            <li><a href="/agents">Autonomous Agents</a></li>
-            <li><a href="/discovery">Product Catalogue</a></li>
-            <li><a href="/settings">Privacy &amp; Data</a></li>
-            <li><a href="javascript:void(0)">Careers &amp; Research</a></li>
-          </ul>
-        </div>
-
-        <div class="fk-footer-col">
-          <h4>AI TWIN SERVICES</h4>
-          <ul>
-            <li><a href="/twin">Personal Shopping Twin</a></li>
-            <li><a href="/predictions">Predictive Replenishment</a></li>
-            <li><a href="/discovery">Smart Product Discovery</a></li>
-            <li><a href="/budget">Budget &amp; Price Intelligence</a></li>
-            <li><a href="/comparison">Feature Comparison</a></li>
-            <li><a href="/agents">Agentic Workflows</a></li>
-            <li><a href="/smart-cart">Smart Cart &amp; Automation</a></li>
-            <li><a href="/advanced-ai">Advanced AI Roadmap</a></li>
-          </ul>
-        </div>
-
-        <div class="fk-footer-col">
-          <h4>HELP &amp; SUPPORT</h4>
-          <ul>
-            <li><a href="/orders">Track My Orders</a></li>
-            <li><a href="/checkout">Payments &amp; Razorpay</a></li>
-            <li><a href="javascript:void(0)">Shipping &amp; Delivery</a></li>
-            <li><a href="javascript:void(0)">Returns &amp; Refunds</a></li>
-            <li><a href="javascript:void(0)">FAQ &amp; Help Desk</a></li>
-          </ul>
-        </div>
-
-        <div class="fk-footer-col">
-          <h4>CONSUMER POLICY</h4>
-          <ul>
-            <li><a href="javascript:void(0)">Terms Of Use</a></li>
-            <li><a href="javascript:void(0)">Security &amp; Encryption</a></li>
-            <li><a href="javascript:void(0)">Privacy Policy</a></li>
-            <li><a href="javascript:void(0)">Grievance Redressal</a></li>
-            <li><a href="javascript:void(0)">EPR Compliance</a></li>
-          </ul>
+          <a href="/discovery?category=Watches+%26+Accessories">Watches</a>
         </div>
       </div>
 
-      <!-- Vertical Divider -->
-      <div class="fk-footer-divider-vert"></div>
-
-      <!-- Address Columns -->
-      <div class="fk-footer-address-grid">
-        <div class="fk-footer-address-box">
-          <h4>Mail Us:</h4>
-          <p>
-            PreTwin Technologies Private Limited,<br>
-            AI Commerce Campus, Outer Ring Road,<br>
-            Devarabeesanahalli Village,<br>
-            Bengaluru, 560103,<br>
-            Karnataka, India
-          </p>
+      <!-- Footer Bottom Bar with Dynamic Year and Trust Badges -->
+      <div class="pretwin-footer-bottom">
+        <div class="pretwin-footer-copy">
+          © 2024–{{ current_year or 2026 }} PreTwin AI. All rights reserved. <strong>Your Future. Your Style. Your Twin.</strong>
         </div>
-
-        <div class="fk-footer-address-box">
-          <h4>Registered Office Address:</h4>
-          <p>
-            PreTwin Technologies Private Limited,<br>
-            AI Commerce Innovation Centre,<br>
-            Outer Ring Road, Bengaluru, 560103,<br>
-            Karnataka, India<br>
-            CIN : U51109KA2024PTC188200<br>
-            Support: <span style="color:#2874f0;">support@pretwin.ai</span>
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bottom Row Strip -->
-    <div class="fk-footer-bottom">
-      <div class="fk-footer-bottom-inner">
-        <div class="fk-footer-bottom-links">
-          <div class="fk-footer-bottom-item">
-            <span class="yellow-icon">💼</span>
-            <span>PreTwin AI Merchant Hub</span>
-          </div>
-          <div class="fk-footer-bottom-item">
-            <span class="yellow-icon">⭐</span>
-            <span>Predictive Twin 2.0</span>
-          </div>
-          <div class="fk-footer-bottom-item">
-            <span class="yellow-icon">🎁</span>
-            <span>Gift Cards</span>
-          </div>
-          <div class="fk-footer-bottom-item">
-            <span class="yellow-icon">❓</span>
-            <span>24x7 Help Center</span>
-          </div>
-        </div>
-
-        <div class="fk-footer-copy">
-          © 2024-2026 PreTwin.com — Powered by Agentic Predictive AI
-        </div>
-
-        <div class="fk-payment-strip">
-          <span class="fk-pay-badge">Razorpay</span>
-          <span class="fk-pay-badge">UPI</span>
-          <span class="fk-pay-badge">Cards</span>
-          <span class="fk-pay-badge">Net Banking</span>
-          <span class="fk-pay-badge">Wallets</span>
+        <div class="pretwin-footer-badges">
+          <span class="pretwin-footer-badge">Razorpay Verified</span>
+          <span class="pretwin-footer-badge">Cash on Delivery</span>
+          <span class="pretwin-footer-badge">100 Pts = ₹1.00</span>
+          <span class="pretwin-footer-badge">Safe &amp; Secure SSL</span>
         </div>
       </div>
     </div>

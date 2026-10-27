@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Frequently Asked Questions — PreTwin AI{% endblock %}
+
+{% block content %}
+<div class="fk-container" style="padding-top: 24px; padding-bottom: 60px; max-width: 960px; margin: 0 auto;">
+  <!-- Header -->
+  <div style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border-radius: 12px; padding: 32px 36px; color: #ffffff; margin-bottom: 28px;">
+    <h1 style="font-size: 24px; font-weight: 800; margin: 0 0 8px 0; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+      <span>❓</span> PreTwin AI — Frequently Asked Questions
+    </h1>
+    <p style="color: #c7d2fe; font-size: 14.5px; margin: 0; line-height: 1.6;">
+      Find clear, transparent answers about your AI Shopping Twin, reward points, savings plans, Cash on Delivery, and returns.
+    </p>
+  </div>
+
+  <!-- FAQ Accordion Container -->
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    <!-- Q1 -->
+    <details style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 18px 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.03);" open>
+      <summary style="font-size: 16px; font-weight: 700; color: #1e293b; cursor: pointer; outline: none;">
+        What is PreTwin AI and how does my personal shopping twin work?
+      </summary>
+      <div style="margin-top: 12px; font-size: 14px; color: #475569; line-height: 1.7; border-top: 1px solid #f1f5f9; padding-top: 12px;">
+        PreTwin AI is an agentic shopping assistant that creates a personalized "twin" of your taste preferences, budget limits, and replenishment cycles. Instead of browsing endlessly, your twin predicts what you need ahead of time, alerts you to price drops, and checks your cart for accidental duplicates or missing essentials.
+      </div>
+    </details>
+
+    <!-- Q2 -->
+    <details style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 18px 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.03);">
+      <summary style="font-size: 16px; font-weight: 700; color: #1e293b; cursor: pointer; outline: none;">
+        How do PreTwin Reward Points work and how can I redeem them?
+      </summary>
+      <div style="margin-top: 12px; font-size: 14px; color: #475569; line-height: 1.7; border-top: 1px solid #f1f5f9; padding-top: 12px;">
+        PreTwin maintains a strict, transparent conversion: <strong>100 Reward Points = ₹1.00 INR</strong>. Every new user receives 500 Welcome Bonus points (₹5.00). You earn 5 points on every verified order. You can convert points directly into store vouchers on the <a href="/rewards" style="color:#7c3aed; font-weight:600;">Reward Points page</a> or tick "Apply Points" during checkout to instantly reduce your bill.
+      </div>
+    </details>
+
+    <!-- Q3 -->
+    <details style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 18px 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.03);">
+      <summary style="font-size: 16px; font-weight: 700; color: #1e293b; cursor: pointer; outline: none;">
+        Can I pay with Cash on Delivery (COD)?
+      </summary>
+      <div style="margin-top: 12px; font-size: 14px; color: #475569; line-height: 1.7; border-top: 1px solid #f1f5f9; padding-top: 12px;">
+        Yes! Cash on Delivery is supported for all eligible pincodes and orders under ₹50,000. For COD orders, payment is made directly to the delivery executive upon doorstep arrival. Reward points are credited once the delivery and payment are confirmed.
+      </div>
+    </details>
+
+    <!-- Q4 -->
+    <details style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 18px 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.03);">
+      <summary style="font-size: 16px; font-weight: 700; color: #1e293b; cursor: pointer; outline: none;">
+        How does the Smart Shopping Card protect my cart?
+      </summary>
+      <div style="margin-top: 12px; font-size: 14px; color: #475569; line-height: 1.7; border-top: 1px solid #f1f5f9; padding-top: 12px;">
+        The <a href="/smart-cart" style="color:#7c3aed; font-weight:600;">Smart Shopping Card</a> monitors your cart in real time. It checks for duplicate items (e.g., ordering two chargers by mistake), suggests missing companion accessories (like screen guards for a phone), and calculates multi-item bundle discounts to save you money.
+      </div>
+    </details>
+
+    <!-- Q5 -->
+    <details style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 18px 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.03);">
+      <summary style="font-size: 16px; font-weight: 700; color: #1e293b; cursor: pointer; outline: none;">
+        What is your return and refund policy?
+      </summary>
+      <div style="margin-top: 12px; font-size: 14px; color: #475569; line-height: 1.7; border-top: 1px solid #f1f5f9; padding-top: 12px;">
+        PreTwin offers a 7-day doorstep replacement or refund guarantee on all Assured products. If you cancel an order before dispatch, any redeemed reward points are refunded back to your ledger immediately, and pre-paid amounts are reversed to your original payment method.
+      </div>
+    </details>
+
+    <!-- Q6 -->
+    <details style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 18px 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.03);">
+      <summary style="font-size: 16px; font-weight: 700; color: #1e293b; cursor: pointer; outline: none;">
+        How does PreTwin handle my location and privacy?
+      </summary>
+      <div style="margin-top: 12px; font-size: 14px; color: #475569; line-height: 1.7; border-top: 1px solid #f1f5f9; padding-top: 12px;">
+        We never request your GPS location automatically. You can choose to enter your delivery pincode manually or click "Use my current location" only when you want to. Your personal taste data is encrypted and used exclusively to power your personal shopping twin.
+      </div>
+    </details>
+  </div>
+
+  <div style="text-align: center; margin-top: 36px; padding: 24px; background: #faf5ff; border-radius: 8px; border: 1px solid #f3e8ff;">
+    <h3 style="font-size: 16px; font-weight: 700; color: #581c87; margin: 0 0 6px 0;">Have a question not listed here?</h3>
+    <p style="color: #6b21a8; font-size: 13.5px; margin: 0 0 16px 0;">Our customer support team is available 24x7 to assist you.</p>
+    <a href="/customer-service" class="fk-btn-orange" style="display: inline-block; text-decoration: none; padding: 10px 22px; font-size: 13.5px; font-weight: 700; border-radius: 6px;">
+      Contact Customer Support ➔
+    </a>
+  </div>
+</div>
+{% endblock %}

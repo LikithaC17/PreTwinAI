@@ -43,7 +43,7 @@ def get_current_user_id() -> int:
 def inject_user_context():
     """Expose authenticated user, status, and auth config globally to all Jinja templates."""
     # Never auto-authenticate users as the demo user Alex Johnson
-    if session.get("email") == "alex@demo.pretwinshop.ai" or session.get("username") == "Alex Johnson" or (session.get("user_id") == 1 and not session.get("is_authenticated_user")):
+    if not session.get("is_authenticated_user") and (session.get("user_id") or session.get("email")):
         session.pop("user_id", None)
         session.pop("username", None)
         session.pop("email", None)
@@ -64,6 +64,7 @@ def inject_user_context():
         "is_authenticated": bool(user),
         "google_client_id": Config.GOOGLE_CLIENT_ID,
         "google_auth_enabled": Config.GOOGLE_AUTH_ENABLED,
+        "current_year": datetime.utcnow().year,
     }
 
 # ---------------------------------------------------------------------------
@@ -477,6 +478,7 @@ def budget_page():
 
 
 @app.route("/smart-cart")
+@app.route("/smart-card")
 def smart_cart_page():
     return render_template("smart_cart.html")
 
@@ -484,6 +486,52 @@ def smart_cart_page():
 @app.route("/advanced-ai")
 def advanced_ai_page():
     return render_template("advanced_ai.html")
+
+
+@app.route("/seller")
+def seller_page():
+    return render_template("seller.html")
+
+
+@app.route("/customer-service")
+@app.route("/support")
+def customer_service_page():
+    return render_template("customer_service.html")
+
+
+@app.route("/faq")
+@app.route("/faqs")
+def faq_page():
+    return render_template("faq.html")
+
+
+@app.route("/contact")
+@app.route("/contact-us")
+def contact_page():
+    return render_template("contact.html")
+
+
+@app.route("/returns-refunds")
+@app.route("/returns")
+def returns_refunds_page():
+    return render_template("returns_refunds.html")
+
+
+@app.route("/privacy")
+@app.route("/privacy-policy")
+def privacy_page():
+    return render_template("privacy.html")
+
+
+@app.route("/terms")
+@app.route("/terms-and-conditions")
+def terms_page():
+    return render_template("terms.html")
+
+
+@app.route("/notifications")
+def notifications_page():
+    return render_template("notifications.html")
 
 
 @app.route("/login", methods=["GET"])
@@ -678,9 +726,7 @@ def auth_logout():
 def auth_me():
     """Return the currently authenticated user status."""
     user_id = session.get("user_id")
-    email = session.get("email")
-    username = session.get("username")
-    if not user_id or email == "alex@demo.pretwinshop.ai" or username == "Alex Johnson" or (user_id == 1 and not session.get("is_authenticated_user")):
+    if not user_id or not session.get("is_authenticated_user"):
         return jsonify({"authenticated": False, "user": None})
 
     user = database.query_db("SELECT id, username, email FROM users WHERE id = ?", (user_id,), one=True)

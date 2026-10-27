@@ -15,10 +15,14 @@ import database
 
 
 def test_first_navbar_has_profile_icon_and_shortcuts(app_client):
-    """Confirm the Profile icon/button and all 6 shortcuts are present in the first navigation bar."""
+    """Confirm the Profile icon/button, shortcuts, and features are present in the redesigned navigation."""
     res = app_client.get("/")
     assert res.status_code == 200
     html = res.data.decode("utf-8")
+
+    # Branding section is above the first navbar
+    assert "pretwin-top-branding-bar" in html
+    assert "PreTwin AI" in html
 
     # The navbar header section must contain pretwinAccountItem and shortcuts
     header_start = html.find('<header class="fk-navbar">')
@@ -30,16 +34,15 @@ def test_first_navbar_has_profile_icon_and_shortcuts(app_client):
     assert "pretwinAccountItem" in navbar_html
     assert "pretwinProfileBtn" in navbar_html
 
-    # Verify all 6 shopping shortcuts are intact in the first navigation bar
+    # Verify shopping shortcuts in the first navigation bar
     assert "/wishlist" in navbar_html
     assert "openCartModal" in navbar_html
     assert "/orders" in navbar_html
     assert "/rewards" in navbar_html
     assert "/savings" in navbar_html
-    assert "/smart-cart" in navbar_html
 
-    # Verify logo and search box are intact
-    assert "pretwin-header-logo" in navbar_html
+    # Features menu and search box are intact
+    assert "pretwinFeaturesBtn" in navbar_html
     assert "fkSearchInput" in navbar_html
 
 

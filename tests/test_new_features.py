@@ -10,6 +10,7 @@ Tests for PreTwin New Features:
 
 import os
 import json
+from datetime import datetime, timedelta
 import pytest
 from app import app, calculate_savings_plan_stats, get_user_reward_balance
 import database
@@ -40,19 +41,22 @@ def test_fairytale_brand_assets_exist():
 
 
 def test_ai_navigation_bar_rendered(client):
-    """Verify that base template contains the 8 AI Navigation items above categories."""
+    """Verify that Features menu consolidates all 8 intelligent shopping features and old second navbar is removed."""
     res = client.get("/")
     assert res.status_code == 200
     html = res.data.decode("utf-8")
 
-    assert "pretwin-ai-nav-bar" in html
+    # Old second navbar pretwin-ai-nav-bar was removed per user request
+    assert "pretwin-ai-nav-bar" not in html
+    # Consolidated Features mega-menu contains all 8 AI features
+    assert "pretwinFeaturesDropdown" in html
     assert "Personalization and Digital Twin" in html
     assert "Predictive Shopping Intelligence" in html
     assert "Smart Product Discovery" in html
     assert "Budget and Price Intelligence" in html
     assert "Product Comparison and Decision Support" in html
     assert "Future Predictive Calendar" in html
-    assert "Smart Cart and Shopping Automation" in html
+    assert "Smart Shopping Card" in html
     assert "Advanced Features for Future Development" in html
 
 
@@ -100,10 +104,11 @@ def test_chat_api_endpoints(client):
 
 def test_smart_savings_plan_calculations():
     """Test exact mathematical breakdown for daily and weekly rates."""
+    target_date = (datetime.utcnow().date() + timedelta(days=30)).strftime("%Y-%m-%d")
     plan = {
         "target_amount": 15000.0,
         "saved_amount": 3000.0,
-        "target_date": "2026-11-25"  # 30 days from 2026-10-26
+        "target_date": target_date
     }
     stats = calculate_savings_plan_stats(plan)
     assert stats["remaining_amount"] == 12000.0
@@ -117,7 +122,7 @@ def test_smart_savings_plan_calculations():
     plan_complete = {
         "target_amount": 5000.0,
         "saved_amount": 5000.0,
-        "target_date": "2026-11-25"
+        "target_date": target_date
     }
     stats_c = calculate_savings_plan_stats(plan_complete)
     assert stats_c["remaining_amount"] == 0.0
