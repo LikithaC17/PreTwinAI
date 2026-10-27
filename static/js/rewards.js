@@ -2,6 +2,8 @@
  * PreTwin Reward Points Controller
  */
 
+let currentPointsBalance = 0;
+
 async function loadRewardsDashboard() {
   const balanceEl = document.getElementById("pointsBalance");
   const rupeeEl = document.getElementById("rupeeEquivalence");
@@ -12,12 +14,16 @@ async function loadRewardsDashboard() {
   try {
     // 1. Fetch Balance & Stats
     const balRes = await apiGet("/api/rewards/balance");
-    if (balanceEl) balanceEl.textContent = balRes.balance_points.toLocaleString('en-IN');
-    if (rupeeEl) rupeeEl.textContent = `₹${balRes.rupee_value.toFixed(2)}`;
-    if (earnedEl) earnedEl.textContent = balRes.lifetime_earned.toLocaleString('en-IN');
-    if (redeemedEl) redeemedEl.textContent = balRes.lifetime_redeemed.toLocaleString('en-IN');
+    currentPointsBalance = balRes.balance_points || 0;
+    if (balanceEl) balanceEl.textContent = currentPointsBalance.toLocaleString('en-IN');
+    if (rupeeEl) rupeeEl.textContent = `₹${(balRes.rupee_value || 0).toFixed(2)}`;
+    if (earnedEl) earnedEl.textContent = (balRes.lifetime_earned || 0).toLocaleString('en-IN');
+    if (redeemedEl) redeemedEl.textContent = (balRes.lifetime_redeemed || 0).toLocaleString('en-IN');
 
-    // 2. Fetch Ledger Transactions
+    // 2. Check for active credit voucher in session
+    checkActiveCredit();
+
+    // 3. Fetch Ledger Transactions
     const histRes = await apiGet("/api/rewards/history");
     const txs = histRes.transactions || [];
 
@@ -26,7 +32,7 @@ async function loadRewardsDashboard() {
         tableBody.innerHTML = `
           <tr>
             <td colspan="5" style="padding: 36px; text-align: center; color: #64748b;">
-              No reward transactions yet. Complete an order to earn your first 5 points!
+              No reward transactions yet. Complete an order to earn your first points!
             </td>
           </tr>
         `;
@@ -73,6 +79,134 @@ async function loadRewardsDashboard() {
       `;
     }
   }
+}
+
+async function checkActiveCredit() {
+  const banner = document.getElementById("activeVoucherBanner");
+  const textEl = document.getElementById("activeVoucherText");
+  if (!banner || !textEl) return;
+
+  try {
+    const res = await apiGet("/api/rewards/active-credit");
+    if (res.has_active_credit && res.credit) {
+      const cr = res.credit;
+      textEl.innerHTML = `You have an active store discount of <strong>₹${Number(cr.rupee_discount).toFixed(2)}</strong> (${cr.points} pts, Voucher <code>${escapeHtml(cr.code)}</code>) ready at checkout!`;
+      banner.style.display = "flex";
+    } else {
+      banner.style.display = "none";
+    }
+  } catch (e) {
+    banner.style.display = "none";
+  }
+}
+
+function updateRedeemEstimate() {
+  const inp = document.getElementById("redeemInput");
+  const est = document.getElementById("redeemEstimateText");
+  if (!inp || !est) return;
+
+  const pts = parseInt(inp.value, 10) || 0;
+  if (pts <= 0) {
+    est.textContent = "= ₹0.00 discount";
+    est.style.color = "#64748b";
+  } else {
+    const val = (pts / 100.0).toFixed(2);
+    est.textContent = `= ₹${val} discount`;
+    est.style.color = "#15803d";
+  }
+}
+
+function setRedeemPoints(pts) {
+  const inp = document.getElementById("redeemInput");
+  if (inp) {
+    inp.value = pts;
+    updateRedeemEstimate();
+  }
+}
+
+function setRedeemMax() {
+  const inp = document.getElementById("redeemInput");
+  if (inp) {
+    inp.value = currentPointsBalance > 0 ? currentPointsBalance : 100;
+    updateRedeemEstimate();
+  }
+}
+
+async function handleRedeemPoints() {
+  const inp = document.getElementById("redeemInput");
+  const fb = document.getElementById("redeemFeedback");
+  const btn = document.getElementById("redeemBtn");
+
+  const pts = parseInt(inp ? inp.value : 0, 10);
+  if (!pts || pts <= 0) {
+    showFeedback("Please enter a valid positive number of points to redeem.", "error");
+    return;
+  }
+
+  if (pts > currentPointsBalance) {
+    showFeedback(`You only have ${currentPointsBalance} points available to redeem.`, "error");
+    return;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Redeeming...";
+  }
+
+  try {
+    const res = await apiPost("/api/rewards/redeem", { points: pts });
+    if (res.success) {
+      showFeedback(res.message, "success");
+      if (typeof showToast === "function") {
+        showToast(res.message, "success");
+      }
+      if (inp) inp.value = "";
+      updateRedeemEstimate();
+      await loadRewardsDashboard();
+    } else {
+      showFeedback(res.error || "Failed to redeem points.", "error");
+    }
+  } catch (e) {
+    showFeedback(e.message || "Redemption request failed.", "error");
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "Redeem Points Now ➔";
+    }
+  }
+}
+
+async function handleClaimBonus() {
+  try {
+    const res = await apiPost("/api/rewards/claim-bonus", {});
+    if (res.success) {
+      if (typeof showToast === "function") {
+        showToast(res.message, "success");
+      } else {
+        alert(res.message);
+      }
+      await loadRewardsDashboard();
+    } else {
+      alert(res.error || "Could not claim bonus points.");
+    }
+  } catch (e) {
+    alert(e.message || "Failed to claim bonus.");
+  }
+}
+
+function showFeedback(msg, type) {
+  const fb = document.getElementById("redeemFeedback");
+  if (!fb) return;
+  fb.style.display = "block";
+  fb.textContent = msg;
+  if (type === "success") {
+    fb.style.color = "#15803d";
+  } else {
+    fb.style.color = "#b91c1c";
+  }
+  setTimeout(() => {
+    if (fb) fb.style.display = "none";
+  }, 6000);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -26,8 +26,11 @@ let currentUser = null;
 // Currency Formatting (PreTwin INR Style)
 // ---------------------------------------------------------------------------
 function formatPrice(val) {
-  const num = Math.round(parseFloat(val) || 0);
-  return '₹' + num.toLocaleString('en-IN');
+  const f = parseFloat(val) || 0;
+  if (Math.abs(f % 1) > 0.001 || (Math.abs(f) > 0 && Math.abs(f) < 1)) {
+    return '₹' + f.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  return '₹' + Math.round(f).toLocaleString('en-IN');
 }
 
 // ---------------------------------------------------------------------------

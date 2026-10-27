@@ -347,17 +347,28 @@ async function initCheckout() {
     if (nameInput) nameInput.value = currentUser.username;
   }
 
-  // Fetch Reward Points Balance
+  // Fetch Reward Points Balance and Active Credit
   try {
+    const credRes = await apiGet('/api/rewards/active-credit');
     const rew = await apiGet('/api/rewards/balance');
     const balNotice = document.getElementById('rewardBalanceNotice');
     const chk = document.getElementById('redeemRewardsCheck');
-    if (balNotice) {
+
+    if (credRes.has_active_credit && credRes.credit) {
+      if (balNotice) {
+        balNotice.innerHTML = `Active Voucher <strong>${credRes.credit.code}</strong> applied: <strong>-₹${Number(credRes.credit.rupee_discount).toFixed(2)}</strong> discount!`;
+      }
+      if (chk) {
+        chk.checked = true;
+        chk.disabled = false;
+      }
+      isRewardsApplied = true;
+    } else if (balNotice) {
       if (rew.balance_points > 0) {
         balNotice.innerHTML = `You have <strong>${rew.balance_points} points</strong> (worth ₹${rew.rupee_value.toFixed(2)} at 100 pts = ₹1.00)`;
         if (chk) chk.disabled = false;
       } else {
-        balNotice.innerHTML = `No points available yet. You earn <strong>5 points (₹0.05)</strong> for every completed order!`;
+        balNotice.innerHTML = `No points available yet. <button type="button" onclick="claimCheckoutBonus()" style="background:#86198f; color:#fff; border:none; padding:3px 8px; font-size:11px; border-radius:4px; font-weight:700; cursor:pointer; margin-left:6px;">Claim +200 Bonus ✨</button>`;
         if (chk) chk.disabled = true;
       }
     }
@@ -366,7 +377,7 @@ async function initCheckout() {
   }
 
   // Call Server-Side Checkout Calculation API
-  await recalculateCheckout(false);
+  await recalculateCheckout(isRewardsApplied);
 
   // Initialize payment option card styles
   updatePayOptionCards(document.querySelector('input[name="payMethod"]:checked'));
@@ -392,6 +403,27 @@ async function recalculateCheckout(applyRewards = false) {
 
 function toggleRewardsRedemption(checked) {
   recalculateCheckout(checked);
+}
+
+async function claimCheckoutBonus() {
+  try {
+    const res = await apiPost('/api/rewards/claim-bonus', {});
+    if (res.success) {
+      showToast(res.message, 'success');
+      const balNotice = document.getElementById('rewardBalanceNotice');
+      const chk = document.getElementById('redeemRewardsCheck');
+      if (balNotice) {
+        balNotice.innerHTML = `You have <strong>${res.new_balance} points</strong> (worth ₹${res.new_rupee_value.toFixed(2)} at 100 pts = ₹1.00)`;
+      }
+      if (chk) {
+        chk.disabled = false;
+        chk.checked = true;
+      }
+      await recalculateCheckout(true);
+    }
+  } catch (e) {
+    showToast('Failed to claim bonus points.');
+  }
 }
 
 function updatePayOptionCards(selectedRadio) {

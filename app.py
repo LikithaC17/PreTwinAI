@@ -109,13 +109,37 @@ def parse_json_field(value, fallback=None):
 def get_user_reward_balance(user_id: int) -> int:
     """Calculate the current reward points balance for a user (100 points = ₹1)."""
     try:
+        if not user_id:
+            user_id = 1
+
+        # Verify user exists in database to avoid foreign key errors
+        user_row = database.query_db("SELECT id FROM users WHERE id = ?", (user_id,), one=True)
+        if not user_row:
+            user_id = 1
+
+        # Check if user has any ledger entries; if not, grant 500 welcome bonus points
+        count_row = database.query_db(
+            "SELECT COUNT(*) AS cnt FROM reward_ledger WHERE user_id = ?",
+            (user_id,),
+            one=True
+        )
+        if count_row and int(count_row["cnt"]) == 0:
+            database.execute_db(
+                """
+                INSERT INTO reward_ledger (user_id, points, rupee_value, transaction_type, description)
+                VALUES (?, 500, 5.0, 'Welcome Bonus', 'PreTwin Welcome Joining Reward (500 pts = ₹5.00)')
+                """,
+                (user_id,)
+            )
+
         row = database.query_db(
             "SELECT COALESCE(SUM(points), 0) AS balance FROM reward_ledger WHERE user_id = ?",
             (user_id,),
             one=True
         )
         return int(row["balance"]) if row else 0
-    except Exception:
+    except Exception as e:
+        print(f"[Reward Balance Warning] Error calculating points: {e}")
         return 0
 
 
@@ -555,6 +579,15 @@ def auth_register():
             (new_id,)
         )
 
+        # Seed 500 Welcome Bonus Reward Points
+        database.execute_db(
+            """
+            INSERT INTO reward_ledger (user_id, points, rupee_value, transaction_type, description)
+            VALUES (?, 500, 5.0, 'Welcome Bonus', 'PreTwin Welcome Joining Reward (500 pts = ₹5.00)')
+            """,
+            (new_id,)
+        )
+
         # Establish session
         session["user_id"] = new_id
         session["username"] = display_name
@@ -779,6 +812,15 @@ def auth_google():
                     """,
                     (user_id,)
                 )
+
+        # Seed 500 Welcome Bonus Reward Points
+        database.execute_db(
+            """
+            INSERT INTO reward_ledger (user_id, points, rupee_value, transaction_type, description)
+            VALUES (?, 500, 5.0, 'Welcome Bonus', 'PreTwin Welcome Joining Reward (500 pts = ₹5.00)')
+            """,
+            (user_id,)
+        )
 
         # Establish session
         session["user_id"] = user_id
@@ -1069,12 +1111,18 @@ def calculate_checkout():
 
         # PreTwin Reward Points (100 points = ₹1.00)
         user_points_balance = get_user_reward_balance(user_id)
+        applied_credit = session.get("applied_reward_credit")
         max_redeemable_points = min(user_points_balance, int(subtotal * 100))
         points_to_redeem = 0
         reward_discount = 0.0
-        if redeem_points and max_redeemable_points > 0:
-            points_to_redeem = max_redeemable_points
-            reward_discount = round(points_to_redeem / 100.0, 2)
+
+        if redeem_points or (redeem_points is None and applied_credit):
+            if applied_credit:
+                reward_discount = min(float(applied_credit.get("rupee_discount") or 0.0), subtotal)
+                points_to_redeem = int(applied_credit.get("points") or 0)
+            elif max_redeemable_points > 0:
+                points_to_redeem = max_redeemable_points
+                reward_discount = round(points_to_redeem / 100.0, 2)
 
         final_total = max(0.0, round(subtotal + shipping_fee - reward_discount, 2))
 
@@ -1091,6 +1139,7 @@ def calculate_checkout():
             "points_to_redeem": points_to_redeem,
             "reward_points_redeemed": points_to_redeem,
             "reward_discount_amount": reward_discount,
+            "applied_credit": applied_credit,
             "total_amount": final_total,
             "gateway_configured": Config.RAZORPAY_ENABLED
         })
@@ -1171,10 +1220,22 @@ def create_order():
         user_id = get_current_user_id()
 
         # Handle PreTwin Rewards redemption (100 points = ₹1)
+        applied_credit = session.get("applied_reward_credit")
         user_points_balance = get_user_reward_balance(user_id)
-        max_redeemable = min(user_points_balance, int(subtotal * 100))
-        points_to_redeem = max_redeemable if redeem_points else 0
-        reward_discount = round(points_to_redeem / 100.0, 2) if points_to_redeem > 0 else 0.0
+        points_to_redeem = 0
+        reward_discount = 0.0
+        credit_already_deducted = False
+
+        if redeem_points or (redeem_points is None and applied_credit):
+            if applied_credit:
+                reward_discount = min(float(applied_credit.get("rupee_discount") or 0.0), subtotal)
+                points_to_redeem = int(applied_credit.get("points") or 0)
+                credit_already_deducted = True
+                session.pop("applied_reward_credit", None)
+            elif user_points_balance > 0:
+                max_redeemable = min(user_points_balance, int(subtotal * 100))
+                points_to_redeem = max_redeemable
+                reward_discount = round(points_to_redeem / 100.0, 2)
 
         total_amount = max(0.0, round(subtotal + shipping_fee - reward_discount, 2))
 
@@ -1239,13 +1300,29 @@ def create_order():
 
         # Record reward redemption in ledger if points used
         if points_to_redeem > 0:
-            database.execute_db(
-                """
-                INSERT INTO reward_ledger (user_id, order_id, points, rupee_value, transaction_type, description)
-                VALUES (?, ?, ?, ?, 'Redemption', ?)
-                """,
-                (user_id, order_id, -points_to_redeem, -reward_discount, f"Redeemed {points_to_redeem} points on order #{order_number} (-₹{reward_discount:.2f})")
-            )
+            if not credit_already_deducted:
+                database.execute_db(
+                    """
+                    INSERT INTO reward_ledger (user_id, order_id, points, rupee_value, transaction_type, description)
+                    VALUES (?, ?, ?, ?, 'Redemption', ?)
+                    """,
+                    (user_id, order_id, -points_to_redeem, -reward_discount, f"Redeemed {points_to_redeem} points on order #{order_number} (-₹{reward_discount:.2f})")
+                )
+            else:
+                try:
+                    database.execute_db(
+                        """
+                        UPDATE reward_ledger SET order_id = ? 
+                        WHERE id = (
+                            SELECT id FROM reward_ledger 
+                            WHERE user_id = ? AND transaction_type = 'Redemption' 
+                            ORDER BY id DESC LIMIT 1
+                        )
+                        """,
+                        (order_id, user_id)
+                    )
+                except Exception:
+                    pass
 
         # Insert items
         for it in verified_items:
@@ -1495,7 +1572,8 @@ def cancel_order(order_id):
             "success": True,
             "message": f"Order #{order['order_number']} has been cancelled.",
             "order_id": order_id,
-            "status": "Cancelled"
+            "status": "Cancelled",
+            "points_refunded": redeemed
         })
     except Exception as e:
         return _error(f"Failed to cancel order: {str(e)}", 500)
@@ -2529,6 +2607,94 @@ def get_rewards_history():
         })
     except Exception as e:
         return _error(f"Failed to fetch rewards history: {str(e)}", 500)
+
+
+@app.route("/api/rewards/redeem", methods=["POST"])
+def redeem_rewards():
+    """
+    Redeem user reward points into an instant store discount / checkout credit.
+    (100 points = ₹1.00 INR).
+    """
+    try:
+        user_id = get_current_user_id()
+        data = request.get_json() or {}
+        points_to_redeem = int(data.get("points") or 0)
+
+        current_balance = get_user_reward_balance(user_id)
+        if points_to_redeem <= 0:
+            return _error("Please enter a positive number of points to redeem (e.g. 100, 200, 500).", 400)
+        if points_to_redeem > current_balance:
+            return _error(f"Insufficient balance. You currently have {current_balance} points available.", 400)
+
+        rupee_discount = round(points_to_redeem / 100.0, 2)
+        voucher_code = f"PRETWIN-REW-{uuid.uuid4().hex[:6].upper()}"
+
+        # Deduct from reward ledger
+        database.execute_db(
+            """
+            INSERT INTO reward_ledger (user_id, points, rupee_value, transaction_type, description)
+            VALUES (?, ?, ?, 'Redemption', ?)
+            """,
+            (user_id, -points_to_redeem, -rupee_discount, f"Redeemed {points_to_redeem} points for instant store credit {voucher_code} (-₹{rupee_discount:.2f})")
+        )
+
+        # Store in session as applied credit
+        session["applied_reward_credit"] = {
+            "code": voucher_code,
+            "points": points_to_redeem,
+            "rupee_discount": rupee_discount,
+            "redeemed_at": datetime.utcnow().isoformat()
+        }
+
+        new_balance = get_user_reward_balance(user_id)
+        return jsonify({
+            "success": True,
+            "message": f"Successfully redeemed {points_to_redeem} points! ₹{rupee_discount:.2f} store credit has been applied to your checkout.",
+            "voucher_code": voucher_code,
+            "points_redeemed": points_to_redeem,
+            "rupee_discount": rupee_discount,
+            "new_balance": new_balance,
+            "new_rupee_value": round(new_balance / 100.0, 2),
+            "applied_credit": session["applied_reward_credit"]
+        })
+    except Exception as e:
+        return _error(f"Redemption failed: {str(e)}", 500)
+
+
+@app.route("/api/rewards/claim-bonus", methods=["POST"])
+def claim_reward_bonus():
+    """
+    Claim loyalty welcome/daily bonus points (+200 points = ₹2.00).
+    """
+    try:
+        user_id = get_current_user_id()
+        database.execute_db(
+            """
+            INSERT INTO reward_ledger (user_id, points, rupee_value, transaction_type, description)
+            VALUES (?, 200, 2.0, 'Daily Bonus', 'PreTwin Loyalty Bonus Claim (+200 pts = ₹2.00)')
+            """,
+            (user_id,)
+        )
+        new_balance = get_user_reward_balance(user_id)
+        return jsonify({
+            "success": True,
+            "message": "Awesome! 200 PreTwin Reward Points (₹2.00) have been added to your account.",
+            "points_added": 200,
+            "new_balance": new_balance,
+            "new_rupee_value": round(new_balance / 100.0, 2)
+        })
+    except Exception as e:
+        return _error(f"Failed to claim bonus: {str(e)}", 500)
+
+
+@app.route("/api/rewards/active-credit", methods=["GET"])
+def get_active_reward_credit():
+    """Get active session reward credit if previously redeemed."""
+    credit = session.get("applied_reward_credit")
+    return jsonify({
+        "has_active_credit": bool(credit),
+        "credit": credit
+    })
 
 
 # ---------------------------------------------------------------------------
