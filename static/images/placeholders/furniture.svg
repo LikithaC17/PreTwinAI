@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#eef2f6" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#92400e" />
+      <stop offset="100%" stop-color="#92400ecc" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" fill="url(#bgGrad)" rx="8" />
+  <circle cx="100" cy="95" r="54" fill="#92400e14" />
+  <path d="M50 110 L150 110 L150 140 L50 140 Z M60 70 L140 70 L140 110 L60 110 Z M60 140 L60 170 M140 140 L140 170" fill="url(#accentGrad)" stroke="#92400e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="100" y="172" font-family="'Inter', -apple-system, sans-serif" font-size="11" font-weight="700" fill="#334155" text-anchor="middle">Furniture</text>
+  <text x="100" y="186" font-family="'Inter', -apple-system, sans-serif" font-size="9" font-weight="500" fill="#64748b" text-anchor="middle">PreTwin Verified • Living & Decor</text>
+</svg>

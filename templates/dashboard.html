@@ -1,0 +1,491 @@
+{% extends "base.html" %}
+
+{% block title %}PreTwin — Predictive Personal Shopping Twin &amp; Online Deals{% endblock %}
+
+{% block content %}
+<div class="fk-homepage">
+
+  <!-- ======================================================================
+       1. MAIN PROMOTIONAL BANNER CAROUSEL
+       ====================================================================== -->
+  <section class="fk-banner-section">
+    <div class="fk-banner-viewport" id="fkBannerViewport">
+      <!-- Slide 1 -->
+      <div class="fk-banner-slide active" style="background: linear-gradient(90deg, #0b1a42 0%, #15397f 100%);">
+        <div style="display:flex; align-items:center; justify-content:space-between; width:100%; height:100%; padding:0 60px; color:#ffffff;">
+          <div style="max-width:550px;">
+            <span style="background:#ffe500; color:#212121; font-weight:700; font-size:12px; padding:4px 8px; border-radius:2px; text-transform:uppercase;">Big Savings Days</span>
+            <h1 style="font-size:38px; font-weight:700; margin:12px 0 8px 0; line-height:1.15;">Mega Electronics &amp; Mobile Fest</h1>
+            <p style="font-size:18px; color:#cdd9ed; margin-bottom:16px;">Up to 80% Off on Top Brands • Sony, Apple, Samsung &amp; Logitech</p>
+            <a href="/discovery?category=Electronics" class="fk-view-all-btn" style="margin-bottom:0; font-size:14px; padding:10px 24px;">SHOP NOW</a>
+          </div>
+          <div style="height:240px; display:flex; align-items:center;">
+            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80" alt="Electronics Banner" style="max-height:220px; object-fit:contain; filter:drop-shadow(0 10px 20px rgba(0,0,0,0.5));">
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="fk-banner-slide" style="background: linear-gradient(90deg, #1b381e 0%, #2f6b35 100%);">
+        <div style="display:flex; align-items:center; justify-content:space-between; width:100%; height:100%; padding:0 60px; color:#ffffff;">
+          <div style="max-width:550px;">
+            <span style="background:#ffe500; color:#212121; font-weight:700; font-size:12px; padding:4px 8px; border-radius:2px; text-transform:uppercase;">Home &amp; Kitchen Bonanza</span>
+            <h1 style="font-size:38px; font-weight:700; margin:12px 0 8px 0; line-height:1.15;">Upgrade Your Living Space</h1>
+            <p style="font-size:18px; color:#d2ecd4; margin-bottom:16px;">Starting from ₹299 • Air Purifiers, Dining, Blenders &amp; Decor</p>
+            <a href="/discovery?category=Home+%26+Kitchen" class="fk-view-all-btn" style="background:#2874f0; margin-bottom:0; font-size:14px; padding:10px 24px;">EXPLORE DEALS</a>
+          </div>
+          <div style="height:240px; display:flex; align-items:center;">
+            <img src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=500&q=80" alt="Home Banner" style="max-height:220px; object-fit:contain; filter:drop-shadow(0 10px 20px rgba(0,0,0,0.4));">
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="fk-banner-slide" style="background: linear-gradient(90deg, #421035 0%, #7d1c65 100%);">
+        <div style="display:flex; align-items:center; justify-content:space-between; width:100%; height:100%; padding:0 60px; color:#ffffff;">
+          <div style="max-width:550px;">
+            <span style="background:#ffe500; color:#212121; font-weight:700; font-size:12px; padding:4px 8px; border-radius:2px; text-transform:uppercase;">Fashion Trends 2026</span>
+            <h1 style="font-size:38px; font-weight:700; margin:12px 0 8px 0; line-height:1.15;">Top Brands &amp; Fresh Styles</h1>
+            <p style="font-size:18px; color:#f0d0e8; margin-bottom:16px;">Min. 60% Off on Footwear, Watches, Bags &amp; Apparel</p>
+            <a href="/discovery?category=Fashion" class="fk-view-all-btn" style="background:#ffe500; color:#212121; margin-bottom:0; font-size:14px; padding:10px 24px;">GRAB OFFERS</a>
+          </div>
+          <div style="height:240px; display:flex; align-items:center;">
+            <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&q=80" alt="Fashion Banner" style="max-height:220px; object-fit:contain; filter:drop-shadow(0 10px 20px rgba(0,0,0,0.4));">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carousel Nav Buttons -->
+    <button class="fk-carousel-btn prev" onclick="moveBannerSlide(-1)" aria-label="Previous Slide">❮</button>
+    <button class="fk-carousel-btn next" onclick="moveBannerSlide(1)" aria-label="Next Slide">❯</button>
+
+    <!-- Carousel Dots Indicator -->
+    <div class="fk-carousel-dots" id="bannerDots">
+      <div class="fk-dot active" onclick="goToBannerSlide(0)"></div>
+      <div class="fk-dot" onclick="goToBannerSlide(1)"></div>
+      <div class="fk-dot" onclick="goToBannerSlide(2)"></div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       2. MOBILES & SMARTPHONES
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Best of<br>Mobiles &amp; 5G</h2>
+      </div>
+      <a href="/discovery?category=Mobiles" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('mobilesTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="mobilesTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('mobilesTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       3. BEST OF ELECTRONICS
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Top Rated<br>Electronics</h2>
+      </div>
+      <a href="/discovery?category=Electronics" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('electronicsTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="electronicsTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('electronicsTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       PROMO TRIPLET BANNERS (Flipkart Style)
+       ====================================================================== -->
+  <section class="fk-promo-triplet">
+    <a href="/discovery?category=Laptops+%26+Computers" class="fk-promo-tile">
+      <div style="background: linear-gradient(135deg, #102a45 0%, #1a4d7d 100%); width:100%; height:100%; padding:24px; color:#ffffff; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span style="background:#ffe500; color:#212121; font-size:11px; font-weight:700; padding:2px 6px; border-radius:2px;">TOP PICKS</span>
+          <h3 style="font-size:22px; font-weight:700; margin:8px 0 4px 0;">Laptops &amp; PCs</h3>
+          <p style="font-size:14px; color:#ffe500; font-weight:600;">Gaming &amp; Ultrabooks</p>
+          <span style="font-size:12px; color:#cde0f2; margin-top:8px; display:block;">Starting ₹34,999</span>
+        </div>
+        <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=240&q=80" alt="Computers" style="max-height:140px; width:auto; object-fit:contain;">
+      </div>
+    </a>
+    <a href="/discovery?category=Fashion" class="fk-promo-tile">
+      <div style="background: linear-gradient(135deg, #381b40 0%, #632e73 100%); width:100%; height:100%; padding:24px; color:#ffffff; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span style="background:#ffe500; color:#212121; font-size:11px; font-weight:700; padding:2px 6px; border-radius:2px;">FRESH STYLES</span>
+          <h3 style="font-size:22px; font-weight:700; margin:8px 0 4px 0;">Fashion &amp; Footwear</h3>
+          <p style="font-size:14px; color:#ffe500; font-weight:600;">Min. 60% Off</p>
+          <span style="font-size:12px; color:#eed2f7; margin-top:8px; display:block;">Levi's, Nike, Puma, FabIndia</span>
+        </div>
+        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=240&q=80" alt="Fashion" style="max-height:140px; width:auto; object-fit:contain;">
+      </div>
+    </a>
+    <a href="/discovery?category=Home+%26+Kitchen" class="fk-promo-tile">
+      <div style="background: linear-gradient(135deg, #402611 0%, #794921 100%); width:100%; height:100%; padding:24px; color:#ffffff; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span style="background:#ffe500; color:#212121; font-size:11px; font-weight:700; padding:2px 6px; border-radius:2px;">HOME MAKEOVER</span>
+          <h3 style="font-size:22px; font-weight:700; margin:8px 0 4px 0;">Kitchen &amp; Furniture</h3>
+          <p style="font-size:14px; color:#ffe500; font-weight:600;">Min. 50% Off</p>
+          <span style="font-size:12px; color:#edd7c5; margin-top:8px; display:block;">Sofas, Cookware, Recliners</span>
+        </div>
+        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=240&q=80" alt="Kitchen" style="max-height:140px; width:auto; object-fit:contain;">
+      </div>
+    </a>
+  </section>
+
+  <!-- ======================================================================
+       4. LAPTOPS & COMPUTERS
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Laptops &amp;<br>Workstations</h2>
+      </div>
+      <a href="/discovery?category=Laptops+%26+Computers" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('laptopsTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="laptopsTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('laptopsTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       5. TVs & HOME ENTERTAINMENT
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Smart TVs &amp;<br>Audio Systems</h2>
+      </div>
+      <a href="/discovery?category=TVs+%26+Home+Entertainment" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('tvsTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="tvsTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('tvsTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       6. FASHION & APPAREL
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1445205170230-053b83016050?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Trending in<br>Fashion Style</h2>
+      </div>
+      <a href="/discovery?category=Fashion" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('fashionTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="fashionTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('fashionTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       7. FOOTWEAR & SHOES
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Footwear &amp;<br>Sneakers Hub</h2>
+      </div>
+      <a href="/discovery?category=Footwear" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('footwearTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="footwearTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('footwearTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       8. WATCHES & ACCESSORIES
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Watches &amp;<br>Accessories</h2>
+      </div>
+      <a href="/discovery?category=Watches+%26+Accessories" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('watchesTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="watchesTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('watchesTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       9. HOME & KITCHEN
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Home, Kitchen<br>&amp; Dining</h2>
+      </div>
+      <a href="/discovery?category=Home+%26+Kitchen" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('homeTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="homeTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('homeTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       10. FURNITURE
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Furniture &amp;<br>Home Decor</h2>
+      </div>
+      <a href="/discovery?category=Furniture" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('furnitureTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="furnitureTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('furnitureTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       11. APPLIANCES
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Home &amp; Kitchen<br>Appliances</h2>
+      </div>
+      <a href="/discovery?category=Appliances" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('appliancesTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="appliancesTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('appliancesTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       12. BEAUTY, TOYS & MORE
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Beauty, Toys<br>&amp; More Deals</h2>
+      </div>
+      <a href="/discovery?category=Beauty%2C+Toys+%26+More" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('beautyTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="beautyTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('beautyTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       13. PERSONAL CARE & GROOMING
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Personal Care<br>&amp; Grooming</h2>
+      </div>
+      <a href="/discovery?category=Personal+Care" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('personalCareTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="personalCareTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('personalCareTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       14. TOYS & BABY PRODUCTS
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Toys &amp; Baby<br>Care Products</h2>
+      </div>
+      <a href="/discovery?category=Toys+%26+Baby+Products" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('toysTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="toysTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('toysTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       15. FOOD & GROCERY
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Food &amp; Daily<br>Grocery Bazaar</h2>
+      </div>
+      <a href="/discovery?category=Food+%26+Grocery" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('groceryTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="groceryTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('groceryTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       16. SPORTS & FITNESS
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Sports, Gym<br>&amp; Fitness Store</h2>
+      </div>
+      <a href="/discovery?category=Sports+%26+Fitness" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('sportsTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="sportsTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('sportsTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       17. BOOKS & STATIONERY
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Books, Novels<br>&amp; Stationery</h2>
+      </div>
+      <a href="/discovery?category=Books+%26+Stationery" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('booksTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="booksTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('booksTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       18. HEALTH & WELLNESS
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Health &amp;<br>Wellness Hub</h2>
+      </div>
+      <a href="/discovery?category=Health+%26+Wellness" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('healthTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="healthTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('healthTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       19. TRAVEL & LUGGAGE
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Travel, Bags<br>&amp; Luggage</h2>
+      </div>
+      <a href="/discovery?category=Travel+%26+Luggage" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('travelTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="travelTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('travelTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       20. AUTOMOTIVE ACCESSORIES
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Automotive &amp;<br>Car Care</h2>
+      </div>
+      <a href="/discovery?category=Automotive+Accessories" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('automotiveTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="automotiveTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('automotiveTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       21. PET SUPPLIES
+       ====================================================================== -->
+  <section class="fk-deals-row">
+    <div class="fk-deal-callout" style="background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=300&q=80');">
+      <div>
+        <h2 class="fk-deal-callout-title">Pet Supplies<br>&amp; Pet Food</h2>
+      </div>
+      <a href="/discovery?category=Pet+Supplies" class="fk-view-all-btn">VIEW ALL</a>
+    </div>
+    <div class="fk-products-scroll-wrapper">
+      <button class="fk-carousel-btn prev" onclick="scrollTrack('petsTrack', -400)" style="left:0;">❮</button>
+      <div class="fk-products-track" id="petsTrack"></div>
+      <button class="fk-carousel-btn next" onclick="scrollTrack('petsTrack', 400)" style="right:0;">❯</button>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       22. FULL FEATURED PRODUCT CATALOGUE SHELF
+       ====================================================================== -->
+  <section class="fk-full-shelf">
+    <div class="fk-shelf-header">
+      <div>
+        <h2 class="fk-shelf-title">Featured Products &amp; Best Offers</h2>
+        <p class="fk-shelf-sub">Genuine products with warranty, verified customer ratings &amp; super-fast delivery</p>
+      </div>
+      <a href="/discovery" style="color:var(--fk-blue); font-size:13px; font-weight:600;">See All 1,000+ Products &rarr;</a>
+    </div>
+
+    <div class="fk-product-grid" id="featuredGrid">
+      <!-- Loaded via JS -->
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       23. PRETWIN BRAND INFORMATIONAL BLOCK
+       ====================================================================== -->
+  <section class="fk-container" style="background:#ffffff; padding:24px; margin-bottom:16px; box-shadow:var(--fk-shadow-sm); font-size:11px; color:#878787; line-height:1.6;">
+    <h3 style="font-size:14px; font-weight:600; color:#878787; margin-bottom:8px;">PreTwin Shopping Intelligence Directory</h3>
+    <p style="margin-bottom:8px;">
+      <strong>MOST SEARCHED IN ELECTRONICS:</strong> Sony Headphones | Apple AirPods Pro | Samsung Galaxy Buds | Keychron Keyboards | Logitech MX Master | Anker Power Banks | iPad Air | Xiaomi Redmi Note | JBL Bluetooth Speakers
+    </p>
+    <p style="margin-bottom:8px;">
+      <strong>MOBILES:</strong> iPhone 15 Pro | Samsung S24 Ultra | Google Pixel 8 | OnePlus 12 | Realme 12 Pro | Motorola Edge | Poco X6 Pro
+    </p>
+    <p style="margin-bottom:8px;">
+      <strong>HOME &amp; KITCHEN:</strong> Air Purifiers | Electric Kettles | Coffee Makers | Blenders | Knife Sets | Memory Foam Pillows | Dyson Fans
+    </p>
+    <p>
+      <strong>PRETWIN PREDICTIVE ONLINE SHOPPING:</strong> PreTwin is an Agentic Artificial Intelligence-based e-commerce platform designed to anticipate customers' future shopping needs and deliver personalized, budget-aware product recommendations before they explicitly search for them.
+    </p>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}

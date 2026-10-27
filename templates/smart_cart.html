@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Cart and Shopping Automation — PreTwin AI{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1240px; margin: 24px auto; padding: 0 16px;">
+  <!-- Header Banner -->
+  <div class="card" style="background: linear-gradient(135deg, #1e1b4b 0%, #311042 50%, #181438 100%); border: 1px solid rgba(167, 139, 250, 0.35); padding: 28px; border-radius: 16px; margin-bottom: 24px; color: #fff; box-shadow: 0 8px 32px rgba(0,0,0,0.25);">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+      <div>
+        <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(167, 139, 250, 0.18); padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600; color:#c4b5fd; margin-bottom:10px; border:1px solid rgba(167, 139, 250, 0.3);">
+          <span>🛒 BASKET INTELLIGENCE</span>
+          <span>•</span>
+          <span>DUPLICATE GUARD &amp; BUNDLE OPTIMIZER</span>
+        </div>
+        <h1 style="font-size:1.9rem; font-weight:700; margin:0 0 8px 0; color:#fff;">Smart Cart and Shopping Automation</h1>
+        <p style="margin:0; color:#cbd5e1; font-size:0.95rem; max-width:720px; line-height:1.5;">
+          Your AI shopping twin automatically inspects your basket: alerts on accidental repeat purchases, identifies essential companion accessories, applies intelligent bundle savings, and guards your monthly budget ceiling.
+        </p>
+      </div>
+      <div>
+        <button onclick="runCartAIAnalysis()" class="btn btn-primary" style="background:linear-gradient(135deg, #6366f1, #a855f7); color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+          <span>⚡ Re-Analyze Basket</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dedicated PreTwin Digital Shopping Card -->
+  <div class="card pretwin-digital-card" style="background: linear-gradient(135deg, #181438 0%, #2e1065 50%, #172554 100%); border: 1px solid rgba(192, 132, 252, 0.4); border-radius: 16px; padding: 24px; margin-bottom: 24px; color: #fff; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); position: relative; overflow: hidden;">
+    <div style="position: absolute; right: -15px; top: -25px; opacity: 0.1; pointer-events: none; font-size: 150px; line-height: 1; user-select: none;">
+      ✨
+    </div>
+
+    <!-- Top Card Header: Badge & User Info -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <div style="width: 52px; height: 52px; border-radius: 12px; background: linear-gradient(135deg, #9333ea, #4f46e5); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(147, 51, 234, 0.4); border: 1px solid rgba(255, 255, 255, 0.2);">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 11C2 9 3 5 7 6C11 7 12 11 12 11C12 11 13 7 17 6C21 5 22 9 20 11C18 13 14 14 12 18C10 14 6 13 4 11Z" fill="#c084fc"/>
+          </svg>
+        </div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #c084fc; background: rgba(192, 132, 252, 0.15); padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(192, 132, 252, 0.3);">PreTwin Digital Card</span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-family: monospace; font-weight: 600;" id="dscMaskedId">#PRE-10042</span>
+          </div>
+          <h2 style="margin: 4px 0 0 0; font-size: 1.35rem; font-weight: 700; color: #f8fafc;" id="dscUserName">Alex Johnson</h2>
+        </div>
+      </div>
+
+      <!-- Quick Action Shortcuts -->
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <a href="/rewards" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 6px 12px; border-radius: 8px; color: #e2e8f0; font-size: 0.8rem; font-weight: 600; text-decoration: none; transition: background 0.2s;">
+          <span>🎁</span> Reward Points
+        </a>
+        <a href="/savings" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 6px 12px; border-radius: 8px; color: #e2e8f0; font-size: 0.8rem; font-weight: 600; text-decoration: none; transition: background 0.2s;">
+          <span>🎯</span> Savings Plan
+        </a>
+        <a href="#smartCartItemsList" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 6px 12px; border-radius: 8px; color: #e2e8f0; font-size: 0.8rem; font-weight: 600; text-decoration: none; transition: background 0.2s;">
+          <span>🛒</span> Cart
+        </a>
+        <a href="/orders" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 6px 12px; border-radius: 8px; color: #e2e8f0; font-size: 0.8rem; font-weight: 600; text-decoration: none; transition: background 0.2s;">
+          <span>📦</span> My Orders
+        </a>
+      </div>
+    </div>
+
+    <!-- 4 Metrics Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-top: 16px;">
+      <!-- Reward Points -->
+      <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px;">
+        <div style="font-size: 0.75rem; text-transform: uppercase; color: #c4b5fd; font-weight: 600; letter-spacing: 0.5px; display: flex; justify-content: space-between;">
+          <span>Reward Points</span>
+          <span style="color: #cbd5e1;">100 pts = ₹1</span>
+        </div>
+        <div style="font-size: 1.45rem; font-weight: 700; color: #fbbf24; margin-top: 4px;">
+          <span id="dscRewardPoints">0</span> <span style="font-size: 0.85rem; color: #cbd5e1; font-weight: 500;">pts</span>
+        </div>
+        <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 2px;">
+          Worth <strong style="color: #38bdf8;">₹<span id="dscRewardRupees">0.00</span></strong> • <a href="/rewards" style="color: #c084fc; text-decoration: none;">View Balance ➔</a>
+        </div>
+      </div>
+
+      <!-- Active Savings Plan -->
+      <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px;">
+        <div style="font-size: 0.75rem; text-transform: uppercase; color: #6ee7b7; font-weight: 600; letter-spacing: 0.5px; display: flex; justify-content: space-between;">
+          <span id="dscSavingsTitle" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;">Savings Goal</span>
+          <span id="dscSavingsPct">0%</span>
+        </div>
+        <div style="font-size: 1.45rem; font-weight: 700; color: #10b981; margin-top: 4px;">
+          ₹<span id="dscSavedAmount">0</span> <span style="font-size: 0.85rem; color: #94a3b8; font-weight: 400;">/ ₹<span id="dscTargetAmount">0</span></span>
+        </div>
+        <!-- Progress Bar -->
+        <div style="background: rgba(255, 255, 255, 0.1); height: 6px; border-radius: 3px; margin: 8px 0 4px; overflow: hidden;">
+          <div id="dscSavingsBar" style="background: linear-gradient(90deg, #10b981, #06b6d4); height: 100%; width: 0%; border-radius: 3px; transition: width 0.5s ease;"></div>
+        </div>
+        <div style="font-size: 0.75rem; color: #94a3b8;">
+          <span id="dscSavingsStatus">Target in progress</span> • <a href="/savings" style="color: #6ee7b7; text-decoration: none;">Manage Plan ➔</a>
+        </div>
+      </div>
+
+      <!-- Shopping Credits -->
+      <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px;">
+        <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 600; letter-spacing: 0.5px;">
+          Shopping Credits
+        </div>
+        <div style="font-size: 1.45rem; font-weight: 700; color: #94a3b8; margin-top: 4px;">
+          ₹0
+        </div>
+        <div style="font-size: 0.8rem; color: #cbd5e1; margin-top: 6px;">
+          No shopping credits available (₹0)
+        </div>
+        <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">
+          Store credits credited on returns &amp; promo credits
+        </div>
+      </div>
+
+      <!-- Live Cart & Budget Ceiling Status -->
+      <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px;">
+        <div style="font-size: 0.75rem; text-transform: uppercase; color: #38bdf8; font-weight: 600; letter-spacing: 0.5px; display: flex; justify-content: space-between;">
+          <span>Basket &amp; Ceiling</span>
+          <span id="dscCartCountBadge">0 items</span>
+        </div>
+        <div style="font-size: 1.45rem; font-weight: 700; color: #f8fafc; margin-top: 4px;">
+          ₹<span id="dscCartTotal">0</span>
+        </div>
+        <div style="font-size: 0.8rem; color: #10b981; margin-top: 4px; display: flex; align-items: center; gap: 6px;" id="dscCeilingStatusWrap">
+          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981;" id="dscCeilingDot"></span>
+          <span id="dscCeilingText">Within Monthly Budget Ceiling</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Analytics Stat Strip -->
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px; margin-bottom: 24px;">
+    <div class="card" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:18px;">
+      <span style="color:#94a3b8; font-size:0.8rem; font-weight:600; text-transform:uppercase;">Basket Value</span>
+      <div style="font-size:1.6rem; font-weight:700; color:#f1f5f9; margin-top:4px;">
+        ₹<span id="statCartSubtotal">0</span>
+      </div>
+      <span style="font-size:0.8rem; color:#64748b;"><span id="statCartCount">0</span> item(s)</span>
+    </div>
+
+    <div class="card" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:18px;">
+      <span style="color:#94a3b8; font-size:0.8rem; font-weight:600; text-transform:uppercase;">Duplicate Warnings</span>
+      <div style="font-size:1.6rem; font-weight:700; color:#f59e0b; margin-top:4px;" id="statDupCount">
+        0
+      </div>
+      <span style="font-size:0.8rem; color:#64748b;">Repeats within 35 days</span>
+    </div>
+
+    <div class="card" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:18px;">
+      <span style="color:#94a3b8; font-size:0.8rem; font-weight:600; text-transform:uppercase;">Combo Bundle Savings</span>
+      <div style="font-size:1.6rem; font-weight:700; color:#10b981; margin-top:4px;">
+        ₹<span id="statBundleSavings">0</span>
+      </div>
+      <span style="font-size:0.8rem; color:#10b981;" id="statBundleBadge">Auto-applied</span>
+    </div>
+
+    <div class="card" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:18px;">
+      <span style="color:#94a3b8; font-size:0.8rem; font-weight:600; text-transform:uppercase;">Twin Budget Status</span>
+      <div style="font-size:1.6rem; font-weight:700; color:#22d3ee; margin-top:4px;" id="statBudgetStatus">
+        Safe
+      </div>
+      <span style="font-size:0.8rem; color:#64748b;" id="statBudgetRemaining">Within monthly limit</span>
+    </div>
+  </div>
+
+  <!-- Main Cart Layout: Two Columns -->
+  <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:24px; align-items:start;">
+    <!-- Left Column: Cart Items & Duplicate Alerts -->
+    <div>
+      <!-- Duplicate Warning Banner (conditional) -->
+      <div id="duplicateAlertBox" style="display:none; background:rgba(245, 158, 11, 0.12); border:1px solid rgba(245, 158, 11, 0.4); border-radius:12px; padding:16px 20px; margin-bottom:20px; color:#fef3c7;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <span style="font-size:1.3rem;">⚠️</span>
+          <strong style="font-size:0.95rem; color:#fbbf24;">Potential Duplicate Purchase Detected!</strong>
+        </div>
+        <div id="duplicateAlertList" style="font-size:0.85rem; color:#fde68a;"></div>
+      </div>
+
+      <!-- Over Budget Warning Banner (conditional) -->
+      <div id="overBudgetAlertBox" style="display:none; background:rgba(239, 68, 68, 0.12); border:1px solid rgba(239, 68, 68, 0.4); border-radius:12px; padding:16px 20px; margin-bottom:20px; color:#fee2e2;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <span style="font-size:1.3rem;">🚨</span>
+          <strong style="font-size:0.95rem; color:#f87171;">Twin Monthly Budget Ceiling Exceeded</strong>
+        </div>
+        <div id="overBudgetMessage" style="font-size:0.85rem; color:#fca5a5;"></div>
+      </div>
+
+      <!-- Cart Items Card -->
+      <div class="card" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid #1e293b; padding-bottom:12px;">
+          <h3 style="margin:0; color:#f1f5f9; font-size:1.2rem;">Basket Items</h3>
+          <a href="/discovery" style="font-size:0.85rem; color:#818cf8; text-decoration:none;">+ Add More Items</a>
+        </div>
+        <div id="smartCartItemsList">
+          <!-- Dynamically populated from localStorage/API -->
+          <div style="text-align:center; padding:40px; color:#64748b;">
+            Your cart is currently empty. Browse products to see Smart Cart AI in action!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: AI Companion Recommendations & Checkout Summary -->
+    <div>
+      <!-- Missing Companion Accessories Card -->
+      <div class="card" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:20px; margin-bottom:20px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <span style="font-size:1.2rem;">✨</span>
+          <h4 style="margin:0; color:#f1f5f9; font-size:1rem;">Recommended Companion Add-ons</h4>
+        </div>
+        <p style="margin:0 0 14px 0; font-size:0.8rem; color:#94a3b8;">
+          Frequently paired essentials that complement items currently in your basket:
+        </p>
+        <div id="missingEssentialsContainer" style="display:flex; flex-direction:column; gap:12px;">
+          <div style="font-size:0.85rem; color:#64748b;">Evaluating companion items...</div>
+        </div>
+      </div>
+
+      <!-- Checkout Summary Card -->
+      <div class="card" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:24px;">
+        <h3 style="margin:0 0 16px 0; color:#f1f5f9; font-size:1.15rem; border-bottom:1px solid #1e293b; padding-bottom:10px;">
+          Smart Order Summary
+        </h3>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:#cbd5e1;">
+          <span>Items Subtotal</span>
+          <span>₹<span id="summarySubtotal">0</span></span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:#10b981;">
+          <span>Combo Bundle Discount (8%)</span>
+          <span>-₹<span id="summaryDiscount">0</span></span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:#cbd5e1;">
+          <span>Delivery</span>
+          <span style="color:#10b981; font-weight:600;">FREE</span>
+        </div>
+        <div style="border-top:1px solid #1e293b; margin:14px 0; padding-top:14px; display:flex; justify-content:space-between; font-size:1.15rem; font-weight:700; color:#f1f5f9;">
+          <span>Estimated Total</span>
+          <span style="color:#a855f7;">₹<span id="summaryTotal">0</span></span>
+        </div>
+        <a href="/checkout" class="btn btn-primary" style="display:block; text-align:center; background:linear-gradient(135deg, #6366f1, #a855f7); color:#fff; text-decoration:none; padding:14px; border-radius:8px; font-weight:700; font-size:1rem; box-shadow:0 4px 14px rgba(99, 102, 241, 0.4); margin-top:16px;">
+          Proceed to Checkout ➔
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/smart_cart.js"></script>
+{% endblock %}

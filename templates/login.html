@@ -1,0 +1,791 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In &amp; Sign Up — PreTwin AI Personal Shopping Twin{% endblock %}
+
+{% block extra_head %}
+<!-- Google Identity Services client script -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 480px; margin: 40px auto 70px auto; padding: 0 16px;">
+  <!-- Fairy-Tale Styled Auth Card -->
+  <div class="card" style="background:#ffffff; border-radius:18px; box-shadow:0 12px 40px rgba(124, 58, 237, 0.12); border:1px solid rgba(192, 132, 252, 0.35); padding:36px 32px; position:relative; overflow:hidden;">
+    
+    <!-- Subtle Background Fairy Sparkle Watermark -->
+    <div style="position:absolute; right:-10px; top:-15px; font-size:100px; opacity:0.04; pointer-events:none; user-select:none;">
+      ✨
+    </div>
+
+    <!-- Header with Fairy-Tale Wing Logo & Brand -->
+    <div style="text-align:center; margin-bottom:20px;">
+      <div style="display:inline-flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px;">
+        <svg class="pretwin-wing-emblem" width="40" height="40" viewBox="0 0 44 44" fill="none" style="filter: drop-shadow(0 4px 10px rgba(124, 58, 237, 0.35));">
+          <path d="M 22 22 C 20 15, 14 9, 5 7 C 4 14, 8 20, 16 23 Z" fill="url(#loginWingGradL)"></path>
+          <path d="M 22 22 C 24 15, 30 9, 39 7 C 40 14, 36 20, 28 23 Z" fill="url(#loginWingGradR)"></path>
+          <path d="M 22 22 C 19 25, 13 28, 7 31 C 9 35, 16 35, 20 27 Z" fill="url(#loginWingGradL)" opacity="0.85"></path>
+          <path d="M 22 22 C 25 25, 31 28, 37 31 C 35 35, 28 35, 24 27 Z" fill="url(#loginWingGradR)" opacity="0.85"></path>
+          <ellipse cx="22" cy="22" rx="3.5" ry="6.5" fill="#7c3aed"></ellipse>
+          <circle cx="22" cy="14" r="3.2" fill="#c084fc"></circle>
+          <defs>
+            <linearGradient id="loginWingGradL" x1="5" y1="7" x2="22" y2="23" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#c084fc"></stop>
+              <stop offset="100%" stop-color="#6366f1"></stop>
+            </linearGradient>
+            <linearGradient id="loginWingGradR" x1="39" y1="7" x2="22" y2="23" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#c084fc"></stop>
+              <stop offset="100%" stop-color="#6366f1"></stop>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span style="font-size:26px; font-weight:800; font-style:italic; background:linear-gradient(135deg, #7c3aed, #4f46e5); -webkit-background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:-0.5px;">
+          PreTwin
+        </span>
+      </div>
+
+      <h2 style="font-size:1.5rem; font-weight:700; color:#1e1b4b; margin:0 0 4px 0;">Welcome to PreTwin</h2>
+      <div style="font-size:0.92rem; font-weight:600; color:#7c3aed; font-style:italic; margin-bottom:6px;">
+        “Your Future. Your Style. Your Twin.”
+      </div>
+      <p style="font-size:0.86rem; color:#64748b; margin:0;">Your personalized shopping experience begins here.</p>
+    </div>
+
+    <!-- Alert / Feedback Message Box -->
+    <div id="authAlertBox" style="display:none; padding:10px 14px; border-radius:8px; font-size:0.86rem; margin-bottom:16px; line-height:1.45; text-align:center;"></div>
+
+    {% if request.args.get('logged_out') %}
+      <div style="background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; padding:10px 14px; border-radius:8px; font-size:0.86rem; margin-bottom:16px; text-align:center;">
+        ✓ You have been signed out safely.
+      </div>
+    {% endif %}
+
+    <!-- Tab Switcher: Sign In vs Sign Up -->
+    <div style="display:flex; background:#f1f5f9; border-radius:10px; padding:4px; margin-bottom:22px; position:relative;">
+      <button
+        type="button"
+        id="tabBtnLogin"
+        onclick="switchAuthTab('login')"
+        style="flex:1; padding:8px 12px; border:none; border-radius:8px; font-weight:700; font-size:0.9rem; cursor:pointer; transition:all 0.2s ease; background:#ffffff; color:#7c3aed; box-shadow:0 2px 6px rgba(0,0,0,0.06);"
+      >
+        Sign In
+      </button>
+      <button
+        type="button"
+        id="tabBtnRegister"
+        onclick="switchAuthTab('register')"
+        style="flex:1; padding:8px 12px; border:none; border-radius:8px; font-weight:600; font-size:0.9rem; cursor:pointer; transition:all 0.2s ease; background:transparent; color:#64748b;"
+      >
+        Sign Up
+      </button>
+    </div>
+
+    <!-- 1. LOGIN FORM -->
+    <form id="loginFormWrap" onsubmit="handleFormLogin(event)" style="display:block;">
+      <div style="margin-bottom:16px;">
+        <label for="loginIdentifierInput" style="display:block; font-size:0.84rem; font-weight:600; color:#334155; margin-bottom:6px;">
+          Email or Username <span style="color:#ef4444;">*</span>
+        </label>
+        <div style="position:relative;">
+          <input
+            type="text"
+            id="loginIdentifierInput"
+            name="identifier"
+            required
+            placeholder="Enter your email or username"
+            style="width:100%; box-sizing:border-box; padding:11px 14px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.92rem; color:#1e293b; background:#f8fafc; outline:none; transition:border-color 0.2s ease;"
+            onfocus="this.style.borderColor='#7c3aed'; this.style.background='#ffffff';"
+            onblur="this.style.borderColor='#cbd5e1'; this.style.background='#f8fafc';"
+          />
+        </div>
+      </div>
+
+      <div style="margin-bottom:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <label for="loginPasswordInput" style="font-size:0.84rem; font-weight:600; color:#334155;">
+            Password <span style="color:#ef4444;">*</span>
+          </label>
+        </div>
+        <div style="position:relative; display:flex; align-items:center;">
+          <input
+            type="password"
+            id="loginPasswordInput"
+            name="password"
+            required
+            placeholder="Enter your password"
+            style="width:100%; box-sizing:border-box; padding:11px 48px 11px 14px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.92rem; color:#1e293b; background:#f8fafc; outline:none; transition:border-color 0.2s ease;"
+            onfocus="this.style.borderColor='#7c3aed'; this.style.background='#ffffff';"
+            onblur="this.style.borderColor='#cbd5e1'; this.style.background='#f8fafc';"
+          />
+          <button
+            type="button"
+            id="toggleLoginPassBtn"
+            onclick="togglePasswordVisibility('loginPasswordInput', this)"
+            style="position:absolute; right:10px; background:none; border:none; color:#64748b; font-size:0.75rem; font-weight:700; cursor:pointer; padding:4px 6px; border-radius:4px;"
+            aria-label="Toggle password visibility"
+          >
+            SHOW
+          </button>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        id="loginSubmitBtn"
+        style="width:100%; padding:12px; background:linear-gradient(135deg, #7c3aed, #4f46e5); color:#ffffff; border:none; border-radius:8px; font-weight:700; font-size:0.96rem; cursor:pointer; box-shadow:0 4px 14px rgba(124, 58, 237, 0.3); transition:all 0.2s ease;"
+        onmouseover="this.style.opacity='0.92'; this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.opacity='1'; this.style.transform='translateY(0)';"
+      >
+        Sign In to PreTwin
+      </button>
+
+      <div style="text-align:center; margin-top:14px; font-size:0.84rem; color:#64748b;">
+        Don't have an account? 
+        <a href="javascript:void(0)" onclick="switchAuthTab('register')" style="color:#7c3aed; font-weight:700; text-decoration:none;">
+          Create Account
+        </a>
+      </div>
+    </form>
+
+    <!-- 2. SIGN UP / REGISTER FORM -->
+    <form id="registerFormWrap" onsubmit="handleFormRegister(event)" style="display:none;">
+      <div style="margin-bottom:14px;">
+        <label for="regNameInput" style="display:block; font-size:0.84rem; font-weight:600; color:#334155; margin-bottom:5px;">
+          Full Name <span style="color:#ef4444;">*</span>
+        </label>
+        <input
+          type="text"
+          id="regNameInput"
+          name="name"
+          required
+          placeholder="Enter your full name"
+          style="width:100%; box-sizing:border-box; padding:10px 14px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.9rem; color:#1e293b; background:#f8fafc; outline:none;"
+          onfocus="this.style.borderColor='#7c3aed'; this.style.background='#ffffff';"
+          onblur="this.style.borderColor='#cbd5e1'; this.style.background='#f8fafc';"
+        />
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <label for="regEmailInput" style="display:block; font-size:0.84rem; font-weight:600; color:#334155; margin-bottom:5px;">
+          Email Address <span style="color:#ef4444;">*</span>
+        </label>
+        <input
+          type="email"
+          id="regEmailInput"
+          name="email"
+          required
+          placeholder="Enter your email address"
+          style="width:100%; box-sizing:border-box; padding:10px 14px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.9rem; color:#1e293b; background:#f8fafc; outline:none;"
+          onfocus="this.style.borderColor='#7c3aed'; this.style.background='#ffffff';"
+          onblur="this.style.borderColor='#cbd5e1'; this.style.background='#f8fafc';"
+        />
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <label for="regUsernameInput" style="display:block; font-size:0.84rem; font-weight:600; color:#334155; margin-bottom:5px;">
+          Username <span style="font-size:0.75rem; color:#64748b; font-weight:400;">(optional)</span>
+        </label>
+        <input
+          type="text"
+          id="regUsernameInput"
+          name="username"
+          placeholder="Choose a username"
+          style="width:100%; box-sizing:border-box; padding:10px 14px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.9rem; color:#1e293b; background:#f8fafc; outline:none;"
+          onfocus="this.style.borderColor='#7c3aed'; this.style.background='#ffffff';"
+          onblur="this.style.borderColor='#cbd5e1'; this.style.background='#f8fafc';"
+        />
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <label for="regPasswordInput" style="display:block; font-size:0.84rem; font-weight:600; color:#334155; margin-bottom:5px;">
+          Password <span style="color:#ef4444;">*</span> <span style="font-size:0.75rem; color:#64748b; font-weight:400;">(min. 6 characters)</span>
+        </label>
+        <div style="position:relative; display:flex; align-items:center;">
+          <input
+            type="password"
+            id="regPasswordInput"
+            name="password"
+            required
+            placeholder="Create password"
+            style="width:100%; box-sizing:border-box; padding:10px 48px 10px 14px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.9rem; color:#1e293b; background:#f8fafc; outline:none;"
+            onfocus="this.style.borderColor='#7c3aed'; this.style.background='#ffffff';"
+            onblur="this.style.borderColor='#cbd5e1'; this.style.background='#f8fafc';"
+            oninput="checkPasswordStrength(this.value)"
+          />
+          <button
+            type="button"
+            id="toggleRegPassBtn"
+            onclick="togglePasswordVisibility('regPasswordInput', this)"
+            style="position:absolute; right:10px; background:none; border:none; color:#64748b; font-size:0.75rem; font-weight:700; cursor:pointer; padding:4px 6px; border-radius:4px;"
+            aria-label="Toggle password visibility"
+          >
+            SHOW
+          </button>
+        </div>
+        <!-- Password Strength Meter -->
+        <div style="margin-top:5px; display:flex; align-items:center; gap:8px;">
+          <div style="flex:1; height:4px; background:#e2e8f0; border-radius:2px; overflow:hidden;">
+            <div id="passwordStrengthBar" style="width:0%; height:100%; background:#ef4444; transition:all 0.3s ease;"></div>
+          </div>
+          <span id="passwordStrengthText" style="font-size:0.72rem; color:#64748b; font-weight:600;"></span>
+        </div>
+      </div>
+
+      <div style="margin-bottom:18px;">
+        <label for="regConfirmPasswordInput" style="display:block; font-size:0.84rem; font-weight:600; color:#334155; margin-bottom:5px;">
+          Confirm Password <span style="color:#ef4444;">*</span>
+        </label>
+        <div style="position:relative; display:flex; align-items:center;">
+          <input
+            type="password"
+            id="regConfirmPasswordInput"
+            name="confirm_password"
+            required
+            placeholder="Re-enter password"
+            style="width:100%; box-sizing:border-box; padding:10px 48px 10px 14px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.9rem; color:#1e293b; background:#f8fafc; outline:none;"
+            onfocus="this.style.borderColor='#7c3aed'; this.style.background='#ffffff';"
+            onblur="this.style.borderColor='#cbd5e1'; this.style.background='#f8fafc';"
+          />
+          <button
+            type="button"
+            id="toggleRegConfirmPassBtn"
+            onclick="togglePasswordVisibility('regConfirmPasswordInput', this)"
+            style="position:absolute; right:10px; background:none; border:none; color:#64748b; font-size:0.75rem; font-weight:700; cursor:pointer; padding:4px 6px; border-radius:4px;"
+            aria-label="Toggle confirm password visibility"
+          >
+            SHOW
+          </button>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        id="registerSubmitBtn"
+        style="width:100%; padding:12px; background:linear-gradient(135deg, #7c3aed, #4f46e5); color:#ffffff; border:none; border-radius:8px; font-weight:700; font-size:0.96rem; cursor:pointer; box-shadow:0 4px 14px rgba(124, 58, 237, 0.3); transition:all 0.2s ease;"
+        onmouseover="this.style.opacity='0.92'; this.style.transform='translateY(-1px)';"
+        onmouseout="this.style.opacity='1'; this.style.transform='translateY(0)';"
+      >
+        Create PreTwin Account
+      </button>
+
+      <div style="text-align:center; margin-top:14px; font-size:0.84rem; color:#64748b;">
+        Already have an account? 
+        <a href="javascript:void(0)" onclick="switchAuthTab('login')" style="color:#7c3aed; font-weight:700; text-decoration:none;">
+          Sign In
+        </a>
+      </div>
+    </form>
+
+    <!-- Divider: Continue with Google -->
+    <div style="display:flex; align-items:center; margin:22px 0 16px 0;">
+      <div style="flex:1; height:1px; background:#e2e8f0;"></div>
+      <span style="padding:0 12px; color:#94a3b8; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">
+        or continue with
+      </span>
+      <div style="flex:1; height:1px; background:#e2e8f0;"></div>
+    </div>
+
+    <!-- Google Authentication Button Container -->
+    <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+      <!-- Native GIS Button Container -->
+      <div id="gisButtonWrapper" style="display:none; justify-content:center; width:100%; max-width:360px;"></div>
+
+      <!-- Prominent Official Google-Branded Button -->
+      <button
+        type="button"
+        id="customGoogleSignInBtn"
+        onclick="triggerGoogleSignIn()"
+        role="button"
+        aria-label="Continue with Google"
+        style="width:100%; max-width:360px; min-height:46px; display:inline-flex; align-items:center; justify-content:center; gap:12px; padding:10px 18px; background:#ffffff; color:#374151; font-weight:600; font-size:0.94rem; font-family:'Roboto', 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; border:1.5px solid #dadce0; border-radius:8px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.06); transition:all 0.2s ease; outline:none;"
+        onmouseover="this.style.background='#f8fafc'; this.style.borderColor='#cbd5e1'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.1)';"
+        onmouseout="this.style.background='#ffffff'; this.style.borderColor='#dadce0'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.06)';"
+      >
+        <!-- Official Google 4-Color 'G' Logo -->
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.65v3h3.88c2.27-2.09 3.66-5.17 3.66-9.09z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.09C3.25 21.3 7.34 24 12 24z"/>
+          <path fill="#FBBC05" d="M5.28 14.32c-.25-.72-.38-1.49-.38-2.32s.13-1.6.38-2.32V6.59H1.26C.46 8.18 0 9.99 0 12s.46 3.82 1.26 5.41l4.02-3.09z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.25 2.7 1.26 6.59l4.02 3.09c.95-2.83 3.6-4.93 6.72-4.93z"/>
+        </svg>
+        <span id="googleBtnLabel">Continue with Google</span>
+      </button>
+
+      <!-- Trust Badge -->
+      <div style="display:inline-flex; align-items:center; gap:6px; color:#64748b; font-size:0.76rem; font-weight:500;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>Verified Google OAuth 2.0 Security</span>
+      </div>
+    </div>
+
+    <!-- Security & Privacy Footer -->
+    <div style="margin-top:22px; padding-top:16px; border-top:1px solid #f1f5f9; text-align:center;">
+      <p style="margin:0; font-size:0.75rem; color:#94a3b8; line-height:1.5;">
+        By continuing, you agree to PreTwin's shopping terms, autonomous digital twin privacy policy, and secure account protections.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Google OAuth Configuration Guidance Modal -->
+<div id="googleConfigModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.65); z-index:2500; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div style="background:#ffffff; border-radius:14px; padding:28px 24px; max-width:480px; width:92%; box-shadow:0 20px 45px rgba(0,0,0,0.3); border:1px solid rgba(167,139,250,0.3);">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+      <div style="width:38px; height:38px; border-radius:50%; background:#f1f5f9; display:flex; align-items:center; justify-content:center;">
+        <svg width="22" height="22" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.65v3h3.88c2.27-2.09 3.66-5.17 3.66-9.09z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.09C3.25 21.3 7.34 24 12 24z"/>
+          <path fill="#FBBC05" d="M5.28 14.32c-.25-.72-.38-1.49-.38-2.32s.13-1.6.38-2.32V6.59H1.26C.46 8.18 0 9.99 0 12s.46 3.82 1.26 5.41l4.02-3.09z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.25 2.7 1.26 6.59l4.02 3.09c.95-2.83 3.6-4.93 6.72-4.93z"/>
+        </svg>
+      </div>
+      <div>
+        <h3 style="margin:0; color:#1e1b4b; font-size:1.2rem; font-weight:700;">Google OAuth Configuration</h3>
+        <p style="margin:2px 0 0; color:#64748b; font-size:0.78rem;">Real Google Identity Services</p>
+      </div>
+    </div>
+    
+    <p style="margin:0 0 12px 0; color:#475569; font-size:0.86rem; line-height:1.5;">
+      PreTwin requires a valid Google Cloud OAuth 2.0 Web Client ID to verify accounts with Google Identity Services. Simulated or fake logins are not permitted.
+    </p>
+
+    <!-- Configure Google Client ID Form -->
+    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px; margin-bottom:14px;">
+      <div style="font-weight:700; color:#1e1b4b; margin-bottom:6px; font-size:0.82rem;">How to configure live Google Sign-In:</div>
+      <ol style="margin:0; padding-left:18px; font-size:0.78rem; color:#475569; line-height:1.5;">
+        <li>Open <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" style="color:#6366f1;">Google Cloud Console</a>.</li>
+        <li>Create an OAuth 2.0 Client ID with authorized origin: <code>http://127.0.0.1:5000</code>.</li>
+        <li>Paste your Client ID below to connect immediately:</li>
+      </ol>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <input
+          type="text"
+          id="googleClientIdInput"
+          placeholder="your-client-id.apps.googleusercontent.com"
+          value="{{ google_client_id or '' }}"
+          style="flex:1; padding:7px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.8rem; outline:none; font-family:monospace;"
+        />
+        <button
+          type="button"
+          onclick="saveGoogleClientId()"
+          style="padding:7px 14px; background:#4f46e5; color:#fff; border:none; border-radius:6px; font-weight:600; font-size:0.8rem; cursor:pointer;"
+        >
+          Save
+        </button>
+      </div>
+      <div id="saveClientMsg" style="font-size:0.75rem; margin-top:4px; display:none;"></div>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end;">
+      <button onclick="closeGoogleConfigModal()" style="padding:8px 18px; background:#f1f5f9; color:#475569; border:1px solid #e2e8f0; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.84rem;">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+/**
+ * PRETWIN SIGN IN & SIGN UP CONTROLLER
+ * Supports tab switching, email/username login, full registration, password toggling,
+ * input validation, and authentic Google Identity Services (GIS) verification.
+ */
+let GOOGLE_AUTH_ENABLED = {{ 'true' if google_auth_enabled else 'false' }};
+let GOOGLE_CLIENT_ID = "{{ google_client_id or '' }}";
+const NEXT_REDIRECT_URL = "{{ request.args.get('next', '') }}";
+const INITIAL_TAB = "{{ initial_tab or 'login' }}";
+
+function switchAuthTab(tab) {
+  const loginWrap = document.getElementById("loginFormWrap");
+  const regWrap = document.getElementById("registerFormWrap");
+  const tabLogin = document.getElementById("tabBtnLogin");
+  const tabReg = document.getElementById("tabBtnRegister");
+  const alertBox = document.getElementById("authAlertBox");
+
+  if (alertBox) alertBox.style.display = "none";
+
+  if (tab === "register") {
+    if (loginWrap) loginWrap.style.display = "none";
+    if (regWrap) regWrap.style.display = "block";
+    if (tabLogin) {
+      tabLogin.style.background = "transparent";
+      tabLogin.style.color = "#64748b";
+      tabLogin.style.boxShadow = "none";
+      tabLogin.style.fontWeight = "600";
+    }
+    if (tabReg) {
+      tabReg.style.background = "#ffffff";
+      tabReg.style.color = "#7c3aed";
+      tabReg.style.boxShadow = "0 2px 6px rgba(0,0,0,0.06)";
+      tabReg.style.fontWeight = "700";
+    }
+  } else {
+    if (loginWrap) loginWrap.style.display = "block";
+    if (regWrap) regWrap.style.display = "none";
+    if (tabLogin) {
+      tabLogin.style.background = "#ffffff";
+      tabLogin.style.color = "#7c3aed";
+      tabLogin.style.boxShadow = "0 2px 6px rgba(0,0,0,0.06)";
+      tabLogin.style.fontWeight = "700";
+    }
+    if (tabReg) {
+      tabReg.style.background = "transparent";
+      tabReg.style.color = "#64748b";
+      tabReg.style.boxShadow = "none";
+      tabReg.style.fontWeight = "600";
+    }
+  }
+}
+
+function togglePasswordVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  if (input.type === "password") {
+    input.type = "text";
+    if (btn) btn.innerText = "HIDE";
+  } else {
+    input.type = "password";
+    if (btn) btn.innerText = "SHOW";
+  }
+}
+
+function checkPasswordStrength(val) {
+  const bar = document.getElementById("passwordStrengthBar");
+  const text = document.getElementById("passwordStrengthText");
+  if (!bar || !text) return;
+
+  if (!val) {
+    bar.style.width = "0%";
+    text.innerText = "";
+    return;
+  }
+
+  let score = 0;
+  if (val.length >= 6) score += 30;
+  if (val.length >= 10) score += 20;
+  if (/[0-9]/.test(val)) score += 25;
+  if (/[^A-Za-z0-9]/.test(val)) score += 25;
+
+  bar.style.width = Math.min(score, 100) + "%";
+  if (score < 40) {
+    bar.style.background = "#ef4444";
+    text.innerText = "Weak";
+    text.style.color = "#ef4444";
+  } else if (score < 75) {
+    bar.style.background = "#f59e0b";
+    text.innerText = "Medium";
+    text.style.color = "#f59e0b";
+  } else {
+    bar.style.background = "#10b981";
+    text.innerText = "Strong";
+    text.style.color = "#10b981";
+  }
+}
+
+function showAuthAlert(msg, type = "error") {
+  const box = document.getElementById("authAlertBox");
+  if (!box) return;
+  box.style.display = "block";
+  if (type === "success") {
+    box.style.background = "#ecfdf5";
+    box.style.border = "1px solid #a7f3d0";
+    box.style.color = "#065f46";
+  } else if (type === "info") {
+    box.style.background = "#eff6ff";
+    box.style.border = "1px solid #bfdbfe";
+    box.style.color = "#1e40af";
+  } else {
+    box.style.background = "#fef2f2";
+    box.style.border = "1px solid #fecaca";
+    box.style.color = "#b91c1c";
+  }
+  box.innerText = msg;
+}
+
+// ---------------------------------------------------------------------------
+// Login Form Submission
+// ---------------------------------------------------------------------------
+async function handleFormLogin(e) {
+  e.preventDefault();
+  const alertBox = document.getElementById("authAlertBox");
+  if (alertBox) alertBox.style.display = "none";
+
+  const identifier = (document.getElementById("loginIdentifierInput").value || "").trim();
+  const password = document.getElementById("loginPasswordInput").value || "";
+  const submitBtn = document.getElementById("loginSubmitBtn");
+
+  if (!identifier) {
+    showAuthAlert("Please enter your email or username.");
+    return;
+  }
+  if (!password) {
+    showAuthAlert("Please enter your password.");
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.innerText = "Signing in...";
+  showAuthAlert("Authenticating with PreTwin...", "info");
+
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: identifier, password: password })
+    });
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || data.message || "Invalid email or password.");
+    }
+
+    showAuthAlert(`✓ Welcome back, ${data.user.username}! Redirecting...`, "success");
+    if (data.user) {
+      localStorage.setItem("pretwin_user", JSON.stringify(data.user));
+    }
+    setTimeout(() => {
+      window.location.href = NEXT_REDIRECT_URL || "/";
+    }, 400);
+
+  } catch (err) {
+    showAuthAlert(err.message);
+    submitBtn.disabled = false;
+    submitBtn.innerText = "Sign In to PreTwin";
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Register / Sign Up Form Submission
+// ---------------------------------------------------------------------------
+async function handleFormRegister(e) {
+  e.preventDefault();
+  const alertBox = document.getElementById("authAlertBox");
+  if (alertBox) alertBox.style.display = "none";
+
+  const name = (document.getElementById("regNameInput").value || "").trim();
+  const email = (document.getElementById("regEmailInput").value || "").trim().toLowerCase();
+  const username = (document.getElementById("regUsernameInput").value || "").trim();
+  const password = document.getElementById("regPasswordInput").value || "";
+  const confirmPassword = document.getElementById("regConfirmPasswordInput").value || "";
+  const submitBtn = document.getElementById("registerSubmitBtn");
+
+  if (!name) {
+    showAuthAlert("Please enter your full name.");
+    return;
+  }
+  if (!email || !email.includes("@") || !email.includes(".")) {
+    showAuthAlert("Please enter a valid email address.");
+    return;
+  }
+  if (password.length < 6) {
+    showAuthAlert("Password must be at least 6 characters long.");
+    return;
+  }
+  if (password !== confirmPassword) {
+    showAuthAlert("Passwords do not match. Please re-enter.");
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.innerText = "Creating account...";
+  showAuthAlert("Setting up your AI Shopping Twin account...", "info");
+
+  try {
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        username: username || name,
+        password: password,
+        confirm_password: confirmPassword
+      })
+    });
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || data.message || "Registration failed. Please try again.");
+    }
+
+    showAuthAlert(`✓ Account created! Welcome to PreTwin, ${data.user.username}. Redirecting...`, "success");
+    if (data.user) {
+      localStorage.setItem("pretwin_user", JSON.stringify(data.user));
+    }
+    setTimeout(() => {
+      window.location.href = NEXT_REDIRECT_URL || "/";
+    }, 450);
+
+  } catch (err) {
+    showAuthAlert(err.message);
+    submitBtn.disabled = false;
+    submitBtn.innerText = "Create PreTwin Account";
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Google Identity Services (GIS) OAuth
+// ---------------------------------------------------------------------------
+function initGoogleIdentity() {
+  if (GOOGLE_AUTH_ENABLED && GOOGLE_CLIENT_ID && window.google && window.google.accounts) {
+    try {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true
+      });
+
+      const gisWrapper = document.getElementById("gisButtonWrapper");
+      if (gisWrapper) {
+        gisWrapper.innerHTML = "";
+        google.accounts.id.renderButton(gisWrapper, {
+          theme: "outline",
+          size: "large",
+          type: "standard",
+          shape: "rectangular",
+          text: "continue_with",
+          logo_alignment: "left",
+          width: 360
+        });
+        gisWrapper.style.display = "flex";
+        
+        const customBtn = document.getElementById("customGoogleSignInBtn");
+        if (customBtn) customBtn.style.display = "none";
+      }
+    } catch (e) {
+      console.warn("GIS initialization notice:", e);
+    }
+  }
+}
+
+function triggerGoogleSignIn() {
+  if (!GOOGLE_AUTH_ENABLED || !GOOGLE_CLIENT_ID) {
+    openGoogleConfigModal();
+    return;
+  }
+
+  if (window.google && window.google.accounts) {
+    const btnLabel = document.getElementById("googleBtnLabel");
+    if (btnLabel) btnLabel.innerText = "Connecting to Google...";
+
+    google.accounts.id.prompt((notification) => {
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        if (btnLabel) btnLabel.innerText = "Continue with Google";
+        showAuthAlert("Please select your Google account from the popup or sign in with your email/password above.", "info");
+      }
+    });
+  } else {
+    showAuthAlert("Google Identity Services is loading. You can also sign in with email/password above.", "info");
+  }
+}
+
+async function handleGoogleCredentialResponse(response) {
+  showAuthAlert("Verifying Google Account...", "info");
+
+  try {
+    const res = await fetch("/api/auth/google", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        credential: response.credential,
+        next: NEXT_REDIRECT_URL
+      })
+    });
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || data.message || "Google authentication failed.");
+    }
+
+    showAuthAlert(`✓ Welcome, ${data.user.username}! Signed in with Google. Redirecting...`, "success");
+    if (data.user) {
+      localStorage.setItem("pretwin_user", JSON.stringify(data.user));
+    }
+    setTimeout(() => {
+      window.location.href = data.redirect || NEXT_REDIRECT_URL || "/";
+    }, 400);
+
+  } catch (err) {
+    showAuthAlert(err.message);
+    const btnLabel = document.getElementById("googleBtnLabel");
+    if (btnLabel) btnLabel.innerText = "Continue with Google";
+  }
+}
+
+async function saveGoogleClientId() {
+  const input = document.getElementById("googleClientIdInput");
+  const msg = document.getElementById("saveClientMsg");
+  const val = input ? input.value.trim() : "";
+  if (!val) {
+    if (msg) {
+      msg.style.display = "block";
+      msg.style.color = "#dc2626";
+      msg.innerText = "Please enter a valid Google Client ID.";
+    }
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/auth/save-google-client-id", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ client_id: val })
+    });
+    const data = await res.json();
+    if (data.success) {
+      if (msg) {
+        msg.style.display = "block";
+        msg.style.color = "#16a34a";
+        msg.innerText = "✓ Saved! Activating Google Identity Services...";
+      }
+      GOOGLE_CLIENT_ID = val;
+      GOOGLE_AUTH_ENABLED = true;
+      setTimeout(() => {
+        closeGoogleConfigModal();
+        window.location.reload();
+      }, 700);
+    }
+  } catch (e) {
+    if (msg) {
+      msg.style.display = "block";
+      msg.style.color = "#dc2626";
+      msg.innerText = e.message;
+    }
+  }
+}
+
+function openGoogleConfigModal() {
+  const m = document.getElementById("googleConfigModal");
+  if (m) m.style.display = "flex";
+}
+
+function closeGoogleConfigModal() {
+  const m = document.getElementById("googleConfigModal");
+  if (m) m.style.display = "none";
+}
+
+// Initial setup on window load
+window.addEventListener("load", () => {
+  if (INITIAL_TAB === "register") {
+    switchAuthTab("register");
+  } else {
+    switchAuthTab("login");
+  }
+
+  let attempts = 0;
+  const timer = setInterval(() => {
+    attempts++;
+    if (window.google && window.google.accounts) {
+      clearInterval(timer);
+      initGoogleIdentity();
+    } else if (attempts > 15) {
+      clearInterval(timer);
+    }
+  }, 200);
+});
+</script>
+{% endblock %}

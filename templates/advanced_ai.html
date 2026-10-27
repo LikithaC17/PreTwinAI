@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}Advanced Features for Future Development — PreTwin AI{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1240px; margin: 24px auto; padding: 0 16px;">
+  <!-- Header Banner -->
+  <div class="card" style="background: linear-gradient(135deg, #181438 0%, #2b1055 50%, #1e1b4b 100%); border: 1px solid rgba(167, 139, 250, 0.35); padding: 28px; border-radius: 16px; margin-bottom: 24px; color: #fff; box-shadow: 0 8px 32px rgba(0,0,0,0.25);">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+      <div>
+        <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(167, 139, 250, 0.18); padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600; color:#c4b5fd; margin-bottom:10px; border:1px solid rgba(167, 139, 250, 0.3);">
+          <span>🚀 FUTURE ROADMAP</span>
+          <span>•</span>
+          <span>NEXT-GENERATION COMMERCE CAPABILITIES</span>
+        </div>
+        <h1 style="font-size:1.9rem; font-weight:700; margin:0 0 8px 0; color:#fff;">Advanced Features for Future Development</h1>
+        <p style="margin:0; color:#cbd5e1; font-size:0.95rem; max-width:760px; line-height:1.5;">
+          Experience our visionary commerce roadmap. Test live interactive prototypes for Smart Gift Matching, 3D Virtual Try-On Sizing, and Collaborative Household Twins.
+        </p>
+      </div>
+      <div>
+        <span style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); padding:8px 16px; border-radius:8px; font-size:0.85rem; color:#e0e7ff;">
+          Active Roadmap: Future Innovation Lab
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Simulator Tabs -->
+  <div class="card" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:24px; margin-bottom:28px;">
+    <!-- Tab Navigation -->
+    <div style="display:flex; gap:10px; border-bottom:1px solid #1e293b; padding-bottom:16px; overflow-x:auto; margin-bottom:20px;">
+      <button class="adv-tab-btn active" onclick="switchAdvTab('gift')" id="tabBtn_gift" style="padding:10px 18px; border-radius:8px; border:1px solid #6366f1; background:rgba(99, 102, 241, 0.15); color:#fff; font-weight:600; cursor:pointer; font-size:0.9rem;">
+        🎁 Smart Gift Finder
+      </button>
+      <button class="adv-tab-btn" onclick="switchAdvTab('tryon')" id="tabBtn_tryon" style="padding:10px 18px; border-radius:8px; border:1px solid #334155; background:transparent; color:#94a3b8; font-weight:600; cursor:pointer; font-size:0.9rem;">
+        👓 3D Virtual Try-On
+      </button>
+      <button class="adv-tab-btn" onclick="switchAdvTab('household')" id="tabBtn_household" style="padding:10px 18px; border-radius:8px; border:1px solid #334155; background:transparent; color:#94a3b8; font-weight:600; cursor:pointer; font-size:0.9rem;">
+        👨‍👩‍👧 Collaborative Household Twin
+      </button>
+    </div>
+
+    <!-- Tab 1: Smart Gift Finder -->
+    <div id="tabContent_gift" class="adv-tab-content">
+      <div style="margin-bottom:20px;">
+        <h3 style="margin:0 0 6px 0; color:#f1f5f9; font-size:1.25rem;">AI Smart Gift Recommender</h3>
+        <p style="margin:0; color:#94a3b8; font-size:0.85rem;">Specify recipient personality, celebration milestone, and budget for curate gift suggestions.</p>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:20px;">
+        <div>
+          <label style="display:block; font-size:0.85rem; color:#cbd5e1; margin-bottom:6px; font-weight:600;">Recipient</label>
+          <select id="giftRecipient" style="width:100%; background:#1e293b; color:#f1f5f9; border:1px solid #334155; padding:10px; border-radius:8px;">
+            <option value="Tech Enthusiast Friend">Tech Enthusiast Friend</option>
+            <option value="Mother">Mother</option>
+            <option value="Father">Father</option>
+            <option value="Colleague">Colleague / Peer</option>
+            <option value="Teenager">Teenager</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.85rem; color:#cbd5e1; margin-bottom:6px; font-weight:600;">Occasion</label>
+          <select id="giftOccasion" style="width:100%; background:#1e293b; color:#f1f5f9; border:1px solid #334155; padding:10px; border-radius:8px;">
+            <option value="Birthday">Birthday</option>
+            <option value="Anniversary">Anniversary</option>
+            <option value="Diwali / Festive">Diwali / Festive</option>
+            <option value="Housewarming">Housewarming</option>
+            <option value="Appreciation">Appreciation Gift</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.85rem; color:#cbd5e1; margin-bottom:6px; font-weight:600;">Budget Cap (₹)</label>
+          <input type="number" id="giftBudget" value="3000" style="width:100%; background:#1e293b; color:#f1f5f9; border:1px solid #334155; padding:10px; border-radius:8px;">
+        </div>
+
+        <div style="display:flex; align-items:flex-end;">
+          <button onclick="findGifts()" class="btn btn-primary" style="width:100%; padding:10px; background:#6366f1; color:#fff; border:none; border-radius:8px; font-weight:600; cursor:pointer;">
+            ✨ Generate Gift Matches
+          </button>
+        </div>
+      </div>
+
+      <div id="giftResultsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px;">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+
+    <!-- Tab 2: 3D Virtual Try-On Sizing -->
+    <div id="tabContent_tryon" class="adv-tab-content" style="display:none;">
+      <div style="margin-bottom:20px;">
+        <h3 style="margin:0 0 6px 0; color:#f1f5f9; font-size:1.25rem;">Digital Twin 3D Virtual Try-On &amp; Sizing</h3>
+        <p style="margin:0; color:#94a3b8; font-size:0.85rem;">Eliminate fit mismatch and return uncertainty with twin geometry sizing.</p>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
+        <div style="background:#1e293b; border:1px solid #334155; border-radius:10px; padding:20px;">
+          <h4 style="margin:0 0 14px 0; color:#f1f5f9;">Select Try-On Category &amp; Size</h4>
+          <div style="margin-bottom:12px;">
+            <label style="display:block; font-size:0.85rem; color:#94a3b8; margin-bottom:4px;">Apparel / Accessory</label>
+            <select id="tryOnCategory" style="width:100%; background:#0f172a; color:#f1f5f9; border:1px solid #334155; padding:8px; border-radius:6px;">
+              <option value="Footwear">Athletic Running Shoes</option>
+              <option value="Apparel">Classic Oxford Shirt</option>
+              <option value="Eyewear">Aviator Sunglasses</option>
+            </select>
+          </div>
+          <div style="margin-bottom:16px;">
+            <label style="display:block; font-size:0.85rem; color:#94a3b8; margin-bottom:4px;">Size Choice</label>
+            <select id="tryOnSize" style="width:100%; background:#0f172a; color:#f1f5f9; border:1px solid #334155; padding:8px; border-radius:6px;">
+              <option value="UK 8">UK 8 / EU 42</option>
+              <option value="UK 9">UK 9 / EU 43</option>
+              <option value="UK 10">UK 10 / EU 44</option>
+              <option value="Size M">Size M (Medium)</option>
+              <option value="Size L">Size L (Large)</option>
+            </select>
+          </div>
+          <button onclick="simulateTryOn()" class="btn btn-primary" style="width:100%; padding:10px; background:#6366f1; color:#fff; border:none; border-radius:6px; font-weight:600; cursor:pointer;">
+            Run 3D Sizing Simulator
+          </button>
+        </div>
+
+        <div id="tryOnResultBox" style="background:#1e293b; border:1px solid #334155; border-radius:10px; padding:20px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+          <span style="font-size:3rem; margin-bottom:10px;">👟</span>
+          <div style="font-weight:700; color:#10b981; font-size:1.15rem; margin-bottom:6px;" id="fitConfText">94% Fit Confidence</div>
+          <div style="color:#cbd5e1; font-size:0.85rem; max-width:320px; line-height:1.4;" id="fitRecText">
+            Matches your digital twin historical shoe sizing with under 4% return probability.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Collaborative Household Twin -->
+    <div id="tabContent_household" class="adv-tab-content" style="display:none;">
+      <div style="margin-bottom:20px;">
+        <h3 style="margin:0 0 6px 0; color:#f1f5f9; font-size:1.25rem;">Collaborative Household Twin</h3>
+        <p style="margin:0; color:#94a3b8; font-size:0.85rem;">Synchronize shared household baskets, room supplies, and split-order approvals.</p>
+      </div>
+      <div style="background:#1e293b; border:1px solid #334155; border-radius:10px; padding:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <div>
+            <div style="font-weight:700; color:#f1f5f9; font-size:1rem;">Active Household: Johnson Family Residence</div>
+            <div style="color:#94a3b8; font-size:0.85rem;">3 Members Synchronized • Combined monthly replenishment budget: ₹25,000</div>
+          </div>
+          <span style="background:rgba(245, 158, 11, 0.2); color:#f59e0b; padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:700;">In Development</span>
+        </div>
+        <p style="color:#cbd5e1; font-size:0.88rem; line-height:1.5;">
+          The collaborative twin allows roommates or family members to pool reorders into a single delivery bundle, eliminating duplicate purchases of household consumables like detergent, tea, and cleaning items.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Complete Strategic Roadmap Grid -->
+  <div style="margin-top:36px;">
+    <h3 style="color:#f1f5f9; font-size:1.35rem; margin-bottom:18px;">PreTwin Strategic AI Development Roadmap</h3>
+    <div id="roadmapCardsGrid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:18px;">
+      <!-- Loaded from /api/advanced/features -->
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/advanced_ai.js"></script>
+{% endblock %}

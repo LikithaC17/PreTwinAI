@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#eef2f6" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#334155cc" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" fill="url(#bgGrad)" rx="8" />
+  <circle cx="100" cy="95" r="54" fill="#33415514" />
+  <path d="M60 120 C70 90 130 90 140 120 L155 125 C155 140 145 150 135 150 L65 150 C55 150 45 140 45 125 Z" fill="url(#accentGrad)" stroke="#334155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="100" y="172" font-family="'Inter', -apple-system, sans-serif" font-size="11" font-weight="700" fill="#334155" text-anchor="middle">Automotive Accessories</text>
+  <text x="100" y="186" font-family="'Inter', -apple-system, sans-serif" font-size="9" font-weight="500" fill="#64748b" text-anchor="middle">PreTwin Verified • Car & Bike Care</text>
+</svg>

@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}My Wishlist — PreTwin AI{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1240px; margin: 24px auto 60px auto; padding: 0 16px;">
+  <!-- Wishlist Header -->
+  <div class="card" style="background:#ffffff; border-radius:12px; border:1px solid #e2e8f0; padding:24px 28px; margin-bottom:24px; box-shadow:0 4px 16px rgba(0,0,0,0.04); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+    <div>
+      <div style="display:inline-flex; align-items:center; gap:8px; font-size:0.8rem; font-weight:700; color:#7c3aed; text-transform:uppercase; margin-bottom:6px; letter-spacing:0.5px;">
+        <span>❤️ PERSONAL SHORTLIST</span>
+        <span>•</span>
+        <span>PRETWIN SAVED ITEMS</span>
+      </div>
+      <h1 style="font-size:1.75rem; font-weight:700; color:#1e1b4b; margin:0 0 4px 0;">
+        My Wishlist (<span id="wishlistHeaderCount">0</span>)
+      </h1>
+      <p style="margin:0; color:#64748b; font-size:0.9rem;">
+        Items saved for future consideration or price drop monitoring by your Shopping Twin.
+      </p>
+    </div>
+    <div style="display:flex; gap:12px;">
+      <a href="/discovery" class="btn btn-secondary" style="background:#f8fafc; color:#475569; border:1px solid #cbd5e1; padding:10px 18px; border-radius:8px; text-decoration:none; font-weight:600; font-size:0.9rem;">
+        + Browse Products
+      </a>
+      <button onclick="moveAllWishlistToCart()" class="btn btn-primary" style="background:linear-gradient(135deg, #7c3aed, #4f46e5); color:#fff; border:none; padding:10px 20px; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.9rem;">
+        🛒 Move All to Cart
+      </button>
+    </div>
+  </div>
+
+  <!-- Wishlist Items Grid -->
+  <div id="wishlistGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:20px;">
+    <!-- Populated by JS -->
+    <div style="grid-column:1/-1; text-align:center; padding:60px 20px; color:#64748b;">
+      <div class="spinner"></div>
+      <p style="margin-top:12px;">Loading your saved items...</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  renderWishlistPage();
+});
+
+function getWishlistItems() {
+  try {
+    const raw = localStorage.getItem("pretwin_wishlist") || localStorage.getItem("flipkart_wishlist");
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveWishlistItems(list) {
+  localStorage.setItem("pretwin_wishlist", JSON.stringify(list));
+  const countEl = document.getElementById("wishlistHeaderCount");
+  if (countEl) countEl.innerText = list.length;
+  const navBadge = document.getElementById("menuWishlistCount");
+  if (navBadge) navBadge.innerText = list.length;
+}
+
+function renderWishlistPage() {
+  const items = getWishlistItems();
+  const grid = document.getElementById("wishlistGrid");
+  const countEl = document.getElementById("wishlistHeaderCount");
+  if (countEl) countEl.innerText = items.length;
+
+  if (!grid) return;
+
+  if (items.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column:1/-1; background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:60px 20px; text-align:center;">
+        <div style="font-size:3.5rem; margin-bottom:14px;">💖</div>
+        <h3 style="font-size:1.35rem; color:#1e1b4b; margin:0 0 8px 0; font-weight:700;">Your Wishlist is Empty</h3>
+        <p style="color:#64748b; font-size:0.95rem; max-width:440px; margin:0 auto 24px auto; line-height:1.5;">
+          Explore over 1,000+ verified products. Save items you love, and your Shopping Twin will track discounts for you!
+        </p>
+        <a href="/discovery" style="display:inline-block; background:linear-gradient(135deg, #7c3aed, #4f46e5); color:#fff; padding:12px 28px; border-radius:8px; font-weight:700; text-decoration:none; box-shadow:0 4px 14px rgba(99, 102, 241, 0.35);">
+          Start Shopping ➔
+        </a>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = items.map((item, idx) => {
+    const rating = parseFloat(item.rating || 4.2).toFixed(1);
+    const price = Math.round(item.price || 0).toLocaleString("en-IN");
+    const mrp = Math.round((item.price || 0) * 1.25).toLocaleString("en-IN");
+
+    return `
+      <div class="card" style="background:#ffffff; border-radius:10px; border:1px solid #e2e8f0; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.2s, box-shadow 0.2s; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div style="position:relative; background:#f8fafc; height:200px; display:flex; align-items:center; justify-content:center; padding:16px;">
+          <img src="${item.image_url || '/static/img/placeholder.svg'}" alt="${item.name}" style="max-height:100%; max-width:100%; object-fit:contain;" onerror="this.onerror=null;this.src='/static/img/placeholder.svg';">
+          <button onclick="removeFromWishlist(${idx})" style="position:absolute; top:10px; right:10px; background:#fff; border:1px solid #e2e8f0; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#ef4444; font-size:1.1rem; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.08);" title="Remove from Wishlist">
+            ×
+          </button>
+        </div>
+
+        <div style="padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="font-size:0.75rem; color:#6366f1; font-weight:700; text-transform:uppercase; margin-bottom:4px;">
+              ${item.category || item.brand || 'PreTwin Verified'}
+            </div>
+            <h4 style="font-size:0.95rem; font-weight:600; color:#1e1b4b; margin:0 0 6px 0; line-height:1.35;">
+              ${item.name}
+            </h4>
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:10px;">
+              <span style="background:#15803d; color:#fff; font-size:0.75rem; font-weight:700; padding:2px 6px; border-radius:4px;">
+                ${rating} ★
+              </span>
+              <span style="font-size:0.75rem; color:#64748b;">(PreTwin Assured)</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:14px;">
+              <span style="font-size:1.25rem; font-weight:800; color:#1e1b4b;">₹${price}</span>
+              <span style="font-size:0.85rem; color:#94a3b8; text-decoration:line-through;">₹${mrp}</span>
+              <span style="font-size:0.8rem; color:#15803d; font-weight:700;">20% off</span>
+            </div>
+
+            <div style="display:flex; gap:8px;">
+              <button onclick="moveWishlistItemToCart(${idx})" style="flex:1; background:linear-gradient(135deg, #7c3aed, #4f46e5); color:#fff; border:none; padding:9px; border-radius:6px; font-weight:600; font-size:0.85rem; cursor:pointer;">
+                🛒 Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function removeFromWishlist(idx) {
+  let items = getWishlistItems();
+  items.splice(idx, 1);
+  saveWishlistItems(items);
+  renderWishlistPage();
+  if (typeof showToast === "function") showToast("Item removed from wishlist", "info");
+}
+
+function moveWishlistItemToCart(idx) {
+  let items = getWishlistItems();
+  const item = items[idx];
+  if (!item) return;
+
+  // Add to cart
+  let cart = [];
+  try {
+    cart = JSON.parse(localStorage.getItem("pretwin_cart") || "[]");
+  } catch (e) { cart = []; }
+
+  const existIdx = cart.findIndex(c => c.id === item.id);
+  if (existIdx > -1) {
+    cart[existIdx].quantity = (cart[existIdx].quantity || 1) + 1;
+  } else {
+    cart.push({ ...item, quantity: 1 });
+  }
+  localStorage.setItem("pretwin_cart", JSON.stringify(cart));
+  if (typeof updateCartCount === "function") updateCartCount();
+
+  // Remove from wishlist
+  items.splice(idx, 1);
+  saveWishlistItems(items);
+  renderWishlistPage();
+
+  if (typeof showToast === "function") {
+    showToast(`'${item.name}' moved to your Cart!`, "success");
+  } else {
+    alert(`'${item.name}' moved to your Cart!`);
+  }
+}
+
+function moveAllWishlistToCart() {
+  let items = getWishlistItems();
+  if (items.length === 0) return;
+
+  let cart = [];
+  try {
+    cart = JSON.parse(localStorage.getItem("pretwin_cart") || "[]");
+  } catch (e) { cart = []; }
+
+  items.forEach(item => {
+    const existIdx = cart.findIndex(c => c.id === item.id);
+    if (existIdx > -1) {
+      cart[existIdx].quantity = (cart[existIdx].quantity || 1) + 1;
+    } else {
+      cart.push({ ...item, quantity: 1 });
+    }
+  });
+
+  localStorage.setItem("pretwin_cart", JSON.stringify(cart));
+  if (typeof updateCartCount === "function") updateCartCount();
+
+  saveWishlistItems([]);
+  renderWishlistPage();
+
+  if (typeof showToast === "function") {
+    showToast("All wishlist items moved to Cart!", "success");
+  }
+}
+</script>
+{% endblock %}

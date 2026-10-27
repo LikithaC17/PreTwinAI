@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Product Comparison &amp; Decision Support — PreTwin AI{% endblock %}
+{% block page_title %}Feature &amp; Price Comparison (Agent D){% endblock %}
+
+{% block content %}
+<div class="comparison-page" style="max-width: 1240px; margin: 0 auto; padding: 20px 16px 80px 16px;">
+
+  <!-- Hero Header -->
+  <section class="card" style="background: linear-gradient(135deg, #181438 0%, #2e1065 50%, #1e1b4b 100%); border: 1px solid rgba(167, 139, 250, 0.35); padding: 24px 28px; border-radius: 16px; margin-bottom: 24px; color: #fff; box-shadow: 0 8px 30px rgba(0,0,0,0.25);">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+      <div>
+        <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(167, 139, 250, 0.18); padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:700; color:#c4b5fd; margin-bottom:8px; border:1px solid rgba(167, 139, 250, 0.3);">
+          <span>⚖️ AGENT D DECISION SUPPORT</span>
+          <span>•</span>
+          <span>SIDE-BY-SIDE VERIFIED INTELLIGENCE</span>
+        </div>
+        <h2 style="margin:0 0 6px 0; font-size:1.6rem; font-weight:800; color:#ffffff;">
+          Multi-Attribute Product Comparison
+        </h2>
+        <p style="margin:0; font-size:0.92rem; color:#cbd5e1; max-width:760px; line-height:1.5;">
+          Compare genuine catalogue specifications, prices, customer ratings, advantages, and limitations side-by-side to make confident shopping decisions.
+        </p>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:center;">
+        <button class="btn btn-sm btn-outline" onclick="loadSampleComparison()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.25); color:#fff; border-radius:8px; padding:9px 16px; font-weight:600; cursor:pointer;">
+          Load Sample Comparison
+        </button>
+        <button class="btn btn-sm" onclick="clearAllComparison()" style="background:rgba(239, 68, 68, 0.15); border:1px solid rgba(239, 68, 68, 0.3); color:#fca5a5; border-radius:8px; padding:9px 16px; font-weight:600; cursor:pointer;">
+          Clear All
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product Selector & Decision Weight Sliders Card -->
+  <section class="card" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:22px; margin-bottom:24px;">
+    <!-- Selector Bar -->
+    <div style="display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap;">
+      <div style="flex:1; min-width:280px;">
+        <label for="addProductSelect" style="display:block; font-size:0.88rem; font-weight:700; color:#f1f5f9; margin-bottom:6px;">
+          Select Products from Catalogue to Compare:
+        </label>
+        <select id="addProductSelect" class="form-control" style="width:100%; padding:10px 14px; background:#1e293b; border:1.5px solid #334155; color:#f1f5f9; border-radius:8px; font-size:0.92rem;">
+          <option value="">Choose a product from catalogue...</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="addProductFromSelect()" style="padding:10px 22px; background:linear-gradient(135deg, #7c3aed, #4f46e5); color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer; height:44px; display:inline-flex; align-items:center; gap:6px;">
+        <span>+ Add to Compare</span>
+      </button>
+    </div>
+
+    <!-- Active Selected Products Badges Strip -->
+    <div id="selectedPillsStrip" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; padding-top:14px; border-top:1px solid #1e293b;">
+      <span style="font-size:0.84rem; color:#94a3b8;">Selected Products:</span>
+      <div id="selectedPillsContainer" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+    </div>
+
+    <!-- Priority Weight Controls -->
+    <div style="margin-top:20px; padding-top:16px; border-top:1px solid #1e293b;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="font-size:0.85rem; font-weight:700; color:#c084fc; text-transform:uppercase; letter-spacing:0.5px;">
+          🎛️ Customize Decision Priority Weights
+        </div>
+        <span style="font-size:0.8rem; color:#94a3b8;">Weights adjust Agent D's Best Matching Candidate</span>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
+        <div style="background:#1e293b; padding:12px 14px; border-radius:8px; border:1px solid #334155;">
+          <div style="display:flex; justify-content:space-between; font-size:0.82rem; color:#cbd5e1; margin-bottom:6px;">
+            <span style="font-weight:600;">Price Value</span>
+            <strong id="wPriceVal" style="color:#a855f7;">35%</strong>
+          </div>
+          <input type="range" id="wPrice" min="0" max="100" value="35" style="width:100%; accent-color:#a855f7;" oninput="updateWeightsUI()">
+        </div>
+        <div style="background:#1e293b; padding:12px 14px; border-radius:8px; border:1px solid #334155;">
+          <div style="display:flex; justify-content:space-between; font-size:0.82rem; color:#cbd5e1; margin-bottom:6px;">
+            <span style="font-weight:600;">Customer Rating</span>
+            <strong id="wRatingVal" style="color:#a855f7;">30%</strong>
+          </div>
+          <input type="range" id="wRating" min="0" max="100" value="30" style="width:100%; accent-color:#a855f7;" oninput="updateWeightsUI()">
+        </div>
+        <div style="background:#1e293b; padding:12px 14px; border-radius:8px; border:1px solid #334155;">
+          <div style="display:flex; justify-content:space-between; font-size:0.82rem; color:#cbd5e1; margin-bottom:6px;">
+            <span style="font-weight:600;">Feature Richness</span>
+            <strong id="wSpecsVal" style="color:#a855f7;">20%</strong>
+          </div>
+          <input type="range" id="wSpecs" min="0" max="100" value="20" style="width:100%; accent-color:#a855f7;" oninput="updateWeightsUI()">
+        </div>
+        <div style="background:#1e293b; padding:12px 14px; border-radius:8px; border:1px solid #334155;">
+          <div style="display:flex; justify-content:space-between; font-size:0.82rem; color:#cbd5e1; margin-bottom:6px;">
+            <span style="font-weight:600;">Brand Affinity</span>
+            <strong id="wBrandVal" style="color:#a855f7;">15%</strong>
+          </div>
+          <input type="range" id="wBrand" min="0" max="100" value="15" style="width:100%; accent-color:#a855f7;" oninput="updateWeightsUI()">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Winner Decision Banner -->
+  <div id="comparisonWinnerBanner" class="winner-card" style="display:none; background:linear-gradient(135deg, #1e1b4b 0%, #311042 100%); border:1.5px solid #a855f7; border-radius:12px; padding:20px 24px; margin-bottom:24px; box-shadow:0 8px 24px rgba(168, 85, 247, 0.2);">
+    <div style="display:flex; align-items:flex-start; gap:16px;">
+      <div style="font-size:2.2rem; line-height:1;">🏆</div>
+      <div style="flex:1;">
+        <div style="display:inline-block; background:#a855f7; color:#ffffff; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:12px; text-transform:uppercase; margin-bottom:6px; letter-spacing:0.5px;">
+          Agent D Top Pick
+        </div>
+        <h3 id="winnerProductName" style="margin:0 0 6px 0; font-size:1.25rem; font-weight:800; color:#ffffff;">Product Name</h3>
+        <p id="winnerReason" style="margin:0; font-size:0.92rem; color:#e2e8f0; line-height:1.5;">Explanation of why this product won the comparison...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Table Card with Horizontal Scroll -->
+  <section class="card" id="comparisonTableCard" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:0; overflow:hidden;">
+    <div style="overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%;">
+      <table class="table comparison-table" id="comparisonTable" style="width:100%; min-width:760px; border-collapse:collapse; margin:0;">
+        <thead>
+          <tr id="comparisonTableHead" style="background:#1e293b; border-bottom:2px solid #334155;">
+            <th class="spec-col-header" style="width:220px; padding:18px 20px; text-align:left; font-size:0.9rem; color:#94a3b8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; position:sticky; left:0; background:#1e293b; z-index:2;">
+              Criteria &amp; Metrics
+            </th>
+            <!-- Dynamic product headers -->
+          </tr>
+        </thead>
+        <tbody id="comparisonTableBody">
+          <tr>
+            <td colspan="5" class="text-center py-5" style="padding:48px 20px; text-align:center;">
+              <div class="empty-state">
+                <span class="empty-icon" style="font-size:2.6rem; display:block; margin-bottom:12px;">⚖️</span>
+                <h4 style="color:#f1f5f9; font-size:1.2rem; margin:0 0 6px 0;">No Products Selected for Comparison</h4>
+                <p style="color:#94a3b8; font-size:0.9rem; max-width:440px; margin:0 auto 16px auto;">
+                  Select at least two products from the catalogue dropdown above or click the "Compare" button on any product card in the store.
+                </p>
+                <button class="btn btn-primary" onclick="loadSampleComparison()" style="padding:10px 20px; background:linear-gradient(135deg, #7c3aed, #4f46e5); color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer;">
+                  Load Recommended Comparison
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/comparison.js"></script>
+{% endblock %}

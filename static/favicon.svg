@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="favWing" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7C3AED" />
+      <stop offset="50%" stop-color="#9333EA" />
+      <stop offset="100%" stop-color="#BAE6FD" />
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="#1E1B4B" />
+  <g transform="translate(1, 1)">
+    <!-- Wings in flight -->
+    <path d="M 14 13 C 11 8, 6 4, 1 4 C 1 8, 4 14, 10 16 Z" fill="url(#favWing)" />
+    <path d="M 16 12 C 19 8, 24 4, 29 4 C 29 8, 26 14, 20 16 Z" fill="url(#favWing)" />
+    <!-- Fairy Core & Star -->
+    <circle cx="15" cy="14" r="2" fill="#FFFFFF" />
+    <path d="M 23 7 L 24 9 L 26 9.5 L 24 10 L 23 12 L 22 10 L 20 9.5 L 22 9 Z" fill="#FEF08A" />
+  </g>
+</svg>

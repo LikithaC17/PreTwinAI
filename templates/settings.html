@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - PreTwinShop AI{% endblock %}
+{% block page_title %}Twin Settings &amp; Data Governance{% endblock %}
+
+{% block content %}
+<div class="settings-page">
+  <!-- Privacy & Data Governance Section -->
+  <section class="card">
+    <div class="card-header">
+      <h3 class="card-title">🔒 User Privacy &amp; Data Control</h3>
+      <p class="card-subtitle">You have complete authority over how your voluntary shopping data is processed</p>
+    </div>
+    <div class="card-body">
+      <div class="settings-toggle-group">
+        <div class="toggle-item">
+          <div class="toggle-info">
+            <strong>Enable Proactive Need Anticipation</strong>
+            <p class="text-sm text-muted">Allows Agent B to compute intervals on voluntary purchase history.</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="togglePredictive" checked onchange="savePrivacyPreference()">
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <div class="toggle-item">
+          <div class="toggle-info">
+            <strong>Log Agent Execution Traces</strong>
+            <p class="text-sm text-muted">Saves function runtimes and input/output summaries to the <code>agent_runs</code> table for auditability.</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="toggleAuditLogs" checked onchange="savePrivacyPreference()">
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <button class="btn btn-outline" onclick="exportUserData()">
+          <span>📥 Export My Twin Data (JSON)</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Budget Limits Section -->
+  <section class="card mt-4">
+    <div class="card-header">
+      <h3 class="card-title">💰 Quick Budget Bounds Adjustment</h3>
+      <p class="card-subtitle">Adjust minimum and maximum limits without leaving settings</p>
+    </div>
+    <div class="card-body">
+      <div class="grid-2-col">
+        <div class="form-group">
+          <label class="form-label">Minimum Spending Preference (₹)</label>
+          <input type="number" id="settingsBudgetMin" class="form-control" value="500" min="0" step="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Maximum Hard Budget Ceiling (₹)</label>
+          <input type="number" id="settingsBudgetMax" class="form-control" value="5000" min="100" step="500">
+        </div>
+      </div>
+      <button class="btn btn-primary mt-3" onclick="updateSettingsBudget()">Save Budget Limits</button>
+    </div>
+  </section>
+
+  <!-- System Information & Diagnostics -->
+  <section class="card mt-4">
+    <div class="card-header">
+      <h3 class="card-title">ℹ️ System Environment &amp; AI Integration</h3>
+      <p class="card-subtitle">Architecture diagnostics and connection status</p>
+    </div>
+    <div class="card-body">
+      <div class="sys-info-grid">
+        <div class="sys-info-item">
+          <span class="sys-label">Application Name:</span>
+          <span class="sys-value">PreTwinShop AI</span>
+        </div>
+        <div class="sys-info-item">
+          <span class="sys-label">Architecture:</span>
+          <span class="sys-value">Autonomous Multi-Agent Pipeline</span>
+        </div>
+        <div class="sys-info-item">
+          <span class="sys-label">Backend Engine:</span>
+          <span class="sys-value">Python 3.14 &bull; Flask 3.0</span>
+        </div>
+        <div class="sys-info-item">
+          <span class="sys-label">Database Store:</span>
+          <span class="sys-value">SQLite 3 (Local ACID Store)</span>
+        </div>
+        <div class="sys-info-item">
+          <span class="sys-label">LLM Fallback Mode:</span>
+          <span class="sys-value badge badge-success">Deterministic Heuristic &amp; Template Mode (Active)</span>
+        </div>
+        <div class="sys-info-item">
+          <span class="sys-label">API Status:</span>
+          <span class="sys-value text-success">&bull; Healthy (All 18 endpoints active)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Danger Zone -->
+  <section class="card mt-4 border-danger">
+    <div class="card-header">
+      <h3 class="card-title text-danger">⚠️ Demo Profile Reset &amp; Management</h3>
+      <p class="card-subtitle">Manage or wipe your stored digital shopping twin</p>
+    </div>
+    <div class="card-body">
+      <p class="text-muted">
+        Resetting restores the pristine demonstration state with 10 sample purchases, default category affinities, and cleans out old recommendation runs.
+      </p>
+      <div class="flex-align-gap mt-3">
+        <button class="btn btn-danger" onclick="confirmResetDemoProfile()">
+          <span>🔄 Reset Demo Profile to Defaults</span>
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/settings.js"></script>
+{% endblock %}

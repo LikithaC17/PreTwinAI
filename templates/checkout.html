@@ -1,0 +1,669 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout &amp; Payment — PreTwin{% endblock %}
+
+{% block content %}
+<div class="fk-container" style="padding-top: 16px; padding-bottom: 40px;">
+
+  <!-- Checkout Header Banner -->
+  <div style="background:#ffffff; border-radius:2px; box-shadow:var(--fk-shadow-sm); padding:14px 24px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span style="font-size:20px; font-weight:700; color:#212121;">Secure Checkout</span>
+      <span style="background:#e8f0fe; color:#2874f0; font-size:12px; font-weight:700; padding:3px 8px; border-radius:2px;">
+        ✦ PreTwin Assured
+      </span>
+    </div>
+    <div style="font-size:13px; color:#388e3c; font-weight:600; display:flex; align-items:center; gap:6px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      100% Safe &amp; Secure Payments
+    </div>
+  </div>
+
+  <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+
+    <!-- Left Steps Column -->
+    <div style="flex:1; min-width:320px; display:flex; flex-direction:column; gap:16px;">
+
+      <!-- Step 1: Login Status -->
+      <div class="fk-checkout-step-card" style="background:#ffffff; border-radius:2px; box-shadow:var(--fk-shadow-sm); padding:18px 24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="background:#2874f0; color:#fff; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; border-radius:2px; font-size:12px; font-weight:700;">1</span>
+            <span style="font-size:14px; font-weight:700; color:#878787; text-transform:uppercase;">LOGIN / USER</span>
+          </div>
+          <button type="button" class="fk-checkout-change-btn" onclick="openLoginModal()" style="background:none; border:none; color:#2874f0; font-size:13px; font-weight:700; cursor:pointer;">
+            CHANGE
+          </button>
+        </div>
+        <div style="margin-top:10px; margin-left:36px; font-size:14px; color:#212121;">
+          <span style="font-weight:600;" id="checkoutUserName">Alex Johnson</span>
+          <span style="color:#878787; margin-left:8px;" id="checkoutUserEmail">alex@demo.pretwinshop.ai</span>
+        </div>
+      </div>
+
+      <!-- Step 2: Delivery Address -->
+      <div class="fk-checkout-step-card" style="background:#ffffff; border-radius:2px; box-shadow:var(--fk-shadow-sm); padding:20px 24px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+          <span style="background:#2874f0; color:#fff; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; border-radius:2px; font-size:12px; font-weight:700;">2</span>
+          <span style="font-size:14px; font-weight:700; color:#212121; text-transform:uppercase;">DELIVERY ADDRESS</span>
+        </div>
+
+        <form id="shippingAddressForm" onsubmit="event.preventDefault();" style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-left:36px;">
+          <div class="fk-input-group" style="grid-column:1/-1;">
+            <input type="text" id="shipName" class="fk-input-line" placeholder=" " value="Alex Johnson" required>
+            <label class="fk-input-label">Full Name *</label>
+          </div>
+
+          <div class="fk-input-group">
+            <input type="tel" id="shipPhone" class="fk-input-line" placeholder=" " value="9876543210" required>
+            <label class="fk-input-label">10-Digit Mobile Number *</label>
+          </div>
+
+          <div class="fk-input-group">
+            <input type="text" id="shipPincode" class="fk-input-line" placeholder=" " value="560103" required>
+            <label class="fk-input-label">Pincode *</label>
+          </div>
+
+          <div class="fk-input-group" style="grid-column:1/-1;">
+            <input type="text" id="shipAddress" class="fk-input-line" placeholder=" " value="Flat 402, PreTwin Residency, Outer Ring Road" required>
+            <label class="fk-input-label">Flat, House No., Building, Street Address *</label>
+          </div>
+
+          <div class="fk-input-group">
+            <input type="text" id="shipCity" class="fk-input-line" placeholder=" " value="Bengaluru" required>
+            <label class="fk-input-label">City / District *</label>
+          </div>
+
+          <div class="fk-input-group">
+            <input type="text" id="shipState" class="fk-input-line" placeholder=" " value="Karnataka" required>
+            <label class="fk-input-label">State *</label>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 3: Order Summary -->
+      <div class="fk-checkout-step-card" style="background:#ffffff; border-radius:2px; box-shadow:var(--fk-shadow-sm); padding:20px 24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="background:#2874f0; color:#fff; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; border-radius:2px; font-size:12px; font-weight:700;">3</span>
+            <span style="font-size:14px; font-weight:700; color:#212121; text-transform:uppercase;">ORDER SUMMARY</span>
+          </div>
+          <span style="font-size:13px; color:#878787;" id="checkoutSummaryItemCount">0 Items</span>
+        </div>
+
+        <div id="checkoutItemsList" style="margin-left:36px; display:flex; flex-direction:column; gap:14px;">
+          <!-- Dynamically populated from cart -->
+        </div>
+      </div>
+
+      <!-- Step 4: Payment Options -->
+      <div class="fk-checkout-step-card" style="background:#ffffff; border-radius:2px; box-shadow:var(--fk-shadow-sm); padding:20px 24px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+          <span style="background:#2874f0; color:#fff; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; border-radius:2px; font-size:12px; font-weight:700;">4</span>
+          <span style="font-size:14px; font-weight:700; color:#212121; text-transform:uppercase;">PAYMENT OPTIONS</span>
+        </div>
+
+        <div style="margin-left:36px;">
+          <!-- Gateway Status Notice -->
+          <div id="gatewayStatusNotice" style="padding:12px 16px; border-radius:4px; font-size:13px; margin-bottom:16px; background:#f4f6fa; border:1px solid #d5d9e2;">
+            <!-- Populated via JS based on backend config -->
+          </div>
+
+          <!-- PreTwin Rewards Redemption Section -->
+          <div id="rewardPointsBox" style="background:#fdf4ff; border:1px solid #f0abfc; border-radius:6px; padding:14px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:22px;">✨</span>
+              <div>
+                <div style="font-weight:700; color:#86198f; font-size:13.5px;">Redeem PreTwin Reward Points</div>
+                <div style="color:#701a75; font-size:12px;" id="rewardBalanceNotice">Checking balance... (100 points = ₹1.00)</div>
+              </div>
+            </div>
+            <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:600; font-size:13px; color:#86198f;">
+              <input type="checkbox" id="redeemRewardsCheck" onchange="toggleRewardsRedemption(this.checked)" style="width:18px; height:18px;">
+              Apply Points
+            </label>
+          </div>
+
+          <!-- Payment Method Radio Choices -->
+          <div id="paymentOptionsGroup" style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
+            
+            <!-- 1. Cash on Delivery -->
+            <label class="fk-pay-card" style="display:flex; align-items:flex-start; gap:12px; padding:14px; border:2px solid #e0e0e0; border-radius:6px; cursor:pointer; background:#ffffff; transition:all 0.2s ease;">
+              <input type="radio" name="payMethod" value="cod" checked style="margin-top:4px;" onchange="updatePayOptionCards(this)">
+              <div style="flex:1;">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                  <div style="font-weight:700; color:#15803d; font-size:14.5px; display:flex; align-items:center; gap:8px;">
+                    <span>💵</span>
+                    <span>Cash on Delivery (COD)</span>
+                  </div>
+                  <span style="background:#dcfce7; color:#15803d; font-size:11px; padding:2px 8px; border-radius:4px; font-weight:700; border:1px solid #86efac;">
+                    ● Active • Zero Advance
+                  </span>
+                </div>
+                <div style="color:#555; font-size:12.5px; margin-top:4px; line-height:1.4;">
+                  Pay in cash or scan QR upon delivery at your doorstep. Order confirms immediately with zero advance payment required.
+                </div>
+              </div>
+            </label>
+
+            <!-- 2. UPI -->
+            <label class="fk-pay-card" style="display:flex; align-items:flex-start; gap:12px; padding:14px; border:1px solid #e0e0e0; border-radius:6px; cursor:pointer; background:#ffffff; transition:all 0.2s ease;">
+              <input type="radio" name="payMethod" value="upi" style="margin-top:4px;" onchange="updatePayOptionCards(this)">
+              <div style="flex:1;">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                  <div style="font-weight:700; color:#212121; font-size:14.5px; display:flex; align-items:center; gap:8px;">
+                    <span>⚡</span>
+                    <span>UPI (Instant QR / App Payment)</span>
+                  </div>
+                  <span class="gateway-dep-badge" style="background:#f1f5f9; color:#475569; font-size:11px; padding:2px 8px; border-radius:4px; font-weight:600;">
+                    Checking Gateway...
+                  </span>
+                </div>
+                <div style="color:#666; font-size:12.5px; margin-top:4px;">
+                  Google Pay, PhonePe, Paytm, BHIM, CRED, and all major UPI handles.
+                </div>
+              </div>
+            </label>
+
+            <!-- 3. Credit / Debit Cards -->
+            <label class="fk-pay-card" style="display:flex; align-items:flex-start; gap:12px; padding:14px; border:1px solid #e0e0e0; border-radius:6px; cursor:pointer; background:#ffffff; transition:all 0.2s ease;">
+              <input type="radio" name="payMethod" value="cards" style="margin-top:4px;" onchange="updatePayOptionCards(this)">
+              <div style="flex:1;">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                  <div style="font-weight:700; color:#212121; font-size:14.5px; display:flex; align-items:center; gap:8px;">
+                    <span>💳</span>
+                    <span>Credit &amp; Debit Cards</span>
+                  </div>
+                  <span class="gateway-dep-badge" style="background:#f1f5f9; color:#475569; font-size:11px; padding:2px 8px; border-radius:4px; font-weight:600;">
+                    Checking Gateway...
+                  </span>
+                </div>
+                <div style="color:#666; font-size:12.5px; margin-top:4px;">
+                  Visa, MasterCard, RuPay, Maestro, American Express with 3D Secure OTP verification.
+                </div>
+              </div>
+            </label>
+
+            <!-- 4. Net Banking -->
+            <label class="fk-pay-card" style="display:flex; align-items:flex-start; gap:12px; padding:14px; border:1px solid #e0e0e0; border-radius:6px; cursor:pointer; background:#ffffff; transition:all 0.2s ease;">
+              <input type="radio" name="payMethod" value="netbanking" style="margin-top:4px;" onchange="updatePayOptionCards(this)">
+              <div style="flex:1;">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                  <div style="font-weight:700; color:#212121; font-size:14.5px; display:flex; align-items:center; gap:8px;">
+                    <span>🏦</span>
+                    <span>Net Banking</span>
+                  </div>
+                  <span class="gateway-dep-badge" style="background:#f1f5f9; color:#475569; font-size:11px; padding:2px 8px; border-radius:4px; font-weight:600;">
+                    Checking Gateway...
+                  </span>
+                </div>
+                <div style="color:#666; font-size:12.5px; margin-top:4px;">
+                  SBI, HDFC, ICICI, Axis, Kotak, PNB, and 50+ supported Indian banking institutions.
+                </div>
+              </div>
+            </label>
+
+            <!-- 5. Wallets -->
+            <label class="fk-pay-card" style="display:flex; align-items:flex-start; gap:12px; padding:14px; border:1px solid #e0e0e0; border-radius:6px; cursor:pointer; background:#ffffff; transition:all 0.2s ease;">
+              <input type="radio" name="payMethod" value="wallets" style="margin-top:4px;" onchange="updatePayOptionCards(this)">
+              <div style="flex:1;">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                  <div style="font-weight:700; color:#212121; font-size:14.5px; display:flex; align-items:center; gap:8px;">
+                    <span>👛</span>
+                    <span>Digital Wallets</span>
+                  </div>
+                  <span class="gateway-dep-badge" style="background:#f1f5f9; color:#475569; font-size:11px; padding:2px 8px; border-radius:4px; font-weight:600;">
+                    Checking Gateway...
+                  </span>
+                </div>
+                <div style="color:#666; font-size:12.5px; margin-top:4px;">
+                  Paytm Wallet, PhonePe, Mobikwik, Amazon Pay wallet balance.
+                </div>
+              </div>
+            </label>
+
+            <!-- 6. PreTwin Test Sandbox -->
+            <label class="fk-pay-card" style="display:flex; align-items:flex-start; gap:12px; padding:14px; border:1px solid #e0e0e0; border-radius:6px; cursor:pointer; background:#ffffff; transition:all 0.2s ease;">
+              <input type="radio" name="payMethod" value="sandbox" style="margin-top:4px;" onchange="updatePayOptionCards(this)">
+              <div style="flex:1;">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                  <div style="font-weight:700; color:#7c3aed; font-size:14.5px; display:flex; align-items:center; gap:8px;">
+                    <span>🧪</span>
+                    <span>PreTwin Test Sandbox Mode</span>
+                  </div>
+                  <span style="background:#ede9fe; color:#6d28d9; font-size:11px; padding:2px 8px; border-radius:4px; font-weight:700; border:1px solid #ddd6fe;">
+                    ● Active • 1-Click Verification
+                  </span>
+                </div>
+                <div style="color:#666; font-size:12.5px; margin-top:4px;">
+                  Simulates successful instant payment verification for academic demos and evaluation without live money.
+                </div>
+              </div>
+            </label>
+
+          </div>
+
+          <!-- Checkout Action Button -->
+          <button type="button" id="payNowBtn" class="fk-btn-orange" style="width:260px; height:50px; font-size:16px; font-weight:700;" onclick="handlePaymentSubmit()">
+            PAY NOW ➔
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Price Summary Column -->
+    <div style="width:360px; flex-shrink:0;">
+      <div style="background:#ffffff; border-radius:2px; box-shadow:var(--fk-shadow-sm); padding:20px; position:sticky; top:80px;">
+        <div class="fk-cart-summary-title" style="padding-bottom:12px; border-bottom:1px solid #f0f0f0; margin-bottom:14px;">
+          PRICE DETAILS
+        </div>
+
+        <div class="fk-cart-summary-line">
+          <span>Price (<span id="summarySideCount">0</span> items)</span>
+          <span id="summarySideMrp">₹0</span>
+        </div>
+
+        <div class="fk-cart-summary-line">
+          <span>Discount</span>
+          <span style="color:var(--fk-green);" id="summarySideDiscount">−₹0</span>
+        </div>
+
+        <div class="fk-cart-summary-line" id="summarySideRewardRow" style="display:none;">
+          <span>PreTwin Rewards</span>
+          <span style="color:#9333ea; font-weight:700;" id="summarySideReward">−₹0</span>
+        </div>
+
+        <div class="fk-cart-summary-line">
+          <span>Delivery Charges</span>
+          <span style="color:var(--fk-green);" id="summarySideDelivery">FREE</span>
+        </div>
+
+        <div class="fk-cart-summary-line">
+          <span>Taxes (5% GST Inclusive)</span>
+          <span id="summarySideTax">₹0</span>
+        </div>
+
+        <div class="fk-cart-summary-total" style="border-top:1px dashed #e0e0e0; margin-top:12px; padding-top:14px;">
+          <span>Total Amount</span>
+          <span id="summarySideTotal" style="color:#212121; font-size:18px;">₹0</span>
+        </div>
+
+        <div class="fk-cart-savings" id="summarySideSavings" style="margin-top:14px;">
+          You will save ₹0 on this order
+        </div>
+
+        <!-- Safe Guarantee Shield -->
+        <div style="margin-top:20px; padding-top:14px; border-top:1px solid #f0f0f0; display:flex; align-items:center; gap:10px; font-size:12px; color:#878787;">
+          <span style="font-size:24px;">🛡️</span>
+          <div>
+            <strong style="color:#212121;">Safe and Secure Payments</strong><br>
+            100% Authentic Products • Easy Returns
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Razorpay Checkout Official Script (loads dynamically if gateway key active) -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+/**
+ * PRETWIN CHECKOUT CONTROLLER
+ */
+let checkoutData = {
+  items: [],
+  subtotal: 0,
+  discount: 0,
+  shipping_fee: 0,
+  tax: 0,
+  total_amount: 0,
+  reward_points_redeemed: 0,
+  reward_discount_amount: 0,
+  user_reward_points: 0,
+  points_redeemable: 0,
+  gateway_configured: false
+};
+let isRewardsApplied = false;
+
+async function initCheckout() {
+  const cart = getCart();
+  if (!cart || cart.length === 0) {
+    showToast('Your cart is empty. Redirecting to catalogue...');
+    setTimeout(() => { window.location.href = '/discovery'; }, 1500);
+    return;
+  }
+
+  // Update User Info
+  if (currentUser) {
+    document.getElementById('checkoutUserName').textContent = currentUser.username;
+    document.getElementById('checkoutUserEmail').textContent = currentUser.email;
+    const nameInput = document.getElementById('shipName');
+    if (nameInput) nameInput.value = currentUser.username;
+  }
+
+  // Fetch Reward Points Balance
+  try {
+    const rew = await apiGet('/api/rewards/balance');
+    const balNotice = document.getElementById('rewardBalanceNotice');
+    const chk = document.getElementById('redeemRewardsCheck');
+    if (balNotice) {
+      if (rew.balance_points > 0) {
+        balNotice.innerHTML = `You have <strong>${rew.balance_points} points</strong> (worth ₹${rew.rupee_value.toFixed(2)} at 100 pts = ₹1.00)`;
+        if (chk) chk.disabled = false;
+      } else {
+        balNotice.innerHTML = `No points available yet. You earn <strong>5 points (₹0.05)</strong> for every completed order!`;
+        if (chk) chk.disabled = true;
+      }
+    }
+  } catch (e) {
+    console.warn('Rewards fetch error:', e);
+  }
+
+  // Call Server-Side Checkout Calculation API
+  await recalculateCheckout(false);
+
+  // Initialize payment option card styles
+  updatePayOptionCards(document.querySelector('input[name="payMethod"]:checked'));
+}
+
+async function recalculateCheckout(applyRewards = false) {
+  isRewardsApplied = applyRewards;
+  const cart = getCart();
+  try {
+    const payload = {
+      items: cart.map(i => ({ product_id: i.id, quantity: i.quantity || 1 })),
+      redeem_points: applyRewards
+    };
+    const res = await apiPost('/api/checkout/calculate', payload);
+    checkoutData = res;
+    renderCheckoutSummary();
+    renderGatewayStatus(res.gateway_configured);
+  } catch (err) {
+    console.error('Calculation failed:', err);
+    showToast('Failed to calculate order totals from server.');
+  }
+}
+
+function toggleRewardsRedemption(checked) {
+  recalculateCheckout(checked);
+}
+
+function updatePayOptionCards(selectedRadio) {
+  document.querySelectorAll('.fk-pay-card').forEach(card => {
+    const radio = card.querySelector('input[type="radio"]');
+    if (radio && radio.checked) {
+      card.style.borderColor = '#2874f0';
+      card.style.background = '#f0f7ff';
+    } else {
+      card.style.borderColor = '#e0e0e0';
+      card.style.background = '#ffffff';
+    }
+  });
+
+  const payBtn = document.getElementById('payNowBtn');
+  if (payBtn) {
+    const isCod = selectedRadio ? selectedRadio.value === 'cod' : false;
+    payBtn.textContent = isCod 
+      ? `CONFIRM COD ORDER (${formatPrice(checkoutData.total_amount || 0)}) ➔`
+      : `PAY ${formatPrice(checkoutData.total_amount || 0)} ➔`;
+  }
+}
+
+function renderGatewayStatus(isConfigured) {
+  const notice = document.getElementById('gatewayStatusNotice');
+  if (!notice) return;
+
+  const badges = document.querySelectorAll('.gateway-dep-badge');
+  badges.forEach(b => {
+    if (isConfigured) {
+      b.textContent = '● Active • Gateway Verified';
+      b.style.background = '#dcfce7';
+      b.style.color = '#15803d';
+      b.style.border = '1px solid #86efac';
+    } else {
+      b.textContent = '⚡ Sandbox Simulated (No API Key)';
+      b.style.background = '#fff7ed';
+      b.style.color = '#c2410c';
+      b.style.border = '1px solid #fed7aa';
+    }
+  });
+
+  if (isConfigured) {
+    notice.innerHTML = `
+      <div style="color:#2e7d32; font-weight:700; margin-bottom:2px;">● Razorpay Live/Test Gateway Active</div>
+      <div style="color:#555;">Live payment gateway is configured and active. UPI, Card, NetBanking and Wallet options process through official secure modal.</div>
+    `;
+  } else {
+    notice.innerHTML = `
+      <div style="color:#c2410c; font-weight:700; margin-bottom:2px;">ℹ️ Payment Gateway in Evaluation / Sandbox Mode</div>
+      <div style="color:#555; line-height:1.4;">
+        Razorpay API keys not configured in <code style="background:#e0e0e0; padding:1px 4px; border-radius:2px;">.env</code>.
+        <strong>Cash on Delivery (COD)</strong> is fully operational. Electronic payment options will safely simulate verification and create confirmed orders.
+      </div>
+    `;
+  }
+}
+
+function renderCheckoutSummary() {
+  const container = document.getElementById('checkoutItemsList');
+  const countEl = document.getElementById('checkoutSummaryItemCount');
+  const sideCount = document.getElementById('summarySideCount');
+  const sideMrp = document.getElementById('summarySideMrp');
+  const sideDisc = document.getElementById('summarySideDiscount');
+  const sideRewRow = document.getElementById('summarySideRewardRow');
+  const sideRew = document.getElementById('summarySideReward');
+  const sideDel = document.getElementById('summarySideDelivery');
+  const sideTax = document.getElementById('summarySideTax');
+  const sideTotal = document.getElementById('summarySideTotal');
+  const sideSavings = document.getElementById('summarySideSavings');
+  const payBtn = document.getElementById('payNowBtn');
+
+  const items = checkoutData.items || [];
+  const totalCount = checkoutData.item_count || items.reduce((s, x) => s + x.quantity, 0);
+
+  if (countEl) countEl.textContent = `${totalCount} Items`;
+  if (sideCount) sideCount.textContent = totalCount;
+  if (sideMrp) sideMrp.textContent = formatPrice(checkoutData.mrp_total || 0);
+  if (sideDisc) sideDisc.textContent = '−' + formatPrice(checkoutData.discount || 0);
+
+  if (checkoutData.reward_discount_amount && checkoutData.reward_discount_amount > 0) {
+    if (sideRewRow) sideRewRow.style.display = 'flex';
+    if (sideRew) sideRew.textContent = '−' + formatPrice(checkoutData.reward_discount_amount);
+  } else {
+    if (sideRewRow) sideRewRow.style.display = 'none';
+  }
+
+  if (sideDel) sideDel.textContent = checkoutData.shipping_fee === 0 ? 'FREE' : formatPrice(checkoutData.shipping_fee);
+  if (sideTax) sideTax.textContent = formatPrice(checkoutData.tax || 0);
+  if (sideTotal) sideTotal.textContent = formatPrice(checkoutData.total_amount || 0);
+
+  const totalSaved = (checkoutData.discount || 0) + (checkoutData.reward_discount_amount || 0);
+  if (sideSavings) sideSavings.textContent = `You will save ${formatPrice(totalSaved)} on this order`;
+  
+  const payMethodRadio = document.querySelector('input[name="payMethod"]:checked');
+  const isCod = payMethodRadio && payMethodRadio.value === 'cod';
+  if (payBtn) {
+    payBtn.textContent = isCod 
+      ? `CONFIRM COD ORDER (${formatPrice(checkoutData.total_amount || 0)}) ➔`
+      : `PAY ${formatPrice(checkoutData.total_amount || 0)} ➔`;
+  }
+
+  if (container) {
+    container.innerHTML = items.map((item) => {
+      const fallbackImg = getCategoryFallbackImg(item.category);
+      return `
+        <div style="display:flex; gap:16px; align-items:center; border-bottom:1px solid #f0f0f0; padding-bottom:12px;">
+          <img src="${item.image_url || fallbackImg}" alt="${item.name}" style="width:70px; height:70px; object-fit:contain; border:1px solid #f0f0f0; border-radius:2px;" onerror="this.src='${fallbackImg}'">
+          <div style="flex:1;">
+            <div style="font-weight:600; font-size:14px; color:#212121; margin-bottom:4px;">${item.name}</div>
+            <div style="font-size:12px; color:#878787;">Qty: ${item.quantity} • Brand: ${item.brand || 'PreTwin Verified'}</div>
+            <div style="font-size:14px; font-weight:700; color:#212121; margin-top:4px;">
+              ${formatPrice(item.price)}
+              <span style="font-size:12px; color:#878787; text-decoration:line-through; font-weight:normal; margin-left:6px;">${formatPrice(item.mrp)}</span>
+            </div>
+          </div>
+          <div style="font-size:13px; color:#388e3c; font-weight:600;">
+            Delivery in 2 Days
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+// Update pay button label when user changes radio selection
+document.addEventListener('change', (e) => {
+  if (e.target.name === 'payMethod') {
+    const payBtn = document.getElementById('payNowBtn');
+    if (payBtn) {
+      const isCod = e.target.value === 'cod';
+      payBtn.textContent = isCod 
+        ? `CONFIRM COD ORDER (${formatPrice(checkoutData.total_amount || 0)}) ➔`
+        : `PAY ${formatPrice(checkoutData.total_amount || 0)} ➔`;
+    }
+  }
+});
+
+async function handlePaymentSubmit() {
+  const payBtn = document.getElementById('payNowBtn');
+  const name = document.getElementById('shipName')?.value.trim();
+  const phone = document.getElementById('shipPhone')?.value.trim();
+  const address = document.getElementById('shipAddress')?.value.trim();
+  const city = document.getElementById('shipCity')?.value.trim();
+  const state = document.getElementById('shipState')?.value.trim();
+  const pincode = document.getElementById('shipPincode')?.value.trim();
+
+  if (!name || !phone || !address || !city || !state || !pincode) {
+    showToast('Please fill in complete shipping address details.');
+    return;
+  }
+
+  // Prevent duplicate submissions
+  if (payBtn.dataset.submitting === 'true' || payBtn.disabled) {
+    return;
+  }
+  payBtn.dataset.submitting = 'true';
+
+  const payMethodRadio = document.querySelector('input[name="payMethod"]:checked');
+  const selectedMethod = payMethodRadio ? payMethodRadio.value : 'cod';
+
+  const originalText = payBtn.textContent;
+  payBtn.textContent = 'Processing Order...';
+  payBtn.disabled = true;
+
+  try {
+    let methodString = 'Cash on Delivery (COD)';
+    if (selectedMethod === 'cod') methodString = 'COD';
+    else if (selectedMethod === 'upi') methodString = 'UPI';
+    else if (selectedMethod === 'cards') methodString = 'Credit/Debit Card';
+    else if (selectedMethod === 'netbanking') methodString = 'Net Banking';
+    else if (selectedMethod === 'wallets') methodString = 'Wallet';
+    else if (selectedMethod === 'sandbox') methodString = 'PreTwin Sandbox';
+
+    const orderPayload = {
+      items: checkoutData.items.map(i => ({ product_id: i.product_id, quantity: i.quantity })),
+      shipping_address: {
+        name,
+        email: currentUser ? currentUser.email : 'alex@demo.pretwinshop.ai',
+        phone,
+        address,
+        city,
+        state,
+        pincode
+      },
+      payment_method: methodString,
+      redeem_points: isRewardsApplied
+    };
+
+    // 1. Create order on backend with server-verified prices
+    const createRes = await apiPost('/api/orders/create', orderPayload);
+    const orderId = createRes.order_id;
+    const orderNum = createRes.order_number;
+
+    // 2. Gateway execution or COD direct confirmation
+    if (selectedMethod === 'cod') {
+      // Cash on Delivery: immediate order confirmation, no advance gateway payment
+      saveCart([]);
+      window.location.href = `/order-success?order_id=${orderId}&order_number=${orderNum}&is_cod=1`;
+      return;
+    }
+
+    if (createRes.gateway_configured && createRes.razorpay_key_id && typeof Razorpay !== 'undefined' && selectedMethod !== 'sandbox') {
+      // Launch Official Razorpay Modal
+      const options = {
+        key: createRes.razorpay_key_id,
+        amount: Math.round(createRes.total_amount * 100),
+        currency: 'INR',
+        name: 'PreTwin Shop AI',
+        description: `Order #${orderNum} - ${methodString}`,
+        image: '/static/images/pretwin-icon.svg',
+        order_id: createRes.razorpay_order_id,
+        handler: async function (response) {
+          try {
+            // Verify payment on backend
+            const verifyRes = await apiPost('/api/orders/verify-payment', {
+              order_id: orderId,
+              order_number: orderNum,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature
+            });
+            saveCart([]);
+            window.location.href = `/order-success?order_id=${orderId}&order_number=${orderNum}`;
+          } catch (verErr) {
+            alert('Payment verification failed on server: ' + verErr.message);
+            payBtn.textContent = originalText;
+            payBtn.disabled = false;
+            payBtn.dataset.submitting = 'false';
+          }
+        },
+        prefill: {
+          name: name,
+          email: createRes.customer.email,
+          contact: phone
+        },
+        theme: {
+          color: '#7c3aed'
+        }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.on('payment.failed', function (response) {
+        alert('Payment Failed: ' + response.error.description);
+        payBtn.textContent = originalText;
+        payBtn.disabled = false;
+        payBtn.dataset.submitting = 'false';
+      });
+      rzp.open();
+
+    } else {
+      // Demo / Sandbox Payment Verification
+      const verifyRes = await apiPost('/api/orders/verify-payment', {
+        order_id: orderId,
+        order_number: orderNum,
+        is_sandbox_mode: true
+      });
+      saveCart([]);
+      window.location.href = `/order-success?order_id=${orderId}&order_number=${orderNum}`;
+    }
+
+  } catch (err) {
+    console.error('Order creation failed:', err);
+    alert('Failed to place order: ' + (err.message || 'Please check items and address.'));
+    payBtn.textContent = originalText;
+    payBtn.disabled = false;
+    payBtn.dataset.submitting = 'false';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initCheckout();
+});
+</script>
+{% endblock %}

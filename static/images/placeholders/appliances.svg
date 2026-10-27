@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#eef2f6" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0284c7cc" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" fill="url(#bgGrad)" rx="8" />
+  <circle cx="100" cy="95" r="54" fill="#0284c714" />
+  <path d="M65 30 L135 30 L135 170 L65 170 Z M65 90 L135 90 M95 130 C95 140 105 140 105 130" fill="url(#accentGrad)" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="100" y="172" font-family="'Inter', -apple-system, sans-serif" font-size="11" font-weight="700" fill="#334155" text-anchor="middle">Appliances</text>
+  <text x="100" y="186" font-family="'Inter', -apple-system, sans-serif" font-size="9" font-weight="500" fill="#64748b" text-anchor="middle">PreTwin Verified • Home Appliances</text>
+</svg>

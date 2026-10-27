@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Agent Activity - PreTwinShop AI{% endblock %}
+{% block page_title %}Autonomous Multi-Agent Activity &amp; Traces{% endblock %}
+
+{% block content %}
+<div class="agents-page">
+  <!-- Architecture Banner -->
+  <section class="card">
+    <div class="flex-between">
+      <div>
+        <h3 class="card-title">🤖 Real-Time Multi-Agent Orchestration</h3>
+        <p class="card-subtitle">
+          Every recommendation is the result of 6 specialized agents collaborating in a sequential, audited pipeline.
+        </p>
+      </div>
+      <div class="run-selector-container">
+        <label for="runSelect" class="form-label text-sm">Select Pipeline Run:</label>
+        <select id="runSelect" class="form-control" onchange="loadSelectedRun()">
+          <option value="">Latest Execution Run</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- Goal-Based Autonomous Shopping Task Planner -->
+  <section class="card mt-4" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+      <div>
+        <h3 style="margin:0; font-size:1.25rem; color:#f1f5f9;">🎯 Goal-Based Autonomous Shopping Planner</h3>
+        <p style="margin:0; font-size:0.85rem; color:#94a3b8;">
+          Assign complex shopping objectives. The agent decomposes goals, filters items, checks budgets, and pauses at a Human Approval Checkpoint.
+        </p>
+      </div>
+      <span style="background:rgba(99, 102, 241, 0.15); color:#a5b4fc; padding:4px 10px; border-radius:6px; font-size:0.8rem; border:1px solid rgba(99, 102, 241, 0.3);">
+        🛡️ Human-in-the-Loop Guard
+      </span>
+    </div>
+
+    <!-- Task Form -->
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px;">
+      <input type="text" id="agentTaskGoalInput" placeholder="Enter objective (e.g., 'Setup home office desk under 15000' or 'Gym fitness essentials')" style="flex:2; min-width:260px; background:#1e293b; color:#f1f5f9; border:1px solid #334155; padding:10px 14px; border-radius:8px; font-size:0.9rem;">
+      <input type="number" id="agentTaskBudgetInput" placeholder="Budget (₹)" value="12000" style="width:140px; background:#1e293b; color:#f1f5f9; border:1px solid #334155; padding:10px 14px; border-radius:8px; font-size:0.9rem;">
+      <button onclick="planAutonomousTask()" style="background:linear-gradient(135deg, #6366f1, #a855f7); color:#fff; border:none; padding:10px 20px; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.9rem;">
+        ⚡ Decompose &amp; Plan Task
+      </button>
+    </div>
+
+    <!-- Task Execution Timeline & Human Checkpoint -->
+    <div id="activeTaskContainer" style="display:none; background:#1e293b; border:1px solid #334155; border-radius:10px; padding:20px; margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h4 style="margin:0; color:#f1f5f9; font-size:1.05rem;" id="taskTitleDisplay">Autonomous Task Plan</h4>
+        <span id="taskStatusBadge" style="background:#f59e0b; color:#fff; font-size:0.75rem; padding:3px 8px; border-radius:6px; font-weight:700;">AWAITING APPROVAL</span>
+      </div>
+
+      <!-- Decomposed Steps -->
+      <div id="taskStepsContainer" style="display:flex; flex-direction:column; gap:10px; margin-bottom:18px;"></div>
+
+      <!-- Proposed Items -->
+      <div style="border-top:1px solid #334155; padding-top:14px; margin-bottom:16px;">
+        <h5 style="margin:0 0 10px 0; color:#cbd5e1; font-size:0.9rem;">Candidate Basket Items:</h5>
+        <div id="taskItemsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px;"></div>
+      </div>
+
+      <!-- Human Approval Button -->
+      <div id="approvalActionStrip" style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #334155; padding-top:14px;">
+        <span style="font-size:0.85rem; color:#cbd5e1;">Review proposed purchases. Agent execution paused pending authorization.</span>
+        <button id="approveTaskBtn" onclick="approveCurrentTask()" style="background:#10b981; color:#fff; border:none; padding:10px 22px; border-radius:8px; font-weight:700; cursor:pointer; font-size:0.9rem;">
+          ✓ Authorize &amp; Execute
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Pipeline Flow Diagram -->
+  <section class="card mt-4">
+    <div class="card-header flex-between">
+      <div>
+        <h4 class="card-title">Workflow Execution Pipeline</h4>
+        <p class="card-subtitle" id="workflowStatusSubtitle">Viewing run status and agent state</p>
+      </div>
+      <button class="btn btn-sm btn-outline" onclick="refreshAgentRuns()">🔄 Refresh Traces</button>
+    </div>
+    <div class="card-body">
+      <div class="pipeline-flow" id="pipelineFlow">
+        <div class="pipeline-step" id="step-A">
+          <div class="step-circle success">A</div>
+          <div class="step-label">Shopping Twin</div>
+          <div class="step-timing" id="timing-A">-- ms</div>
+        </div>
+        <div class="pipeline-connector"></div>
+        <div class="pipeline-step" id="step-B">
+          <div class="step-circle success">B</div>
+          <div class="step-label">Predictive</div>
+          <div class="step-timing" id="timing-B">-- ms</div>
+        </div>
+        <div class="pipeline-connector"></div>
+        <div class="pipeline-step" id="step-C">
+          <div class="step-circle success">C</div>
+          <div class="step-label">Discovery</div>
+          <div class="step-timing" id="timing-C">-- ms</div>
+        </div>
+        <div class="pipeline-connector"></div>
+        <div class="pipeline-step" id="step-D">
+          <div class="step-circle success">D</div>
+          <div class="step-label">Comparison</div>
+          <div class="step-timing" id="timing-D">-- ms</div>
+        </div>
+        <div class="pipeline-connector"></div>
+        <div class="pipeline-step" id="step-E">
+          <div class="step-circle success">E</div>
+          <div class="step-label">Budget Fit</div>
+          <div class="step-timing" id="timing-E">-- ms</div>
+        </div>
+        <div class="pipeline-connector"></div>
+        <div class="pipeline-step" id="step-F">
+          <div class="step-circle success">F</div>
+          <div class="step-label">Explanation</div>
+          <div class="step-timing" id="timing-F">-- ms</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Agent Execution Logs -->
+  <section class="mt-4">
+    <div class="flex-between mb-3">
+      <h3 class="section-heading">Execution Logs &amp; Audit Trail</h3>
+      <span class="badge badge-outline">Recorded in SQLite <code>agent_runs</code></span>
+    </div>
+
+    <div class="agent-cards-stack" id="agentLogsContainer">
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading agent execution audit logs...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Audit Guarantee Notice -->
+  <section class="card mt-4 border-info">
+    <div class="card-body">
+      <div class="flex-align-gap">
+        <span class="info-icon">🛡️</span>
+        <div>
+          <strong>Integrity &amp; Explainability Guarantee:</strong>
+          <p class="text-sm text-muted mb-0">
+            Agent activity logs reflect actual function executions with measured runtimes. No activity logs, predictions, or feature specifications are fabricated.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/agents.js"></script>
+{% endblock %}

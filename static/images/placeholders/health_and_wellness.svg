@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#eef2f6" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#059669cc" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" fill="url(#bgGrad)" rx="8" />
+  <circle cx="100" cy="95" r="54" fill="#05966914" />
+  <path d="M90 60 L110 60 L110 90 L140 90 L140 110 L110 110 L110 140 L90 140 L90 110 L60 110 L60 90 L90 90 Z" fill="url(#accentGrad)" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="100" y="172" font-family="'Inter', -apple-system, sans-serif" font-size="11" font-weight="700" fill="#334155" text-anchor="middle">Health & Wellness</text>
+  <text x="100" y="186" font-family="'Inter', -apple-system, sans-serif" font-size="9" font-weight="500" fill="#64748b" text-anchor="middle">PreTwin Verified • Vitamins & Care</text>
+</svg>

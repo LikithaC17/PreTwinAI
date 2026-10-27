@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}PreTwin — Predictive Personal Shopping Twin &amp; Online Deals{% endblock %}</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="shortcut icon" href="/static/favicon.ico">
+  
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <script>
+    window.PRETWIN_IS_AUTHENTICATED = {{ 'true' if is_authenticated else 'false' }};
+    window.PRETWIN_CURRENT_USER = {{ (current_user or {})|tojson }};
+  </script>
+  
+  <!-- PreTwin Master CSS -->
+  <link rel="stylesheet" href="/static/css/style.css">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <!-- PreTwin Fairy-Tale Startup Intro Overlay -->
+  {% include "startup_intro.html" %}
+
+  <!-- ======================================================================
+       1. PRETWIN TOP NAVIGATION HEADER
+       ====================================================================== -->
+  <header class="fk-navbar">
+    <div class="fk-navbar-inner">
+      <!-- PreTwin Logo with Flying Fairytale Wing Animation -->
+      <a href="/" class="fk-brand pretwin-brand-link" title="PreTwin — Predictive Personal Shopping Twin">
+        <img src="/static/images/pretwin-logo.svg" alt="PreTwin Logo" class="pretwin-header-logo">
+      </a>
+
+      <!-- Search Bar -->
+      <div class="fk-search-box">
+        <form class="fk-search-form" onsubmit="handlePreTwinSearch(event)">
+          <input 
+            type="text" 
+            id="fkSearchInput" 
+            class="fk-search-input" 
+            placeholder="Search for products, brands, categories and AI predictions" 
+            autocomplete="off"
+            oninput="handleSearchType(this.value)"
+          />
+          <button type="submit" class="fk-search-btn" aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+        </form>
+
+        <!-- Search Suggestion Dropdown -->
+        <div class="fk-search-dropdown" id="fkSearchDropdown">
+          <!-- Dynamically populated suggestions -->
+        </div>
+      </div>
+
+      <!-- Navigation Actions: 6 Shopping Shortcuts + User Account Control -->
+      <div class="pretwin-nav-right">
+        <!-- 6 Shopping Shortcuts Group (Icons Above Titles, Consistent Size & Alignment) -->
+        <nav class="pretwin-shortcuts-group" aria-label="Shopping Shortcuts">
+          <!-- 1. Wishlist -->
+          <a href="/wishlist" class="pretwin-shortcut-btn {% if request.path == '/wishlist' %}active{% endif %}" title="My Saved Wishlist">
+            <div class="pretwin-shortcut-icon-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+              <span class="pretwin-shortcut-badge" id="menuWishlistCount">0</span>
+            </div>
+            <span class="pretwin-shortcut-text">Wishlist</span>
+          </a>
+
+          <!-- 2. Cart -->
+          <a href="javascript:void(0)" onclick="openCartModal()" class="pretwin-shortcut-btn" title="Shopping Cart">
+            <div class="pretwin-shortcut-icon-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+              <span class="pretwin-shortcut-badge" id="fkCartBadge">0</span>
+            </div>
+            <span class="pretwin-shortcut-text">Cart</span>
+          </a>
+
+          <!-- 3. My Orders -->
+          <a href="/orders" class="pretwin-shortcut-btn {% if request.path == '/orders' %}active{% endif %}" title="Order History &amp; Tracking">
+            <div class="pretwin-shortcut-icon-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+            </div>
+            <span class="pretwin-shortcut-text">My Orders</span>
+          </a>
+
+          <!-- 4. Reward Points -->
+          <a href="/rewards" class="pretwin-shortcut-btn {% if request.path == '/rewards' %}active{% endif %}" title="PreTwin Reward Points (100 = ₹1)">
+            <div class="pretwin-shortcut-icon-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 12 20 22 4 22 4 12"></polyline>
+                <rect x="2" y="7" width="20" height="5"></rect>
+                <line x1="12" y1="22" x2="12" y2="7"></line>
+                <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+                <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+              </svg>
+            </div>
+            <span class="pretwin-shortcut-text">Reward Points</span>
+          </a>
+
+          <!-- 5. Savings Plan -->
+          <a href="/savings" class="pretwin-shortcut-btn {% if request.path == '/savings' %}active{% endif %}" title="Smart Shopping Savings Plan">
+            <div class="pretwin-shortcut-icon-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-3.5c1-.5 1.5-1 2-2 1.5-3 0-6.5-1-8.5z"></path>
+                <circle cx="16" cy="11" r="1"></circle>
+                <path d="M12 5V2"></path>
+              </svg>
+            </div>
+            <span class="pretwin-shortcut-text">Savings Plan</span>
+          </a>
+
+          <!-- 6. Smart Cart -->
+          <a href="/smart-cart" class="pretwin-shortcut-btn {% if request.path == '/smart-cart' %}active{% endif %}" title="Smart Cart &amp; Automation Intelligence">
+            <div class="pretwin-shortcut-icon-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                <path d="M17 1l1 2 2 1-2 1-1 2-1-2-2-1 2-1z" fill="currentColor"></path>
+              </svg>
+            </div>
+            <span class="pretwin-shortcut-text">Smart Cart</span>
+          </a>
+
+          <!-- 7. Profile / Account Icon & Menu -->
+          <div class="pretwin-account-item" id="pretwinAccountItem" style="position:relative;">
+            {% if is_authenticated and current_user %}
+              <button
+                type="button"
+                class="pretwin-shortcut-btn pretwin-profile-btn"
+                id="pretwinProfileBtn"
+                onclick="togglePreTwinAccountDropdown(event)"
+                aria-haspopup="true"
+                aria-expanded="false"
+                title="Signed in as {{ current_user.username }}"
+                aria-label="Account menu for {{ current_user.username }}"
+              >
+                <div class="pretwin-shortcut-icon-box">
+                  {% if current_user.avatar_url %}
+                    <img src="{{ current_user.avatar_url }}" alt="{{ current_user.username }}" class="pretwin-nav-avatar">
+                  {% else %}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  {% endif %}
+                </div>
+                <span class="pretwin-shortcut-text">{{ current_user.username.split(' ')[0] }}</span>
+              </button>
+
+              <!-- Dropdown Menu for Authenticated User -->
+              <div class="pretwin-account-dropdown" id="pretwinAccountDropdown">
+                <div class="pretwin-dropdown-user-header">
+                  <div class="pretwin-dropdown-user-name">{{ current_user.username }}</div>
+                  <div class="pretwin-dropdown-user-email">{{ current_user.email }}</div>
+                </div>
+                <div class="pretwin-dropdown-divider"></div>
+                <a href="/twin" class="pretwin-dropdown-link" title="Personalized Shopping Twin">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                  <span>My Profile (AI Twin)</span>
+                </a>
+                <a href="/orders" class="pretwin-dropdown-link" title="My Orders &amp; Tracking">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                  <span>My Orders</span>
+                </a>
+                <a href="/wishlist" class="pretwin-dropdown-link" title="Saved Wishlist Items">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  <span>Wishlist</span>
+                </a>
+                <a href="/settings" class="pretwin-dropdown-link" title="Account &amp; Twin Settings">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                  <span>Account Settings</span>
+                </a>
+                <div class="pretwin-dropdown-divider"></div>
+                <a href="/login" class="pretwin-dropdown-link" title="Sign in with another account or create account">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                  <span>Sign In / Switch Account</span>
+                </a>
+                <a href="/logout" class="pretwin-dropdown-link pretwin-dropdown-logout-item" onclick="handlePreTwinLogout(event)" title="Sign out of PreTwin">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                  <span>Sign Out</span>
+                </a>
+              </div>
+            {% else %}
+              <a
+                href="/login"
+                class="pretwin-shortcut-btn pretwin-profile-btn"
+                id="pretwinProfileBtn"
+                title="Sign In / Sign Up to PreTwin"
+                aria-label="Sign In or Sign Up to PreTwin"
+              >
+                <div class="pretwin-shortcut-icon-box">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </div>
+                <span class="pretwin-shortcut-text">Sign In</span>
+              </a>
+            {% endif %}
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       1.5 PRETWIN AI NAVIGATION BAR (Directly Above Product Categories)
+       Exactly 8 Intelligent Shopping Feature Categories in Order:
+       1. Personalization and Digital Twin
+       2. Predictive Shopping Intelligence
+       3. Smart Product Discovery
+       4. Budget and Price Intelligence
+       5. Product Comparison and Decision Support
+       6. Future Predictive Calendar
+       7. Smart Cart and Shopping Automation
+       8. Advanced Features for Future Development
+       ====================================================================== -->
+  <nav class="pretwin-ai-nav-bar" aria-label="PreTwin AI Intelligence Hub">
+    <div class="pretwin-ai-nav-inner">
+      <!-- 1. Personalization and Digital Twin -->
+      <a href="/twin" class="pretwin-ai-nav-item {% if request.path == '/twin' %}active{% endif %}" title="Personalization &amp; Digital Twin: Multi-Profile &amp; Taste Modeling">
+        <div class="pretwin-ai-icon-bubble">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <span class="pretwin-ai-nav-title">Personalization and Digital Twin</span>
+      </a>
+
+      <!-- 2. Predictive Shopping Intelligence -->
+      <a href="/predictions" class="pretwin-ai-nav-item {% if request.path == '/predictions' %}active{% endif %}" title="Predictive Shopping Intelligence: Reorder Cycles &amp; Event Forecasts">
+        <div class="pretwin-ai-icon-bubble">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+        </div>
+        <span class="pretwin-ai-nav-title">Predictive Shopping Intelligence</span>
+      </a>
+
+      <!-- 3. Smart Product Discovery -->
+      <a href="/discovery" class="pretwin-ai-nav-item {% if request.path == '/discovery' %}active{% endif %}" title="Smart Product Discovery: Natural-Language Finder &amp; Visual Search">
+        <div class="pretwin-ai-icon-bubble">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            <polygon points="11 8 13 12 9 12 11 8" fill="currentColor"></polygon>
+          </svg>
+        </div>
+        <span class="pretwin-ai-nav-title">Smart Product Discovery</span>
+      </a>
+
+      <!-- 4. Budget and Price Intelligence -->
+      <a href="/budget" class="pretwin-ai-nav-item {% if request.path == '/budget' %}active{% endif %}" title="Budget and Price Intelligence: Price Drops, Price History &amp; Best Value">
+        <div class="pretwin-ai-icon-bubble">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            <polyline points="19 19 22 19 22 16"></polyline>
+          </svg>
+        </div>
+        <span class="pretwin-ai-nav-title">Budget and Price Intelligence</span>
+      </a>
+
+      <!-- 5. Product Comparison and Decision Support -->
+      <a href="/comparison" class="pretwin-ai-nav-item {% if request.path == '/comparison' %}active{% endif %}" title="Product Comparison and Decision Support: Weighted Multi-Factor Tradeoffs">
+        <div class="pretwin-ai-icon-bubble">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+            <circle cx="12" cy="4" r="2"></circle>
+          </svg>
+        </div>
+        <span class="pretwin-ai-nav-title">Product Comparison and Decision Support</span>
+      </a>
+
+      <!-- 6. Future Predictive Calendar -->
+      <a href="/calendar" class="pretwin-ai-nav-item {% if request.path == '/calendar' %}active{% endif %}" title="Future Predictive Calendar: Milestone Forecasts, Festive Deadlines &amp; Replenishment">
+        <div class="pretwin-ai-icon-bubble">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <path d="m9 16 2 2 4-4"></path>
+          </svg>
+        </div>
+        <span class="pretwin-ai-nav-title">Future Predictive Calendar</span>
+      </a>
+
+      <!-- 7. Smart Cart and Shopping Automation -->
+      <a href="/smart-cart" class="pretwin-ai-nav-item {% if request.path == '/smart-cart' %}active{% endif %}" title="Smart Cart &amp; Automation: Duplicate Alerts, Missing Add-ons &amp; Bundles">
+        <div class="pretwin-ai-icon-bubble">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            <path d="m13 11 2-3 2 3"></path>
+          </svg>
+        </div>
+        <span class="pretwin-ai-nav-title">Smart Cart and Shopping Automation</span>
+      </a>
+
+      <!-- 8. Advanced Features for Future Development -->
+      <a href="/advanced-ai" class="pretwin-ai-nav-item {% if request.path == '/advanced-ai' %}active{% endif %}" title="Advanced Features: Gift Finder, Calendar, Voice, AR Try-on &amp; Roadmap">
+        <div class="pretwin-ai-icon-bubble">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            <line x1="12" y1="8" x2="12" y2="14"></line>
+          </svg>
+        </div>
+        <span class="pretwin-ai-nav-title">Advanced Features for Future Development</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ======================================================================
+       2. FLIPKART WHITE CATEGORY STRIP (All 20 E-Commerce Categories)
+       ====================================================================== -->
+  {% block category_strip %}
+  <nav class="fk-category-bar" aria-label="E-Commerce Categories">
+    <div class="fk-cat-bar-wrapper">
+      <button class="fk-cat-nav-btn prev" onclick="scrollCatBar(-320)" aria-label="Previous Categories">❮</button>
+
+      <div class="fk-cat-inner" id="fkCatInner">
+        <!-- 1. Fashion -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Fashion" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#ffebee; color:#d81b60;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
+            </div>
+            <span class="fk-cat-title">Fashion <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown">
+            <div class="fk-subcat-header">Clothing &amp; Apparel</div>
+            <a href="/discovery?category=Fashion&subcategory=T-Shirts">T-Shirts</a>
+            <a href="/discovery?category=Fashion&subcategory=Shirts">Shirts</a>
+            <a href="/discovery?category=Fashion&subcategory=Jeans">Jeans</a>
+            <a href="/discovery?category=Fashion&subcategory=Trousers">Trousers</a>
+            <a href="/discovery?category=Fashion&subcategory=Dresses">Dresses</a>
+            <a href="/discovery?category=Fashion&subcategory=Sarees">Sarees</a>
+            <a href="/discovery?category=Fashion&subcategory=Kurtas">Kurtas</a>
+            <a href="/discovery?category=Fashion&subcategory=Ethnic+Wear">Ethnic Wear</a>
+            <a href="/discovery?category=Fashion&subcategory=Western+Wear">Western Wear</a>
+            <a href="/discovery?category=Fashion&subcategory=Innerwear">Innerwear</a>
+            <a href="/discovery?category=Fashion&subcategory=Handbags">Handbags</a>
+            <a href="/discovery?category=Fashion&subcategory=Wallets">Wallets</a>
+          </div>
+        </div>
+
+        <!-- 2. Mobiles -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Mobiles" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#e3f2fd; color:#1976d2;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+            </div>
+            <span class="fk-cat-title">Mobiles <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown">
+            <div class="fk-subcat-header">Smartphones &amp; Acc</div>
+            <a href="/discovery?category=Mobiles&subcategory=Smartphones">Smartphones</a>
+            <a href="/discovery?category=Mobiles&subcategory=5G+Android+Phones">5G Android Phones</a>
+            <a href="/discovery?category=Mobiles&subcategory=iOS+Phones">Demo iPhone Listings</a>
+            <a href="/discovery?category=Mobiles&subcategory=Feature+Phones">Feature Phones</a>
+            <a href="/discovery?category=Mobiles&subcategory=Mobile+Covers+%26+Cases">Mobile Covers &amp; Cases</a>
+            <a href="/discovery?category=Mobiles&subcategory=Screen+Guards">Screen Guards</a>
+            <a href="/discovery?category=Mobiles&subcategory=Chargers+%26+Cables">Chargers &amp; Cables</a>
+            <a href="/discovery?category=Mobiles&subcategory=Power+Banks">Power Banks</a>
+            <a href="/discovery?category=Mobiles&subcategory=Wireless+Earbuds">Wireless Earbuds</a>
+          </div>
+        </div>
+
+        <!-- 3. Electronics -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Electronics" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#ede7f6; color:#512da8;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg>
+            </div>
+            <span class="fk-cat-title">Electronics <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown">
+            <div class="fk-subcat-header">Audio &amp; Gadgets</div>
+            <a href="/discovery?category=Electronics&subcategory=Headphones">Headphones</a>
+            <a href="/discovery?category=Electronics&subcategory=Bluetooth+Speakers">Bluetooth Speakers</a>
+            <a href="/discovery?category=Electronics&subcategory=Soundbars">Soundbars</a>
+            <a href="/discovery?category=Electronics&subcategory=Cameras">Cameras</a>
+            <a href="/discovery?category=Electronics&subcategory=Webcams">Webcams</a>
+            <a href="/discovery?category=Electronics&subcategory=Microphones">Microphones</a>
+            <a href="/discovery?category=Electronics&subcategory=Smartwatches">Smartwatches</a>
+            <a href="/discovery?category=Electronics&subcategory=Storage+Devices">Storage Devices &amp; SSDs</a>
+          </div>
+        </div>
+
+        <!-- 4. Beauty, Toys & More -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Beauty%2C+Toys+%26+More" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#fce4ec; color:#c2185b;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+            </div>
+            <span class="fk-cat-title">Beauty &amp; Toys <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown">
+            <div class="fk-subcat-header">Beauty &amp; Hobbies</div>
+            <a href="/discovery?category=Beauty%2C+Toys+%26+More&subcategory=Skincare">Skincare</a>
+            <a href="/discovery?category=Beauty%2C+Toys+%26+More&subcategory=Face+Wash">Face Wash</a>
+            <a href="/discovery?category=Beauty%2C+Toys+%26+More&subcategory=Moisturizers">Moisturizers</a>
+            <a href="/discovery?category=Beauty%2C+Toys+%26+More&subcategory=Sunscreen">Sunscreen</a>
+            <a href="/discovery?category=Beauty%2C+Toys+%26+More&subcategory=Makeup+%26+Lipstick">Makeup &amp; Lipstick</a>
+            <a href="/discovery?category=Beauty%2C+Toys+%26+More&subcategory=Haircare">Haircare</a>
+            <a href="/discovery?category=Beauty%2C+Toys+%26+More&subcategory=Perfumes+%26+Deodorants">Perfumes &amp; Deodorants</a>
+            <a href="/discovery?category=Beauty%2C+Toys+%26+More&subcategory=Educational+Toys">Educational Toys</a>
+            <a href="/discovery?category=Beauty%2C+Toys+%26+More&subcategory=Board+Games">Board Games</a>
+          </div>
+        </div>
+
+        <!-- 5. Home & Kitchen -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Home+%26+Kitchen" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#fff3e0; color:#f57c00;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <span class="fk-cat-title">Home &amp; Kitchen <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown">
+            <div class="fk-subcat-header">Kitchen &amp; Home</div>
+            <a href="/discovery?category=Home+%26+Kitchen&subcategory=Cookware">Cookware &amp; Pots</a>
+            <a href="/discovery?category=Home+%26+Kitchen&subcategory=Kitchen+Tools">Kitchen Tools</a>
+            <a href="/discovery?category=Home+%26+Kitchen&subcategory=Storage+Containers">Storage Containers</a>
+            <a href="/discovery?category=Home+%26+Kitchen&subcategory=Bedsheets">Bedsheets &amp; Blankets</a>
+            <a href="/discovery?category=Home+%26+Kitchen&subcategory=Bath+Accessories">Bath Accessories</a>
+            <a href="/discovery?category=Home+%26+Kitchen&subcategory=Home+Decor">Home Decor &amp; Lighting</a>
+            <a href="/discovery?category=Home+%26+Kitchen&subcategory=Cleaning+Supplies">Cleaning Supplies</a>
+            <a href="/discovery?category=Home+%26+Kitchen&subcategory=Dinnerware">Dinnerware &amp; Drinkware</a>
+          </div>
+        </div>
+
+        <!-- 6. Appliances -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Appliances" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#e0f7fa; color:#0097a7;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><circle cx="12" cy="14" r="4"/><line x1="8" x2="8.01" y1="9" y2="9"/><line x1="16" x2="16.01" y1="9" y2="9"/></svg>
+            </div>
+            <span class="fk-cat-title">Appliances <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown">
+            <div class="fk-subcat-header">Home Appliances</div>
+            <a href="/discovery?category=Appliances&subcategory=Refrigerators">Refrigerators</a>
+            <a href="/discovery?category=Appliances&subcategory=Washing+Machines">Washing Machines</a>
+            <a href="/discovery?category=Appliances&subcategory=Air+Conditioners">Air Conditioners</a>
+            <a href="/discovery?category=Appliances&subcategory=Fans+%26+Coolers">Fans &amp; Coolers</a>
+            <a href="/discovery?category=Appliances&subcategory=Microwave+Ovens">Microwave Ovens</a>
+            <a href="/discovery?category=Appliances&subcategory=Mixers+%26+Grinders">Mixers &amp; Grinders</a>
+            <a href="/discovery?category=Appliances&subcategory=Induction+Cooktops">Induction Cooktops</a>
+            <a href="/discovery?category=Appliances&subcategory=Vacuum+Cleaners">Vacuum Cleaners</a>
+            <a href="/discovery?category=Appliances&subcategory=Water+Purifiers">Water Purifiers &amp; Geysers</a>
+          </div>
+        </div>
+
+        <!-- 7. Toys & Baby Products -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Toys+%26+Baby+Products" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#fff8e1; color:#ffa000;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6"/><path d="M12 9v6"/><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="8" cy="8" r="1.5"/><circle cx="16" cy="16" r="1.5"/></svg>
+            </div>
+            <span class="fk-cat-title">Toys &amp; Baby <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown">
+            <div class="fk-subcat-header">Baby &amp; Kids</div>
+            <a href="/discovery?category=Toys+%26+Baby+Products&subcategory=Building+Blocks">Building Blocks</a>
+            <a href="/discovery?category=Toys+%26+Baby+Products&subcategory=Puzzles">Puzzles</a>
+            <a href="/discovery?category=Toys+%26+Baby+Products&subcategory=Dolls+%26+Action+Figures">Dolls &amp; Action Figures</a>
+            <a href="/discovery?category=Toys+%26+Baby+Products&subcategory=Board+Games">Board Games</a>
+            <a href="/discovery?category=Toys+%26+Baby+Products&subcategory=Baby+Clothing">Baby Clothing</a>
+            <a href="/discovery?category=Toys+%26+Baby+Products&subcategory=Diapers+%26+Baby+Care">Diapers &amp; Baby Care</a>
+            <a href="/discovery?category=Toys+%26+Baby+Products&subcategory=Strollers+%26+Feeding">Strollers &amp; Feeding</a>
+          </div>
+        </div>
+
+        <!-- 8. Food & Grocery -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Food+%26+Grocery" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#e8f5e9; color:#388e3c;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 11 4-7"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8c1 0 1.8-.7 2-1.6l1.6-7.4"/><path d="M9 11v9"/><path d="M15 11v9"/></svg>
+            </div>
+            <span class="fk-cat-title">Food &amp; Grocery <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown">
+            <div class="fk-subcat-header">Daily Staples</div>
+            <a href="/discovery?category=Food+%26+Grocery&subcategory=Rice+%26+Atta">Rice, Atta &amp; Grains</a>
+            <a href="/discovery?category=Food+%26+Grocery&subcategory=Dals+%26+Pulses">Dals &amp; Pulses</a>
+            <a href="/discovery?category=Food+%26+Grocery&subcategory=Cooking+Oils+%26+Ghee">Cooking Oils &amp; Ghee</a>
+            <a href="/discovery?category=Food+%26+Grocery&subcategory=Spices+%26+Masalas">Spices &amp; Masalas</a>
+            <a href="/discovery?category=Food+%26+Grocery&subcategory=Dry+Fruits+%26+Nuts">Dry Fruits &amp; Nuts</a>
+            <a href="/discovery?category=Food+%26+Grocery&subcategory=Biscuits+%26+Snacks">Biscuits &amp; Snacks</a>
+            <a href="/discovery?category=Food+%26+Grocery&subcategory=Chocolates+%26+Sweets">Chocolates &amp; Sweets</a>
+            <a href="/discovery?category=Food+%26+Grocery&subcategory=Tea+%26+Coffee">Tea &amp; Coffee</a>
+            <a href="/discovery?category=Food+%26+Grocery&subcategory=Noodles+%26+Pasta">Noodles &amp; Pasta</a>
+          </div>
+        </div>
+
+        <!-- 9. Sports & Fitness -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Sports+%26+Fitness" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#fbe9e7; color:#d84315;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6.5 6.5 11 11"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/></svg>
+            </div>
+            <span class="fk-cat-title">Sports &amp; Fitness <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown">
+            <div class="fk-subcat-header">Fitness &amp; Outdoors</div>
+            <a href="/discovery?category=Sports+%26+Fitness&subcategory=Cricket">Cricket Gear</a>
+            <a href="/discovery?category=Sports+%26+Fitness&subcategory=Badminton">Badminton</a>
+            <a href="/discovery?category=Sports+%26+Fitness&subcategory=Football+%26+Basketball">Football &amp; Basketball</a>
+            <a href="/discovery?category=Sports+%26+Fitness&subcategory=Yoga+Mats">Yoga Mats</a>
+            <a href="/discovery?category=Sports+%26+Fitness&subcategory=Dumbbells+%26+Weights">Dumbbells &amp; Weights</a>
+            <a href="/discovery?category=Sports+%26+Fitness&subcategory=Resistance+Bands">Resistance Bands</a>
+            <a href="/discovery?category=Sports+%26+Fitness&subcategory=Gym+Accessories">Gym Accessories</a>
+            <a href="/discovery?category=Sports+%26+Fitness&subcategory=Fitness+Trackers">Fitness Trackers</a>
+            <a href="/discovery?category=Sports+%26+Fitness&subcategory=Running+Shoes+%26+Sportswear">Sportswear &amp; Shoes</a>
+          </div>
+        </div>
+
+        <!-- 10. Books & Stationery -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Books+%26+Stationery" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#efebe9; color:#5d4037;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+            </div>
+            <span class="fk-cat-title">Books &amp; More <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown">
+            <div class="fk-subcat-header">Books &amp; Office</div>
+            <a href="/discovery?category=Books+%26+Stationery&subcategory=Self-Help">Self-Help &amp; Growth</a>
+            <a href="/discovery?category=Books+%26+Stationery&subcategory=Fiction+%26+Literature">Fiction &amp; Literature</a>
+            <a href="/discovery?category=Books+%26+Stationery&subcategory=Academic+%26+Exams">Exam Prep &amp; Academic</a>
+            <a href="/discovery?category=Books+%26+Stationery&subcategory=Notebooks+%26+Diaries">Notebooks &amp; Diaries</a>
+            <a href="/discovery?category=Books+%26+Stationery&subcategory=Pens+%26+Art+Supplies">Pens &amp; Art Supplies</a>
+            <a href="/discovery?category=Books+%26+Stationery&subcategory=Desk+Organizers">Desk Organizers</a>
+          </div>
+        </div>
+
+        <!-- 11. Furniture -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Furniture" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#eceff1; color:#455a64;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H7v-2a2 2 0 0 0-4 0Z"/><path d="M5 18v2"/><path d="M19 18v2"/></svg>
+            </div>
+            <span class="fk-cat-title">Furniture <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown">
+            <div class="fk-subcat-header">Home &amp; Office</div>
+            <a href="/discovery?category=Furniture&subcategory=Beds+%26+Mattresses">Beds &amp; Mattresses</a>
+            <a href="/discovery?category=Furniture&subcategory=Sofas+%26+Sectionals">Sofas &amp; Sectionals</a>
+            <a href="/discovery?category=Furniture&subcategory=Recliners">Recliners</a>
+            <a href="/discovery?category=Furniture&subcategory=Coffee+Tables+%26+TV+Units">TV Units &amp; Tables</a>
+            <a href="/discovery?category=Furniture&subcategory=Dining+Tables+%26+Chairs">Dining Sets</a>
+            <a href="/discovery?category=Furniture&subcategory=Office+Chairs+%26+Desks">Office Chairs &amp; Desks</a>
+            <a href="/discovery?category=Furniture&subcategory=Wardrobes">Wardrobes</a>
+          </div>
+        </div>
+
+        <!-- 12. Footwear -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Footwear" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#e1f5fe; color:#0288d1;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 13h17"/><path d="M3.5 13c0 4 3.5 7 8.5 7h6a3 3 0 0 0 3-3v-4"/><path d="M3.5 13C3.5 9 7 6 12 6c3 0 5 1.5 6 3.5l3 3.5"/></svg>
+            </div>
+            <span class="fk-cat-title">Footwear <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown">
+            <div class="fk-subcat-header">Shoes &amp; Slippers</div>
+            <a href="/discovery?category=Footwear&subcategory=Sports+%26+Running+Shoes">Running Shoes</a>
+            <a href="/discovery?category=Footwear&subcategory=Men%27s+Formal+Shoes">Formal Shoes</a>
+            <a href="/discovery?category=Footwear&subcategory=Sneakers">Sneakers</a>
+            <a href="/discovery?category=Footwear&subcategory=Men%27s+Casual+Shoes">Casual Shoes</a>
+            <a href="/discovery?category=Footwear&subcategory=Heels+%26+Wedges">Heels &amp; Wedges</a>
+            <a href="/discovery?category=Footwear&subcategory=Women%27s+Flats">Flats &amp; Mojaris</a>
+            <a href="/discovery?category=Footwear&subcategory=Slippers+%26+Flip+Flops">Slippers &amp; Clogs</a>
+          </div>
+        </div>
+
+        <!-- 13. Watches & Accessories -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Watches+%26+Accessories" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#f3e5f5; color:#7b1fa2;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><polyline points="12 9 12 12 13.5 13.5"/><path d="M16.51 17.35l-.85 3.22a1.2 1.2 0 0 1-1.16.93H9.5a1.2 1.2 0 0 1-1.16-.93L7.49 17.35"/><path d="M16.51 6.65l-.85-3.22A1.2 1.2 0 0 0 14.5 2.5H9.5a1.2 1.2 0 0 0-1.16.93L7.49 6.65"/></svg>
+            </div>
+            <span class="fk-cat-title">Watches &amp; Acc <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown">
+            <div class="fk-subcat-header">Watches &amp; Eyewear</div>
+            <a href="/discovery?category=Watches+%26+Accessories&subcategory=Men%27s+Analog+Watches">Men's Analog Watches</a>
+            <a href="/discovery?category=Watches+%26+Accessories&subcategory=Chronograph+Watches">Chronograph Watches</a>
+            <a href="/discovery?category=Watches+%26+Accessories&subcategory=Women%27s+Designer+Watches">Women's Designer Watches</a>
+            <a href="/discovery?category=Watches+%26+Accessories&subcategory=Smartwatches+%26+Bands">Sports Watches</a>
+            <a href="/discovery?category=Watches+%26+Accessories&subcategory=Sunglasses">Sunglasses</a>
+            <a href="/discovery?category=Watches+%26+Accessories&subcategory=Wallets+%26+Belts">Wallets &amp; Belts</a>
+            <a href="/discovery?category=Watches+%26+Accessories&subcategory=Fashion+Jewellery">Fashion Jewellery</a>
+          </div>
+        </div>
+
+        <!-- 14. Laptops & Computers -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Laptops+%26+Computers" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#e8eaf6; color:#303f9f;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/></svg>
+            </div>
+            <span class="fk-cat-title">Laptops &amp; PCs <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown">
+            <div class="fk-subcat-header">Computing</div>
+            <a href="/discovery?category=Laptops+%26+Computers&subcategory=Thin+%26+Light+Laptops">Thin &amp; Light Laptops</a>
+            <a href="/discovery?category=Laptops+%26+Computers&subcategory=Gaming+Laptops">Gaming Laptops</a>
+            <a href="/discovery?category=Laptops+%26+Computers&subcategory=Desktop+PCs">Desktop PCs</a>
+            <a href="/discovery?category=Laptops+%26+Computers&subcategory=Monitors">Monitors</a>
+            <a href="/discovery?category=Laptops+%26+Computers&subcategory=Keyboards+%26+Mice">Keyboards &amp; Mice</a>
+            <a href="/discovery?category=Laptops+%26+Computers&subcategory=External+Storage">SSDs &amp; Storage</a>
+            <a href="/discovery?category=Laptops+%26+Computers&subcategory=Laptop+Bags">Bags &amp; Sleeves</a>
+          </div>
+        </div>
+
+        <!-- 15. TVs & Home Entertainment -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=TVs+%26+Home+Entertainment" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#e0f2f1; color:#00796b;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="15" x="2" y="3" rx="2"/><polyline points="17 21 12 18 7 21"/></svg>
+            </div>
+            <span class="fk-cat-title">TVs &amp; Audio <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown drop-right">
+            <div class="fk-subcat-header">Entertainment</div>
+            <a href="/discovery?category=TVs+%26+Home+Entertainment&subcategory=4K+Ultra+HD+TVs">4K Ultra HD Smart TVs</a>
+            <a href="/discovery?category=TVs+%26+Home+Entertainment&subcategory=OLED+%26+QLED+TVs">OLED &amp; QLED TVs</a>
+            <a href="/discovery?category=TVs+%26+Home+Entertainment&subcategory=Smart+TVs">Smart TVs</a>
+            <a href="/discovery?category=TVs+%26+Home+Entertainment&subcategory=Soundbars+%26+Subwoofers">Soundbars &amp; Home Theatre</a>
+            <a href="/discovery?category=TVs+%26+Home+Entertainment&subcategory=Streaming+Devices">Streaming Sticks</a>
+            <a href="/discovery?category=TVs+%26+Home+Entertainment&subcategory=Projectors+%26+Screens">Projectors &amp; Screens</a>
+          </div>
+        </div>
+
+        <!-- 16. Personal Care -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Personal+Care" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#f1f8e9; color:#689f38;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
+            </div>
+            <span class="fk-cat-title">Personal Care <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown drop-right">
+            <div class="fk-subcat-header">Grooming &amp; Wellness</div>
+            <a href="/discovery?category=Personal+Care&subcategory=Trimmers+%26+Shavers">Trimmers &amp; Shavers</a>
+            <a href="/discovery?category=Personal+Care&subcategory=Electric+Toothbrushes">Electric Toothbrushes</a>
+            <a href="/discovery?category=Personal+Care&subcategory=Oral+Care+%26+Floss">Water Flossers &amp; Oral Care</a>
+            <a href="/discovery?category=Personal+Care&subcategory=Hair+Dryers+%26+Stylers">Hair Dryers &amp; Stylers</a>
+            <a href="/discovery?category=Personal+Care&subcategory=Facial+Cleansers+%26+Scrubs">Face Cleansers &amp; Scrubs</a>
+            <a href="/discovery?category=Personal+Care&subcategory=Beard+Oils+%26+Kits">Beard Oils &amp; Kits</a>
+            <a href="/discovery?category=Personal+Care&subcategory=Body+Washes+%26+Lotions">Body Washes &amp; Lotions</a>
+          </div>
+        </div>
+
+        <!-- 17. Automotive Accessories -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Automotive+Accessories" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#fafafa; color:#37474f;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 11 2 11.5 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+            </div>
+            <span class="fk-cat-title">Auto Acc <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown drop-right">
+            <div class="fk-subcat-header">Car &amp; Bike</div>
+            <a href="/discovery?category=Automotive+Accessories&subcategory=Tyre+Inflators">Tyre Inflators &amp; Vacuums</a>
+            <a href="/discovery?category=Automotive+Accessories&subcategory=Dash+Cameras">Dash Cameras</a>
+            <a href="/discovery?category=Automotive+Accessories&subcategory=Car+Mobile+Holders">Car Mobile Holders &amp; Chargers</a>
+            <a href="/discovery?category=Automotive+Accessories&subcategory=Car+Fresheners">Car Fresheners</a>
+            <a href="/discovery?category=Automotive+Accessories&subcategory=Car+Covers">Car Body Covers</a>
+            <a href="/discovery?category=Automotive+Accessories&subcategory=Seat+Covers+%26+Mats">Seat Covers &amp; 7D Mats</a>
+            <a href="/discovery?category=Automotive+Accessories&subcategory=Helmets+%26+Riding+Gear">Helmets &amp; Riding Gear</a>
+            <a href="/discovery?category=Automotive+Accessories&subcategory=Bike+Covers">Bike Covers</a>
+          </div>
+        </div>
+
+        <!-- 18. Health & Wellness -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Health+%26+Wellness" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#e8f5e9; color:#2e7d32;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            </div>
+            <span class="fk-cat-title">Health &amp; Fit <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown drop-right">
+            <div class="fk-subcat-header">Wellness &amp; Health</div>
+            <a href="/discovery?category=Health+%26+Wellness&subcategory=Whey+Protein">Whey Protein &amp; Shilajit</a>
+            <a href="/discovery?category=Health+%26+Wellness&subcategory=Fish+Oil">Fish Oil Omega-3</a>
+            <a href="/discovery?category=Health+%26+Wellness&subcategory=Multivitamins">Multivitamins</a>
+            <a href="/discovery?category=Health+%26+Wellness&subcategory=BP+Monitors">BP Monitors</a>
+            <a href="/discovery?category=Health+%26+Wellness&subcategory=Glucometers">Glucometers</a>
+            <a href="/discovery?category=Health+%26+Wellness&subcategory=Weighing+Scales">Body Fat Scales</a>
+            <a href="/discovery?category=Health+%26+Wellness&subcategory=Pain+Relief">Pain Relief &amp; Heating Belts</a>
+            <a href="/discovery?category=Health+%26+Wellness&subcategory=Mass+Gainers">Mass Gainers</a>
+          </div>
+        </div>
+
+        <!-- 19. Pet Supplies -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Pet+Supplies" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#fffde7; color:#fbc02d;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 20a3.5 3.5 0 0 1-1.02-4.78C4.6 13.06 6.31 10 9 10z"/></svg>
+            </div>
+            <span class="fk-cat-title">Pet Supplies <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown drop-right">
+            <div class="fk-subcat-header">Dogs &amp; Cats</div>
+            <a href="/discovery?category=Pet+Supplies&subcategory=Dog+Food">Dog Food &amp; Treats</a>
+            <a href="/discovery?category=Pet+Supplies&subcategory=Cat+Food">Cat Food &amp; Litter</a>
+            <a href="/discovery?category=Pet+Supplies&subcategory=Collars+%26+Leashes">Collars, Leashes &amp; Covers</a>
+            <a href="/discovery?category=Pet+Supplies&subcategory=Pet+Grooming">Pet Shampoos &amp; Brushes</a>
+            <a href="/discovery?category=Pet+Supplies&subcategory=Pet+Beds">Calming Fluffy Pet Beds</a>
+            <a href="/discovery?category=Pet+Supplies&subcategory=Scratching+Posts">Cat Scratching Posts</a>
+            <a href="/discovery?category=Pet+Supplies&subcategory=Interactive+Pet+Toys">Interactive Pet Toys</a>
+            <a href="/discovery?category=Pet+Supplies&subcategory=Feeding+Bowls">Feeding Bowls</a>
+          </div>
+        </div>
+
+        <!-- 20. Travel & Luggage -->
+        <div class="fk-cat-item">
+          <a href="/discovery?category=Travel+%26+Luggage" class="fk-cat-link-wrap" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="fk-cat-icon-circle" style="background:#e0f7fa; color:#00838f;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="6" rx="2"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M4 14h16"/></svg>
+            </div>
+            <span class="fk-cat-title">Travel &amp; Bags <span class="fk-cat-caret">▼</span></span>
+          </a>
+          <div class="fk-cat-dropdown drop-right">
+            <div class="fk-subcat-header">Luggage &amp; Backpacks</div>
+            <a href="/discovery?category=Travel+%26+Luggage&subcategory=Cabin+Luggage">Cabin Trolley Bags</a>
+            <a href="/discovery?category=Travel+%26+Luggage&subcategory=Large+Luggage">Large Check-In Suitcases</a>
+            <a href="/discovery?category=Travel+%26+Luggage&subcategory=Soft+Luggage">Soft Sided Suitcases</a>
+            <a href="/discovery?category=Travel+%26+Luggage&subcategory=Backpacks">Rucksacks &amp; Backpacks</a>
+            <a href="/discovery?category=Travel+%26+Luggage&subcategory=Laptop+Backpacks">Anti-Theft Laptop Bags</a>
+            <a href="/discovery?category=Travel+%26+Luggage&subcategory=Duffel+Bags">Duffel Bags</a>
+            <a href="/discovery?category=Travel+%26+Luggage&subcategory=Travel+Accessories">Neck Pillows &amp; Packing Cubes</a>
+          </div>
+        </div>
+      </div>
+
+      <button class="fk-cat-nav-btn next" onclick="scrollCatBar(320)" aria-label="Next Categories">❯</button>
+    </div>
+  </nav>
+  {% endblock %}
+
+  <!-- ======================================================================
+       3. MAIN HOMEPAGE CONTENT
+       ====================================================================== -->
+  <main style="flex:1;">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ======================================================================
+       5. PRETWIN CART MODAL / DRAWER
+       ====================================================================== -->
+  <div class="fk-modal-overlay" id="fkCartModal">
+    <div class="fk-cart-modal">
+      <div class="fk-cart-modal-header">
+        <h3>My Cart (<span id="cartCountTitle">0</span>)</h3>
+        <button class="fk-modal-close" style="color:#ffffff; position:static;" onclick="closeCartModal()">&times;</button>
+      </div>
+      
+      <div class="fk-cart-modal-body">
+        <!-- Cart Items List -->
+        <div class="fk-cart-items-col" id="fkCartItemsContainer">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Price Details Summary -->
+        <div class="fk-cart-summary-col">
+          <div class="fk-cart-summary-title">PRICE DETAILS</div>
+          <div class="fk-cart-summary-line">
+            <span>Price (<span id="summaryItemCount">0</span> items)</span>
+            <span id="summaryOriginalPrice">₹0</span>
+          </div>
+          <div class="fk-cart-summary-line">
+            <span>Discount</span>
+            <span style="color:var(--fk-green);" id="summaryDiscount">−₹0</span>
+          </div>
+          <div class="fk-cart-summary-line">
+            <span>Delivery Charges</span>
+            <span style="color:var(--fk-green);" id="summaryDeliveryFee">FREE</span>
+          </div>
+          <div class="fk-cart-summary-total">
+            <span>Total Amount</span>
+            <span id="summaryTotalAmount">₹0</span>
+          </div>
+          <div class="fk-cart-savings" id="summarySavingsNotice">
+            You will save ₹0 on this order
+          </div>
+        </div>
+      </div>
+
+      <div class="fk-cart-modal-footer">
+        <button class="fk-btn-orange" style="width: 260px; height: 48px; font-size: 15px; font-weight:700; letter-spacing:0.5px;" onclick="proceedToCheckout()">
+          PROCEED TO CHECKOUT ➔
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       6. PRETWIN PRODUCT QUICK-VIEW MODAL
+       ====================================================================== -->
+  <div class="fk-modal-overlay" id="fkDetailModal">
+    <div class="fk-detail-modal">
+      <button class="fk-modal-close" onclick="closeDetailModal()">&times;</button>
+      
+      <!-- Left Image Column -->
+      <div class="fk-detail-left">
+        <div class="fk-detail-big-img">
+          <img id="detailImg" src="" alt="Product Image">
+        </div>
+        <div class="fk-detail-btns-row">
+          <button class="fk-btn-cart-yellow" id="detailAddToCartBtn">
+            <span>🛒</span> ADD TO CART
+          </button>
+          <button class="fk-btn-buy-orange" id="detailBuyNowBtn">
+            <span>⚡</span> BUY NOW
+          </button>
+          <button class="fk-btn-compare-detail" id="detailCompareBtn" style="height:48px; padding:0 16px; border:1.5px solid #7c3aed; background:#ffffff; color:#7c3aed; border-radius:3px; font-weight:700; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s ease;">
+            <span>⚖️</span> COMPARE
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Details Column -->
+      <div class="fk-detail-right">
+        <h2 class="fk-detail-title" id="detailTitle">Product Title</h2>
+        
+        <div class="fk-detail-meta">
+          <span class="fk-rating-badge" id="detailRating">4.4 ★</span>
+          <span style="color:#878787; font-size:13px;" id="detailReviews">(1,420 Ratings &amp; 380 Reviews)</span>
+          <span style="color:#2874f0; font-weight:700; font-size:12px; margin-left:8px;">PreTwin Assured</span>
+        </div>
+
+        <div class="fk-detail-price-box">
+          <span class="fk-detail-price" id="detailPrice">₹0</span>
+          <span class="fk-detail-mrp" id="detailMrp">₹0</span>
+          <span class="fk-detail-discount" id="detailDiscount">25% off</span>
+        </div>
+
+        <div class="fk-offers-box">
+          <div class="fk-offers-title">Available offers</div>
+          <ul class="fk-offers-list">
+            <li>Bank Offer 5% Cashback on PreTwin Axis Bank Card</li>
+            <li>Special Price Get extra 15% off (price inclusive of cashback/coupon)</li>
+            <li>Partner Offer Sign-up for PreTwin Pay Later &amp; get Instant ₹500 Credit</li>
+            <li>No Cost EMI available on major credit cards</li>
+          </ul>
+        </div>
+
+        <p style="font-size:13px; color:#212121; line-height:1.5; margin-bottom:14px;" id="detailDescription">
+          Detailed product description.
+        </p>
+
+        <h4 style="font-size:14px; font-weight:600; color:#212121; margin-top:16px;">Specifications</h4>
+        <table class="fk-specs-table" id="detailSpecsTable">
+          <!-- Dynamic specs -->
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- ======================================================================
+       7. OFFICIAL PRETWIN FOOTER
+       ====================================================================== -->
+  <footer class="fk-footer">
+    <!-- Category Directory in Footer -->
+    <div class="fk-footer-categories">
+      <div class="fk-footer-cat-inner">
+        <h4 class="fk-footer-cat-heading">MOST SEARCHED CATEGORIES ON PRETWIN:</h4>
+        <div class="fk-footer-cat-tags">
+          <a href="/discovery?category=Fashion">Fashion</a>
+          <a href="/discovery?category=Mobiles">Mobiles</a>
+          <a href="/discovery?category=Electronics">Electronics</a>
+          <a href="/discovery?category=Beauty%2C+Toys+%26+More">Beauty, Toys &amp; More</a>
+          <a href="/discovery?category=Home+%26+Kitchen">Home &amp; Kitchen</a>
+          <a href="/discovery?category=Appliances">Appliances</a>
+          <a href="/discovery?category=Toys+%26+Baby+Products">Toys &amp; Baby Products</a>
+          <a href="/discovery?category=Food+%26+Grocery">Food &amp; Grocery</a>
+          <a href="/discovery?category=Sports+%26+Fitness">Sports &amp; Fitness</a>
+          <a href="/discovery?category=Books+%26+Stationery">Books &amp; Stationery</a>
+          <a href="/discovery?category=Furniture">Furniture</a>
+          <a href="/discovery?category=Footwear">Footwear</a>
+          <a href="/discovery?category=Watches+%26+Accessories">Watches &amp; Accessories</a>
+          <a href="/discovery?category=Laptops+%26+Computers">Laptops &amp; Computers</a>
+          <a href="/discovery?category=TVs+%26+Home+Entertainment">TVs &amp; Home Entertainment</a>
+          <a href="/discovery?category=Personal+Care">Personal Care</a>
+          <a href="/discovery?category=Automotive+Accessories">Automotive Accessories</a>
+          <a href="/discovery?category=Health+%26+Wellness">Health &amp; Wellness</a>
+          <a href="/discovery?category=Pet+Supplies">Pet Supplies</a>
+          <a href="/discovery?category=Travel+%26+Luggage">Travel &amp; Luggage</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="fk-footer-top">
+      <!-- 4 Columns of Links -->
+      <div class="fk-footer-links-grid">
+        <div class="fk-footer-col">
+          <h4>ABOUT PRETWIN</h4>
+          <ul>
+            <li><a href="/twin">AI Shopping Twin</a></li>
+            <li><a href="/predictions">Predictive Analytics</a></li>
+            <li><a href="/agents">Autonomous Agents</a></li>
+            <li><a href="/discovery">Product Catalogue</a></li>
+            <li><a href="/settings">Privacy &amp; Data</a></li>
+            <li><a href="javascript:void(0)">Careers &amp; Research</a></li>
+          </ul>
+        </div>
+
+        <div class="fk-footer-col">
+          <h4>AI TWIN SERVICES</h4>
+          <ul>
+            <li><a href="/twin">Personal Shopping Twin</a></li>
+            <li><a href="/predictions">Predictive Replenishment</a></li>
+            <li><a href="/discovery">Smart Product Discovery</a></li>
+            <li><a href="/budget">Budget &amp; Price Intelligence</a></li>
+            <li><a href="/comparison">Feature Comparison</a></li>
+            <li><a href="/agents">Agentic Workflows</a></li>
+            <li><a href="/smart-cart">Smart Cart &amp; Automation</a></li>
+            <li><a href="/advanced-ai">Advanced AI Roadmap</a></li>
+          </ul>
+        </div>
+
+        <div class="fk-footer-col">
+          <h4>HELP &amp; SUPPORT</h4>
+          <ul>
+            <li><a href="/orders">Track My Orders</a></li>
+            <li><a href="/checkout">Payments &amp; Razorpay</a></li>
+            <li><a href="javascript:void(0)">Shipping &amp; Delivery</a></li>
+            <li><a href="javascript:void(0)">Returns &amp; Refunds</a></li>
+            <li><a href="javascript:void(0)">FAQ &amp; Help Desk</a></li>
+          </ul>
+        </div>
+
+        <div class="fk-footer-col">
+          <h4>CONSUMER POLICY</h4>
+          <ul>
+            <li><a href="javascript:void(0)">Terms Of Use</a></li>
+            <li><a href="javascript:void(0)">Security &amp; Encryption</a></li>
+            <li><a href="javascript:void(0)">Privacy Policy</a></li>
+            <li><a href="javascript:void(0)">Grievance Redressal</a></li>
+            <li><a href="javascript:void(0)">EPR Compliance</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Vertical Divider -->
+      <div class="fk-footer-divider-vert"></div>
+
+      <!-- Address Columns -->
+      <div class="fk-footer-address-grid">
+        <div class="fk-footer-address-box">
+          <h4>Mail Us:</h4>
+          <p>
+            PreTwin Technologies Private Limited,<br>
+            AI Commerce Campus, Outer Ring Road,<br>
+            Devarabeesanahalli Village,<br>
+            Bengaluru, 560103,<br>
+            Karnataka, India
+          </p>
+        </div>
+
+        <div class="fk-footer-address-box">
+          <h4>Registered Office Address:</h4>
+          <p>
+            PreTwin Technologies Private Limited,<br>
+            AI Commerce Innovation Centre,<br>
+            Outer Ring Road, Bengaluru, 560103,<br>
+            Karnataka, India<br>
+            CIN : U51109KA2024PTC188200<br>
+            Support: <span style="color:#2874f0;">support@pretwin.ai</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Row Strip -->
+    <div class="fk-footer-bottom">
+      <div class="fk-footer-bottom-inner">
+        <div class="fk-footer-bottom-links">
+          <div class="fk-footer-bottom-item">
+            <span class="yellow-icon">💼</span>
+            <span>PreTwin AI Merchant Hub</span>
+          </div>
+          <div class="fk-footer-bottom-item">
+            <span class="yellow-icon">⭐</span>
+            <span>Predictive Twin 2.0</span>
+          </div>
+          <div class="fk-footer-bottom-item">
+            <span class="yellow-icon">🎁</span>
+            <span>Gift Cards</span>
+          </div>
+          <div class="fk-footer-bottom-item">
+            <span class="yellow-icon">❓</span>
+            <span>24x7 Help Center</span>
+          </div>
+        </div>
+
+        <div class="fk-footer-copy">
+          © 2024-2026 PreTwin.com — Powered by Agentic Predictive AI
+        </div>
+
+        <div class="fk-payment-strip">
+          <span class="fk-pay-badge">Razorpay</span>
+          <span class="fk-pay-badge">UPI</span>
+          <span class="fk-pay-badge">Cards</span>
+          <span class="fk-pay-badge">Net Banking</span>
+          <span class="fk-pay-badge">Wallets</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======================================================================
+       PRETWIN FLOATING AI SHOPPING CHATBOT
+       ====================================================================== -->
+  <div class="pretwin-chat-fab" id="pretwinChatFab" onclick="toggleChatbot()" title="Ask PreTwin AI Shopping Assistant">
+    <div class="pretwin-chat-fab-inner">
+      <span class="pretwin-chat-fab-fairy">🧚</span>
+      <span class="pretwin-chat-fab-sparkle">✨</span>
+    </div>
+    <span class="pretwin-chat-fab-label">Ask PreTwin AI</span>
+  </div>
+
+  <div class="pretwin-chat-panel" id="pretwinChatPanel" style="display:none;">
+    <div class="pretwin-chat-header">
+      <div class="pretwin-chat-header-brand">
+        <div class="pretwin-chat-avatar">🧚</div>
+        <div>
+          <div class="pretwin-chat-title">PreTwin AI Shopping Assistant</div>
+          <div class="pretwin-chat-status"><span class="pretwin-status-dot"></span> Online • Predictive Twin Ready</div>
+        </div>
+      </div>
+      <div class="pretwin-chat-controls">
+        <button class="pretwin-chat-ctrl-btn" onclick="resetChatbotSession()" title="Clear Chat">🔄</button>
+        <button class="pretwin-chat-ctrl-btn" onclick="toggleChatbot()" title="Close">✕</button>
+      </div>
+    </div>
+
+    <!-- Quick Prompt Pills -->
+    <div class="pretwin-chat-pills" id="pretwinChatPills">
+      <button class="pretwin-pill" onclick="sendChatPrompt('Phones under ₹20,000')">📱 Phones &lt; ₹20k</button>
+      <button class="pretwin-pill" onclick="sendChatPrompt('Shoes under ₹1,500')">👟 Shoes &lt; ₹1,500</button>
+      <button class="pretwin-pill" onclick="sendChatPrompt('What do you predict I need next?')">🔮 Future Needs</button>
+      <button class="pretwin-pill" onclick="sendChatPrompt('How do reward points work?')">✨ Rewards (100=₹1)</button>
+      <button class="pretwin-pill" onclick="sendChatPrompt('How does the 30-day savings plan work?')">💰 Savings Plan</button>
+      <button class="pretwin-pill" onclick="sendChatPrompt('Can I pay with Cash on Delivery?')">💵 COD Rules</button>
+    </div>
+
+    <!-- Messages Container -->
+    <div class="pretwin-chat-body" id="pretwinChatBody">
+      <div class="pretwin-chat-msg assistant">
+        <div class="pretwin-msg-avatar">🧚</div>
+        <div class="pretwin-msg-content">
+          Hello! I am your <strong>PreTwin AI Shopping Assistant</strong>. ✨
+          <br><br>
+          I can help you find products under any budget, predict your upcoming needs, guide your 30-day savings plan, track reward points, or explain Cash on Delivery. What are you shopping for today?
+        </div>
+      </div>
+    </div>
+
+    <!-- Voice Recognition Status Bar (Hidden until active) -->
+    <div id="pretwinVoiceStatusBar" style="display:none; padding:8px 14px; background:linear-gradient(135deg, #f5f3ff, #ede9fe); border-top:1px solid #d8b4fe; font-size:0.83rem; color:#6d28d9; align-items:center; justify-content:space-between;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="pretwin-voice-pulsing-dot" style="width:10px; height:10px; background:#7c3aed; border-radius:50%; display:inline-block; animation:pretwinVoicePulse 1.2s infinite ease-in-out;"></span>
+        <span id="pretwinVoiceStatusText" style="font-weight:700;">Listening... Speak your shopping request</span>
+      </div>
+      <button type="button" onclick="stopVoiceRecognition()" style="background:#fee2e2; border:1px solid #fecaca; color:#b91c1c; border-radius:4px; padding:2px 8px; font-size:0.75rem; font-weight:700; cursor:pointer;">
+        Stop ⏹
+      </button>
+    </div>
+
+    <!-- Input Form with Voice Mic -->
+    <form class="pretwin-chat-input-form" onsubmit="handleChatSubmit(event)">
+      <button type="button" class="pretwin-chat-mic-btn" id="pretwinChatMicBtn" onclick="toggleVoiceInput()" title="Voice Shopping Assistant (Click to Speak)" aria-label="Microphone">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+          <line x1="12" y1="19" x2="12" y2="22"></line>
+        </svg>
+      </button>
+      <input type="text" id="pretwinChatInput" class="pretwin-chat-input" placeholder="Type or click 🎙️ to speak (e.g. phones under ₹20000)..." autocomplete="off" />
+      <button type="submit" class="pretwin-chat-send-btn" id="pretwinChatSendBtn" aria-label="Send">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </form>
+  </div>
+
+  <!-- Master JavaScript Files -->
+  <script src="/static/js/main.js"></script>
+  <script src="/static/js/chatbot.js"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

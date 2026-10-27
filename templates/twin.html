@@ -1,0 +1,365 @@
+{% extends "base.html" %}
+
+{% block title %}Personalization and Digital Twin — PreTwin AI{% endblock %}
+{% block page_title %}Personalization and Digital Twin{% endblock %}
+
+{% block content %}
+<div class="twin-page container" style="max-width: 1240px; margin: 24px auto; padding: 0 16px;">
+  <!-- Household Twin Persona Switcher Strip -->
+  <div class="card" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:18px 24px; margin-bottom:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
+      <div>
+        <div style="font-size:0.8rem; font-weight:700; color:#c084fc; text-transform:uppercase; margin-bottom:4px; letter-spacing:0.5px;">
+          👥 Household Twin Personas
+        </div>
+        <div style="font-size:0.95rem; color:#cbd5e1;">
+          Switch between personalized twins for different household members or shopping modes.
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;" id="householdProfilesStrip">
+        <!-- Rendered by twin.js -->
+        <span style="font-size:0.85rem; color:#64748b;">Loading personas...</span>
+      </div>
+      <div>
+        <button class="btn btn-secondary" onclick="openAddHouseholdTwinModal()" style="font-size:0.85rem; padding:8px 14px; border-radius:8px; border:1px dashed #6366f1; background:rgba(99, 102, 241, 0.1); color:#c4b5fd;">
+          + Add Household Twin
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upgraded Twin Overview Card -->
+  <section class="card profile-hero-card" style="background: linear-gradient(135deg, #181438 0%, #1e1b4b 60%, #0f172a 100%); border: 1px solid rgba(167, 139, 250, 0.35); border-radius: 16px; padding: 28px; margin-bottom: 24px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); color:#fff;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px;">
+      <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+        <div style="position: relative;">
+          <div class="profile-avatar-large" id="twinAvatarLarge" style="width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(135deg, #a855f7, #6366f1); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 700; color: #fff; box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.25);">
+            AJ
+          </div>
+          <span style="position: absolute; bottom: 0; right: 0; background: #10b981; width: 18px; height: 18px; border-radius: 50%; border: 3px solid #111827;" title="Synchronized Active Twin"></span>
+        </div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <h2 style="font-size: 1.65rem; font-weight: 700; margin: 0; color: #f8fafc;" id="twinFullName">Alex Johnson</h2>
+            <span class="badge badge-success" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.75rem; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Twin Synchronized</span>
+            <span class="badge" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); font-size: 0.75rem; padding: 4px 10px; border-radius: 12px; font-weight: 600;" id="twinArchetype">Mindful Tech &amp; Home Optimizer</span>
+          </div>
+          <p style="margin: 4px 0 10px; color: #cbd5e1; font-size: 0.9rem;" id="twinEmail">alex@demo.pretwinshop.ai</p>
+          <div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.85rem; color: #cbd5e1;">
+            <div>
+              <span style="color: #94a3b8;">Budget Ceiling:</span>
+              <strong style="color: #38bdf8;" id="overviewBudgetDisplay">₹500 — ₹5,000</strong>
+            </div>
+            <div>
+              <span style="color: #94a3b8;">Shopping Cadence:</span>
+              <strong style="color: #c4b5fd;" id="overviewFreqDisplay">Monthly</strong>
+            </div>
+            <div>
+              <span style="color: #94a3b8;">Twin Memory:</span>
+              <strong style="color: #6ee7b7;" id="overviewMemoryDisplay">Active (Voluntary Only)</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <button class="btn btn-primary" onclick="saveTwinProfile()" style="background: linear-gradient(135deg, #6366f1, #a855f7); border: none; padding: 12px 22px; border-radius: 8px; font-weight: 600; cursor: pointer; color: #fff; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);">
+          💾 Save Preferences
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Chips Summary Bar -->
+    <div style="margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.1); display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+      <div>
+        <div style="font-size: 0.75rem; text-transform: uppercase; color: #c4b5fd; font-weight: 600; margin-bottom: 6px;">Preferred Categories:</div>
+        <div id="overviewCategoryChips" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
+      </div>
+      <div>
+        <div style="font-size: 0.75rem; text-transform: uppercase; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Trusted Brand Affinities:</div>
+        <div id="overviewBrandChips" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Preference Management Tabs & Form Container -->
+  <div class="card" style="background: #111827; border: 1px solid #1e293b; border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+    <!-- Tab Navigation Buttons -->
+    <div style="display: flex; gap: 8px; border-bottom: 1px solid #1e293b; padding-bottom: 12px; margin-bottom: 20px; overflow-x: auto;" id="twinPreferenceTabs">
+      <button class="twin-tab-btn active" onclick="switchTwinTab('tech')" id="tabBtn-tech" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #6366f1; background: rgba(99, 102, 241, 0.2); color: #c4b5fd; font-weight: 600; cursor: pointer;">
+        💻 Electronics &amp; Tech
+      </button>
+      <button class="twin-tab-btn" onclick="switchTwinTab('fashion')" id="tabBtn-fashion" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: #94a3b8; font-weight: 600; cursor: pointer;">
+        👗 Fashion &amp; Style
+      </button>
+      <button class="twin-tab-btn" onclick="switchTwinTab('home')" id="tabBtn-home" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: #94a3b8; font-weight: 600; cursor: pointer;">
+        🏡 Home &amp; Kitchen
+      </button>
+      <button class="twin-tab-btn" onclick="switchTwinTab('budget')" id="tabBtn-budget" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: #94a3b8; font-weight: 600; cursor: pointer;">
+        💰 Budget &amp; Spending
+      </button>
+      <button class="twin-tab-btn" onclick="switchTwinTab('priorities')" id="tabBtn-priorities" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: #94a3b8; font-weight: 600; cursor: pointer;">
+        ⚖️ Shopping Priorities
+      </button>
+    </div>
+
+    <!-- Tab 1: Electronics & Tech -->
+    <div id="tabContent-tech" class="twin-tab-content">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+        <div>
+          <h4 style="margin: 0 0 10px 0; color: #f1f5f9; font-size: 1rem;">Tech Categories</h4>
+          <div class="tag-input-container" id="categoryTagsContainer"></div>
+          <div class="input-with-button mt-2">
+            <input type="text" id="newCategoryInput" class="form-control" placeholder="Add tech category (e.g. Electronics, Laptops)">
+            <button type="button" class="btn btn-secondary" onclick="addCategoryTag()">+ Add</button>
+          </div>
+        </div>
+        <div>
+          <h4 style="margin: 0 0 10px 0; color: #f1f5f9; font-size: 1rem;">Trusted Tech Brands</h4>
+          <div class="tag-input-container" id="brandTagsContainer"></div>
+          <div class="input-with-button mt-2">
+            <input type="text" id="newBrandInput" class="form-control" placeholder="Add tech brand (e.g. Sony, Logitech, Apple)">
+            <button type="button" class="btn btn-secondary" onclick="addBrandTag()">+ Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Fashion & Style -->
+    <div id="tabContent-fashion" class="twin-tab-content" style="display: none;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+        <div>
+          <h4 style="margin: 0 0 8px 0; color: #f1f5f9; font-size: 1rem;">Style &amp; Apparel Preferences</h4>
+          <p style="margin: 0 0 12px 0; font-size: 0.85rem; color: #94a3b8;">Select the apparel types your Twin should highlight in discovery:</p>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddCategory('Fashion')">+ Fashion</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddCategory('Footwear')">+ Footwear</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddCategory('Watches &amp; Accessories')">+ Watches</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddCategory('Personal Care')">+ Personal Care</button>
+          </div>
+        </div>
+        <div>
+          <h4 style="margin: 0 0 8px 0; color: #f1f5f9; font-size: 1rem;">Fashion Brands Affinity</h4>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddBrand('Puma')">+ Puma</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddBrand('Nike')">+ Nike</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddBrand('Fossil')">+ Fossil</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddBrand('Woodland')">+ Woodland</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Home & Kitchen -->
+    <div id="tabContent-home" class="twin-tab-content" style="display: none;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+        <div>
+          <h4 style="margin: 0 0 8px 0; color: #f1f5f9; font-size: 1rem;">Home Essentials &amp; Appliances</h4>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddCategory('Home Essentials')">+ Home Essentials</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddCategory('Kitchen Products')">+ Kitchen Products</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddCategory('Appliances')">+ Appliances</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddCategory('Furniture')">+ Furniture</button>
+          </div>
+        </div>
+        <div>
+          <h4 style="margin: 0 0 8px 0; color: #f1f5f9; font-size: 1rem;">Home &amp; Appliance Brands</h4>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddBrand('Philips')">+ Philips</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddBrand('Bosch')">+ Bosch</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddBrand('Prestige')">+ Prestige</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="quickAddBrand('Havells')">+ Havells</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 4: Budget & Spending -->
+    <div id="tabContent-budget" class="twin-tab-content" style="display: none;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <div>
+          <div class="flex-between">
+            <label class="form-label" style="font-weight: 600; color: #f1f5f9;">Budget Range (INR ₹)</label>
+            <span class="budget-range-display" id="budgetRangeDisplay" style="color: #38bdf8; font-weight: 700;">₹500 — ₹5,000</span>
+          </div>
+          <div class="range-sliders mt-2">
+            <div class="form-group">
+              <label class="form-sublabel" style="color: #cbd5e1; font-size: 0.85rem;">Minimum Budget (₹)</label>
+              <input type="number" id="budgetMinInput" class="form-control" min="0" max="50000" step="100" value="500" onchange="updateBudgetDisplay()">
+            </div>
+            <div class="form-group mt-2">
+              <label class="form-sublabel" style="color: #cbd5e1; font-size: 0.85rem;">Maximum Budget Ceiling (₹)</label>
+              <input type="number" id="budgetMaxInput" class="form-control" min="100" max="100000" step="500" value="5000" onchange="updateBudgetDisplay()">
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="form-group">
+            <label class="form-label" for="twinShoppingFreq" style="color: #f1f5f9; font-weight: 600;">Shopping Frequency</label>
+            <select id="twinShoppingFreq" class="form-control" onchange="updateOverviewCadence()">
+              <option value="weekly">Weekly (Frequent replenishment)</option>
+              <option value="biweekly">Bi-weekly (Every 2 weeks)</option>
+              <option value="monthly" selected>Monthly (Regular cadence)</option>
+              <option value="quarterly">Quarterly (Seasonal purchases)</option>
+            </select>
+          </div>
+          <div class="form-group mt-3">
+            <label class="form-label" for="twinNotes" style="color: #f1f5f9; font-weight: 600;">Shopping Context / Twin Notes</label>
+            <textarea id="twinNotes" class="form-control" rows="2" placeholder="e.g. Prefer energy saving appliances and wireless desk accessories..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 5: Shopping Priorities -->
+    <div id="tabContent-priorities" class="twin-tab-content" style="display: none;">
+      <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0;">Configure how your Twin weighs competing product attributes during autonomous evaluation:</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+        <div style="background: #1e293b; padding: 14px; border-radius: 10px; border: 1px solid #334155;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: #f1f5f9;">
+            <span>Value for Money</span>
+            <span style="color: #34d399;">High (40%)</span>
+          </div>
+          <p style="margin: 6px 0 0; font-size: 0.75rem; color: #94a3b8;">Prioritizes deals, discount tiers, and bundle savings.</p>
+        </div>
+        <div style="background: #1e293b; padding: 14px; border-radius: 10px; border: 1px solid #334155;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: #f1f5f9;">
+            <span>Durability &amp; Specs</span>
+            <span style="color: #38bdf8;">High (30%)</span>
+          </div>
+          <p style="margin: 6px 0 0; font-size: 0.75rem; color: #94a3b8;">Prefers high-spec components and long warranty periods.</p>
+        </div>
+        <div style="background: #1e293b; padding: 14px; border-radius: 10px; border: 1px solid #334155;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: #f1f5f9;">
+            <span>Verified Ratings</span>
+            <span style="color: #fbbf24;">Medium (20%)</span>
+          </div>
+          <p style="margin: 6px 0 0; font-size: 0.75rem; color: #94a3b8;">Filters products below 4.0 customer satisfaction.</p>
+        </div>
+        <div style="background: #1e293b; padding: 14px; border-radius: 10px; border: 1px solid #334155;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: #f1f5f9;">
+            <span>Brand Heritage</span>
+            <span style="color: #c084fc;">Moderate (10%)</span>
+          </div>
+          <p style="margin: 6px 0 0; font-size: 0.75rem; color: #94a3b8;">Weights established brand history in scoring.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Personalized Recommendations Grid Tuned to Twin Archetype -->
+  <section class="card" style="background: #111827; border: 1px solid #1e293b; border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; border-bottom: 1px solid #1e293b; padding-bottom: 14px;">
+      <div>
+        <div style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; color: #c084fc; text-transform: uppercase;">
+          <span>✨ AUTONOMOUS TWIN MATCHES</span>
+        </div>
+        <h3 style="margin: 4px 0 0 0; color: #f1f5f9; font-size: 1.25rem;">Personalized Recommendations</h3>
+        <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: #94a3b8;">
+          Curated from your active catalogue, matched to your brand affinities and kept strictly below your budget ceiling.
+        </p>
+      </div>
+      <div>
+        <button class="btn btn-sm btn-secondary" onclick="loadTwinRecommendations()" style="border: 1px solid #334155; padding: 6px 14px; border-radius: 8px; cursor: pointer;">
+          🔄 Refresh Matches
+        </button>
+      </div>
+    </div>
+
+    <!-- Recommendations Grid Container -->
+    <div id="twinRecsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px;">
+      <div style="text-align: center; padding: 36px; color: #64748b; grid-column: 1 / -1;">
+        <div class="spinner"></div>
+        <p style="margin-top: 10px;">Finding tailored products matching your Twin...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Active Shopping Goals & Voluntary Purchase History Grid -->
+  <div class="grid-2-col" style="margin-bottom: 24px;">
+    <!-- Shopping Goals -->
+    <section class="card" style="background:#111827; border:1px solid #1e293b; border-radius:16px; padding:24px;">
+      <div class="flex-between" style="border-bottom: 1px solid #1e293b; padding-bottom: 12px; margin-bottom: 14px;">
+        <h4 style="margin: 0; color: #f1f5f9; font-size: 1.1rem;">🎯 Active Shopping Goals</h4>
+        <button class="btn btn-sm btn-outline" onclick="openAddGoalModal()">+ New Goal</button>
+      </div>
+      <div class="goals-list" id="twinGoalsList">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading shopping goals...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Profile Influence Transparency -->
+    <section class="card" style="background:#111827; border:1px solid #1e293b; border-radius:16px; padding:24px;">
+      <div style="border-bottom: 1px solid #1e293b; padding-bottom: 12px; margin-bottom: 14px;">
+        <h4 style="margin: 0; color: #f1f5f9; font-size: 1.1rem;">🧠 Profile Influence Transparency</h4>
+      </div>
+      <div class="influence-grid" style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="influence-item" style="display: flex; gap: 12px; align-items: flex-start;">
+          <div style="font-size: 1.4rem;">🏷️</div>
+          <div>
+            <strong style="color: #f1f5f9; font-size: 0.9rem;">Preferred Categories:</strong>
+            <p style="margin: 2px 0 0; color: #94a3b8; font-size: 0.8rem;">Directly seeds discovery candidates and fallback replenishment predictions.</p>
+          </div>
+        </div>
+        <div class="influence-item" style="display: flex; gap: 12px; align-items: flex-start;">
+          <div style="font-size: 1.4rem;">⭐</div>
+          <div>
+            <strong style="color: #f1f5f9; font-size: 0.9rem;">Brand Affinities:</strong>
+            <p style="margin: 2px 0 0; color: #94a3b8; font-size: 0.8rem;">Grants a +0.2 to +0.3 score boost during multi-attribute evaluation.</p>
+          </div>
+        </div>
+        <div class="influence-item" style="display: flex; gap: 12px; align-items: flex-start;">
+          <div style="font-size: 1.4rem;">🛡️</div>
+          <div>
+            <strong style="color: #f1f5f9; font-size: 0.9rem;">Budget Ceiling:</strong>
+            <p style="margin: 2px 0 0; color: #94a3b8; font-size: 0.8rem;">Strict filter eliminating items that push total basket over limit.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Voluntary Purchase History Section -->
+  <section class="card" style="background: #111827; border: 1px solid #1e293b; border-radius: 16px; padding: 24px;">
+    <div class="flex-between" style="border-bottom: 1px solid #1e293b; padding-bottom: 14px; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+      <div>
+        <h3 style="margin: 0; color: #f1f5f9; font-size: 1.15rem;">📜 Voluntary Purchase History</h3>
+        <p style="margin: 4px 0 0; font-size: 0.85rem; color: #94a3b8;">
+          Past purchases inform replenishment intervals and category affinity without third-party tracking.
+        </p>
+      </div>
+      <button class="btn btn-secondary" onclick="openAddPurchaseModal()">+ Add Past Purchase</button>
+    </div>
+    <div class="table-responsive">
+      <table class="table" id="purchaseHistoryTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Notes</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="purchaseHistoryBody">
+          <tr>
+            <td colspan="8" class="text-center py-4">
+              <div class="spinner"></div>
+              <p>Loading purchase history...</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/twin.js"></script>
+{% endblock %}

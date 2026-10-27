@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}Predictive Shopping Intelligence — PreTwin AI{% endblock %}
+{% block page_title %}Predictive Shopping Intelligence{% endblock %}
+
+{% block content %}
+<div class="predictions-page container" style="max-width: 1240px; margin: 24px auto; padding: 0 16px;">
+  <!-- Top Banner -->
+  <section class="card banner-card" style="background: linear-gradient(135deg, #1e1b4b 0%, #311042 50%, #181438 100%); border: 1px solid rgba(167, 139, 250, 0.35); padding: 28px; border-radius: 16px; margin-bottom: 24px; color: #fff; box-shadow: 0 8px 32px rgba(0,0,0,0.25);">
+    <div class="flex-between" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+      <div>
+        <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(167, 139, 250, 0.18); padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600; color:#c4b5fd; margin-bottom:10px; border:1px solid rgba(167, 139, 250, 0.3);">
+          <span>🔮 AGENT B INTELLIGENCE</span>
+          <span>•</span>
+          <span>PROACTIVE CONSUMPTION HEURISTICS</span>
+        </div>
+        <h2 class="banner-title" style="font-size:1.85rem; font-weight:700; margin:0 0 8px 0; color:#fff;">Proactive Need Anticipation &amp; Predictive Calendar</h2>
+        <p class="banner-desc" style="margin:0; color:#cbd5e1; font-size:0.95rem; max-width:740px; line-height:1.5;">
+          Using cadence analytics on your voluntary purchase intervals, brand affinities, and target goals, PreTwin anticipates upcoming shopping requirements before you run out of essentials.
+        </p>
+      </div>
+      <div class="banner-buttons">
+        <button class="btn btn-primary" onclick="generateNewPredictions()" style="background:linear-gradient(135deg, #6366f1, #a855f7); color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+          <span class="btn-icon">🔮</span>
+          <span>Generate Fresh Predictions</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. Upcoming Needs Timeline -->
+  <section class="card" style="background:#111827; border:1px solid #1e293b; border-radius:16px; padding:24px; margin-bottom:24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid #1e293b; padding-bottom:12px;">
+      <div>
+        <div style="font-size:0.8rem; font-weight:700; color:#38bdf8; text-transform:uppercase; letter-spacing:0.5px;">
+          📅 Upcoming Needs Timeline
+        </div>
+        <h3 style="margin:4px 0 0; font-size:1.2rem; color:#f1f5f9;">Anticipated Re-Order Schedule</h3>
+      </div>
+      <span style="font-size:0.85rem; color:#94a3b8;">Chronological Forecast</span>
+    </div>
+
+    <!-- Timeline Cards Grid -->
+    <div id="upcomingNeedsTimeline" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:16px;">
+      <div style="text-align:center; padding:30px; color:#64748b; grid-column:1/-1;">
+        <div class="spinner"></div>
+        <p style="margin-top:10px;">Computing chronological prediction timeline...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Tracked Replenishment Schedules & Reminders -->
+  <section class="card" style="background:#111827; border:1px solid #1e293b; border-radius:16px; padding:24px; margin-bottom:24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid #1e293b; padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+      <div>
+        <div style="font-size:0.8rem; font-weight:700; color:#10b981; text-transform:uppercase; letter-spacing:0.5px;">
+          ⏰ Tracked Replenishment
+        </div>
+        <h3 style="margin:4px 0 0; font-size:1.2rem; color:#f1f5f9;">Active Replenishment Reminders</h3>
+      </div>
+      <button class="btn btn-sm btn-secondary" onclick="openAddReminderPrompt()" style="background:#1e293b; color:#c4b5fd; border:1px solid #475569; padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:600;">
+        + Add Reminder
+      </button>
+    </div>
+    <div id="remindersContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px;">
+      <div style="color:#64748b; font-size:0.85rem;">Loading replenishment schedules...</div>
+    </div>
+  </section>
+
+  <!-- 3. Seasonal & Event Intelligence Suggestions -->
+  <section class="card" style="background:#111827; border:1px solid #1e293b; border-radius:16px; padding:24px; margin-bottom:24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid #1e293b; padding-bottom:12px;">
+      <div>
+        <div style="font-size:0.8rem; font-weight:700; color:#f59e0b; text-transform:uppercase; letter-spacing:0.5px;">
+          🍂 Seasonal &amp; Event Suggestions
+        </div>
+        <h3 style="margin:4px 0 0; font-size:1.2rem; color:#f1f5f9;">Smart Contextual Recommendations</h3>
+      </div>
+      <span style="font-size:0.85rem; color:#94a3b8;">Connected to Live Catalogue</span>
+    </div>
+    <div id="seasonalSuggestionsGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:16px;">
+      <div style="text-align:center; padding:24px; color:#64748b; grid-column:1/-1;">
+        Loading seasonal catalogue opportunities...
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Detailed Predictions Grid (Filtered by Confidence) -->
+  <section class="card" style="background:#111827; border:1px solid #1e293b; border-radius:16px; padding:24px; margin-bottom:24px;">
+    <div class="flex-between mb-3" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; border-bottom:1px solid #1e293b; padding-bottom:14px;">
+      <div>
+        <h3 style="margin:0; font-size:1.2rem; color:#f1f5f9;">All Anticipated Needs (<span id="predCount">0</span>)</h3>
+        <p style="margin:4px 0 0; font-size:0.85rem; color:#94a3b8;">Individual predictions generated by Agent B's heuristic pipeline.</p>
+      </div>
+      <div class="filter-pills" id="predFilterPills" style="display:flex; gap:8px;">
+        <button class="pill active" onclick="filterPredictions('all')" style="padding:6px 14px; border-radius:20px; border:1px solid #6366f1; background:rgba(99,102,241,0.2); color:#c4b5fd; font-weight:600; cursor:pointer;">All</button>
+        <button class="pill" onclick="filterPredictions('High')" style="padding:6px 14px; border-radius:20px; border:1px solid #334155; background:#1e293b; color:#94a3b8; font-weight:600; cursor:pointer;">High Confidence</button>
+        <button class="pill" onclick="filterPredictions('Medium')" style="padding:6px 14px; border-radius:20px; border:1px solid #334155; background:#1e293b; color:#94a3b8; font-weight:600; cursor:pointer;">Medium Confidence</button>
+      </div>
+    </div>
+
+    <div class="predictions-grid" id="predictionsGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:18px; margin-top:16px;">
+      <div class="loading-state" style="text-align:center; padding:30px; grid-column:1/-1;">
+        <div class="spinner"></div>
+        <p style="color:#64748b; margin-top:10px;">Agent B analyzing cadence and predicting upcoming requirements...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Transparent Prediction Rules & Limitations -->
+  <section class="card" style="background:#111827; border:1px solid #1e293b; border-radius:16px; padding:24px;">
+    <div class="card-header" style="border-bottom:1px solid #1e293b; padding-bottom:12px; margin-bottom:16px;">
+      <h3 class="card-title" style="margin:0; font-size:1.15rem; color:#f1f5f9;">📖 Transparent Heuristic Rules Reference</h3>
+      <p class="card-subtitle" style="margin:4px 0 0; font-size:0.85rem; color:#94a3b8;">Documented deterministic rules that generate these predictions &mdash; zero hidden algorithms</p>
+    </div>
+    <div class="card-body">
+      <div class="grid-2-col" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+        <div class="rule-card" style="background:#1e293b; padding:16px; border-radius:10px; border:1px solid #334155;">
+          <div class="rule-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong style="color:#f1f5f9;">Recurring Category Cadence</strong>
+            <span class="badge badge-primary" style="background:#6366f1; color:#fff; font-size:0.75rem; padding:2px 8px; border-radius:10px;">Rule 1</span>
+          </div>
+          <p class="rule-desc" style="color:#94a3b8; font-size:0.85rem; margin:0; line-height:1.4;">
+            Triggered when a category has 2+ historical purchases. Confidence scales with repeat frequency: <code style="color:#a855f7;">min(0.9, 0.4 + 0.1 * count)</code>.
+          </p>
+        </div>
+
+        <div class="rule-card" style="background:#1e293b; padding:16px; border-radius:10px; border:1px solid #334155;">
+          <div class="rule-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong style="color:#f1f5f9;">Time-Based Replenishment</strong>
+            <span class="badge badge-primary" style="background:#6366f1; color:#fff; font-size:0.75rem; padding:2px 8px; border-radius:10px;">Rule 2</span>
+          </div>
+          <p class="rule-desc" style="color:#94a3b8; font-size:0.85rem; margin:0; line-height:1.4;">
+            Triggered for consumable or essential categories when &ge; 25 days have elapsed since the prior order. Confidence: <code style="color:#a855f7;">0.60</code>.
+          </p>
+        </div>
+
+        <div class="rule-card" style="background:#1e293b; padding:16px; border-radius:10px; border:1px solid #334155;">
+          <div class="rule-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong style="color:#f1f5f9;">Preferred Category Exploration</strong>
+            <span class="badge badge-primary" style="background:#6366f1; color:#fff; font-size:0.75rem; padding:2px 8px; border-radius:10px;">Rule 3</span>
+          </div>
+          <p class="rule-desc" style="color:#94a3b8; font-size:0.85rem; margin:0; line-height:1.4;">
+            Identifies categories you marked as preferred in your twin profile but have never ordered. Confidence: <code style="color:#a855f7;">0.50</code>.
+          </p>
+        </div>
+
+        <div class="rule-card" style="background:#1e293b; padding:16px; border-radius:10px; border:1px solid #334155;">
+          <div class="rule-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong style="color:#f1f5f9;">Shopping Goal Alignment</strong>
+            <span class="badge badge-primary" style="background:#6366f1; color:#fff; font-size:0.75rem; padding:2px 8px; border-radius:10px;">Rule 4</span>
+          </div>
+          <p class="rule-desc" style="color:#94a3b8; font-size:0.85rem; margin:0; line-height:1.4;">
+            Directly maps explicit target goals (e.g. "Complete Home Office Setup") to relevant equipment categories. Confidence: <code style="color:#a855f7;">0.70</code>.
+          </p>
+        </div>
+      </div>
+
+      <div class="caution-box mt-3" style="margin-top:16px; background:rgba(245, 158, 11, 0.1); border-left:4px solid #f59e0b; padding:12px 16px; border-radius:0 8px 8px 0; font-size:0.85rem; color:#fde68a;">
+        <strong style="color:#fbbf24;">⚠️ Decision-Support Disclaimer:</strong>
+        Predictions are advisory estimates based on voluntary data, not automated purchases or guaranteed requirements. You always retain complete control over your purchase decisions.
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/predictions.js"></script>
+{% endblock %}

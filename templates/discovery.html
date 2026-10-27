@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results &amp; Product Catalogue - PreTwin{% endblock %}
+
+{% block content %}
+<div class="fk-container" style="padding-top: 10px; padding-bottom: 30px;">
+  <!-- PreTwin AI Natural-Language Finder & Visual Search Strip -->
+  <div style="background: linear-gradient(135deg, #181438 0%, #2e1065 50%, #1e1b4b 100%); border: 1px solid rgba(167, 139, 250, 0.35); padding: 18px 24px; border-radius: 10px; margin-bottom: 14px; color: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.15);">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:1.4rem;">🔮</span>
+        <div>
+          <strong style="font-size:1.05rem; color:#fff;">Smart Product Discovery AI</strong>
+          <span style="font-size:0.8rem; color:#cbd5e1; margin-left:8px;">Semantic Intent Parser &amp; Visual Search</span>
+        </div>
+      </div>
+      <div>
+        <button onclick="triggerVisualSearchModal()" style="background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.25); padding:6px 14px; border-radius:6px; font-size:0.8rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+          <span>📷 Visual Product Search</span>
+        </button>
+      </div>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <input type="text" id="aiNlSearchInput" placeholder="Try natural search: 'Running shoes under 2000 for gym' or 'Silent mechanical keyboard for work'" style="flex:1; background:#ffffff; color:#212121; border:none; padding:10px 16px; border-radius:6px; font-size:0.9rem; outline:none;" onkeypress="if(event.key==='Enter') executeNlSearch()">
+      <button onclick="executeNlSearch()" style="background:#2874f0; color:#fff; border:none; padding:10px 20px; border-radius:6px; font-weight:600; font-size:0.9rem; cursor:pointer;">
+        AI Search
+      </button>
+    </div>
+    <div id="nlSearchFeedback" style="display:none; margin-top:10px; font-size:0.8rem; color:#c4b5fd;"></div>
+  </div>
+
+  <div style="display: flex; gap: 12px; align-items: flex-start;">
+    
+    <!-- ==================================================================
+         FLIPKART LEFT FILTER SIDEBAR
+         ================================================================== -->
+    <aside style="width: 280px; flex-shrink: 0; background: #ffffff; box-shadow: var(--fk-shadow-sm); border-radius: 2px;">
+      <!-- Filter Header -->
+      <div style="padding: 16px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 18px; font-weight: 500; color: #212121;">Filters</span>
+        <span style="color: #2874f0; font-size: 12px; font-weight: 600; cursor: pointer;" onclick="clearFilters()">CLEAR ALL</span>
+      </div>
+
+      <!-- Categories Filter -->
+      <div style="padding: 16px; border-bottom: 1px solid #f0f0f0;">
+        <div style="font-size: 12px; font-weight: 600; color: #212121; text-transform: uppercase; margin-bottom: 10px;">CATEGORY</div>
+        <select id="categorySelect" onchange="onCategoryChange()" style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 2px; font-size: 13px; color: #212121;">
+          <option value="">All 20 Categories (1,000+ Products)</option>
+          <option value="Fashion">Fashion</option>
+          <option value="Mobiles">Mobiles</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Beauty, Toys & More">Beauty, Toys &amp; More</option>
+          <option value="Home & Kitchen">Home &amp; Kitchen</option>
+          <option value="Appliances">Appliances</option>
+          <option value="Toys & Baby Products">Toys &amp; Baby Products</option>
+          <option value="Food & Grocery">Food &amp; Grocery</option>
+          <option value="Sports & Fitness">Sports &amp; Fitness</option>
+          <option value="Books & Stationery">Books &amp; Stationery</option>
+          <option value="Furniture">Furniture</option>
+          <option value="Footwear">Footwear</option>
+          <option value="Watches & Accessories">Watches &amp; Accessories</option>
+          <option value="Laptops & Computers">Laptops &amp; Computers</option>
+          <option value="TVs & Home Entertainment">TVs &amp; Home Entertainment</option>
+          <option value="Personal Care">Personal Care</option>
+          <option value="Automotive Accessories">Automotive Accessories</option>
+          <option value="Health & Wellness">Health &amp; Wellness</option>
+          <option value="Pet Supplies">Pet Supplies</option>
+          <option value="Travel & Luggage">Travel &amp; Luggage</option>
+        </select>
+      </div>
+
+      <!-- Subcategory Filter -->
+      <div style="padding: 16px; border-bottom: 1px solid #f0f0f0;" id="subcategorySection">
+        <div style="font-size: 12px; font-weight: 600; color: #212121; text-transform: uppercase; margin-bottom: 10px;">SUBCATEGORY</div>
+        <select id="subcategorySelect" onchange="applyFilters(1)" style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 2px; font-size: 13px; color: #212121;">
+          <option value="">All Subcategories</option>
+        </select>
+      </div>
+
+      <!-- Price Range Filter -->
+      <div style="padding: 16px; border-bottom: 1px solid #f0f0f0;">
+        <div style="font-size: 12px; font-weight: 600; color: #212121; text-transform: uppercase; margin-bottom: 10px;">PRICE RANGE (₹)</div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+          <input type="number" id="minPriceInput" placeholder="Min ₹" style="width: 50%; padding: 6px 8px; border: 1px solid #e0e0e0; border-radius: 2px; font-size: 13px;" onchange="applyFilters(1)">
+          <span style="color: #878787;">to</span>
+          <input type="number" id="maxPriceInput" placeholder="Max ₹" style="width: 50%; padding: 6px 8px; border: 1px solid #e0e0e0; border-radius: 2px; font-size: 13px;" onchange="applyFilters(1)">
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+          <span class="fk-filter-chip" onclick="setPriceRange(0, 1000)">Under ₹1,000</span>
+          <span class="fk-filter-chip" onclick="setPriceRange(1000, 5000)">₹1k - ₹5k</span>
+          <span class="fk-filter-chip" onclick="setPriceRange(5000, 20000)">₹5k - ₹20k</span>
+          <span class="fk-filter-chip" onclick="setPriceRange(20000, 150000)">₹20k+</span>
+        </div>
+      </div>
+
+      <!-- Brand Filter -->
+      <div style="padding: 16px; border-bottom: 1px solid #f0f0f0;" id="brandSection">
+        <div style="font-size: 12px; font-weight: 600; color: #212121; text-transform: uppercase; margin-bottom: 10px;">BRAND</div>
+        <div id="brandList" style="max-height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Customer Ratings Filter -->
+      <div style="padding: 16px; border-bottom: 1px solid #f0f0f0;">
+        <div style="font-size: 12px; font-weight: 600; color: #212121; text-transform: uppercase; margin-bottom: 10px;">CUSTOMER RATINGS</div>
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #212121; margin-bottom: 8px; cursor: pointer;">
+          <input type="checkbox" id="rating4Check" onchange="applyFilters(1)">
+          <span>4★ &amp; above</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #212121; cursor: pointer;">
+          <input type="checkbox" id="rating3Check" onchange="applyFilters(1)">
+          <span>3★ &amp; above</span>
+        </label>
+      </div>
+
+      <!-- Discount Filter -->
+      <div style="padding: 16px; border-bottom: 1px solid #f0f0f0;">
+        <div style="font-size: 12px; font-weight: 600; color: #212121; text-transform: uppercase; margin-bottom: 10px;">DISCOUNT</div>
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #212121; margin-bottom: 6px; cursor: pointer;">
+          <input type="radio" name="discountFilter" value="50" onchange="applyFilters(1)">
+          <span>50% or more</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #212121; margin-bottom: 6px; cursor: pointer;">
+          <input type="radio" name="discountFilter" value="30" onchange="applyFilters(1)">
+          <span>30% or more</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #212121; margin-bottom: 6px; cursor: pointer;">
+          <input type="radio" name="discountFilter" value="20" onchange="applyFilters(1)">
+          <span>20% or more</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #212121; cursor: pointer;">
+          <input type="radio" name="discountFilter" value="0" checked onchange="applyFilters(1)">
+          <span>All Discounts</span>
+        </label>
+      </div>
+
+      <!-- PreTwin Assured Badge Checkbox -->
+      <div style="padding: 16px;">
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #212121; cursor: pointer;">
+          <input type="checkbox" id="assuredCheck" checked onchange="applyFilters(1)">
+          <span style="color: #2874f0; font-weight: 700;">PreTwin Assured</span>
+        </label>
+      </div>
+    </aside>
+
+    <!-- ==================================================================
+         PRETWIN RIGHT PRODUCT RESULTS GRID
+         ================================================================== -->
+    <div style="flex: 1; background: #ffffff; box-shadow: var(--fk-shadow-sm); border-radius: 2px; padding: 16px 20px;">
+      <!-- Results Header & Sort Strip -->
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; margin-bottom: 12px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <span style="font-size: 16px; font-weight: 500; color: #212121;" id="resultsTitle">Products Catalogue</span>
+          <span style="font-size: 12px; color: #878787; margin-left: 8px;" id="resultsCount">(Showing products)</span>
+        </div>
+
+        <!-- Sort By tabs (PreTwin style) -->
+        <div style="display: flex; align-items: center; gap: 16px; font-size: 13px;">
+          <span style="font-weight: 600; color: #212121;">Sort By</span>
+          <span class="fk-sort-tab active" onclick="setSort('featured', this)" style="cursor:pointer; color:#2874f0; font-weight:600; border-bottom:2px solid #2874f0; padding-bottom:2px;">Relevance</span>
+          <span class="fk-sort-tab" onclick="setSort('price-asc', this)" style="cursor:pointer; color:#212121;">Price -- Low to High</span>
+          <span class="fk-sort-tab" onclick="setSort('price-desc', this)" style="cursor:pointer; color:#212121;">Price -- High to Low</span>
+          <span class="fk-sort-tab" onclick="setSort('rating', this)" style="cursor:pointer; color:#212121;">Customer Rating</span>
+          <span class="fk-sort-tab" onclick="setSort('discount', this)" style="cursor:pointer; color:#212121;">Discount</span>
+        </div>
+      </div>
+
+      <!-- Applied Filters Tags -->
+      <div id="appliedFilterTags" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;"></div>
+
+      <!-- Grid of Cards -->
+      <div class="fk-product-grid" id="productsGrid">
+        <div style="grid-column: 1/-1; text-align: center; padding: 48px; color: #878787;">
+          <p>Loading PreTwin catalogue...</p>
+        </div>
+      </div>
+
+      <!-- Pagination Strip -->
+      <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;" id="paginationContainer">
+        <div style="font-size: 13px; color: #878787;" id="paginationInfo">
+          Page 1 of 1
+        </div>
+        <div style="display: flex; gap: 6px;" id="paginationButtons">
+          <!-- Page buttons -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/discovery.js"></script>
+{% endblock %}

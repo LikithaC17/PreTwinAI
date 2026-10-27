@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Recommendations - PreTwinShop AI{% endblock %}
+{% block page_title %}Budget-Aware Smart Recommendations (Agent E &amp; F){% endblock %}
+
+{% block content %}
+<div class="recommendations-page">
+  <!-- Budget Ceiling Status Header -->
+  <section class="card budget-summary-card">
+    <div class="budget-summary-grid">
+      <div class="budget-stat-box">
+        <span class="stat-title">Estimated Basket Total</span>
+        <h2 class="stat-number text-primary" id="recTotalCost">₹0</h2>
+        <span class="stat-sub" id="recItemCount">0 items proposed</span>
+      </div>
+
+      <div class="budget-stat-box">
+        <span class="stat-title">User Budget Ceiling</span>
+        <h2 class="stat-number text-secondary" id="recBudgetCeiling">₹5,000</h2>
+        <span class="stat-sub">Strict hard threshold</span>
+      </div>
+
+      <div class="budget-stat-box">
+        <span class="stat-title">Remaining Budget</span>
+        <h2 class="stat-number text-success" id="recRemainingBudget">₹5,000</h2>
+        <span class="stat-sub" id="recBudgetFitBadge"><span class="badge badge-success">Budget Compliant</span></span>
+      </div>
+
+      <div class="budget-action-box">
+        <button class="btn btn-primary btn-lg w-100" id="regenerateRecsBtn" onclick="runAiAnalysis()">
+          <span class="btn-icon">⚡</span>
+          <span>Regenerate Recommendations</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="budget-progress-container mt-3">
+      <div class="flex-between text-muted text-sm mb-1">
+        <span>Basket Budget Utilization: <strong id="budgetPercentText">0%</strong></span>
+        <span>Hard limit: <strong id="budgetCeilingText">₹5,000</strong></span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="budgetProgressBar" style="width: 0%;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Overall AI Synthesis Summary -->
+  <section class="card mt-4" id="aiSummaryCard">
+    <div class="card-header">
+      <h3 class="card-title">💡 Orchestrator Synthesis &amp; Key Insights (Agent F)</h3>
+      <p class="card-subtitle">Transparent justification linking stated preferences, history, and financial bounds</p>
+    </div>
+    <div class="card-body">
+      <div class="summary-content" id="aiSummaryContent">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Synthesizing multi-agent evidence...</p>
+        </div>
+      </div>
+      <div class="improvements-box mt-3" id="improvementsBox">
+        <!-- Suggestions on what would improve predictions -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Ranked Recommendations List -->
+  <section class="mt-4">
+    <div class="flex-between mb-3">
+      <h3 class="section-heading">Ranked Proposed Items (<span id="recsCount">0</span>)</h3>
+      <div class="flex-align-gap">
+        <span class="text-muted text-sm">Sort: Relevance &amp; Value</span>
+      </div>
+    </div>
+
+    <div class="recommendations-stack" id="recommendationsList">
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading ranked recommendations...</p>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/recommendations.js"></script>
+{% endblock %}

@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Order Confirmed — PreTwin{% endblock %}
+
+{% block content %}
+<div class="fk-container" style="padding-top: 24px; padding-bottom: 50px; max-width: 820px; margin: 0 auto;">
+
+  <div style="background: #ffffff; border-radius: 4px; box-shadow: var(--fk-shadow-sm); padding: 40px 32px; text-align: center;">
+    
+    <!-- Animated Checkmark Icon -->
+    <div style="width: 80px; height: 80px; background: #e8f5e9; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+    </div>
+
+    <h1 style="font-size: 26px; font-weight: 700; color: #212121; margin-bottom: 8px;">Order Placed Successfully!</h1>
+    <p style="font-size: 15px; color: #878787; margin-bottom: 24px;">
+      Thank you for shopping with PreTwin. A confirmation email and SMS have been dispatched.
+    </p>
+
+    <!-- Order Metadata Pill -->
+    <div style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 4px; padding: 18px 24px; margin-bottom: 30px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 16px; text-align: left;">
+      <div>
+        <div style="font-size: 12px; color: #878787; text-transform: uppercase; font-weight: 600;">Order ID</div>
+        <div style="font-size: 16px; font-weight: 700; color: #2874f0;" id="successOrderNumber">Loading...</div>
+      </div>
+      <div>
+        <div style="font-size: 12px; color: #878787; text-transform: uppercase; font-weight: 600;">Estimated Delivery</div>
+        <div style="font-size: 15px; font-weight: 600; color: #2e7d32;">2–3 Business Days</div>
+      </div>
+      <div>
+        <div style="font-size: 12px; color: #878787; text-transform: uppercase; font-weight: 600;">Payment Status</div>
+        <div style="font-size: 15px; font-weight: 700; color: #212121;" id="successPayStatus">Verified Paid</div>
+      </div>
+      <div>
+        <div style="font-size: 12px; color: #878787; text-transform: uppercase; font-weight: 600;">Total Amount</div>
+        <div style="font-size: 16px; font-weight: 700; color: #212121;" id="successTotalAmount">₹0</div>
+      </div>
+    </div>
+
+    <!-- Purchased Items Section -->
+    <div style="text-align: left; margin-bottom: 32px;">
+      <h3 style="font-size: 16px; font-weight: 700; color: #212121; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 14px;">
+        Items in This Order
+      </h3>
+      <div id="successItemsList" style="display: flex; flex-direction: column; gap: 12px;">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- Shipping Address Summary -->
+    <div style="text-align: left; background: #fafafa; border: 1px solid #f0f0f0; border-radius: 4px; padding: 16px 20px; margin-bottom: 32px;">
+      <div style="font-size: 13px; font-weight: 700; color: #212121; margin-bottom: 6px;">Shipping To:</div>
+      <div style="font-size: 14px; color: #555; line-height: 1.5;" id="successAddress">Loading address...</div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+      <a href="/orders" class="fk-view-all-btn" style="background: #2874f0; color: #ffffff; padding: 12px 28px; font-size: 14px; margin-bottom: 0;">
+        VIEW ALL MY ORDERS
+      </a>
+      <a href="/discovery" class="fk-view-all-btn" style="background: #f1f3f6; color: #212121; padding: 12px 28px; font-size: 14px; margin-bottom: 0;">
+        CONTINUE SHOPPING
+      </a>
+      <a href="/twin" class="fk-view-all-btn" style="background: #ffe500; color: #212121; padding: 12px 28px; font-size: 14px; margin-bottom: 0;">
+        VIEW AI TWIN UPDATES
+      </a>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function loadOrderSuccess() {
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get('order_id');
+  const orderNum = params.get('order_number');
+
+  if (orderNum) {
+    document.getElementById('successOrderNumber').textContent = orderNum;
+  }
+
+  if (!orderId) return;
+
+  try {
+    const res = await apiGet(`/api/orders/${orderId}`);
+    const od = res.order;
+    if (!od) return;
+
+    document.getElementById('successOrderNumber').textContent = od.order_number;
+    document.getElementById('successPayStatus').textContent = od.payment_status || 'Paid';
+    document.getElementById('successTotalAmount').textContent = formatPrice(od.total_amount);
+
+    // If Cash on Delivery, show COD prompt banner
+    if (od.payment_method === 'COD' || (od.payment_status && od.payment_status.includes('Cash on Delivery'))) {
+      const codBanner = document.createElement('div');
+      codBanner.style.cssText = 'background:#f0fdf4; border:1px solid #86efac; border-radius:4px; padding:14px; margin-bottom:20px; text-align:left; color:#166534; font-size:13.5px;';
+      codBanner.innerHTML = `
+        <strong>💵 Cash on Delivery (COD) Order Confirmed!</strong><br>
+        Please keep <strong>${formatPrice(od.cod_amount_due || od.total_amount)}</strong> ready in cash or UPI to pay the delivery executive at your doorstep.
+        <br><span style="font-size:12px; color:#15803d; margin-top:4px; display:inline-block;">✨ 5 PreTwin Reward Points will be credited to your account upon delivery!</span>
+      `;
+      const metaPill = document.querySelector('.fk-container > div > div:nth-child(4)');
+      if (metaPill) metaPill.parentNode.insertBefore(codBanner, metaPill);
+    }
+
+    const addrStr = `<strong>${od.customer_name}</strong> • ${od.customer_phone || ''}<br>${od.shipping_address}, ${od.city}, ${od.state} - ${od.pincode}`;
+    document.getElementById('successAddress').innerHTML = addrStr;
+
+    const itemsContainer = document.getElementById('successItemsList');
+    if (itemsContainer && od.items) {
+      itemsContainer.innerHTML = od.items.map(it => {
+        const fallbackImg = getCategoryFallbackImg(it.category);
+        return `
+          <div style="display:flex; align-items:center; gap:14px; padding:10px 0; border-bottom:1px solid #f5f5f5;">
+            <img src="${it.image_url || fallbackImg}" alt="${it.product_name}" style="width:60px; height:60px; object-fit:contain; border:1px solid #eee; border-radius:2px;" onerror="this.src='${fallbackImg}'">
+            <div style="flex:1;">
+              <div style="font-weight:600; font-size:14px; color:#212121;">${it.product_name}</div>
+              <div style="font-size:12px; color:#878787;">Quantity: ${it.quantity} • Brand: ${it.brand || 'PreTwin'}</div>
+            </div>
+            <div style="font-weight:700; font-size:14px; color:#212121;">${formatPrice(it.total_price)}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+  } catch (err) {
+    console.error('Failed to load order success data:', err);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadOrderSuccess();
+});
+</script>
+{% endblock %}

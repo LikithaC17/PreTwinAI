@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="iconBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E40AF" />
+      <stop offset="50%" stop-color="#2563EB" />
+      <stop offset="100%" stop-color="#6D28D9" />
+    </linearGradient>
+    <linearGradient id="iconWingLeft" x1="100%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#A78BFA" />
+      <stop offset="60%" stop-color="#DDD6FE" />
+      <stop offset="100%" stop-color="#FFFFFF" />
+    </linearGradient>
+    <linearGradient id="iconWingRight" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#60A5FA" />
+      <stop offset="60%" stop-color="#BAE6FD" />
+      <stop offset="100%" stop-color="#FFFFFF" />
+    </linearGradient>
+    <linearGradient id="iconStar" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A" />
+      <stop offset="100%" stop-color="#FDE047" />
+    </linearGradient>
+    <filter id="iconGlow">
+      <feGaussianBlur stdDeviation="1" result="b" />
+      <feComposite in="SourceGraphic" in2="b" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#iconBg)" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+
+  <!-- Fairytale Wings in Flight -->
+  <g transform="translate(6, 6)" filter="url(#iconGlow)">
+    <!-- Magic Dust -->
+    <circle cx="8" cy="18" r="1" fill="#FEF08A" opacity="0.8" />
+    <circle cx="44" cy="16" r="1.1" fill="#BAE6FD" opacity="0.85" />
+    <circle cx="12" cy="38" r="0.8" fill="#DDD6FE" opacity="0.7" />
+    <circle cx="40" cy="38" r="0.9" fill="#FEF08A" opacity="0.75" />
+
+    <!-- Left Wing (Layered Upward) -->
+    <path d="M25 28 C21 18 13 8 3 6 C2 14 6 24 18 31 Z" fill="url(#iconWingLeft)" />
+    <path d="M24 30 C19 24 11 18 4 17 C3 23 8 30 19 34 Z" fill="#C4B5FD" opacity="0.85" />
+    <path d="M24 33 C18 30 13 29 7 30 C7 34 12 40 20 37 Z" fill="url(#iconWingLeft)" opacity="0.75" />
+
+    <!-- Right Wing (Layered Upward) -->
+    <path d="M27 28 C31 18 39 8 49 6 C50 14 46 24 34 31 Z" fill="url(#iconWingRight)" />
+    <path d="M28 30 C33 24 41 18 48 17 C49 23 44 30 33 34 Z" fill="#93C5FD" opacity="0.85" />
+    <path d="M28 33 C34 30 39 29 45 30 C45 34 40 40 32 37 Z" fill="url(#iconWingRight)" opacity="0.75" />
+
+    <!-- Twin Luminous Core -->
+    <ellipse cx="26" cy="32" rx="3.5" ry="5.5" fill="#FFFFFF" opacity="0.95" />
+    <circle cx="24.5" cy="31" r="1.6" fill="#7C3AED" />
+    <circle cx="27.5" cy="31" r="1.6" fill="#2563EB" />
+
+    <!-- Fairytale Spark Star -->
+    <path d="M26 17 L27.2 21.5 L31.5 22.5 L27.2 23.5 L26 28 L24.8 23.5 L20.5 22.5 L24.8 21.5 Z" fill="url(#iconStar)" />
+    <circle cx="26" cy="22.5" r="1.1" fill="#FFFFFF" />
+  </g>
+</svg>

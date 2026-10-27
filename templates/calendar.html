@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Future Predictive Calendar — PreTwin AI{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1240px; margin: 24px auto 60px auto; padding: 0 16px;">
+
+  <!-- Header Banner -->
+  <div class="card" style="background: linear-gradient(135deg, #1e1b4b 0%, #2e1065 50%, #4338ca 100%); border: 1px solid rgba(196, 181, 253, 0.35); padding: 28px 32px; border-radius: 16px; margin-bottom: 24px; color: #fff; box-shadow: 0 8px 32px rgba(124, 58, 237, 0.25);">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+      <div>
+        <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(196, 181, 253, 0.2); padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600; color:#e0e7ff; margin-bottom:10px; border:1px solid rgba(196, 181, 253, 0.3);">
+          <span>📅 AI SHOPPING INTELLIGENCE</span>
+          <span>•</span>
+          <span>FEATURE #6</span>
+        </div>
+        <h1 style="font-size:1.95rem; font-weight:800; margin:0 0 8px 0; color:#fff; letter-spacing:-0.02em;">
+          Future Predictive Calendar
+        </h1>
+        <p style="margin:0; color:#cbd5e1; font-size:0.95rem; max-width:760px; line-height:1.5;">
+          Synchronized shopping milestones, college deadlines, festive occasions, and recurring replenishment cycles. PreTwin predicts upcoming needs and suggests verified products within your budget.
+        </p>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button onclick="openAddEventModal()" style="background:linear-gradient(135deg, #a855f7 0%, #6366f1 100%); color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:700; font-size:0.92rem; cursor:pointer; box-shadow:0 4px 14px rgba(168, 85, 247, 0.4); display:flex; align-items:center; gap:8px; transition:transform 0.2s ease;">
+          <span>+</span>
+          <span>Add Shopping Milestone</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendar Controls Bar -->
+  <div class="card" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:16px 20px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- Month Navigation -->
+    <div style="display:flex; align-items:center; gap:12px;">
+      <button onclick="changeMonth(-1)" class="btn-cal-nav" title="Previous Month" style="width:36px; height:36px; border:1px solid #cbd5e1; background:#f8fafc; border-radius:8px; cursor:pointer; font-weight:700; font-size:1rem; color:#475569; display:flex; align-items:center; justify-content:center;">
+        ‹
+      </button>
+      <h2 id="currentMonthYearLabel" style="margin:0; font-size:1.35rem; font-weight:800; color:#1e1b4b; min-width:180px; text-align:center;">
+        Loading...
+      </h2>
+      <button onclick="changeMonth(1)" class="btn-cal-nav" title="Next Month" style="width:36px; height:36px; border:1px solid #cbd5e1; background:#f8fafc; border-radius:8px; cursor:pointer; font-weight:700; font-size:1rem; color:#475569; display:flex; align-items:center; justify-content:center;">
+        ›
+      </button>
+      <button onclick="goToToday()" style="padding:6px 14px; background:#ede9fe; color:#6d28d9; border:1px solid #c4b5fd; border-radius:6px; font-size:0.85rem; font-weight:700; cursor:pointer;">
+        Today
+      </button>
+    </div>
+
+    <!-- Category / Type Filter & View Toggle -->
+    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+      <select id="eventFilterType" onchange="filterEvents()" style="padding:8px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.88rem; color:#334155; background:#fff; font-weight:600;">
+        <option value="ALL">All Event Types</option>
+        <option value="College">🎓 College &amp; Campus</option>
+        <option value="Interview">💼 Career &amp; Interviews</option>
+        <option value="Birthday">🎂 Birthdays &amp; Anniversaries</option>
+        <option value="Festival">🪔 Festivals &amp; Celebrations</option>
+        <option value="Household">🏠 Household Replenishment</option>
+        <option value="Travel">✈️ Travel &amp; Vacation</option>
+        <option value="Fitness">💪 Health &amp; Fitness</option>
+      </select>
+
+      <div style="display:inline-flex; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden;">
+        <button id="viewBtnGrid" onclick="switchCalendarView('grid')" style="padding:8px 14px; border:none; background:#7c3aed; color:#fff; font-size:0.85rem; font-weight:700; cursor:pointer;">
+          📅 Calendar Grid
+        </button>
+        <button id="viewBtnList" onclick="switchCalendarView('list')" style="padding:8px 14px; border:none; background:#f8fafc; color:#64748b; font-size:0.85rem; font-weight:700; cursor:pointer;">
+          📋 Upcoming Milestones
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 1: MONTHLY CALENDAR GRID -->
+  <div id="calendarGridView" class="card" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:20px; margin-bottom:24px; box-shadow:0 4px 16px rgba(0,0,0,0.04);">
+    <!-- Days of Week Header -->
+    <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:8px; text-align:center; margin-bottom:10px; font-weight:700; font-size:0.85rem; color:#64748b; text-transform:uppercase; letter-spacing:0.04em;">
+      <div>Sun</div>
+      <div>Mon</div>
+      <div>Tue</div>
+      <div>Wed</div>
+      <div>Thu</div>
+      <div>Fri</div>
+      <div>Sat</div>
+    </div>
+    <!-- Days Grid (Populated dynamically) -->
+    <div id="calendarDaysGrid" style="display:grid; grid-template-columns:repeat(7, 1fr); gap:8px;">
+      <!-- Day cells injected via JS -->
+    </div>
+  </div>
+
+  <!-- VIEW 2: UPCOMING MILESTONES & PRODUCT RECOMMENDATIONS LIST -->
+  <div id="calendarListView" style="display:none;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 style="margin:0; font-size:1.25rem; font-weight:800; color:#1e1b4b;">
+        Upcoming Shopping Milestones &amp; PreTwin Recommendations
+      </h3>
+      <span id="eventsCountBadge" style="background:#ede9fe; color:#6d28d9; padding:4px 12px; border-radius:14px; font-size:0.82rem; font-weight:700;">
+        0 Milestones Tracked
+      </span>
+    </div>
+
+    <!-- Milestones List Container -->
+    <div id="calendarEventsCardsList" style="display:flex; flex-direction:column; gap:18px;">
+      <!-- Injected via JS -->
+    </div>
+  </div>
+
+</div>
+
+<!-- Add / Edit Shopping Milestone Modal -->
+<div id="calendarModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.65); z-index:9999; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(4px);">
+  <div style="background:#ffffff; border-radius:14px; max-width:540px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 45px rgba(0,0,0,0.25); border:1px solid #e2e8f0; padding:28px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid #f1f5f9; padding-bottom:12px;">
+      <h3 id="calendarModalTitle" style="margin:0; font-size:1.3rem; font-weight:800; color:#1e1b4b;">
+        Add Shopping Milestone
+      </h3>
+      <button onclick="closeCalendarModal()" style="background:none; border:none; font-size:1.5rem; color:#94a3b8; cursor:pointer; line-height:1;">✕</button>
+    </div>
+
+    <form id="calendarEventForm" onsubmit="handleCalendarFormSubmit(event)">
+      <input type="hidden" id="calEventId" value="">
+
+      <!-- Title -->
+      <div style="margin-bottom:16px;">
+        <label for="calTitleInput" style="display:block; font-size:0.88rem; font-weight:700; color:#334155; margin-bottom:6px;">
+          Milestone Title <span style="color:#ef4444;">*</span>
+        </label>
+        <input type="text" id="calTitleInput" required placeholder="e.g. College Semester Start, Brother's Birthday, Job Interview" style="width:100%; padding:10px 14px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.95rem; color:#1e293b;">
+      </div>
+
+      <!-- Date & Type (Two Columns) -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
+        <div>
+          <label for="calDateInput" style="display:block; font-size:0.88rem; font-weight:700; color:#334155; margin-bottom:6px;">
+            Target Date <span style="color:#ef4444;">*</span>
+          </label>
+          <input type="date" id="calDateInput" required style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.92rem; color:#1e293b;">
+        </div>
+
+        <div>
+          <label for="calTypeInput" style="display:block; font-size:0.88rem; font-weight:700; color:#334155; margin-bottom:6px;">
+            Milestone Type
+          </label>
+          <select id="calTypeInput" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.92rem; color:#1e293b;">
+            <option value="College">🎓 College / Campus</option>
+            <option value="Interview">💼 Career / Interview</option>
+            <option value="Birthday">🎂 Birthday</option>
+            <option value="Festival">🪔 Festival / Celebration</option>
+            <option value="Household">🏠 Household Replenishment</option>
+            <option value="Travel">✈️ Travel &amp; Trip</option>
+            <option value="Fitness">💪 Health &amp; Fitness</option>
+            <option value="General">🛍️ General Shopping</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Target Category & Budget -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
+        <div>
+          <label for="calCategoryInput" style="display:block; font-size:0.88rem; font-weight:700; color:#334155; margin-bottom:6px;">
+            Primary Product Category
+          </label>
+          <select id="calCategoryInput" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.92rem; color:#1e293b;">
+            <option value="All">All Categories (Twin Match)</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Mobiles">Mobiles</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Footwear">Footwear</option>
+            <option value="Home &amp; Kitchen">Home &amp; Kitchen</option>
+            <option value="Laptops &amp; Computers">Laptops &amp; Computers</option>
+            <option value="Watches &amp; Accessories">Watches &amp; Accessories</option>
+            <option value="Personal Care">Personal Care</option>
+            <option value="Books &amp; Stationery">Books &amp; Stationery</option>
+            <option value="Sports &amp; Fitness">Sports &amp; Fitness</option>
+            <option value="Travel &amp; Luggage">Travel &amp; Luggage</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="calBudgetInput" style="display:block; font-size:0.88rem; font-weight:700; color:#334155; margin-bottom:6px;">
+            Target Budget Cap (₹)
+          </label>
+          <input type="number" id="calBudgetInput" min="100" step="100" value="5000" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.92rem; color:#1e293b;">
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div style="margin-bottom:18px;">
+        <label for="calNotesInput" style="display:block; font-size:0.88rem; font-weight:700; color:#334155; margin-bottom:6px;">
+          Shopping Needs &amp; Notes
+        </label>
+        <textarea id="calNotesInput" rows="2" placeholder="e.g. Need lightweight sneakers and durable backpack for college semester." style="width:100%; padding:10px 14px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:0.92rem; color:#1e293b;"></textarea>
+      </div>
+
+      <!-- In-App Reminder Checkbox -->
+      <div style="margin-bottom:24px;">
+        <label style="display:flex; align-items:center; gap:8px; font-size:0.88rem; color:#475569; cursor:pointer;">
+          <input type="checkbox" id="calReminderCheck" checked style="width:18px; height:18px; accent-color:#7c3aed;">
+          <span>Enable in-app replenishment reminder 7 days before target date</span>
+        </label>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:12px;">
+        <button type="button" onclick="closeCalendarModal()" style="padding:10px 18px; border:1px solid #cbd5e1; background:#f8fafc; color:#475569; border-radius:8px; font-weight:600; cursor:pointer;">
+          Cancel
+        </button>
+        <button type="submit" id="calSubmitBtn" style="padding:10px 22px; border:none; background:linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%); color:#fff; border-radius:8px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(124, 58, 237, 0.35);">
+          Save Milestone
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/calendar.js"></script>
+{% endblock %}

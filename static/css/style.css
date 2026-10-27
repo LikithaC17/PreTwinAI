@@ -1,0 +1,3332 @@
+/* ==========================================================================
+   FLIPKART OFFICIAL UI CLONE — MASTER STYLESHEET
+   Accurate recreation of the Flipkart desktop & responsive web interface.
+   No glassmorphism, 3D orbs, or aurora gradients — authentic Flipkart UI.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
+
+:root {
+  --fk-blue: #2874f0;
+  --fk-blue-dark: #1259c7;
+  --fk-yellow: #ffe500;
+  --fk-orange: #fb641b;
+  --fk-yellow-btn: #ff9f00;
+  --fk-bg: #f1f3f6;
+  --fk-surface: #ffffff;
+  --fk-text: #212121;
+  --fk-text-secondary: #878787;
+  --fk-green: #388e3c;
+  --fk-border: #f0f0f0;
+  --fk-border-dark: #e0e0e0;
+  --fk-footer-bg: #172337;
+  --fk-footer-text: #878787;
+  --fk-footer-divider: #454d5e;
+  --fk-shadow-sm: 0 1px 1px 0 rgba(0,0,0,.16);
+  --fk-shadow-md: 0 2px 4px 0 rgba(0,0,0,.23);
+  --fk-shadow-lg: 0 4px 16px 0 rgba(0,0,0,.2);
+  --fk-font: 'Roboto', Arial, sans-serif;
+}
+
+/* --- Global Reset --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 14px;
+  background-color: var(--fk-bg);
+  color: var(--fk-text);
+  font-family: var(--fk-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: var(--fk-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  outline: none;
+}
+
+.fk-container {
+  max-width: 1248px;
+  margin: 0 auto;
+  padding: 0 12px;
+}
+
+/* ==========================================================================
+   1. FLIPKART MAIN HEADER
+   ========================================================================== */
+.fk-navbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 56px;
+  background-color: var(--fk-blue);
+  color: #ffffff;
+  z-index: 1000;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,.1);
+}
+
+.fk-navbar-inner {
+  max-width: 1248px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  gap: 20px;
+}
+
+/* Brand Logo */
+.fk-brand {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.fk-logo-text {
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+}
+
+.fk-logo-sub {
+  font-size: 11px;
+  font-style: italic;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 1px;
+}
+
+.fk-logo-sub .plus-yellow {
+  color: var(--fk-yellow);
+  font-weight: 600;
+}
+
+.fk-plus-icon {
+  width: 10px;
+  height: 10px;
+}
+
+/* Search Bar */
+.fk-search-box {
+  flex: 1;
+  max-width: 560px;
+  position: relative;
+}
+
+.fk-search-form {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 2px;
+  height: 36px;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,.23);
+  padding: 0 16px;
+}
+
+.fk-search-input {
+  width: 100%;
+  border: none;
+  font-size: 14px;
+  color: var(--fk-text);
+  outline: none;
+  background: transparent;
+}
+
+.fk-search-input::placeholder {
+  color: var(--fk-text-secondary);
+}
+
+.fk-search-btn {
+  background: none;
+  border: none;
+  color: var(--fk-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 8px;
+}
+
+/* Search Autocomplete Dropdown */
+.fk-search-dropdown {
+  position: absolute;
+  top: 38px;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 0 0 2px 2px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.15);
+  display: none;
+  z-index: 1050;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.fk-search-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  gap: 12px;
+  color: var(--fk-text);
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+
+.fk-search-item:hover {
+  background: #f9f9f9;
+  color: var(--fk-blue);
+}
+
+/* Header Nav Actions */
+.fk-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-shrink: 0;
+}
+
+/* White Login Button */
+.fk-login-btn-wrap {
+  position: relative;
+}
+
+.fk-login-btn {
+  background: #ffffff;
+  color: var(--fk-blue);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 5px 36px;
+  border-radius: 2px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dbdbdb;
+  transition: all 0.2s ease;
+}
+
+.fk-login-btn:hover {
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+/* Login Dropdown on Hover */
+.fk-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 240px;
+  background: #ffffff;
+  color: var(--fk-text);
+  border-radius: 2px;
+  box-shadow: 0 4px 16px 0 rgba(0,0,0,.2);
+  margin-top: 10px;
+  display: none;
+  z-index: 1100;
+}
+
+.fk-dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #ffffff;
+}
+
+.fk-login-btn-wrap:hover .fk-dropdown-menu,
+.fk-more-btn-wrap:hover .fk-dropdown-menu {
+  display: block;
+}
+
+.fk-dropdown-header {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--fk-border);
+}
+
+.fk-dropdown-header span {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.fk-dropdown-signup {
+  color: var(--fk-blue);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.fk-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: var(--fk-text);
+  font-size: 14px;
+  border-bottom: 1px solid #f8f8f8;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.fk-dropdown-item:hover {
+  background: #f9f9f9;
+  color: var(--fk-blue);
+}
+
+.fk-dropdown-item-icon {
+  width: 16px;
+  text-align: center;
+  color: var(--fk-blue);
+}
+
+/* "Become a Seller" */
+.fk-seller-link {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.fk-seller-link:hover {
+  text-decoration: underline;
+}
+
+/* "More" Dropdown */
+.fk-more-btn-wrap {
+  position: relative;
+  cursor: pointer;
+}
+
+.fk-more-link {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.fk-more-caret {
+  font-size: 10px;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.fk-more-btn-wrap:hover .fk-more-caret {
+  transform: rotate(180deg);
+}
+
+/* "Cart" Button */
+.fk-cart-link {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  white-space: nowrap;
+}
+
+.fk-cart-icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.fk-cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ff6161;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 50%;
+  width: 17px;
+  height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ffffff;
+}
+
+/* ==========================================================================
+   2. FLIPKART WHITE CATEGORY STRIP
+   ========================================================================== */
+.fk-category-bar {
+  background: #ffffff;
+  box-shadow: var(--fk-shadow-sm);
+  margin-bottom: 10px;
+  position: relative;
+  user-select: none;
+}
+
+.fk-cat-bar-wrapper {
+  max-width: 1248px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.fk-cat-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 14px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  width: 100%;
+}
+
+.fk-cat-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.fk-cat-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  font-size: 16px;
+  color: #212121;
+  transition: all 0.2s ease;
+}
+
+.fk-cat-nav-btn:hover {
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  color: var(--fk-blue);
+}
+
+.fk-cat-nav-btn.prev {
+  left: 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.fk-cat-nav-btn.next {
+  right: 0;
+  border-radius: 4px 0 0 4px;
+}
+
+.fk-cat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+  min-width: 82px;
+  flex-shrink: 0;
+  position: relative;
+  padding: 6px 6px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.fk-cat-item:hover {
+  background: #f8faff;
+}
+
+.fk-cat-icon-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+  flex-shrink: 0;
+}
+
+.fk-cat-item:hover .fk-cat-icon-circle {
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.fk-cat-icon-circle svg {
+  width: 26px;
+  height: 26px;
+  transition: transform 0.2s ease;
+}
+
+.fk-cat-img-box {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.fk-cat-img-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.25s ease;
+}
+
+.fk-cat-item:hover .fk-cat-img-box img {
+  transform: scale(1.08);
+}
+
+.fk-cat-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fk-text);
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.fk-cat-item:hover .fk-cat-title {
+  color: var(--fk-blue);
+}
+
+.fk-cat-caret {
+  font-size: 8px;
+  color: #878787;
+  transition: transform 0.2s ease;
+}
+
+.fk-cat-item:hover .fk-cat-caret {
+  transform: rotate(180deg);
+}
+
+/* Mega Menu on Category Hover */
+.fk-cat-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #ffffff;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  min-width: 210px;
+  max-width: 280px;
+  display: none;
+  z-index: 1090;
+  border: 1px solid #e9ecef;
+  border-radius: 0 0 6px 6px;
+  padding: 6px 0;
+  animation: fkFadeIn 0.18s ease forwards;
+}
+
+.fk-cat-dropdown.drop-right {
+  left: auto;
+  right: 0;
+}
+
+.fk-cat-item:hover .fk-cat-dropdown {
+  display: block;
+}
+
+.fk-cat-dropdown .fk-subcat-header {
+  padding: 8px 14px 4px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #878787;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 4px;
+}
+
+.fk-cat-dropdown a {
+  display: block;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--fk-text);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.15s ease;
+}
+
+.fk-cat-dropdown a:hover {
+  background: #f4f8ff;
+  color: var(--fk-blue);
+  padding-left: 20px;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   3. PROMOTIONAL HERO BANNER CAROUSEL
+   ========================================================================== */
+.fk-banner-section {
+  max-width: 1248px;
+  margin: 0 auto 10px auto;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--fk-shadow-sm);
+  background: #ffffff;
+}
+
+.fk-banner-viewport {
+  width: 100%;
+  height: 280px;
+  position: relative;
+  overflow: hidden;
+}
+
+.fk-banner-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+}
+
+.fk-banner-slide.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.fk-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Carousel Prev/Next Buttons (Flipkart Rounded Pill Style) */
+.fk-carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 88px;
+  background: #ffffff;
+  box-shadow: 0 1px 5px 0 rgba(0,0,0,.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  color: #212121;
+  font-size: 18px;
+  transition: background 0.15s ease;
+}
+
+.fk-carousel-btn:hover {
+  background: #f7f7f7;
+}
+
+.fk-carousel-btn.prev {
+  left: 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.fk-carousel-btn.next {
+  right: 0;
+  border-radius: 4px 0 0 4px;
+}
+
+/* Carousel Dots */
+.fk-carousel-dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.fk-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.fk-dot.active {
+  background: #2874f0;
+  width: 20px;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   4. PRODUCT CAROUSEL DEALS ROW (Flipkart Signature Pattern)
+   ========================================================================== */
+.fk-deals-row {
+  max-width: 1248px;
+  margin: 0 auto 12px auto;
+  background: #ffffff;
+  box-shadow: var(--fk-shadow-sm);
+  display: flex;
+  height: 360px;
+  position: relative;
+}
+
+/* Left Featured Callout Box */
+.fk-deal-callout {
+  width: 230px;
+  height: 100%;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  background-size: cover;
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  flex-shrink: 0;
+  border-right: 1px solid #f0f0f0;
+}
+
+.fk-deal-callout-title {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--fk-text);
+  line-height: 1.25;
+  margin-top: 10px;
+}
+
+.fk-view-all-btn {
+  background: var(--fk-blue);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+  margin-bottom: 20px;
+  display: inline-block;
+  transition: background 0.2s ease;
+}
+
+.fk-view-all-btn:hover {
+  background: var(--fk-blue-dark);
+}
+
+/* Right Scrollable Product List */
+.fk-products-scroll-wrapper {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+.fk-products-track {
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  gap: 0;
+}
+
+.fk-products-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Flipkart Product Card */
+.fk-card {
+  flex: 0 0 200px;
+  height: 100%;
+  padding: 18px 12px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  border-right: 1px solid #f5f5f5;
+  position: relative;
+  cursor: pointer;
+  background: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.fk-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.fk-card-img-box {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.fk-card-img-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.fk-card:hover .fk-card-img-box img {
+  transform: scale(1.06);
+}
+
+/* Wishlist Heart */
+.fk-card-wish {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: #c2c2c2;
+  font-size: 16px;
+  background: none;
+  border: none;
+  z-index: 2;
+}
+
+.fk-card-wish.active, .fk-card-wish:hover {
+  color: #ff4343;
+}
+
+.fk-card-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fk-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.fk-card-offer {
+  color: var(--fk-green);
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.fk-card-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.fk-card-curr-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fk-text);
+}
+
+.fk-card-mrp {
+  font-size: 12px;
+  color: var(--fk-text-secondary);
+  text-decoration: line-through;
+}
+
+.fk-card-sub {
+  font-size: 12px;
+  color: var(--fk-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.fk-card-quick-add {
+  margin-top: auto;
+  padding-top: 8px;
+  width: 100%;
+}
+
+.fk-btn-add {
+  background: #ffffff;
+  color: var(--fk-blue);
+  border: 1px solid var(--fk-blue);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 0;
+  width: 100%;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+.fk-btn-add:hover {
+  background: var(--fk-blue);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   5. THREE-COLUMN PROMOTIONAL TILES (Flipkart Style)
+   ========================================================================== */
+.fk-promo-triplet {
+  max-width: 1248px;
+  margin: 0 auto 12px auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.fk-promo-tile {
+  background: #ffffff;
+  box-shadow: var(--fk-shadow-sm);
+  overflow: hidden;
+  display: block;
+  height: 220px;
+  position: relative;
+}
+
+.fk-promo-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.fk-promo-tile:hover img {
+  transform: scale(1.02);
+}
+
+/* ==========================================================================
+   6. FULL PRODUCT GRID (Catalogue / Discovery)
+   ========================================================================== */
+.fk-full-shelf {
+  max-width: 1248px;
+  margin: 0 auto 16px auto;
+  background: #ffffff;
+  box-shadow: var(--fk-shadow-sm);
+  padding: 16px 20px;
+}
+
+.fk-shelf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--fk-border);
+  margin-bottom: 16px;
+}
+
+.fk-shelf-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--fk-text);
+}
+
+.fk-shelf-sub {
+  font-size: 12px;
+  color: var(--fk-text-secondary);
+  margin-top: 2px;
+}
+
+.fk-product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 12px;
+}
+
+.fk-grid-card {
+  background: #ffffff;
+  border: 1px solid #f0f0f0;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  transition: box-shadow 0.2s ease;
+}
+
+.fk-grid-card:hover {
+  box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+}
+
+.fk-grid-card-img {
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.fk-grid-card-img img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.fk-rating-badge {
+  background: var(--fk-green);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 6px;
+}
+
+.fk-assured-tag {
+  height: 18px;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+/* ==========================================================================
+   7. FLIPKART LOGIN MODAL (Exact 2-Pane Flipkart Replica)
+   ========================================================================== */
+.fk-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.fk-modal-overlay.open {
+  display: flex;
+}
+
+.fk-login-modal {
+  width: 650px;
+  height: 528px;
+  background: #ffffff;
+  border-radius: 2px;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.fk-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #878787;
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* Modal Left Pane */
+.fk-login-left-pane {
+  width: 40%;
+  background-color: var(--fk-blue);
+  color: #ffffff;
+  padding: 40px 33px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.fk-login-left-pane h2 {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.fk-login-left-pane p {
+  font-size: 18px;
+  color: #dbdbdb;
+  line-height: 150%;
+  margin-top: 16px;
+}
+
+.fk-login-graphic {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Modal Right Pane */
+.fk-login-right-pane {
+  width: 60%;
+  background: #ffffff;
+  padding: 40px 35px 24px 35px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.fk-input-group {
+  position: relative;
+  margin-top: 16px;
+}
+
+.fk-input-line {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 10px 0;
+  font-size: 15px;
+  color: var(--fk-text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.fk-input-line:focus {
+  border-bottom: 2px solid var(--fk-blue);
+}
+
+.fk-input-label {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  font-size: 15px;
+  color: #878787;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.fk-input-line:focus + .fk-input-label,
+.fk-input-line:not(:placeholder-shown) + .fk-input-label {
+  top: -12px;
+  font-size: 11px;
+  color: #878787;
+}
+
+.fk-terms-text {
+  font-size: 12px;
+  color: #878787;
+  line-height: 1.4;
+  margin-top: 24px;
+}
+
+.fk-terms-text a {
+  color: var(--fk-blue);
+}
+
+.fk-btn-orange {
+  width: 100%;
+  background: var(--fk-orange);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  height: 48px;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,.2);
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fk-btn-orange:hover {
+  background: #e65611;
+}
+
+.fk-create-acc-link {
+  text-align: center;
+  color: var(--fk-blue);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: auto;
+}
+
+/* ==========================================================================
+   8. FLIPKART SHOPPING CART DRAWER / MODAL
+   ========================================================================== */
+.fk-cart-modal {
+  width: 780px;
+  max-width: 95vw;
+  max-height: 90vh;
+  background: var(--fk-bg);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--fk-shadow-lg);
+  overflow: hidden;
+}
+
+.fk-cart-modal-header {
+  padding: 16px 24px;
+  background: var(--fk-blue);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fk-cart-modal-header h3 {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.fk-cart-modal-body {
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  gap: 16px;
+}
+
+.fk-cart-items-col {
+  flex: 1.6;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fk-cart-item-card {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 2px;
+  box-shadow: var(--fk-shadow-sm);
+  display: flex;
+  gap: 16px;
+}
+
+.fk-cart-item-img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.fk-cart-item-details {
+  flex: 1;
+}
+
+.fk-cart-item-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--fk-text);
+  margin-bottom: 6px;
+}
+
+.fk-cart-item-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.fk-cart-item-price {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fk-text);
+}
+
+.fk-cart-item-mrp {
+  font-size: 13px;
+  color: #878787;
+  text-decoration: line-through;
+}
+
+.fk-cart-item-disc {
+  font-size: 13px;
+  color: var(--fk-green);
+  font-weight: 600;
+}
+
+.fk-cart-qty-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fk-qty-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #c2c2c2;
+  background: #ffffff;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #212121;
+}
+
+.fk-qty-num {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.fk-cart-action-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fk-text);
+  margin-left: 16px;
+  cursor: pointer;
+}
+
+.fk-cart-action-link:hover {
+  color: var(--fk-blue);
+}
+
+.fk-cart-summary-col {
+  flex: 1;
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 2px;
+  box-shadow: var(--fk-shadow-sm);
+  height: fit-content;
+}
+
+.fk-cart-summary-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #878787;
+  text-transform: uppercase;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 16px;
+}
+
+.fk-cart-summary-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 14px;
+  color: var(--fk-text);
+}
+
+.fk-cart-summary-total {
+  border-top: 1px dashed #e0e0e0;
+  border-bottom: 1px dashed #e0e0e0;
+  padding: 14px 0;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  margin-bottom: 14px;
+}
+
+.fk-cart-savings {
+  color: var(--fk-green);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.fk-cart-modal-footer {
+  padding: 12px 24px;
+  background: #ffffff;
+  box-shadow: 0 -2px 10px 0 rgba(0,0,0,.1);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ==========================================================================
+   9. PRODUCT QUICK VIEW MODAL (Flipkart Style)
+   ========================================================================== */
+.fk-detail-modal {
+  width: 900px;
+  max-width: 95vw;
+  max-height: 90vh;
+  background: #ffffff;
+  border-radius: 2px;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--fk-shadow-lg);
+}
+
+.fk-detail-left {
+  width: 42%;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-right: 1px solid #f0f0f0;
+}
+
+.fk-detail-big-img {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.fk-detail-big-img img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.fk-detail-btns-row {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+}
+
+.fk-btn-cart-yellow {
+  flex: 1;
+  background: var(--fk-yellow-btn);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  height: 48px;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.fk-btn-cart-yellow:hover {
+  background: #f09500;
+}
+
+.fk-btn-buy-orange {
+  flex: 1;
+  background: var(--fk-orange);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  height: 48px;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.fk-btn-buy-orange:hover {
+  background: #e65611;
+}
+
+.fk-detail-right {
+  width: 58%;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.fk-detail-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--fk-text);
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+
+.fk-detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.fk-detail-price-box {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.fk-detail-price {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--fk-text);
+}
+
+.fk-detail-mrp {
+  font-size: 16px;
+  color: #878787;
+  text-decoration: line-through;
+}
+
+.fk-detail-discount {
+  font-size: 16px;
+  color: var(--fk-green);
+  font-weight: 600;
+}
+
+.fk-offers-box {
+  background: #f5faff;
+  border: 1px dashed #b9d8ff;
+  border-radius: 2px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.fk-offers-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #212121;
+  margin-bottom: 6px;
+}
+
+.fk-offers-list {
+  list-style: none;
+  font-size: 12px;
+  color: #212121;
+}
+
+.fk-offers-list li {
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fk-offers-list li::before {
+  content: '🏷️';
+  font-size: 11px;
+}
+
+.fk-specs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.fk-specs-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.fk-specs-table td:first-child {
+  color: #878787;
+  width: 35%;
+}
+
+/* ==========================================================================
+   10. FLIPKART FOOTER (Official Replica)
+   ========================================================================== */
+.fk-footer {
+  background-color: var(--fk-footer-bg);
+  color: #ffffff;
+  font-size: 12px;
+  margin-top: auto;
+  border-top: 1px solid #333d4f;
+}
+
+.fk-footer-top {
+  max-width: 1248px;
+  margin: 0 auto;
+  display: flex;
+  padding: 40px 16px 30px 16px;
+  gap: 20px;
+}
+
+.fk-footer-links-grid {
+  flex: 3;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.fk-footer-col h4 {
+  font-size: 12px;
+  color: #878787;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  letter-spacing: 0.3px;
+}
+
+.fk-footer-col ul {
+  list-style: none;
+}
+
+.fk-footer-col li {
+  margin-bottom: 6px;
+}
+
+.fk-footer-col a {
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 400;
+  transition: color 0.15s ease;
+}
+
+.fk-footer-col a:hover {
+  text-decoration: underline;
+}
+
+.fk-footer-divider-vert {
+  width: 1px;
+  background-color: var(--fk-footer-divider);
+  margin: 0 10px;
+}
+
+.fk-footer-address-grid {
+  flex: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.fk-footer-address-box h4 {
+  font-size: 12px;
+  color: #878787;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.fk-footer-address-box p {
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.fk-footer-bottom {
+  border-top: 1px solid var(--fk-footer-divider);
+  padding: 25px 0;
+}
+
+.fk-footer-bottom-inner {
+  max-width: 1248px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.fk-footer-bottom-links {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.fk-footer-bottom-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.fk-footer-bottom-item span.yellow-icon {
+  color: var(--fk-yellow);
+}
+
+.fk-footer-copy {
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.fk-payment-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fk-pay-badge {
+  background: #232f3e;
+  color: #ffffff;
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid #454d5e;
+}
+
+/* ==========================================================================
+   11. TOAST NOTIFICATION (Flipkart Style)
+   ========================================================================== */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  background: #212121;
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 2px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  animation: slide-up 0.25s ease-out;
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   12. RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .fk-navbar-inner {
+    gap: 12px;
+  }
+  .fk-deals-row {
+    flex-direction: column;
+    height: auto;
+  }
+  .fk-deal-callout {
+    width: 100%;
+    height: 120px;
+    border-right: none;
+    border-bottom: 1px solid #f0f0f0;
+    flex-direction: row;
+    padding: 16px;
+  }
+  .fk-view-all-btn {
+    margin-bottom: 0;
+  }
+  .fk-footer-top {
+    flex-direction: column;
+  }
+  .fk-footer-divider-vert {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .fk-nav-actions {
+    gap: 14px;
+  }
+  .fk-seller-link, .fk-more-btn-wrap {
+    display: none;
+  }
+  .fk-login-btn {
+    padding: 5px 16px;
+  }
+  .fk-promo-triplet {
+    grid-template-columns: 1fr;
+  }
+  .fk-footer-links-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .fk-footer-address-grid {
+    grid-template-columns: 1fr;
+  }
+  .fk-login-modal {
+    flex-direction: column;
+    width: 95vw;
+    height: auto;
+  }
+  .fk-login-left-pane {
+    width: 100%;
+    padding: 24px;
+  }
+  .fk-login-right-pane {
+    width: 100%;
+    padding: 24px;
+  }
+  .fk-detail-modal {
+    flex-direction: column;
+  }
+  .fk-detail-left, .fk-detail-right {
+    width: 100%;
+  }
+}
+
+
+/* ==========================================================================
+   13. FLIPKART COMPATIBILITY UTILITIES (Sub-pages & Shared Components)
+   ========================================================================== */
+.card {
+  background: #ffffff;
+  border-radius: 2px;
+  box-shadow: var(--fk-shadow-sm);
+  margin-bottom: 16px;
+  border: 1px solid #f0f0f0;
+}
+
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--fk-text);
+  margin: 0;
+}
+
+.card-subtitle {
+  font-size: 12px;
+  color: var(--fk-text-secondary);
+  margin-top: 4px;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-align-gap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.grid-2-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .grid-2-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 2px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--fk-blue);
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.btn-primary:hover {
+  background: var(--fk-blue-dark);
+}
+
+.btn-secondary {
+  background: #f0f0f0;
+  color: #212121;
+}
+
+.btn-secondary:hover {
+  background: #e0e0e0;
+}
+
+.btn-outline {
+  border: 1px solid #e0e0e0;
+  background: #ffffff;
+  color: #212121;
+}
+
+.btn-outline:hover {
+  border-color: var(--fk-blue);
+  color: var(--fk-blue);
+}
+
+.btn-sm {
+  padding: 5px 12px;
+  font-size: 12px;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #212121;
+  margin-bottom: 6px;
+}
+
+.form-control, .form-control-sm {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  font-size: 13px;
+  color: #212121;
+  background: #ffffff;
+}
+
+.form-control:focus {
+  border-color: var(--fk-blue);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  padding: 12px 14px;
+  background: #fafafa;
+  font-size: 13px;
+  font-weight: 600;
+  color: #212121;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+  color: #212121;
+}
+
+.table tr:hover td {
+  background: #fbfbfb;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 2px;
+}
+
+.badge-success { background: #e8f5e9; color: var(--fk-green); }
+.badge-warning { background: #fff8e1; color: #f57c00; }
+.badge-danger { background: #ffebee; color: #d32f2f; }
+.badge-primary { background: #e3f2fd; color: var(--fk-blue); }
+
+/* ==========================================================================
+   DISCOVERY FILTERS & PAGINATION
+   ========================================================================== */
+.fk-filter-chip {
+  display: inline-block;
+  padding: 4px 8px;
+  background: #f0f0f0;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 11px;
+  color: #212121;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.fk-filter-chip:hover {
+  background: #e3f2fd;
+  border-color: #2874f0;
+  color: #2874f0;
+}
+
+.fk-filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: #e8f0fe;
+  border: 1px solid #cce0ff;
+  border-radius: 3px;
+  font-size: 12px;
+  color: #2874f0;
+  font-weight: 500;
+}
+
+.fk-filter-tag b {
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  color: #878787;
+}
+
+.fk-filter-tag b:hover {
+  color: #212121;
+}
+
+.fk-page-btn {
+  padding: 6px 12px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2874f0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.fk-page-btn:hover {
+  background: #f4f8ff;
+  border-color: #2874f0;
+}
+
+.fk-page-btn.active {
+  background: #2874f0;
+  color: #ffffff;
+  border-color: #2874f0;
+}
+
+/* ==========================================================================
+   FOOTER CATEGORIES DIRECTORY
+   ========================================================================== */
+.fk-footer-categories {
+  background: #172337;
+  border-bottom: 1px solid #454d5e;
+  padding: 16px 24px;
+}
+
+.fk-footer-cat-inner {
+  max-width: 1248px;
+  margin: 0 auto;
+}
+
+.fk-footer-cat-heading {
+  font-size: 12px;
+  font-weight: 700;
+  color: #878787;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.fk-footer-cat-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.fk-footer-cat-tags a {
+  font-size: 11px;
+  color: #ffffff;
+  text-decoration: none;
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+}
+
+.fk-footer-cat-tags a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   PreTwin Fairytale Logo & Flying Wing Animation
+   ========================================================================== */
+.pretwin-brand-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  position: relative;
+}
+
+.pretwin-header-logo {
+  height: 38px;
+  width: auto;
+  filter: drop-shadow(0 2px 8px rgba(167, 139, 250, 0.25));
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+}
+
+.pretwin-brand-link:hover .pretwin-header-logo {
+  transform: translateY(-2px) scale(1.02);
+  filter: drop-shadow(0 4px 14px rgba(167, 139, 250, 0.55));
+  animation: pretwinFairyFlight 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes pretwinFairyFlight {
+  0% { transform: translateY(-2px) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(1deg); }
+  100% { transform: translateY(-1px) rotate(-0.5deg); }
+}
+
+/* ==========================================================================
+   PreTwin Top Navbar Row 1: Six Shopping Shortcuts & Account Controls
+   ========================================================================== */
+.pretwin-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pretwin-shortcuts-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pretwin-shortcut-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #e0e7ff;
+  transition: all 0.2s ease;
+  min-width: 60px;
+  text-align: center;
+  position: relative;
+  border: 1px solid transparent;
+}
+
+.pretwin-shortcut-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(196, 181, 253, 0.35);
+  transform: translateY(-1px);
+}
+
+.pretwin-shortcut-btn.active {
+  background: rgba(139, 92, 246, 0.28);
+  border-color: #a78bfa;
+  color: #ffffff;
+}
+
+.pretwin-shortcut-icon-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: #c4b5fd;
+  transition: all 0.2s ease;
+}
+
+.pretwin-shortcut-btn:hover .pretwin-shortcut-icon-box {
+  color: #ffffff;
+  transform: scale(1.08);
+}
+
+.pretwin-shortcut-text {
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 3px;
+  white-space: nowrap;
+  letter-spacing: 0.1px;
+  color: inherit;
+}
+
+.pretwin-shortcut-badge {
+  position: absolute;
+  top: -6px;
+  right: -9px;
+  background: #ff6161;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  height: 16px;
+  min-width: 16px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 1.5px solid #181438;
+}
+
+/* Account / Profile Icon & Dropdown Menu */
+.pretwin-account-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.pretwin-profile-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.pretwin-profile-btn:focus-visible {
+  outline: 2px solid #c4b5fd;
+  outline-offset: 2px;
+}
+
+.pretwin-nav-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #c4b5fd;
+}
+
+.pretwin-account-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 230px;
+  background: #181438;
+  background: linear-gradient(180deg, #1f1848 0%, #151131 100%);
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  border-radius: 12px;
+  box-shadow: 0 14px 36px rgba(10, 6, 28, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  padding: 8px 0;
+  z-index: 1050;
+  display: none;
+  backdrop-filter: blur(14px);
+  animation: pretwinDropFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.pretwin-account-dropdown.is-open {
+  display: block;
+}
+
+@keyframes pretwinDropFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.pretwin-dropdown-user-header {
+  padding: 10px 16px 8px 16px;
+  border-bottom: 1px solid rgba(167, 139, 250, 0.15);
+}
+
+.pretwin-dropdown-user-name {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #ffffff;
+  letter-spacing: 0.2px;
+}
+
+.pretwin-dropdown-user-email {
+  font-size: 11.5px;
+  color: #c4b5fd;
+  word-break: break-all;
+  margin-top: 2px;
+}
+
+.pretwin-dropdown-divider {
+  height: 1px;
+  background: rgba(167, 139, 250, 0.15);
+  margin: 6px 0;
+}
+
+.pretwin-dropdown-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #e0e7ff;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.pretwin-dropdown-link svg {
+  color: #a78bfa;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.pretwin-dropdown-link:hover {
+  background: rgba(139, 92, 246, 0.2);
+  color: #ffffff;
+  padding-left: 20px;
+}
+
+.pretwin-dropdown-link:hover svg {
+  color: #ffffff;
+  transform: translateX(1px);
+}
+
+.pretwin-dropdown-logout-item {
+  color: #fca5a5;
+}
+
+.pretwin-dropdown-logout-item svg {
+  color: #f87171;
+}
+
+.pretwin-dropdown-logout-item:hover {
+  background: rgba(239, 68, 68, 0.18);
+  color: #fecaca;
+}
+
+.pretwin-dropdown-logout-item:hover svg {
+  color: #fca5a5;
+}
+
+.pretwin-account-box {
+  position: relative;
+  margin-left: 6px;
+}
+
+.pretwin-account-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #ffffff;
+  color: #181438;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.pretwin-account-btn:hover {
+  background: #f8fafc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  border-color: #cbd5e1;
+}
+
+.pretwin-avatar-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.pretwin-user-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6366f1;
+}
+
+.pretwin-auth-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  left: auto;
+  transform: none;
+  width: 220px;
+}
+
+.pretwin-account-box:hover .pretwin-auth-dropdown {
+  display: block;
+}
+
+/* ==========================================================================
+   PreTwin 8 AI Navigation Bar (Directly Above Product Categories)
+   Responsive 8-Column Grid with Multi-Line Label Wrapping (No Overlap)
+   ========================================================================== */
+.pretwin-ai-nav-bar {
+  background: linear-gradient(90deg, #181438 0%, #291254 50%, #181438 100%);
+  border-bottom: 1px solid rgba(167, 139, 250, 0.28);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.16);
+  position: relative;
+  z-index: 90;
+}
+
+.pretwin-ai-nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 6px;
+  padding: 8px 12px;
+  align-items: start;
+}
+
+.pretwin-ai-nav-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.pretwin-ai-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-decoration: none;
+  color: #e0e7ff;
+  padding: 6px 4px;
+  border-radius: 8px;
+  transition: all 0.22s ease;
+  min-width: 0;
+  min-height: 70px;
+  text-align: center;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.pretwin-ai-nav-item:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #ffffff;
+  border-color: rgba(196, 181, 253, 0.35);
+  transform: translateY(-2px);
+}
+
+.pretwin-ai-nav-item.active {
+  background: rgba(139, 92, 246, 0.28);
+  border-color: #a78bfa;
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(139, 92, 246, 0.35);
+}
+
+.pretwin-ai-icon-bubble {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 5px;
+  color: #c4b5fd;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+
+.pretwin-ai-nav-item:hover .pretwin-ai-icon-bubble {
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  color: #ffffff;
+  transform: scale(1.08);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+}
+
+.pretwin-ai-nav-item.active .pretwin-ai-icon-bubble {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #ffffff;
+}
+
+.pretwin-ai-nav-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  line-height: 1.25;
+  text-align: center;
+  word-break: normal;
+  overflow-wrap: break-word;
+  white-space: normal;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 2px;
+  display: block;
+}
+
+/* Tablet & Mobile responsive behavior for Row 1 & Row 2 */
+@media (max-width: 1080px) {
+  .pretwin-ai-nav-inner {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+  .pretwin-ai-nav-item {
+    min-width: 110px;
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .pretwin-shortcuts-group {
+    overflow-x: auto;
+    scrollbar-width: none;
+    max-width: 46vw;
+  }
+  .pretwin-shortcuts-group::-webkit-scrollbar {
+    display: none;
+  }
+  .pretwin-shortcut-btn {
+    min-width: 52px;
+    padding: 3px 5px;
+  }
+  .pretwin-shortcut-text {
+    font-size: 10px;
+  }
+}
+
+/* ==========================================================================
+   PreTwin Floating AI Shopping Chatbot
+   ========================================================================== */
+.pretwin-chat-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #4f46e5 100%);
+  color: #ffffff;
+  border-radius: 30px;
+  padding: 10px 18px 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4);
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.pretwin-chat-fab:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.55);
+}
+
+.pretwin-chat-fab-inner {
+  position: relative;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pretwin-chat-fab-sparkle {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 12px;
+  animation: sparkleTwinkle 1.8s infinite alternate;
+}
+
+@keyframes sparkleTwinkle {
+  0% { transform: scale(0.8) rotate(0deg); opacity: 0.6; }
+  100% { transform: scale(1.2) rotate(45deg); opacity: 1; }
+}
+
+.pretwin-chat-fab-label {
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.pretwin-chat-panel {
+  position: fixed;
+  bottom: 84px;
+  right: 24px;
+  width: 400px;
+  max-width: calc(100vw - 32px);
+  height: 580px;
+  max-height: calc(100vh - 110px);
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(124, 58, 237, 0.15);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  overflow: hidden;
+  animation: chatPanelSlideUp 0.28s ease-out;
+}
+
+@keyframes chatPanelSlideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.pretwin-chat-header {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  color: #ffffff;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pretwin-chat-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pretwin-chat-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a855f7, #6366f1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pretwin-chat-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.pretwin-chat-status {
+  font-size: 11px;
+  color: #c7d2fe;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.pretwin-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+}
+
+.pretwin-chat-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.pretwin-chat-ctrl-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: #ffffff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  transition: background 0.15s;
+}
+
+.pretwin-chat-ctrl-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.pretwin-chat-pills {
+  display: flex;
+  gap: 6px;
+  padding: 10px 14px;
+  overflow-x: auto;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  scrollbar-width: none;
+}
+
+.pretwin-chat-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.pretwin-pill {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pretwin-pill:hover {
+  background: #f1f5f9;
+  border-color: #8b5cf6;
+  color: #6d28d9;
+}
+
+.pretwin-chat-body {
+  flex: 1;
+  padding: 14px;
+  overflow-y: auto;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pretwin-chat-msg {
+  display: flex;
+  gap: 8px;
+  max-width: 88%;
+}
+
+.pretwin-chat-msg.assistant {
+  align-self: flex-start;
+}
+
+.pretwin-chat-msg.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.pretwin-msg-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a855f7, #6366f1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.pretwin-msg-content {
+  background: #ffffff;
+  color: #1e293b;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.pretwin-chat-msg.user .pretwin-msg-content {
+  background: #2874f0;
+  color: #ffffff;
+  border: none;
+  border-bottom-right-radius: 4px;
+}
+
+.pretwin-chat-msg.assistant .pretwin-msg-content {
+  border-bottom-left-radius: 4px;
+}
+
+.pretwin-chat-products-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.pretwin-chat-product-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.15s ease;
+}
+
+.pretwin-chat-product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.pretwin-chat-p-img {
+  width: 100%;
+  height: 85px;
+  object-fit: contain;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  background: #f8fafc;
+}
+
+.pretwin-chat-p-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #1e293b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pretwin-chat-p-price {
+  font-size: 12px;
+  font-weight: 700;
+  color: #15803d;
+  margin: 3px 0;
+}
+
+.pretwin-chat-p-btn {
+  background: #2874f0;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 4px 6px;
+  cursor: pointer;
+  margin-top: auto;
+}
+
+.pretwin-chat-p-btn:hover {
+  background: #125ece;
+}
+
+.pretwin-chat-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.pretwin-chat-action-btn {
+  display: inline-block;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #4338ca;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.pretwin-chat-action-btn:hover {
+  background: #e0e7ff;
+  border-color: #6366f1;
+}
+
+.pretwin-chat-input-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+}
+
+.pretwin-chat-input {
+  flex: 1;
+  border: 1px solid #cbd5e1;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.pretwin-chat-input:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.15);
+}
+
+.pretwin-chat-send-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #7c3aed;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.pretwin-chat-send-btn:hover {
+  background: #6d28d9;
+}
+
+.pretwin-chat-mic-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1.5px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.pretwin-chat-mic-btn:hover {
+  background: #ede9fe;
+  color: #7c3aed;
+  border-color: #c4b5fd;
+  transform: scale(1.05);
+}
+
+.pretwin-chat-mic-btn.listening {
+  background: #fee2e2;
+  color: #ef4444;
+  border-color: #fca5a5;
+  animation: pretwinMicPulse 1s infinite alternate;
+}
+
+@keyframes pretwinMicPulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  100% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+}
+
+@keyframes pretwinVoicePulse {
+  0% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0.3; transform: scale(0.8); }
+}
+
+.pretwin-chat-tts-btn {
+  background: transparent;
+  border: 1px solid #e9d5ff;
+  color: #7c3aed;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 12px;
+  transition: all 0.15s ease;
+  margin-top: 8px;
+  background: #faf5ff;
+}
+
+.pretwin-chat-tts-btn:hover {
+  background: #ede9fe;
+  color: #6d28d9;
+  border-color: #c4b5fd;
+}
+
+/* ==========================================================================
+   PreTwin Magical Fairy-Tale Startup Animation Overlay
+   ========================================================================== */
+.pretwin-startup-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999999;
+  background: radial-gradient(ellipse at 50% 45%, #ffffff 0%, #fbf8ff 25%, #f3e8ff 55%, #e9d5ff 85%, #d8b4fe 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: opacity 0.75s cubic-bezier(0.4, 0, 0.2, 1), transform 0.75s ease;
+}
+
+.pretwin-startup-overlay.stage-fadeout {
+  opacity: 0;
+  transform: scale(1.05);
+  pointer-events: none;
+}
+
+.pretwin-skip-intro-btn {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid #c4b5fd;
+  color: #6d28d9;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.12);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(6px);
+}
+
+.pretwin-skip-intro-btn:hover {
+  background: #7c3aed;
+  color: #ffffff;
+  border-color: #7c3aed;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.25);
+}
+
+.pretwin-intro-sky {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.star-particle {
+  position: absolute;
+  font-size: 1.2rem;
+  color: #c084fc;
+  filter: drop-shadow(0 0 6px rgba(192, 132, 252, 0.7));
+  animation: starTwinkleFloat 3.5s ease-in-out infinite alternate;
+}
+
+.star-1 { top: 15%; left: 18%; animation-delay: 0.2s; font-size: 1.4rem; color: #facc15; }
+.star-2 { top: 22%; right: 22%; animation-delay: 0.8s; font-size: 1.1rem; color: #a855f7; }
+.star-3 { top: 40%; left: 12%; animation-delay: 1.4s; font-size: 1.5rem; color: #60a5fa; }
+.star-4 { bottom: 30%; right: 15%; animation-delay: 0.5s; font-size: 1rem; color: #c084fc; }
+.star-5 { top: 12%; right: 42%; animation-delay: 1.1s; font-size: 1.3rem; color: #facc15; }
+.star-6 { bottom: 20%; left: 30%; animation-delay: 1.7s; font-size: 1.2rem; color: #9333ea; }
+.star-7 { top: 60%; right: 35%; animation-delay: 0.3s; font-size: 0.9rem; color: #38bdf8; }
+.star-8 { bottom: 15%; right: 45%; animation-delay: 1.9s; font-size: 1.4rem; color: #f472b6; }
+
+@keyframes starTwinkleFloat {
+  0% { transform: translateY(0) scale(0.85); opacity: 0.4; }
+  50% { transform: translateY(-8px) scale(1.15); opacity: 0.95; }
+  100% { transform: translateY(4px) scale(0.9); opacity: 0.5; }
+}
+
+.pretwin-flight-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.pretwin-flying-emblem-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translate3d(-30vw, -30vh, 0) scale(0.4) rotate(-20deg);
+  transition: all 0.3s ease;
+}
+
+/* Stage 1: Exactly ONE complete circular loop around the central area */
+.stage-flight .pretwin-flying-emblem-wrap {
+  animation: introCircularFlight 2.6s cubic-bezier(0.35, 0.1, 0.25, 1) forwards;
+}
+
+/* Wing Fluttering Motion */
+.wing-group-left {
+  transform-origin: 46px 45px;
+  animation: wingFlutter 0.5s ease-in-out infinite alternate;
+}
+
+.wing-group-right {
+  transform-origin: 54px 44px;
+  animation: wingFlutter 0.5s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes wingFlutter {
+  0% { transform: rotate(0deg) scale(1); }
+  100% { transform: rotate(5deg) scale(1.08); }
+}
+
+/* 360-degree circular orbit completing exactly one revolution around screen center */
+@keyframes introCircularFlight {
+  0% {
+    opacity: 0;
+    transform: translate3d(0px, -150px, 0) scale(0.6) rotate(0deg);
+    filter: blur(2px);
+  }
+  10% {
+    opacity: 1;
+    transform: translate3d(85px, -125px, 0) scale(0.85) rotate(16deg);
+    filter: blur(0);
+  }
+  25% {
+    opacity: 1;
+    transform: translate3d(150px, 0px, 0) scale(1.0) rotate(28deg);
+  }
+  38% {
+    opacity: 1;
+    transform: translate3d(110px, 110px, 0) scale(1.0) rotate(16deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translate3d(0px, 150px, 0) scale(1.0) rotate(-10deg);
+  }
+  63% {
+    opacity: 1;
+    transform: translate3d(-110px, 110px, 0) scale(0.98) rotate(-22deg);
+  }
+  75% {
+    opacity: 1;
+    transform: translate3d(-150px, 0px, 0) scale(0.95) rotate(-30deg);
+  }
+  88% {
+    opacity: 1;
+    transform: translate3d(-85px, -125px, 0) scale(0.95) rotate(-16deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0px, -55px, 0) scale(1.05) rotate(0deg);
+    filter: drop-shadow(0 10px 28px rgba(124, 58, 237, 0.45));
+  }
+}
+
+/* Fairy Magic Wand Elevation */
+.fairy-wand-group {
+  transform-origin: 54px 50px;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.stage-wand .fairy-wand-group {
+  transform: rotate(-32deg);
+}
+
+/* Glowing Star on Wand Tip */
+.wand-star-tip {
+  filter: drop-shadow(0 0 8px #facc15);
+  transition: all 0.4s ease;
+}
+
+.stage-wand .wand-star-tip {
+  filter: drop-shadow(0 0 16px #facc15) drop-shadow(0 0 28px #ffffff);
+  animation: wandStarPulse 1.2s infinite alternate ease-in-out;
+}
+
+@keyframes wandStarPulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.35); }
+}
+
+/* Wand Light Beam traveling across to reveal brand name */
+.wand-magic-beam {
+  position: absolute;
+  top: 55px;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, #facc15 50%, rgba(168, 85, 247, 0) 100%);
+  box-shadow: 0 0 22px #facc15, 0 0 40px #a855f7;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.stage-beam .wand-magic-beam {
+  animation: wandBeamTravel 1.1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes wandBeamTravel {
+  0% {
+    opacity: 0;
+    transform: translate3d(-170px, -10px, 0) scale(0.4);
+  }
+  15% {
+    opacity: 1;
+    transform: translate3d(-120px, 15px, 0) scale(1.3);
+  }
+  50% {
+    opacity: 1;
+    transform: translate3d(0px, 20px, 0) scale(1.8);
+  }
+  85% {
+    opacity: 0.95;
+    transform: translate3d(120px, 15px, 0) scale(1.3);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(170px, 10px, 0) scale(0.4);
+  }
+}
+
+/* Sparkling particles emerging from the beam */
+.magic-sparkle {
+  position: absolute;
+  pointer-events: none;
+  font-size: 1rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px #facc15) drop-shadow(0 0 12px #c084fc);
+  animation: sparkleTwinkle 0.8s ease-in-out infinite alternate;
+}
+
+.spk-1 { top: -14px; left: -10px; font-size: 1.1rem; color: #facc15; animation-delay: 0.1s; }
+.spk-2 { top: 6px; left: 16px; font-size: 0.9rem; color: #ffffff; animation-delay: 0.25s; }
+.spk-3 { top: -18px; left: 12px; font-size: 0.8rem; color: #c084fc; animation-delay: 0.4s; }
+.spk-4 { top: 12px; left: -8px; font-size: 1.2rem; color: #facc15; animation-delay: 0.15s; }
+.spk-5 { top: -4px; left: 24px; font-size: 1rem; color: #a855f7; animation-delay: 0.3s; }
+
+@keyframes sparkleTwinkle {
+  0% { transform: scale(0.7) rotate(0deg); opacity: 0.5; }
+  100% { transform: scale(1.3) rotate(35deg); opacity: 1; }
+}
+
+/* Branding Container */
+.pretwin-intro-branding {
+  text-align: center;
+  margin-top: 22px;
+  position: relative;
+  z-index: 12;
+}
+
+/* PreTwin Wordmark with magical left-to-right clip reveal */
+.pretwin-intro-wordmark {
+  font-size: 3.4rem;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 40%, #4f46e5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(124, 58, 237, 0.25));
+  line-height: 1.1;
+  margin-bottom: 8px;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.1s linear;
+}
+
+.stage-reveal .pretwin-intro-wordmark {
+  animation: wordmarkClipReveal 1.1s cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes wordmarkClipReveal {
+  0% {
+    clip-path: inset(0 100% 0 0);
+    filter: drop-shadow(0 0 0 rgba(124, 58, 237, 0));
+  }
+  70% {
+    clip-path: inset(0 0% 0 0);
+    filter: drop-shadow(0 4px 18px rgba(168, 85, 247, 0.6));
+  }
+  100% {
+    clip-path: inset(0 0% 0 0);
+    filter: drop-shadow(0 2px 10px rgba(124, 58, 237, 0.3));
+  }
+}
+
+.pretwin-intro-tagline {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: #374151;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.stage-tagline .pretwin-intro-tagline {
+  animation: taglineFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes taglineFadeIn {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pretwin-startup-overlay,
+  .pretwin-flying-emblem-wrap,
+  .pretwin-intro-branding {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.typing-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 8px 12px;
+}
+
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #94a3b8;
+  animation: typingBounce 1.4s infinite ease-in-out both;
+}
+
+.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+/* ==========================================================================
+   PreTwin Savings & Rewards Dashboard Cards
+   ========================================================================== */
+.pretwin-card-fairy {
+  background: linear-gradient(135deg, #faf5ff 0%, #ffffff 100%);
+  border: 1px solid #e9d5ff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.08);
+}
+
+.pretwin-points-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #fef08a 0%, #facc15 100%);
+  color: #854d0e;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  box-shadow: 0 2px 6px rgba(234, 179, 8, 0.25);
+}
+
+.pretwin-progress-outer {
+  width: 100%;
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.pretwin-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #8b5cf6, #ec4899);
+  border-radius: 5px;
+  transition: width 0.4s ease;
+}
+

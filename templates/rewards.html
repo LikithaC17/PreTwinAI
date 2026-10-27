@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}PreTwin Reward Points — PreTwin{% endblock %}
+
+{% block content %}
+<div class="fk-container" style="padding-top: 20px; padding-bottom: 60px;">
+
+  <!-- Header Banner -->
+  <div style="background: linear-gradient(135deg, #2e1065 0%, #581c87 50%, #7e22ce 100%); border-radius: 8px; padding: 28px 32px; color: #ffffff; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(88, 28, 135, 0.25); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <span style="font-size: 28px;">✨</span>
+        <h1 style="font-size: 24px; font-weight: 800; margin: 0; color: #ffffff;">PreTwin Reward Points</h1>
+        <span style="background: rgba(255, 255, 255, 0.2); font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.3);">
+          100 Points = ₹1.00
+        </span>
+      </div>
+      <p style="color: #e9d5ff; font-size: 14px; max-width: 650px; margin: 0; line-height: 1.5;">
+        Earn 5 PreTwin points on every completed purchase. Redeem your points directly at checkout to save on your cart total!
+      </p>
+    </div>
+    <div style="text-align: right;">
+      <a href="/discovery" class="fk-btn-orange" style="display: inline-block; text-decoration: none; padding: 12px 24px; font-size: 14px; font-weight: 700; border-radius: 6px; box-shadow: 0 4px 14px rgba(255, 97, 0, 0.35);">
+        Shop &amp; Earn Points ➔
+      </a>
+    </div>
+  </div>
+
+  <!-- Points Stats Row -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 28px;">
+    <!-- Available Balance Card -->
+    <div style="background: #ffffff; border-radius: 8px; border: 1px solid #e9d5ff; padding: 20px 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
+      <div style="font-size: 12px; font-weight: 700; color: #6b21a8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+        Available Balance
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 8px;">
+        <span style="font-size: 32px; font-weight: 800; color: #581c87;" id="pointsBalance">0</span>
+        <span style="font-size: 14px; font-weight: 600; color: #9333ea;">Points</span>
+      </div>
+      <div style="font-size: 13.5px; font-weight: 700; color: #15803d; margin-top: 6px;">
+        Worth <span id="rupeeEquivalence">₹0.00</span> (100 pts = ₹1.00)
+      </div>
+    </div>
+
+    <!-- Lifetime Earned -->
+    <div style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 20px 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
+      <div style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+        Lifetime Earned
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 8px;">
+        <span style="font-size: 32px; font-weight: 800; color: #1e293b;" id="lifetimeEarned">0</span>
+        <span style="font-size: 14px; font-weight: 600; color: #64748b;">Points</span>
+      </div>
+      <div style="font-size: 12.5px; color: #64748b; margin-top: 6px;">
+        +5 Points on every verified completed order
+      </div>
+    </div>
+
+    <!-- Lifetime Redeemed -->
+    <div style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 20px 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
+      <div style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+        Points Redeemed
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 8px;">
+        <span style="font-size: 32px; font-weight: 800; color: #1e293b;" id="lifetimeRedeemed">0</span>
+        <span style="font-size: 14px; font-weight: 600; color: #64748b;">Points</span>
+      </div>
+      <div style="font-size: 12.5px; color: #64748b; margin-top: 6px;">
+        Redeemed against cart totals at checkout
+      </div>
+    </div>
+  </div>
+
+  <!-- Rules & Policy Card -->
+  <div style="background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 8px; padding: 20px 24px; margin-bottom: 28px;">
+    <h3 style="font-size: 15px; font-weight: 700; color: #581c87; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+      <span>📜</span> PreTwin Rewards Rules &amp; Verification Policy
+    </h3>
+    <ul style="font-size: 13px; color: #6b21a8; line-height: 1.7; margin: 0; padding-left: 20px;">
+      <li><strong>Standard Earning:</strong> You earn <strong>5 reward points</strong> for every eligible completed purchase.</li>
+      <li><strong>Cash on Delivery (COD):</strong> For COD orders, points are credited to your account only after doorstep delivery and payment confirmation. Unpaid orders do not earn advance points.</li>
+      <li><strong>Clear Conversion Value:</strong> Exactly <strong>100 points = ₹1.00</strong> (so 5 points equals ₹0.05). Points are never inflated or treated as 1:1 rupees.</li>
+      <li><strong>Checkout Redemption:</strong> Simply tick "Apply Points" during checkout to instantly deduct your rupee equivalent from the final bill.</li>
+      <li><strong>Cancellations &amp; Returns:</strong> If an order is cancelled, redeemed points are refunded back to your ledger, and awarded points are safely reversed.</li>
+    </ul>
+  </div>
+
+  <!-- Ledger Transaction History -->
+  <div style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
+    <h3 style="font-size: 17px; font-weight: 700; color: #1e293b; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+      <span>📑</span> Transaction Ledger
+    </h3>
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead>
+          <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left; color: #64748b;">
+            <th style="padding: 12px 14px; font-weight: 600;">Date</th>
+            <th style="padding: 12px 14px; font-weight: 600;">Type</th>
+            <th style="padding: 12px 14px; font-weight: 600;">Description</th>
+            <th style="padding: 12px 14px; font-weight: 600; text-align: right;">Points</th>
+            <th style="padding: 12px 14px; font-weight: 600; text-align: right;">Rupee Value</th>
+          </tr>
+        </thead>
+        <tbody id="rewardLedgerBody">
+          <tr>
+            <td colspan="5" style="padding: 30px; text-align: center; color: #94a3b8;">
+              Loading points ledger...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/rewards.js"></script>
+{% endblock %}
