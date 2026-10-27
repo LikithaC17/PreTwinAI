@@ -40,7 +40,7 @@
   <!-- Central Stage: Authentic Reference Scene with Natural Fairy & Wand Motion -->
   <div class="pretwin-moon-stage" id="introMoonStage">
     
-    <!-- Primary Official Scene Container -->
+    <!-- Primary Official Scene Container (Single Unified Scene from Reference Artwork) -->
     <div class="pretwin-intro-banner-container" id="introBannerContainer">
       <div class="pretwin-banner-glow-halo"></div>
 
@@ -50,28 +50,17 @@
            class="pretwin-intro-banner-image" 
            id="introBannerImage" />
 
-      <!-- Subtle Translucent Fluttering Wing Aura (Synchronized with seated fairy) -->
-      <div class="pretwin-fairy-wings-flutter-aura" id="fairyWingsAura"></div>
+      <!-- Celestial Star Beacon directly on the Fairy's Own Wand Tip (left: 20.1%, top: 28.7%) -->
+      <div class="fairy-wand-tip-beacon" id="wandTipBeacon">
+        <span class="beacon-core">✦</span>
+        <div class="beacon-aura"></div>
+      </div>
 
-      <!-- The Fairy's Own Arm and Wand (Single Natural Wand Held in Her Hand — No Floating Duplicates) -->
-      <div class="pretwin-fairy-arm-layer" id="fairyArmLayer">
-        <img src="{{ url_for('static', filename='images/pretwin_fairy_arm_wand.png') }}"
-             alt="Fairy Wand in Hand" 
-             class="pretwin-fairy-arm-img" 
-             id="fairyArmImg" />
-
-        <!-- Celestial Star Beacon at the Exact Wand Tip -->
-        <div class="fairy-wand-tip-beacon" id="wandTipBeacon">
-          <span class="beacon-core">✦</span>
-          <div class="beacon-aura"></div>
-        </div>
-
-        <!-- Wave Spark Bursts Emitted Directly at the Wand Tip with each shake -->
-        <div class="wand-wave-sparks-emitter" id="waveSparksEmitter">
-          <span class="wave-spk wspk-1 magic-sparkle">✨</span>
-          <span class="wave-spk wspk-2 magic-sparkle">✦</span>
-          <span class="wave-spk wspk-3 magic-sparkle">✧</span>
-        </div>
+      <!-- Wave Spark Bursts Emitted Directly at the Fairy's Wand Tip with each wave -->
+      <div class="wand-wave-sparks-emitter" id="waveSparksEmitter">
+        <span class="wave-spk wspk-1 magic-sparkle">✨</span>
+        <span class="wave-spk wspk-2 magic-sparkle">✦</span>
+        <span class="wave-spk wspk-3 magic-sparkle">✧</span>
       </div>
 
       <!-- Continuous Magical Spark Trail (Travels from Wand Tip across to the Center) -->
