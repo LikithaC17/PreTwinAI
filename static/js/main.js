@@ -457,7 +457,13 @@ function updateCartBadge() {
   const badge = document.getElementById('fkCartBadge');
   const cart = getCart();
   const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-  if (badge) badge.textContent = count;
+  if (badge) {
+    badge.textContent = count;
+    badge.classList.remove('cart-badge-bounce');
+    // Trigger CSS reflow to re-trigger bounce animation
+    void badge.offsetWidth;
+    badge.classList.add('cart-badge-bounce');
+  }
 }
 
 function addToCart(product) {
@@ -637,9 +643,14 @@ function updateWishlistIcons() {
   document.querySelectorAll('.fk-card-wish').forEach((btn) => {
     const pid = parseInt(btn.getAttribute('data-product-id'));
     if (ids.has(pid)) {
-      btn.classList.add('active');
+      if (!btn.classList.contains('active')) {
+        btn.classList.add('active');
+        btn.classList.add('wishlist-pop');
+        setTimeout(() => btn.classList.remove('wishlist-pop'), 450);
+      }
     } else {
       btn.classList.remove('active');
+      btn.classList.remove('wishlist-pop');
     }
   });
 }
@@ -1247,9 +1258,37 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Initialize Location on load
+// Scroll reveal observer for subtle fade-up animations
+function initScrollReveal() {
+  const revealElements = document.querySelectorAll('.pretwin-reveal-on-scroll, .feature-card, .features-hero-header');
+  if (!revealElements.length) return;
+
+  if (typeof IntersectionObserver === 'undefined') {
+    revealElements.forEach(el => el.classList.add('is-revealed'));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+
+  revealElements.forEach(el => {
+    if (!el.classList.contains('pretwin-reveal-on-scroll')) {
+      el.classList.add('pretwin-reveal-on-scroll');
+    }
+    observer.observe(el);
+  });
+}
+
+// Initialize Location and Animations on load
 if (typeof document !== 'undefined') {
   document.addEventListener('DOMContentLoaded', () => {
     loadSavedLocation();
+    initScrollReveal();
   });
 }

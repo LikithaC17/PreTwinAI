@@ -154,9 +154,23 @@
   <nav class="pretwin-second-navbar" id="pretwinSecondNavbar" aria-label="Secondary Features Navigation">
     <div class="pretwin-second-navbar-inner">
       <div class="pretwin-second-nav-left">
-        <!-- 1. Features Menu -->
+        <span class="pretwin-second-nav-badge">
+          <span class="badge-dot"></span>
+          <span>Autonomous AI Shopping Platform</span>
+        </span>
+      </div>
+
+      <!-- Right: Features, More, and Profile at the Far End in Requested Order -->
+      <div class="pretwin-second-nav-right">
+        <!-- 1. Features (Clickable Link to dedicated /features dashboard + Accessible Dropdown) -->
         <div class="pretwin-nav-item pretwin-dropdown-container" id="pretwinFeaturesContainer">
-          <button type="button" class="pretwin-second-nav-btn" id="pretwinFeaturesBtn" onclick="toggleFeaturesMenu(event)" aria-haspopup="true" aria-expanded="false" title="Explore PreTwin AI Shopping Features">
+          <a
+            href="/features"
+            class="pretwin-second-nav-btn {% if request.path == '/features' %}active{% endif %}"
+            id="pretwinFeaturesBtn"
+            title="Explore PreTwin AI Features Dashboard"
+            aria-label="Explore PreTwin AI Features"
+          >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="7" height="7"></rect>
               <rect x="14" y="3" width="7" height="7"></rect>
@@ -164,10 +178,9 @@
               <rect x="3" y="14" width="7" height="7"></rect>
             </svg>
             <span class="pretwin-second-nav-text">Features</span>
-            <span class="nav-caret">▼</span>
-          </button>
+          </a>
 
-          <!-- Features Mega-Menu Dropdown -->
+          <!-- Features Menu Dropdown -->
           <div class="pretwin-features-dropdown" id="pretwinFeaturesDropdown">
             <div class="pretwin-features-grid">
               <!-- 1. Personalization and Digital Twin -->
@@ -193,7 +206,7 @@
                 <div class="feat-icon-box">🔍</div>
                 <div class="feat-info">
                   <div class="feat-title">Smart Product Discovery</div>
-                  <div class="feat-desc">Natural-Language Finder &amp; Visual Search</div>
+                  <div class="feat-desc">Natural-Language &amp; Visual Search</div>
                 </div>
               </a>
 
@@ -220,7 +233,7 @@
                 <div class="feat-icon-box">📅</div>
                 <div class="feat-info">
                   <div class="feat-title">Future Predictive Calendar</div>
-                  <div class="feat-desc">Milestone Forecasts &amp; Replenishment</div>
+                  <div class="feat-desc">Milestone Forecasts &amp; Voice Assistant</div>
                 </div>
               </a>
 
@@ -229,7 +242,7 @@
                 <div class="feat-icon-box">🛒✨</div>
                 <div class="feat-info">
                   <div class="feat-title">Smart Shopping Card</div>
-                  <div class="feat-desc">Duplicate Alerts, Missing Add-ons &amp; Bundles</div>
+                  <div class="feat-desc">Duplicate Alerts, Bundles &amp; Rewards</div>
                 </div>
               </a>
 
@@ -238,9 +251,12 @@
                 <div class="feat-icon-box">🚀</div>
                 <div class="feat-info">
                   <div class="feat-title">Advanced Features for Future Development</div>
-                  <div class="feat-desc">Gift Finder, Voice, AR Try-on &amp; Roadmap</div>
+                  <div class="feat-desc">Try-On Simulator &amp; Autonomous Agents</div>
                 </div>
               </a>
+            </div>
+            <div class="pretwin-features-footer">
+              <a href="/features" class="view-all-features-link">View All Features on Dedicated Dashboard ➔</a>
             </div>
           </div>
         </div>
@@ -282,15 +298,13 @@
             </a>
           </div>
         </div>
-      </div>
 
-      <!-- Right: Profile at the End of the Second Navigation Bar -->
-      <div class="pretwin-second-nav-right">
+        <!-- 3. Profile at the End of the Second Navigation Bar -->
         <div class="pretwin-nav-item pretwin-account-item" id="pretwinAccountItem" style="position:relative;">
           {% if is_authenticated and current_user %}
             <button
               type="button"
-              class="pretwin-second-nav-btn pretwin-profile-btn"
+              class="pretwin-second-nav-btn pretwin-profile-btn {% if request.path == '/profile' %}active{% endif %}"
               id="pretwinProfileBtn"
               onclick="togglePreTwinAccountDropdown(event)"
               aria-haspopup="true"
@@ -308,7 +322,7 @@
                   </svg>
                 {% endif %}
               </div>
-              <span class="pretwin-second-nav-text">{{ current_user.username.split(' ')[0] }} (Profile)</span>
+              <span class="pretwin-second-nav-text">Profile</span>
               <span class="nav-caret">▼</span>
             </button>
 

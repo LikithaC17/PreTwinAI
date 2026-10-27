@@ -413,6 +413,12 @@ def dashboard_page():
     return render_template("dashboard.html")
 
 
+@app.route("/features")
+def features_dashboard():
+    """Dedicated PreTwin AI Features Dashboard displaying all 8 core shopping engines."""
+    return render_template("features_dashboard.html")
+
+
 @app.route("/twin")
 def twin_page():
     return render_template("twin.html")
