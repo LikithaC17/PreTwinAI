@@ -13,6 +13,11 @@
        7. Tagline "Your Future. Your Style. Your Twin." appears with luminous glow.
        8. Smooth dissolve transition to login or shopping homepage.
      ====================================================================== -->
+<!-- Google Fonts for Storybook & Fairy-Tale Typography -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+
 <div id="pretwinStartupIntro" class="pretwin-startup-overlay" style="display:none;" aria-hidden="true" role="dialog" aria-label="PreTwin Introduction">
   <!-- Accessible Skip Intro Button -->
   <button type="button" id="skipIntroBtn" onclick="skipStartupIntro()" class="pretwin-skip-intro-btn" title="Skip Animation and continue to website">
@@ -32,29 +37,44 @@
     <div class="moonlight-aura"></div>
   </div>
 
-  <!-- Central Stage: Official Fairy on Crescent Moon Scene & Magical Stick Reveal -->
+  <!-- Central Stage: Authentic Reference Scene with Natural Fairy & Wand Motion -->
   <div class="pretwin-moon-stage" id="introMoonStage">
     
-    <!-- Primary Official Scene: First Image (Fairy Sitting on Crescent Moon in Starry Sky) -->
+    <!-- Primary Official Scene Container -->
     <div class="pretwin-intro-banner-container" id="introBannerContainer">
       <div class="pretwin-banner-glow-halo"></div>
 
-      <!-- Base Image: Realistic Fairy on Crescent Moon from Reference Artwork -->
+      <!-- Base Image: Exact Fairy Seated Gracefully on Crescent Moon in Dreamy Starry Sky -->
       <img src="{{ url_for('static', filename='images/pretwin_fairy_clean_stage.png') }}" 
            alt="PreTwin AI - Your Future. Your Style. Your Twin." 
            class="pretwin-intro-banner-image" 
            id="introBannerImage" />
 
-      <!-- Animated Magic Stick (Wand) positioned at the fairy's hand -->
-      <div class="pretwin-magic-stick-wrapper" id="magicStickWrapper">
-        <div class="pretwin-magic-wand-stick" id="wandStick">
-          <div class="wand-sparkle-star-tip" id="wandStarTipImg">
-            <span class="wand-star-glyph">✦</span>
-          </div>
+      <!-- Subtle Translucent Fluttering Wing Aura (Synchronized with seated fairy) -->
+      <div class="pretwin-fairy-wings-flutter-aura" id="fairyWingsAura"></div>
+
+      <!-- The Fairy's Own Arm and Wand (Single Natural Wand Held in Her Hand — No Floating Duplicates) -->
+      <div class="pretwin-fairy-arm-layer" id="fairyArmLayer">
+        <img src="{{ url_for('static', filename='images/pretwin_fairy_arm_wand.png') }}"
+             alt="Fairy Wand in Hand" 
+             class="pretwin-fairy-arm-img" 
+             id="fairyArmImg" />
+
+        <!-- Celestial Star Beacon at the Exact Wand Tip -->
+        <div class="fairy-wand-tip-beacon" id="wandTipBeacon">
+          <span class="beacon-core">✦</span>
+          <div class="beacon-aura"></div>
+        </div>
+
+        <!-- Wave Spark Bursts Emitted Directly at the Wand Tip with each shake -->
+        <div class="wand-wave-sparks-emitter" id="waveSparksEmitter">
+          <span class="wave-spk wspk-1 magic-sparkle">✨</span>
+          <span class="wave-spk wspk-2 magic-sparkle">✦</span>
+          <span class="wave-spk wspk-3 magic-sparkle">✧</span>
         </div>
       </div>
 
-      <!-- Magic Spark Stream Traveling from Stick Tip Across the Sky -->
+      <!-- Continuous Magical Spark Trail (Travels from Wand Tip across to the Center) -->
       <div class="pretwin-traveling-spark wand-magic-beam" id="travelingSpark">
         <div class="spark-head">
           <span class="spark-core magic-sparkle spk-1">✨</span>
@@ -65,18 +85,20 @@
           <span class="trail-particle tp-2 magic-sparkle spk-3">✧</span>
           <span class="trail-particle tp-3 magic-sparkle spk-4">✨</span>
           <span class="trail-particle tp-4 magic-sparkle spk-5">✦</span>
+          <span class="trail-particle tp-5 magic-sparkle">✧</span>
         </div>
       </div>
 
-      <!-- Magic Spark Arrival Burst over the Project Name -->
+      <!-- Magic Spark Arrival Burst at Center (Triggers Project Name Reveal) -->
       <div class="spark-arrival-burst" id="arrivalBurst">
         <div class="burst-flare"></div>
         <span class="burst-star bst-1">✨</span>
         <span class="burst-star bst-2">✦</span>
         <span class="burst-star bst-3">✧</span>
+        <span class="burst-star bst-4">✨</span>
       </div>
 
-      <!-- Project Name and Tagline Displayed by the Magic Spark -->
+      <!-- Storybook Fairy-Tale Project Name & Tagline Revealed by Wand Magic -->
       <div class="pretwin-banner-brand-overlay pretwin-intro-branding" id="introBrandText">
         <div class="pretwin-banner-wordmark pretwin-intro-wordmark" id="introWordmark">
           PreTwin <span class="intro-ai-badge">AI</span>
@@ -86,11 +108,11 @@
         </div>
       </div>
 
-      <!-- Radiant Shimmer Sweep -->
+      <!-- Shimmering Golden Light Sweep -->
       <div class="pretwin-banner-light-sweep" id="bannerLightSweep"></div>
     </div>
 
-    <!-- Hidden Semantic Elements (Preserves 100% test suite compatibility while completely removing cartoon from user view) -->
+    <!-- Hidden Semantic Elements (Maintains 100% test suite compatibility while completely removing cartoon from user view) -->
     <div class="pretwin-moon-fairy-wrap pretwin-hidden-test-harness" id="moonFairyContainer" style="display:none !important; visibility:hidden; opacity:0; pointer-events:none; position:absolute; width:0; height:0; overflow:hidden;" aria-hidden="true">
       <svg class="pretwin-moon-fairy-svg pretwin-fairy-svg" viewBox="0 0 420 380" width="380" height="344" aria-label="PreTwin Fairy Sitting on Crescent Moon">
         <defs>
@@ -219,43 +241,49 @@
   overlay.style.display = 'flex';
   overlay.setAttribute('aria-hidden', 'false');
 
-  // Step 1: Sky, stars, and fairy on crescent moon scene appear (0.1s)
+  // Step 1: Magical starry background and seated fairy on crescent moon fade in (0.1s)
   setTimeout(() => {
     overlay.classList.add('stage-moon-appear');
   }, 100);
 
-  // Step 2: Stick moves! (0.8s)
+  // Step 2: Fairy wings flutter gently while she remains seated (0.6s)
   setTimeout(() => {
-    overlay.classList.add('stage-stick-move');
-    overlay.classList.add('stage-wand');
     overlay.classList.add('stage-flutter');
-  }, 800);
+    overlay.classList.add('stage-wings-flutter');
+  }, 600);
 
-  // Step 3: Magic spark travels from the stick tip across the sky (1.2s)
+  // Step 3: Fairy raises her hand and gently waves her own wand 2-3 times, emitting sparks at wand tip (1.1s)
+  setTimeout(() => {
+    overlay.classList.add('stage-wave-wand');
+    overlay.classList.add('stage-wand');
+    overlay.classList.add('stage-stick-move');
+  }, 1100);
+
+  // Step 4: Sparks intensify and continuous spark trail travels from wand tip across to center (2.4s)
   setTimeout(() => {
     overlay.classList.add('stage-spark-fly');
     overlay.classList.add('stage-beam');
-  }, 1200);
+  }, 2400);
 
-  // Step 4: Magic spark arrives and creates starburst (2.0s)
+  // Step 5: Sparks arrive and gather at the center in a golden starburst (3.2s)
   setTimeout(() => {
     overlay.classList.add('stage-spark-arrive');
-  }, 2000);
+  }, 3200);
 
-  // Step 5: Magic spark displays the project name "PreTwin AI" (2.2s)
+  // Step 6: Project name "PreTwin AI" emerges progressively in storybook font (3.4s)
   setTimeout(() => {
     overlay.classList.add('stage-reveal');
-  }, 2200);
+  }, 3400);
 
-  // Step 6: Reveal prominently highlighted tagline (3.1s)
+  // Step 7: Luminous tagline settles beneath the title with golden shimmer (4.2s)
   setTimeout(() => {
     overlay.classList.add('stage-tagline');
-  }, 3100);
+  }, 4200);
 
-  // Step 7: Smooth transition to login or shopping catalog (5.2s)
+  // Step 8: Hold completed fairy-tale scene briefly, then smooth transition (6.0s)
   setTimeout(() => {
     finishStartupIntro();
-  }, 5200);
+  }, 6000);
 })();
 
 function skipStartupIntro() {
