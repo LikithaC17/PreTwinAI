@@ -12,7 +12,7 @@
     <span class="bc-current">AI Features Dashboard</span>
   </nav>
 
-  <!-- Hero Header -->
+  <!-- Dashboard Header -->
   <header class="features-hero-header">
     <div class="features-hero-badge">
       <span class="features-badge-sparkle">✨</span>
@@ -38,14 +38,480 @@
         <span class="metric-label">Verified Data</span>
       </div>
       <div class="metric-pill">
-        <span class="metric-num">5 Pts</span>
-        <span class="metric-label">Reward per Order</span>
+        <span class="metric-num">100 Pts = ₹1</span>
+        <span class="metric-label">Reward Redemption</span>
       </div>
     </div>
   </header>
 
-  <!-- 8 Features Responsive Grid -->
-  <section class="features-grid-section" aria-label="PreTwin AI Shopping Features">
+  <!-- ======================================================================
+       DEDICATED HORIZONTAL FEATURE NAVIGATION BAR
+       All eight feature icons, with each feature name displayed directly underneath
+       ====================================================================== -->
+  <section class="features-nav-section" aria-label="Feature Navigation Bar">
+    <div class="features-horizontal-navbar-wrapper">
+      <nav class="features-horizontal-navbar" id="featuresHorizontalNav" role="tablist">
+        
+        <!-- 1. Personalization and Digital Twin -->
+        <button
+          type="button"
+          class="feature-nav-item active"
+          role="tab"
+          id="tab-twin"
+          data-target="panel-twin"
+          aria-selected="true"
+          aria-controls="panel-twin"
+          onclick="switchFeatureTab('twin')"
+        >
+          <div class="feat-nav-icon-box">👤</div>
+          <span class="feat-nav-label">Personalization and<br>Digital Twin</span>
+        </button>
+
+        <!-- 2. Predictive Shopping Intelligence -->
+        <button
+          type="button"
+          class="feature-nav-item"
+          role="tab"
+          id="tab-predictions"
+          data-target="panel-predictions"
+          aria-selected="false"
+          aria-controls="panel-predictions"
+          onclick="switchFeatureTab('predictions')"
+        >
+          <div class="feat-nav-icon-box">🔮</div>
+          <span class="feat-nav-label">Predictive Shopping<br>Intelligence</span>
+        </button>
+
+        <!-- 3. Smart Product Discovery -->
+        <button
+          type="button"
+          class="feature-nav-item"
+          role="tab"
+          id="tab-discovery"
+          data-target="panel-discovery"
+          aria-selected="false"
+          aria-controls="panel-discovery"
+          onclick="switchFeatureTab('discovery')"
+        >
+          <div class="feat-nav-icon-box">🔍</div>
+          <span class="feat-nav-label">Smart Product<br>Discovery</span>
+        </button>
+
+        <!-- 4. Budget and Price Intelligence -->
+        <button
+          type="button"
+          class="feature-nav-item"
+          role="tab"
+          id="tab-budget"
+          data-target="panel-budget"
+          aria-selected="false"
+          aria-controls="panel-budget"
+          onclick="switchFeatureTab('budget')"
+        >
+          <div class="feat-nav-icon-box">💰</div>
+          <span class="feat-nav-label">Budget and Price<br>Intelligence</span>
+        </button>
+
+        <!-- 5. Product Comparison and Decision Support -->
+        <button
+          type="button"
+          class="feature-nav-item"
+          role="tab"
+          id="tab-comparison"
+          data-target="panel-comparison"
+          aria-selected="false"
+          aria-controls="panel-comparison"
+          onclick="switchFeatureTab('comparison')"
+        >
+          <div class="feat-nav-icon-box">⚖️</div>
+          <span class="feat-nav-label">Product Comparison &amp;<br>Decision Support</span>
+        </button>
+
+        <!-- 6. Future Predictive Calendar -->
+        <button
+          type="button"
+          class="feature-nav-item"
+          role="tab"
+          id="tab-calendar"
+          data-target="panel-calendar"
+          aria-selected="false"
+          aria-controls="panel-calendar"
+          onclick="switchFeatureTab('calendar')"
+        >
+          <div class="feat-nav-icon-box">📅</div>
+          <span class="feat-nav-label">Future Predictive<br>Calendar</span>
+        </button>
+
+        <!-- 7. Smart Shopping Card -->
+        <button
+          type="button"
+          class="feature-nav-item"
+          role="tab"
+          id="tab-cart"
+          data-target="panel-cart"
+          aria-selected="false"
+          aria-controls="panel-cart"
+          onclick="switchFeatureTab('cart')"
+        >
+          <div class="feat-nav-icon-box">🛒✨</div>
+          <span class="feat-nav-label">Smart Shopping<br>Card</span>
+        </button>
+
+        <!-- 8. Advanced Features for Future Development -->
+        <button
+          type="button"
+          class="feature-nav-item"
+          role="tab"
+          id="tab-advanced"
+          data-target="panel-advanced"
+          aria-selected="false"
+          aria-controls="panel-advanced"
+          onclick="switchFeatureTab('advanced')"
+        >
+          <div class="feat-nav-icon-box">🚀</div>
+          <span class="feat-nav-label">Advanced Features for<br>Future Development</span>
+        </button>
+
+      </nav>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       FEATURE CONTENT AREA (Dynamic Content for Selected Feature)
+       ====================================================================== -->
+  <section class="features-content-display-area" aria-live="polite">
+    
+    <!-- Panel 1: Personalization and Digital Twin -->
+    <div class="feature-content-panel active" id="panel-twin" role="tabpanel" aria-labelledby="tab-twin">
+      <div class="feat-panel-card">
+        <div class="feat-panel-header">
+          <div class="feat-panel-icon-wrap">👤</div>
+          <div class="feat-panel-meta">
+            <span class="feature-card-tag tag-live">Active Engine</span>
+            <h2 class="feat-panel-title">1. Personalization and Digital Twin</h2>
+            <div class="feat-panel-subtitle">Taste Modeling &amp; Multi-Profile Twin</div>
+          </div>
+          <a href="/twin" class="btn btn-primary feat-launch-btn">Explore Feature ➔</a>
+        </div>
+        <div class="feat-panel-body">
+          <p class="feat-panel-desc">
+            Builds your authentic taste profile using verified purchase history, brand affinities, and price sensitivities. Supports multi-profile household switching so every family member receives customized recommendations.
+          </p>
+          <div class="feat-panel-grid-highlights">
+            <div class="highlight-item">
+              <span class="hi-icon">🧠</span>
+              <strong>Continuous Taste Learning</strong>
+              <span>Updates preferences automatically based on catalog browse, wishlist, and cart additions.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">👥</span>
+              <strong>Household Twin Profiles</strong>
+              <span>Switch between personal, kids, partner, and shared household shopping twins with one click.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">🔒</span>
+              <strong>Privacy Guaranteed</strong>
+              <span>Your shopping preferences remain private and are never sold to external tracking networks.</span>
+            </div>
+          </div>
+          <div class="feat-panel-actions">
+            <a href="/twin" class="feature-action-link">Open Personalization and Digital Twin Studio ➔</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 2: Predictive Shopping Intelligence -->
+    <div class="feature-content-panel" id="panel-predictions" role="tabpanel" aria-labelledby="tab-predictions" style="display:none;">
+      <div class="feat-panel-card">
+        <div class="feat-panel-header">
+          <div class="feat-panel-icon-wrap">🔮</div>
+          <div class="feat-panel-meta">
+            <span class="feature-card-tag tag-live">Forecasts</span>
+            <h2 class="feat-panel-title">2. Predictive Shopping Intelligence</h2>
+            <div class="feat-panel-subtitle">Reorder Cycles &amp; Event Forecasts</div>
+          </div>
+          <a href="/predictions" class="btn btn-primary feat-launch-btn">Explore Feature ➔</a>
+        </div>
+        <div class="feat-panel-body">
+          <p class="feat-panel-desc">
+            Analyzes consumption rhythms, seasonal shifts, and recurring household cycles to forecast exact replenishment dates before daily essentials run out.
+          </p>
+          <div class="feat-panel-grid-highlights">
+            <div class="highlight-item">
+              <span class="hi-icon">⏳</span>
+              <strong>Depletion Forecasts</strong>
+              <span>Predicts days remaining on coffee, groceries, and skincare with confidence probability scores.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">🌤️</span>
+              <strong>Seasonal &amp; Festival Demand</strong>
+              <span>Anticipates festive needs (Diwali, New Year) and weather essentials ahead of price spikes.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">⚡</span>
+              <strong>One-Click Restock</strong>
+              <span>Instantly transfer projected replenishments straight into your PreTwin cart with best discounts.</span>
+            </div>
+          </div>
+          <div class="feat-panel-actions">
+            <a href="/predictions" class="feature-action-link">Open Predictive Shopping Intelligence ➔</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 3: Smart Product Discovery -->
+    <div class="feature-content-panel" id="panel-discovery" role="tabpanel" aria-labelledby="tab-discovery" style="display:none;">
+      <div class="feat-panel-card">
+        <div class="feat-panel-header">
+          <div class="feat-panel-icon-wrap">🔍</div>
+          <div class="feat-panel-meta">
+            <span class="feature-card-tag tag-live">Catalog NLP</span>
+            <h2 class="feat-panel-title">3. Smart Product Discovery</h2>
+            <div class="feat-panel-subtitle">Natural-Language &amp; Visual Search</div>
+          </div>
+          <a href="/discovery" class="btn btn-primary feat-launch-btn">Explore Feature ➔</a>
+        </div>
+        <div class="feat-panel-body">
+          <p class="feat-panel-desc">
+            Search products across 1,040+ verified catalog items using natural lifestyle prompts, strict budget bounds, or multimodal visual comparison queries.
+          </p>
+          <div class="feat-panel-grid-highlights">
+            <div class="highlight-item">
+              <span class="hi-icon">💬</span>
+              <strong>Lifestyle NLP Queries</strong>
+              <span>Type "ergonomic desk chair under ₹8000" or "sustainable cotton t-shirt" and get instant precision matches.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">🏷️</span>
+              <strong>Subcategory Facets</strong>
+              <span>Filter catalog products across 20 distinct e-commerce categories with realtime instant stock checks.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">🛡️</span>
+              <strong>PreTwin Assured</strong>
+              <span>Every discovered product features verified ratings, clear MRP discounts, and doorstep timelines.</span>
+            </div>
+          </div>
+          <div class="feat-panel-actions">
+            <a href="/discovery" class="feature-action-link">Open Smart Product Discovery ➔</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 4: Budget and Price Intelligence -->
+    <div class="feature-content-panel" id="panel-budget" role="tabpanel" aria-labelledby="tab-budget" style="display:none;">
+      <div class="feat-panel-card">
+        <div class="feat-panel-header">
+          <div class="feat-panel-icon-wrap">💰</div>
+          <div class="feat-panel-meta">
+            <span class="feature-card-tag tag-live">Price Tracking</span>
+            <h2 class="feat-panel-title">4. Budget and Price Intelligence</h2>
+            <div class="feat-panel-subtitle">Price Drops, History &amp; Best Value</div>
+          </div>
+          <a href="/budget" class="btn btn-primary feat-launch-btn">Explore Feature ➔</a>
+        </div>
+        <div class="feat-panel-body">
+          <p class="feat-panel-desc">
+            Track 60-day historical price trajectories, activate instant price drop alerts, and enforce monthly shopping ceilings with zero overspending.
+          </p>
+          <div class="feat-panel-grid-highlights">
+            <div class="highlight-item">
+              <span class="hi-icon">📈</span>
+              <strong>Price Trend Trajectories</strong>
+              <span>Visual charts displaying 30-day and 60-day price movements to identify true discount lows.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">🔔</span>
+              <strong>Target Price Alerts</strong>
+              <span>Get notified the minute your desired electronics or fashion items drop to your target price.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">🛡️</span>
+              <strong>Monthly Budget Cap</strong>
+              <span>Smart guardrails calculate pending cart commitments against your monthly budget ceiling.</span>
+            </div>
+          </div>
+          <div class="feat-panel-actions">
+            <a href="/budget" class="feature-action-link">Open Budget and Price Intelligence ➔</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 5: Product Comparison and Decision Support -->
+    <div class="feature-content-panel" id="panel-comparison" role="tabpanel" aria-labelledby="tab-comparison" style="display:none;">
+      <div class="feat-panel-card">
+        <div class="feat-panel-header">
+          <div class="feat-panel-icon-wrap">⚖️</div>
+          <div class="feat-panel-meta">
+            <span class="feature-card-tag tag-live">Tradeoff Engine</span>
+            <h2 class="feat-panel-title">5. Product Comparison &amp; Decision Support</h2>
+            <div class="feat-panel-subtitle">Weighted Multi-Factor Tradeoffs</div>
+          </div>
+          <a href="/comparison" class="btn btn-primary feat-launch-btn">Explore Feature ➔</a>
+        </div>
+        <div class="feat-panel-body">
+          <p class="feat-panel-desc">
+            Compare 2 to 4 products side-by-side with customizable weight sliders for price, customer ratings, specifications, and brand trust.
+          </p>
+          <div class="feat-panel-grid-highlights">
+            <div class="highlight-item">
+              <span class="hi-icon">🎚️</span>
+              <strong>Customizable Sliders</strong>
+              <span>Adjust weighting for budget priority vs. premium specifications to calculate personalized scores.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">🏆</span>
+              <strong>Clear Winner Detection</strong>
+              <span>Highlights clear best-value picks with transparent explanations of tradeoffs.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">📊</span>
+              <strong>Spec Matrix</strong>
+              <span>Side-by-side breakdown of warranty, seller ratings, return windows, and customer satisfaction.</span>
+            </div>
+          </div>
+          <div class="feat-panel-actions">
+            <a href="/comparison" class="feature-action-link">Open Product Comparison ➔</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 6: Future Predictive Calendar -->
+    <div class="feature-content-panel" id="panel-calendar" role="tabpanel" aria-labelledby="tab-calendar" style="display:none;">
+      <div class="feat-panel-card">
+        <div class="feat-panel-header">
+          <div class="feat-panel-icon-wrap">📅</div>
+          <div class="feat-panel-meta">
+            <span class="feature-card-tag tag-live">Gifting &amp; Voice</span>
+            <h2 class="feat-panel-title">6. Future Predictive Calendar</h2>
+            <div class="feat-panel-subtitle">Milestone Forecasts &amp; Voice Assistant</div>
+          </div>
+          <a href="/calendar" class="btn btn-primary feat-launch-btn">Explore Feature ➔</a>
+        </div>
+        <div class="feat-panel-body">
+          <p class="feat-panel-desc">
+            Automates gift planning for upcoming birthdays and festivals, paired with natural voice shopping commands for hands-free reordering.
+          </p>
+          <div class="feat-panel-grid-highlights">
+            <div class="highlight-item">
+              <span class="hi-icon">🎂</span>
+              <strong>Milestone &amp; Gifting Planner</strong>
+              <span>Automatically alerts you 10 days before loved ones' birthdays with curated gift suggestions.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">🎙️</span>
+              <strong>Voice Shopping Assistant</strong>
+              <span>Speak commands like "Order almond butter" or "Find wireless earbuds" with voice synthesis.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">⏰</span>
+              <strong>Seasonal Reminders</strong>
+              <span>Never miss holiday sales, summer vacations, or school reopen essentials.</span>
+            </div>
+          </div>
+          <div class="feat-panel-actions">
+            <a href="/calendar" class="feature-action-link">Open Future Predictive Calendar ➔</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 7: Smart Shopping Card -->
+    <div class="feature-content-panel" id="panel-cart" role="tabpanel" aria-labelledby="tab-cart" style="display:none;">
+      <div class="feat-panel-card">
+        <div class="feat-panel-header">
+          <div class="feat-panel-icon-wrap">🛒✨</div>
+          <div class="feat-panel-meta">
+            <span class="feature-card-tag tag-live">Smart Card</span>
+            <h2 class="feat-panel-title">7. Smart Shopping Card</h2>
+            <div class="feat-panel-subtitle">Duplicate Alerts, Bundles &amp; Rewards</div>
+          </div>
+          <a href="/smart-cart" class="btn btn-primary feat-launch-btn">Explore Feature ➔</a>
+        </div>
+        <div class="feat-panel-body">
+          <p class="feat-panel-desc">
+            Real-time duplicate detection, complementary bundle discounts, and seamless 100 points = ₹1.00 reward redemption during checkout.
+          </p>
+          <div class="feat-panel-grid-highlights">
+            <div class="highlight-item">
+              <span class="hi-icon">⚠️</span>
+              <strong>Accidental Duplicate Alert</strong>
+              <span>Flags identical or similar items already purchased within the past 30 days.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">🎁</span>
+              <strong>Bundle Synergy Savings</strong>
+              <span>Suggests matching accessories (e.g., case + screen guard) that unlock combo discounts.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">💳</span>
+              <strong>Instant Reward Points</strong>
+              <span>Redeem your points at 100 points = ₹1.00 directly to slash order totals before checkout.</span>
+            </div>
+          </div>
+          <div class="feat-panel-actions">
+            <a href="/smart-cart" class="feature-action-link">Open Smart Shopping Card ➔</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 8: Advanced Features for Future Development -->
+    <div class="feature-content-panel" id="panel-advanced" role="tabpanel" aria-labelledby="tab-advanced" style="display:none;">
+      <div class="feat-panel-card">
+        <div class="feat-panel-header">
+          <div class="feat-panel-icon-wrap">🚀</div>
+          <div class="feat-panel-meta">
+            <span class="feature-card-tag tag-roadmap">Future Roadmap</span>
+            <h2 class="feat-panel-title">8. Advanced Features for Future Development</h2>
+            <div class="feat-panel-subtitle">Try-On Simulator &amp; Autonomous Agents</div>
+          </div>
+          <a href="/advanced-ai" class="btn btn-primary feat-launch-btn">Explore Feature ➔</a>
+        </div>
+        <div class="feat-panel-body">
+          <p class="feat-panel-desc">
+            Interactive previews of experimental shopping capabilities including 3D virtual try-ons, autonomous buying agents, and multi-agent price negotiations.
+          </p>
+          <div class="feat-panel-grid-highlights">
+            <div class="highlight-item">
+              <span class="hi-icon">👗</span>
+              <strong>3D Virtual Try-On Simulator</strong>
+              <span>Simulate apparel fits on customizable digital twin body avatars with accurate drape physics.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">🤖</span>
+              <strong>Autonomous Buying Agent</strong>
+              <span>Set hard spending parameters and let PreTwin purchase limited-stock items automatically when criteria match.</span>
+            </div>
+            <div class="highlight-item">
+              <span class="hi-icon">🤝</span>
+              <strong>Multi-Agent Negotiation</strong>
+              <span>Autonomous bots negotiating volume discounts with verified merchants on your behalf.</span>
+            </div>
+          </div>
+          <div class="feat-panel-actions">
+            <a href="/advanced-ai" class="feature-action-link">Open Advanced Features Roadmap ➔</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ======================================================================
+       ALL 8 FEATURES CARDS GRID (Complete Visual Overview)
+       ====================================================================== -->
+  <section class="features-grid-section" aria-label="All PreTwin AI Features Overview">
+    <div class="features-section-title-wrap">
+      <h3 class="features-section-title">All Eight AI Shopping Engines</h3>
+      <span class="features-section-badge">Direct Access</span>
+    </div>
+
     <div class="features-cards-grid">
       
       <!-- Card 1: Personalization and Digital Twin -->
@@ -190,4 +656,60 @@
     </div>
   </div>
 </div>
+
+<script>
+/**
+ * Tab Switching Controller for Dedicated Features Dashboard
+ */
+function switchFeatureTab(featureKey) {
+  // Update nav tabs
+  document.querySelectorAll('.feature-nav-item').forEach(btn => {
+    btn.classList.remove('active');
+    btn.setAttribute('aria-selected', 'false');
+  });
+
+  const activeTab = document.getElementById(`tab-${featureKey}`);
+  if (activeTab) {
+    activeTab.classList.add('active');
+    activeTab.setAttribute('aria-selected', 'true');
+    // Ensure active tab is visible in scroll container
+    activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+
+  // Update content panels
+  document.querySelectorAll('.feature-content-panel').forEach(panel => {
+    panel.style.display = 'none';
+    panel.classList.remove('active');
+  });
+
+  const activePanel = document.getElementById(`panel-${featureKey}`);
+  if (activePanel) {
+    activePanel.style.display = 'block';
+    // Trigger smooth fade
+    void activePanel.offsetWidth;
+    activePanel.classList.add('active');
+  }
+
+  // Update URL hash for bookmarking and back/forward navigation
+  if (history.pushState) {
+    history.pushState(null, null, `#${featureKey}`);
+  }
+}
+
+// Handle initial load or browser back/forward buttons
+window.addEventListener('popstate', () => {
+  const hash = window.location.hash.replace('#', '') || 'twin';
+  if (document.getElementById(`tab-${hash}`)) {
+    switchFeatureTab(hash);
+  }
+});
+
+// Initialize on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  const initialHash = window.location.hash.replace('#', '') || 'twin';
+  if (document.getElementById(`tab-${initialHash}`)) {
+    switchFeatureTab(initialHash);
+  }
+});
+</script>
 {% endblock %}

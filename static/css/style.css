@@ -2947,6 +2947,7 @@ input, select, textarea {
 
 /* ==========================================================================
    PreTwin Magical Fairy-Tale Startup Animation Overlay
+   Scene: Graceful Complete Fairy Sitting on Glowing Crescent Half-Moon
    ========================================================================== */
 .pretwin-startup-overlay {
   position: fixed;
@@ -2954,7 +2955,7 @@ input, select, textarea {
   width: 100vw;
   height: 100vh;
   z-index: 9999999;
-  background: radial-gradient(ellipse at 50% 45%, #ffffff 0%, #fbf8ff 25%, #f3e8ff 55%, #e9d5ff 85%, #d8b4fe 100%);
+  background: radial-gradient(ellipse at 50% 38%, #1e1b4b 0%, #0f172a 45%, #020617 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2965,7 +2966,7 @@ input, select, textarea {
 
 .pretwin-startup-overlay.stage-fadeout {
   opacity: 0;
-  transform: scale(1.05);
+  transform: scale(1.04);
   pointer-events: none;
 }
 
@@ -2973,32 +2974,50 @@ input, select, textarea {
   position: absolute;
   top: 24px;
   right: 28px;
-  z-index: 20;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1.5px solid #c4b5fd;
-  color: #6d28d9;
+  z-index: 30;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(196, 181, 253, 0.45);
+  color: #f3e8ff;
   font-weight: 700;
   font-size: 0.88rem;
   padding: 8px 18px;
   border-radius: 20px;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.12);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
   transition: all 0.2s ease;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
 }
 
 .pretwin-skip-intro-btn:hover {
   background: #7c3aed;
   color: #ffffff;
-  border-color: #7c3aed;
+  border-color: #a855f7;
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.25);
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.45);
 }
 
 .pretwin-intro-sky {
   position: absolute;
   inset: 0;
   pointer-events: none;
+}
+
+.moonlight-aura {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(254, 240, 138, 0.15) 0%, rgba(168, 85, 247, 0.08) 50%, transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+  animation: moonlightPulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes moonlightPulse {
+  0% { transform: translate(-50%, -50%) scale(0.92); opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(1.08); opacity: 0.95; }
 }
 
 .star-particle {
@@ -3009,14 +3028,14 @@ input, select, textarea {
   animation: starTwinkleFloat 3.5s ease-in-out infinite alternate;
 }
 
-.star-1 { top: 15%; left: 18%; animation-delay: 0.2s; font-size: 1.4rem; color: #facc15; }
-.star-2 { top: 22%; right: 22%; animation-delay: 0.8s; font-size: 1.1rem; color: #a855f7; }
-.star-3 { top: 40%; left: 12%; animation-delay: 1.4s; font-size: 1.5rem; color: #60a5fa; }
-.star-4 { bottom: 30%; right: 15%; animation-delay: 0.5s; font-size: 1rem; color: #c084fc; }
-.star-5 { top: 12%; right: 42%; animation-delay: 1.1s; font-size: 1.3rem; color: #facc15; }
-.star-6 { bottom: 20%; left: 30%; animation-delay: 1.7s; font-size: 1.2rem; color: #9333ea; }
-.star-7 { top: 60%; right: 35%; animation-delay: 0.3s; font-size: 0.9rem; color: #38bdf8; }
-.star-8 { bottom: 15%; right: 45%; animation-delay: 1.9s; font-size: 1.4rem; color: #f472b6; }
+.star-1 { top: 12%; left: 18%; animation-delay: 0.2s; font-size: 1.4rem; color: #fde047; }
+.star-2 { top: 20%; right: 22%; animation-delay: 0.8s; font-size: 1.1rem; color: #e879f9; }
+.star-3 { top: 38%; left: 10%; animation-delay: 1.4s; font-size: 1.5rem; color: #60a5fa; }
+.star-4 { bottom: 28%; right: 14%; animation-delay: 0.5s; font-size: 1rem; color: #c084fc; }
+.star-5 { top: 10%; right: 40%; animation-delay: 1.1s; font-size: 1.3rem; color: #fde047; }
+.star-6 { bottom: 18%; left: 28%; animation-delay: 1.7s; font-size: 1.2rem; color: #a855f7; }
+.star-7 { top: 55%; right: 32%; animation-delay: 0.3s; font-size: 0.9rem; color: #38bdf8; }
+.star-8 { bottom: 12%; right: 42%; animation-delay: 1.9s; font-size: 1.4rem; color: #f472b6; }
 
 @keyframes starTwinkleFloat {
   0% { transform: translateY(0) scale(0.85); opacity: 0.4; }
@@ -3024,107 +3043,101 @@ input, select, textarea {
   100% { transform: translateY(4px) scale(0.9); opacity: 0.5; }
 }
 
-.pretwin-flight-stage {
+/* Central Stage Container */
+.pretwin-moon-stage {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 10;
+  max-width: 95vw;
 }
 
-.pretwin-flying-emblem-wrap {
+/* Moon and Fairy Wrapper — Centered Gracefully, Fairy Stays Seated */
+.pretwin-moon-fairy-wrap {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transform: translate3d(-30vw, -30vh, 0) scale(0.4) rotate(-20deg);
-  transition: all 0.3s ease;
+  transform: translateY(16px) scale(0.94);
+  transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1), transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Stage 1: Exactly ONE complete circular loop around the central area */
-.stage-flight .pretwin-flying-emblem-wrap {
-  animation: introCircularFlight 2.6s cubic-bezier(0.35, 0.1, 0.25, 1) forwards;
+.stage-moon-appear .pretwin-moon-fairy-wrap {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
-/* Wing Fluttering Motion */
-.wing-group-left {
-  transform-origin: 46px 45px;
-  animation: wingFlutter 0.5s ease-in-out infinite alternate;
+.pretwin-moon-fairy-svg {
+  max-width: 90vw;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 12px 36px rgba(0, 0, 0, 0.45));
 }
 
-.wing-group-right {
-  transform-origin: 54px 44px;
-  animation: wingFlutter 0.5s ease-in-out infinite alternate-reverse;
+/* Crescent Moon Subtle Glow Pulse */
+.crescent-moon-group {
+  animation: moonSoftPulse 4s ease-in-out infinite alternate;
+  transform-origin: 100px 185px;
 }
 
-@keyframes wingFlutter {
-  0% { transform: rotate(0deg) scale(1); }
-  100% { transform: rotate(5deg) scale(1.08); }
+@keyframes moonSoftPulse {
+  0% { filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.4)); }
+  100% { filter: drop-shadow(0 0 24px rgba(250, 204, 21, 0.75)) drop-shadow(0 0 45px rgba(168, 85, 247, 0.4)); }
 }
 
-/* 360-degree circular orbit completing exactly one revolution around screen center */
-@keyframes introCircularFlight {
-  0% {
-    opacity: 0;
-    transform: translate3d(0px, -150px, 0) scale(0.6) rotate(0deg);
-    filter: blur(2px);
-  }
-  10% {
-    opacity: 1;
-    transform: translate3d(85px, -125px, 0) scale(0.85) rotate(16deg);
-    filter: blur(0);
-  }
-  25% {
-    opacity: 1;
-    transform: translate3d(150px, 0px, 0) scale(1.0) rotate(28deg);
-  }
-  38% {
-    opacity: 1;
-    transform: translate3d(110px, 110px, 0) scale(1.0) rotate(16deg);
-  }
-  50% {
-    opacity: 1;
-    transform: translate3d(0px, 150px, 0) scale(1.0) rotate(-10deg);
-  }
-  63% {
-    opacity: 1;
-    transform: translate3d(-110px, 110px, 0) scale(0.98) rotate(-22deg);
-  }
-  75% {
-    opacity: 1;
-    transform: translate3d(-150px, 0px, 0) scale(0.95) rotate(-30deg);
-  }
-  88% {
-    opacity: 1;
-    transform: translate3d(-85px, -125px, 0) scale(0.95) rotate(-16deg);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0px, -55px, 0) scale(1.05) rotate(0deg);
-    filter: drop-shadow(0 10px 28px rgba(124, 58, 237, 0.45));
-  }
+/* Seated Fairy — Stays Gracefully on the Moon */
+.seated-fairy-group {
+  /* Seated stably in place */
 }
 
-/* Fairy Magic Wand Elevation */
-.fairy-wand-group {
-  transform-origin: 54px 50px;
+/* Delicate Wings Fluttering Motion while Seated */
+.fairy-wings-container {
+  /* Wing anchor at back of fairy */
+}
+
+.wing-upper-left,
+.wing-lower-left {
+  transform-origin: 125px 150px;
+  animation: fairyWingFlutterLeft 0.55s ease-in-out infinite alternate;
+}
+
+.wing-upper-right,
+.wing-lower-right {
+  transform-origin: 132px 148px;
+  animation: fairyWingFlutterRight 0.55s ease-in-out infinite alternate;
+}
+
+@keyframes fairyWingFlutterLeft {
+  0% { transform: rotate(0deg) scale(1); opacity: 0.9; }
+  100% { transform: rotate(-8deg) scale(1.08, 0.96); opacity: 1; }
+}
+
+@keyframes fairyWingFlutterRight {
+  0% { transform: rotate(0deg) scale(1); opacity: 0.95; }
+  100% { transform: rotate(9deg) scale(1.07, 0.95); opacity: 1; }
+}
+
+/* Fairy Magic Wand Elevation & Sparkle */
+.fairy-magic-wand {
+  transform-origin: 207px 123px;
   transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.stage-wand .fairy-wand-group {
-  transform: rotate(-32deg);
+.stage-wand .fairy-magic-wand {
+  transform: rotate(-6deg);
 }
 
 /* Glowing Star on Wand Tip */
 .wand-star-tip {
-  filter: drop-shadow(0 0 8px #facc15);
+  filter: drop-shadow(0 0 10px #facc15);
   transition: all 0.4s ease;
 }
 
 .stage-wand .wand-star-tip {
-  filter: drop-shadow(0 0 16px #facc15) drop-shadow(0 0 28px #ffffff);
+  filter: drop-shadow(0 0 18px #facc15) drop-shadow(0 0 32px #ffffff);
   animation: wandStarPulse 1.2s infinite alternate ease-in-out;
 }
 
@@ -3136,13 +3149,13 @@ input, select, textarea {
 /* Wand Light Beam traveling across to reveal brand name */
 .wand-magic-beam {
   position: absolute;
-  top: 55px;
-  left: 50%;
-  width: 18px;
-  height: 18px;
+  top: 90px;
+  left: 58%;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: radial-gradient(circle, #ffffff 0%, #facc15 50%, rgba(168, 85, 247, 0) 100%);
-  box-shadow: 0 0 22px #facc15, 0 0 40px #a855f7;
+  box-shadow: 0 0 24px #facc15, 0 0 45px #a855f7;
   opacity: 0;
   pointer-events: none;
   z-index: 15;
@@ -3155,23 +3168,23 @@ input, select, textarea {
 @keyframes wandBeamTravel {
   0% {
     opacity: 0;
-    transform: translate3d(-170px, -10px, 0) scale(0.4);
+    transform: translate3d(-120px, 0px, 0) scale(0.4);
   }
-  15% {
+  20% {
     opacity: 1;
-    transform: translate3d(-120px, 15px, 0) scale(1.3);
+    transform: translate3d(-60px, 15px, 0) scale(1.4);
   }
   50% {
     opacity: 1;
-    transform: translate3d(0px, 20px, 0) scale(1.8);
+    transform: translate3d(20px, 20px, 0) scale(1.9);
   }
   85% {
     opacity: 0.95;
-    transform: translate3d(120px, 15px, 0) scale(1.3);
+    transform: translate3d(90px, 15px, 0) scale(1.3);
   }
   100% {
     opacity: 0;
-    transform: translate3d(170px, 10px, 0) scale(0.4);
+    transform: translate3d(140px, 10px, 0) scale(0.4);
   }
 }
 
@@ -3179,17 +3192,17 @@ input, select, textarea {
 .magic-sparkle {
   position: absolute;
   pointer-events: none;
-  font-size: 1rem;
+  font-size: 1.1rem;
   line-height: 1;
-  filter: drop-shadow(0 0 6px #facc15) drop-shadow(0 0 12px #c084fc);
+  filter: drop-shadow(0 0 6px #facc15) drop-shadow(0 0 14px #c084fc);
   animation: sparkleTwinkle 0.8s ease-in-out infinite alternate;
 }
 
-.spk-1 { top: -14px; left: -10px; font-size: 1.1rem; color: #facc15; animation-delay: 0.1s; }
-.spk-2 { top: 6px; left: 16px; font-size: 0.9rem; color: #ffffff; animation-delay: 0.25s; }
-.spk-3 { top: -18px; left: 12px; font-size: 0.8rem; color: #c084fc; animation-delay: 0.4s; }
-.spk-4 { top: 12px; left: -8px; font-size: 1.2rem; color: #facc15; animation-delay: 0.15s; }
-.spk-5 { top: -4px; left: 24px; font-size: 1rem; color: #a855f7; animation-delay: 0.3s; }
+.spk-1 { top: -14px; left: -10px; font-size: 1.2rem; color: #facc15; animation-delay: 0.1s; }
+.spk-2 { top: 8px; left: 16px; font-size: 1rem; color: #ffffff; animation-delay: 0.25s; }
+.spk-3 { top: -18px; left: 14px; font-size: 0.9rem; color: #c084fc; animation-delay: 0.4s; }
+.spk-4 { top: 14px; left: -8px; font-size: 1.3rem; color: #facc15; animation-delay: 0.15s; }
+.spk-5 { top: -4px; left: 24px; font-size: 1.1rem; color: #a855f7; animation-delay: 0.3s; }
 
 @keyframes sparkleTwinkle {
   0% { transform: scale(0.7) rotate(0deg); opacity: 0.5; }
@@ -3199,20 +3212,20 @@ input, select, textarea {
 /* Branding Container */
 .pretwin-intro-branding {
   text-align: center;
-  margin-top: 22px;
+  margin-top: 14px;
   position: relative;
   z-index: 12;
 }
 
 /* PreTwin Wordmark with magical left-to-right clip reveal */
 .pretwin-intro-wordmark {
-  font-size: 3.8rem;
+  font-size: 3.6rem;
   font-weight: 900;
   letter-spacing: -0.03em;
-  background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 35%, #2563eb 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #ede9fe 40%, #c4b5fd 75%, #facc15 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 4px 14px rgba(124, 58, 237, 0.35));
+  filter: drop-shadow(0 4px 18px rgba(168, 85, 247, 0.6));
   line-height: 1.1;
   margin-bottom: 12px;
   clip-path: inset(0 100% 0 0);
@@ -3224,12 +3237,12 @@ input, select, textarea {
   display: inline-block;
   font-size: 0.85em;
   font-weight: 900;
-  background: linear-gradient(135deg, #7c3aed 0%, #ec4899 50%, #f59e0b 100%);
+  background: linear-gradient(135deg, #fde047 0%, #f59e0b 50%, #ec4899 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   padding: 0 4px;
   margin-left: 4px;
-  filter: drop-shadow(0 2px 10px rgba(236, 72, 153, 0.4));
+  filter: drop-shadow(0 2px 10px rgba(250, 204, 21, 0.6));
 }
 
 .stage-reveal .pretwin-intro-wordmark {
@@ -3244,12 +3257,12 @@ input, select, textarea {
   }
   70% {
     clip-path: inset(0 0% 0 0);
-    filter: drop-shadow(0 6px 24px rgba(168, 85, 247, 0.6));
+    filter: drop-shadow(0 6px 28px rgba(192, 132, 252, 0.8));
     transform: scale(1.02);
   }
   100% {
     clip-path: inset(0 0% 0 0);
-    filter: drop-shadow(0 4px 14px rgba(124, 58, 237, 0.35));
+    filter: drop-shadow(0 4px 20px rgba(168, 85, 247, 0.6));
     transform: scale(1);
   }
 }
@@ -3259,11 +3272,11 @@ input, select, textarea {
   font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: 0.03em;
-  background: linear-gradient(90deg, #1e1b4b 0%, #6d28d9 30%, #b45309 60%, #1e1b4b 100%);
+  background: linear-gradient(90deg, #fef08a 0%, #fde047 30%, #ffffff 60%, #fef08a 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 6px rgba(124, 58, 237, 0.2));
+  filter: drop-shadow(0 2px 8px rgba(250, 204, 21, 0.45));
   opacity: 0;
   transform: translateY(14px);
   padding: 4px 16px;
@@ -3287,7 +3300,8 @@ input, select, textarea {
 
 @media (prefers-reduced-motion: reduce) {
   .pretwin-startup-overlay,
-  .pretwin-flying-emblem-wrap,
+  .pretwin-moon-fairy-wrap,
+  .fairy-wing,
   .pretwin-intro-branding {
     animation: none !important;
     transition: none !important;
@@ -3433,11 +3447,23 @@ input, select, textarea {
 }
 
 .pretwin-top-brand-tagline {
-  font-size: 11.5px;
-  color: #e9d5ff;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-  margin-top: 1px;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.35px;
+  margin-top: 3px;
+  background: linear-gradient(90deg, #fef08a 0%, #fde047 30%, #ffffff 60%, #fef08a 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 4px rgba(250, 204, 21, 0.35));
+  animation: taglineGlowShimmer 4s ease-in-out infinite alternate;
+  display: inline-block;
+  line-height: 1.25;
+}
+
+@keyframes taglineGlowShimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 }
 
 .pretwin-top-branding-badge {
@@ -3638,60 +3664,63 @@ input, select, textarea {
 .pretwin-second-nav-right {
   display: flex;
   align-items: center;
+  gap: 14px;
   margin-left: auto;
 }
 
 .pretwin-second-nav-btn {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  justify-content: center;
+  gap: 3px;
+  min-width: 60px;
+  height: 48px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   color: #ffffff;
-  padding: 6px 14px;
-  border-radius: 6px;
-  font-size: 13.5px;
-  font-weight: 600;
   cursor: pointer;
   text-decoration: none;
   font-family: inherit;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
 }
 
 .pretwin-second-nav-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.35);
   color: #ffffff;
+  transform: translateY(-1px);
 }
 
-#pretwinFeaturesBtn {
-  background: rgba(168, 85, 247, 0.22);
-  border-color: rgba(192, 132, 252, 0.4);
-  color: #f5d0fe;
-}
-
-#pretwinFeaturesBtn:hover {
-  background: rgba(168, 85, 247, 0.35);
+.pretwin-second-nav-btn.active {
+  background: rgba(168, 85, 247, 0.32);
   border-color: #c084fc;
-  color: #ffffff;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.35);
 }
 
-.pretwin-second-nav-btn.pretwin-profile-btn {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(168, 85, 247, 0.3));
-  border-color: rgba(168, 85, 247, 0.45);
-  color: #ffffff;
+.pretwin-second-nav-icon-box {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.pretwin-second-nav-btn.pretwin-profile-btn:hover {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.45), rgba(168, 85, 247, 0.45));
-  border-color: #c084fc;
+.pretwin-second-nav-icon-box svg {
+  width: 20px;
+  height: 20px;
+  display: block;
 }
 
 .pretwin-second-nav-text {
-  font-size: 13.5px;
+  font-size: 11.5px;
   font-weight: 600;
-  display: inline-block;
+  line-height: 1;
+  letter-spacing: 0.2px;
+  color: #ffffff;
 }
 
 /* Features Mega-Menu Dropdown */
@@ -4244,6 +4273,257 @@ input, select, textarea {
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+/* ==========================================================================
+   DEDICATED HORIZONTAL FEATURE NAVIGATION BAR
+   All eight feature icons with each feature name displayed directly underneath
+   ========================================================================== */
+.features-nav-section {
+  margin-bottom: 32px;
+}
+
+.features-horizontal-navbar-wrapper {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05);
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+  -webkit-overflow-scrolling: touch;
+}
+
+.features-horizontal-navbar-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.features-horizontal-navbar-wrapper::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.features-horizontal-navbar-wrapper::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.features-horizontal-navbar {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  min-width: 100%;
+}
+
+.feature-nav-item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 10px;
+  min-width: 130px;
+  flex: 1 1 0px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: center;
+  font-family: inherit;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #334155;
+  outline: none;
+}
+
+.feature-nav-item:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.feature-nav-item.active {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%);
+  border-color: #6366f1;
+  color: #ffffff;
+  box-shadow: 0 6px 18px -2px rgba(49, 46, 129, 0.35);
+  transform: translateY(-2px);
+}
+
+.feature-nav-item:focus-visible {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.4);
+}
+
+.feat-nav-icon-box {
+  font-size: 24px;
+  line-height: 1;
+  transition: transform 0.25s ease;
+}
+
+.feature-nav-item:hover .feat-nav-icon-box {
+  transform: scale(1.15);
+}
+
+.feat-nav-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.2px;
+  display: block;
+}
+
+.feature-nav-item.active .feat-nav-label {
+  color: #ffffff;
+}
+
+/* Feature Content Display Area */
+.features-content-display-area {
+  margin-bottom: 40px;
+}
+
+.feature-content-panel {
+  transition: opacity 0.25s ease;
+}
+
+.feature-content-panel.active {
+  animation: panelFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes panelFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.feat-panel-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 28px 30px;
+  box-shadow: 0 6px 24px -4px rgba(15, 23, 42, 0.08);
+}
+
+.feat-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f1f5f9;
+  flex-wrap: wrap;
+}
+
+.feat-panel-icon-wrap {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.feat-panel-meta {
+  flex: 1;
+  min-width: 240px;
+}
+
+.feat-panel-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 4px 0 2px;
+}
+
+.feat-panel-subtitle {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #7c3aed;
+}
+
+.feat-launch-btn {
+  padding: 10px 22px;
+  font-weight: 700;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.feat-panel-desc {
+  font-size: 15px;
+  line-height: 1.65;
+  color: #475569;
+  margin: 20px 0 24px;
+}
+
+.feat-panel-grid-highlights {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 860px) {
+  .feat-panel-grid-highlights {
+    grid-template-columns: 1fr;
+  }
+}
+
+.highlight-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hi-icon {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.highlight-item strong {
+  font-size: 13.5px;
+  color: #1e293b;
+}
+
+.highlight-item span {
+  font-size: 12.5px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.feat-panel-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.features-section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.features-section-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.features-section-badge {
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
 }
 
 /* Features Grid */

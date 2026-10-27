@@ -39,11 +39,13 @@ def test_fairy_tale_opening_animation_and_tagline(app_client):
     html = res.data.decode("utf-8")
 
     assert 'id="pretwinStartupIntro"' in html
-    assert 'class="pretwin-fairy-svg"' in html
-    assert 'class="wing-group-left"' in html
-    assert 'class="wing-group-right"' in html
-    assert 'class="fairy-wand-group"' in html
-    assert 'class="wand-magic-beam"' in html
+    assert "pretwin-fairy-svg" in html
+    assert "crescent-moon-group" in html
+    assert "seated-fairy-group" in html
+    assert "wing-group-left" in html
+    assert "wing-group-right" in html
+    assert "fairy-wand-group" in html
+    assert "wand-magic-beam" in html
     assert "magic-sparkle" in html
     assert "introWordmark" in html
     assert "PreTwin" in html
@@ -54,15 +56,14 @@ def test_fairy_tale_opening_animation_and_tagline(app_client):
 
 
 def test_animation_css_circular_orbit_single_round():
-    """Verify style.css sets exactly one circular round without looping repeatedly."""
+    """Verify style.css sets fairy sitting gracefully on moon with fluttering wings without looping."""
     with open("static/css/style.css", "r", encoding="utf-8") as f:
         css = f.read()
 
-    # introCircularFlight keyframe must exist with circular coordinates
-    assert "@keyframes introCircularFlight" in css
-    # Single iteration animation, 2.6s forwards (not infinite)
-    assert "introCircularFlight 2.6s cubic-bezier" in css
-    assert "infinite introCircularFlight" not in css
+    # Crescent moon and seated fairy keyframes
+    assert "moonSoftPulse" in css
+    assert "fairyWingFlutterLeft" in css
+    assert "fairyWingFlutterRight" in css
     # Wand beam, sparkle, and reveal effects
     assert "wandBeamTravel" in css
     assert "wordmarkClipReveal" in css

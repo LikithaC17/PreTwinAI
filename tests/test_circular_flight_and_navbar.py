@@ -2,19 +2,22 @@
 tests/test_circular_flight_and_navbar.py
 
 Verifies:
-1. Fairy-Tale Startup Opening Animation:
-   - Fairy flying character SVG with delicate wings, magic wand and glowing star tip
-   - Exactly one complete circular round flight animation (single 360-degree orbit, iteration count 1, not looping)
-   - Wand pointing towards center after flight completion
-   - Glowing magical beam with sparkling particles emerging from the wand
-   - Magical reveal effect of PreTwin brand name in the center
-   - Tagline underneath: “Your Future. Your Style. Your Twin.”
-   - Reduced-motion accessibility check and optional skip-intro button
+1. Fairy-Tale Startup Opening Animation (Fairy Sitting Gracefully on Crescent Half-Moon):
+   - Fairy sitting on glowing crescent half-moon
+   - Complete body in view from head to feet (face, hair, body, hands, legs, feet, slippers, wings, wand)
+   - Fairy remains seated on the crescent moon (no circular flying loops)
+   - Softly fluttering delicate wings while seated
+   - Magic wand with glowing star tip releasing sparkling celestial beam
+   - Magical reveal effect of PreTwin AI brand name in the center
+   - Prominently highlighted tagline underneath: “Your Future. Your Style. Your Twin.”
+   - Reduced-motion accessibility check and accessible skip-intro button
 2. First Navigation Bar:
-   - Absence of Sign In button and account/profile icon in first navbar
-   - Balanced spacing and clean layout
-   - Preservation of logo, search bar, and all 6 shopping shortcuts (Wishlist, Cart, My Orders, Reward Points, Savings Plan, Smart Cart)
-   - Operational status of remaining navigation shortcuts
+   - Dedicated branding bar above first navbar with logo, PreTwin AI, and prominently highlighted tagline
+   - Absence of duplicate logo in first navbar
+   - Balanced spacing, search bar, and 5 shopping shortcuts (Wishlist, Cart, My Orders, Reward Points, Savings Plan)
+3. Second Navigation Bar:
+   - Features, More, and Profile at the far right in exact order: 1. Features, 2. More, 3. Profile
+   - Each control displays icon with label directly underneath
 """
 
 import pytest
@@ -22,7 +25,7 @@ from app import app
 
 
 def test_startup_animation_fairy_character_and_elements(app_client):
-    """Verify fairy character with wings, wand, beam with sparkles, wordmark, and tagline."""
+    """Verify fairy sitting on crescent moon with complete body, wand, beam, wordmark, and tagline."""
     res = app_client.get("/")
     assert res.status_code == 200
     html = res.data.decode("utf-8")
@@ -32,11 +35,17 @@ def test_startup_animation_fairy_character_and_elements(app_client):
     assert "skipIntroBtn" in html
     assert "Skip Intro" in html
 
-    # 2. Fairy Character with Wings and Magic Wand
-    assert "pretwin-fairy-svg" in html
-    assert "wing-group-left" in html
-    assert "wing-group-right" in html
-    assert "fairy-wand-group" in html
+    # 2. Glowing Crescent Moon and Complete Seated Fairy
+    assert "crescent-moon-group" in html
+    assert "crescent-moon-path" in html
+    assert "seated-fairy-group" in html
+    assert "fairy-wings-container" in html
+    assert "wing-upper-left" in html
+    assert "wing-upper-right" in html
+    assert "fairy-legs-and-feet" in html
+    assert "fairy-foot-left" in html
+    assert "fairy-foot-right" in html
+    assert "fairy-magic-wand" in html
     assert "wand-star-tip" in html
 
     # 3. Glowing Magical Beam with Sparkling Particles
@@ -47,31 +56,33 @@ def test_startup_animation_fairy_character_and_elements(app_client):
     # 4. Magical Brand Reveal and Official Tagline
     assert "introWordmark" in html
     assert "PreTwin" in html
+    assert "AI" in html
     assert "introTagline" in html
     assert "Your Future. Your Style. Your Twin." in html
 
 
-def test_circular_flight_keyframes_in_stylesheet():
-    """Verify CSS defines exactly one complete 360-degree circular orbit, single iteration, no infinite loops."""
+def test_seated_fairy_and_moon_keyframes_in_stylesheet():
+    """Verify CSS defines fairy sitting on crescent moon, fluttering wings, and wand beam without circular flight."""
     with open("static/css/style.css", "r", encoding="utf-8") as f:
         css = f.read()
 
-    # Verify single-iteration forwards circular flight animation
-    assert "introCircularFlight" in css
-    assert "animation: introCircularFlight 2.6s cubic-bezier" in css
-    assert "forwards" in css
+    # Verify moon and seated fairy styling
+    assert ".pretwin-moon-stage" in css
+    assert ".pretwin-moon-fairy-wrap" in css
+    assert ".crescent-moon-group" in css
+    assert "moonSoftPulse" in css
 
-    # Verify complete 360-degree circular orbit coordinates (all quadrants visited)
-    assert "@keyframes introCircularFlight" in css
-    assert "150px" in css  # Radius of circular round
-    assert "-150px" in css
+    # Verify fluttering wings while fairy remains seated
+    assert "fairyWingFlutterLeft" in css
+    assert "fairyWingFlutterRight" in css
 
-    # Verify wand elevation and magic beam with sparkling particles
-    assert ".stage-wand .fairy-wand-group" in css
+    # Verify wand elevation, beam travel, wordmark reveal, and tagline shimmer
+    assert ".stage-wand .fairy-magic-wand" in css
     assert "wandBeamTravel" in css
     assert "magic-sparkle" in css
     assert "wordmarkClipReveal" in css
     assert "taglineFadeIn" in css
+    assert "taglineShimmer" in css
 
     # Verify reduced-motion support
     assert "@media (prefers-reduced-motion: reduce)" in css
@@ -85,7 +96,8 @@ def test_first_navigation_bar_structure(app_client):
 
     # Verify dedicated branding section above the first navbar
     assert "pretwin-top-branding-bar" in html
-    assert "PreTwin AI" in html
+    assert "PreTwin" in html
+    assert "AI" in html
     assert "Your Future. Your Style. Your Twin." in html
 
     # Extract first navbar header
@@ -121,8 +133,8 @@ def test_first_navigation_bar_structure(app_client):
 
 
 def test_all_six_shopping_shortcuts_endpoints(app_client):
-    """Ensure all 6 shortcut destinations are active and return 200 OK."""
-    endpoints = ["/wishlist", "/orders", "/rewards", "/savings", "/smart-cart"]
+    """Ensure all 5 shortcut destinations + features dashboard are active and return 200 OK."""
+    endpoints = ["/wishlist", "/orders", "/rewards", "/savings", "/smart-cart", "/features"]
     for ep in endpoints:
         r = app_client.get(ep)
         assert r.status_code == 200

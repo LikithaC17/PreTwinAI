@@ -32,9 +32,12 @@
        ====================================================================== -->
   <div class="pretwin-top-branding-bar" role="banner">
     <div class="pretwin-top-branding-inner">
-      <a href="/" class="pretwin-top-brand-link" title="PreTwin — Predictive Personal Shopping Twin">
-        <img src="/static/images/pretwin-logo.svg" alt="PreTwin Logo" class="pretwin-top-brand-logo">
+      <a href="/" class="pretwin-top-brand-link" title="PreTwin AI — Predictive Personal Shopping Twin">
+        <img src="/static/images/pretwin-logo.svg" alt="PreTwin AI Logo" class="pretwin-top-brand-logo">
         <div class="pretwin-top-brand-meta">
+          <div class="pretwin-top-brand-title">
+            <span class="pretwin-name-main">PreTwin</span><span class="pretwin-name-ai">AI</span>
+          </div>
           <div class="pretwin-top-brand-tagline">Your Future. Your Style. Your Twin.</div>
         </div>
       </a>
@@ -171,12 +174,14 @@
             title="Explore PreTwin AI Features Dashboard"
             aria-label="Explore PreTwin AI Features"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="7" height="7"></rect>
-              <rect x="14" y="3" width="7" height="7"></rect>
-              <rect x="14" y="14" width="7" height="7"></rect>
-              <rect x="3" y="14" width="7" height="7"></rect>
-            </svg>
+            <div class="pretwin-second-nav-icon-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+            </div>
             <span class="pretwin-second-nav-text">Features</span>
           </a>
 
@@ -264,13 +269,14 @@
         <!-- 2. More Menu -->
         <div class="pretwin-nav-item pretwin-dropdown-container" id="pretwinMoreContainer">
           <button type="button" class="pretwin-second-nav-btn" id="pretwinMoreBtn" onclick="toggleMoreMenu(event)" aria-haspopup="true" aria-expanded="false" title="More Options">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="12" cy="5" r="2.1"></circle>
-              <circle cx="12" cy="12" r="2.1"></circle>
-              <circle cx="12" cy="19" r="2.1"></circle>
-            </svg>
+            <div class="pretwin-second-nav-icon-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="5" r="2.1"></circle>
+                <circle cx="12" cy="12" r="2.1"></circle>
+                <circle cx="12" cy="19" r="2.1"></circle>
+              </svg>
+            </div>
             <span class="pretwin-second-nav-text">More</span>
-            <span class="nav-caret">▼</span>
           </button>
 
           <!-- More Menu Dropdown -->
@@ -312,18 +318,17 @@
               title="Signed in as {{ current_user.username }}"
               aria-label="Account menu for {{ current_user.username }}"
             >
-              <div class="pretwin-shortcut-icon-box">
+              <div class="pretwin-second-nav-icon-box">
                 {% if current_user.avatar_url %}
                   <img src="{{ current_user.avatar_url }}" alt="{{ current_user.username }}" class="pretwin-nav-avatar">
                 {% else %}
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                   </svg>
                 {% endif %}
               </div>
               <span class="pretwin-second-nav-text">Profile</span>
-              <span class="nav-caret">▼</span>
             </button>
 
             <!-- Dropdown Menu for Authenticated User -->
@@ -371,8 +376,8 @@
               title="My Profile &amp; Sign In"
               aria-label="Profile and Sign In"
             >
-              <div class="pretwin-shortcut-icon-box">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+              <div class="pretwin-second-nav-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                   <circle cx="12" cy="7" r="4"></circle>
                 </svg>
