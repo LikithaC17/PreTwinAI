@@ -112,29 +112,9 @@ def init_db():
         ("featured", "INTEGER DEFAULT 0"),
         ("source_id", "TEXT DEFAULT ''"),
         ("attributes", "TEXT DEFAULT '{}'"),
-        ("external_url", "TEXT DEFAULT ''"),
-        ("availability", "TEXT DEFAULT 'in_stock'"),
-        ("data_origin", "TEXT DEFAULT 'catalog'"),
-        ("last_synced_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"),
     ]:
         try:
             cursor.execute(f"ALTER TABLE products ADD COLUMN {col} {col_type}")
-        except Exception:
-            pass
-
-    # Performance indexes for large-scale product catalog
-    for idx_sql in [
-        "CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);",
-        "CREATE INDEX IF NOT EXISTS idx_products_subcategory ON products(subcategory);",
-        "CREATE INDEX IF NOT EXISTS idx_products_brand ON products(brand);",
-        "CREATE INDEX IF NOT EXISTS idx_products_price ON products(price);",
-        "CREATE INDEX IF NOT EXISTS idx_products_rating ON products(rating);",
-        "CREATE INDEX IF NOT EXISTS idx_products_source ON products(source_type, source_id);",
-        "CREATE INDEX IF NOT EXISTS idx_products_name ON products(name);",
-        "CREATE INDEX IF NOT EXISTS idx_products_avail ON products(availability);",
-    ]:
-        try:
-            cursor.execute(idx_sql)
         except Exception:
             pass
 

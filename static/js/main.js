@@ -748,37 +748,6 @@ async function openProductDetail(productId) {
       specsEl.innerHTML = rows.join('');
     }
 
-    const badgeEl = document.getElementById('detailOriginBadge');
-    if (badgeEl) {
-      if (p.data_origin === 'live') {
-        badgeEl.textContent = '⚡ Flipkart Live';
-        badgeEl.className = 'fk-origin-badge fk-origin-live';
-      } else if (p.data_origin === 'cached') {
-        badgeEl.textContent = '⏱ Flipkart Cached';
-        badgeEl.className = 'fk-origin-badge fk-origin-cached';
-      } else {
-        badgeEl.textContent = '✦ PreTwin Verified';
-        badgeEl.className = 'fk-origin-badge fk-origin-catalog';
-      }
-    }
-
-    const extBtn = document.getElementById('detailExternalBtn');
-    const isLiveMarketplace = (p.source_type === 'flipkart_live' || p.data_origin === 'live');
-
-    if (isLiveMarketplace && p.external_url) {
-      if (addBtn) addBtn.style.display = 'none';
-      if (buyBtn) buyBtn.style.display = 'none';
-      if (extBtn) {
-        extBtn.style.display = 'inline-flex';
-        extBtn.href = p.external_url;
-        extBtn.innerHTML = '<span>↗</span> BUY ON FLIPKART';
-      }
-    } else {
-      if (addBtn) addBtn.style.display = 'inline-flex';
-      if (buyBtn) buyBtn.style.display = 'inline-flex';
-      if (extBtn) extBtn.style.display = 'none';
-    }
-
     if (addBtn) {
       addBtn.onclick = () => {
         addToCart(p);

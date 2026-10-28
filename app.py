@@ -21,7 +21,6 @@ except ImportError:
 import database
 from config import Config
 from agents.chat_assistant import PreTwinChatAssistant
-from integrations.flipkart import FlipkartProvider
 
 # ---------------------------------------------------------------------------
 # App factory
@@ -29,7 +28,6 @@ from integrations.flipkart import FlipkartProvider
 
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
-flipkart_provider = FlipkartProvider()
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Lax",
@@ -1782,11 +1780,6 @@ def get_products():
         page = max(1, request.args.get("page", 1, type=int))
         limit = request.args.get("limit", 24, type=int)
 
-        # Filters for large-scale catalog and Flipkart integration
-        source_type = request.args.get("source_type", "").strip().lower()
-        availability = request.args.get("availability", "").strip().lower()
-        data_origin = request.args.get("data_origin", "").strip().lower()
-
         where_clauses = ["1=1"]
         params = []
 
@@ -1818,33 +1811,6 @@ def get_products():
             where_clauses.append("(LOWER(name) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?) OR LOWER(brand) LIKE LOWER(?) OR LOWER(subcategory) LIKE LOWER(?))")
             pattern = f"%{search}%"
             params.extend([pattern, pattern, pattern, pattern])
-
-        # Filter by source_type (e.g. pretwin_catalog, flipkart_live)
-        if source_type and source_type != "all":
-            if source_type in ("pretwin", "pretwin_catalog", "catalog", "internal"):
-                where_clauses.append("(LOWER(source_type) IN ('pretwin_catalog', 'demo') OR LOWER(data_origin) = 'catalog')")
-            elif source_type in ("flipkart", "flipkart_live", "live"):
-                where_clauses.append("(LOWER(source_type) = 'flipkart_live' OR LOWER(data_origin) IN ('live', 'cached'))")
-            else:
-                where_clauses.append("LOWER(source_type) = LOWER(?)")
-                params.append(source_type)
-
-        # Filter by availability (in_stock, limited_stock, out_of_stock)
-        if availability and availability != "all":
-            if availability in ("in_stock", "in-stock", "instock"):
-                where_clauses.append("(LOWER(availability) = 'in_stock' OR stock > 0)")
-            elif availability in ("limited", "limited_stock"):
-                where_clauses.append("LOWER(availability) = 'limited_stock'")
-            elif availability in ("out_of_stock", "out-of-stock"):
-                where_clauses.append("(LOWER(availability) = 'out_of_stock' OR stock <= 0)")
-            else:
-                where_clauses.append("LOWER(availability) = LOWER(?)")
-                params.append(availability)
-
-        # Filter by data_origin (catalog, live, cached)
-        if data_origin and data_origin != "all":
-            where_clauses.append("LOWER(data_origin) = LOWER(?)")
-            params.append(data_origin)
 
         where_sql = " AND ".join(where_clauses)
 
@@ -1887,13 +1853,6 @@ def get_products():
                 d["mrp"] = round(d["price"] / (1 - disc / 100.0), 2)
             else:
                 d["mrp"] = round(d["price"] * 1.25, 2)
-            
-            # Enrich marketplace and catalog integration metadata
-            d["source_type"] = d.get("source_type") or "pretwin_catalog"
-            d["data_origin"] = d.get("data_origin") or "catalog"
-            d["availability"] = d.get("availability") or ("in_stock" if (d.get("stock") or 0) > 0 else "out_of_stock")
-            d["external_url"] = d.get("external_url") or ""
-            d["is_external"] = bool(d.get("source_type") == "flipkart_live" or d.get("data_origin") in ("live", "cached") or d.get("external_url"))
             products.append(d)
 
         # Distinct categories
@@ -1963,75 +1922,8 @@ def get_product(product_id):
             product["mrp"] = round(product["price"] / (1 - disc / 100.0), 2)
         else:
             product["mrp"] = round(product["price"] * 1.25, 2)
-        
-        product["source_type"] = product.get("source_type") or "pretwin_catalog"
-        product["data_origin"] = product.get("data_origin") or "catalog"
-        product["availability"] = product.get("availability") or ("in_stock" if (product.get("stock") or 0) > 0 else "out_of_stock")
-        product["external_url"] = product.get("external_url") or ""
-        product["is_external"] = bool(product.get("source_type") == "flipkart_live" or product.get("data_origin") in ("live", "cached") or product.get("external_url"))
-
         return jsonify(product)
 
-    except Exception as exc:
-        return _error(str(exc))
-
-
-# ---------------------------------------------------------------------------
-# API – Flipkart Official Integration Endpoints
-# ---------------------------------------------------------------------------
-
-@app.route("/api/flipkart/status", methods=["GET"])
-def get_flipkart_status():
-    """Return Flipkart API integration status, compliance, and configuration."""
-    try:
-        status_info = flipkart_provider.get_status()
-        return jsonify({"success": True, "status": status_info})
-    except Exception as exc:
-        return _error(str(exc))
-
-
-@app.route("/api/flipkart/products", methods=["GET"])
-def get_flipkart_products():
-    """Query live/cached authorized Flipkart products."""
-    try:
-        query = request.args.get("q", request.args.get("search", "")).strip()
-        category = request.args.get("category", "").strip()
-        limit = min(50, max(1, request.args.get("limit", 20, type=int)))
-
-        fk_res = flipkart_provider.search_products(query=query, category=category, limit=limit)
-        prods = fk_res.get("products", [])
-        return jsonify({
-            "success": fk_res.get("success", False),
-            "data_origin": fk_res.get("data_origin", "catalog"),
-            "products": prods,
-            "count": len(prods),
-            "message": fk_res.get("message", ""),
-            "is_live": fk_res.get("is_live", False),
-            "is_cached": fk_res.get("is_cached", False),
-            "status": flipkart_provider.get_status()
-        })
-    except Exception as exc:
-        return _error(str(exc))
-
-
-@app.route("/api/flipkart/sync", methods=["POST"])
-def sync_flipkart_products():
-    """Synchronize Flipkart catalog to PreTwin database with duplicate prevention."""
-    try:
-        data = request.get_json(silent=True) or {}
-        products_list = data.get("products")
-        if not products_list:
-            query = data.get("query", "electronics")
-            category = data.get("category", "")
-            fk_res = flipkart_provider.search_products(query=query, category=category, limit=50)
-            products_list = fk_res.get("products", []) if isinstance(fk_res, dict) else fk_res
-
-        sync_summary = flipkart_provider.sync_to_database(products_list)
-        return jsonify({
-            "success": True,
-            "result": sync_summary,
-            "status": flipkart_provider.get_status()
-        })
     except Exception as exc:
         return _error(str(exc))
 

@@ -567,6 +567,7 @@ def build_and_seed_catalogue():
         cursor = conn.cursor()
 
         # Wipe existing products so clean 1,040+ products are inserted with unique IDs
+        cursor.execute("PRAGMA foreign_keys = OFF")
         cursor.execute("DELETE FROM products")
         cursor.execute("DELETE FROM sqlite_sequence WHERE name='products'")
         conn.commit()
@@ -676,6 +677,7 @@ def build_and_seed_catalogue():
 
             print(f"  [OK] Category '{cat_name}': Inserted {len(category_products)} products.")
 
+        cursor.execute("PRAGMA foreign_keys = ON")
         conn.commit()
         print(f"\n[DONE] Successfully seeded {total_inserted} products across {len(CATEGORY_METADATA)} categories.")
         return total_inserted

@@ -41,25 +41,6 @@
         <span style="color: #2874f0; font-size: 12px; font-weight: 600; cursor: pointer;" onclick="clearFilters()">CLEAR ALL</span>
       </div>
 
-      <!-- Data Source Filter -->
-      <div style="padding: 16px; border-bottom: 1px solid #f0f0f0;">
-        <div style="font-size: 12px; font-weight: 600; color: #212121; text-transform: uppercase; margin-bottom: 10px;">DATA SOURCE</div>
-        <select id="dataSourceSelect" onchange="applyFilters(1)" style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 2px; font-size: 13px; color: #212121;">
-          <option value="all">All Sources (2,400+ Products)</option>
-          <option value="pretwin_catalog">PreTwin Verified Catalog</option>
-          <option value="flipkart_live">Flipkart Integration Feed</option>
-        </select>
-      </div>
-
-      <!-- Availability Filter -->
-      <div style="padding: 16px; border-bottom: 1px solid #f0f0f0;">
-        <div style="font-size: 12px; font-weight: 600; color: #212121; text-transform: uppercase; margin-bottom: 10px;">AVAILABILITY</div>
-        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #212121; cursor: pointer;">
-          <input type="checkbox" id="inStockCheck" onchange="applyFilters(1)">
-          <span>In Stock Only</span>
-        </label>
-      </div>
-
       <!-- Categories Filter -->
       <div style="padding: 16px; border-bottom: 1px solid #f0f0f0;">
         <div style="font-size: 12px; font-weight: 600; color: #212121; text-transform: uppercase; margin-bottom: 10px;">CATEGORY</div>
@@ -167,28 +148,6 @@
          PRETWIN RIGHT PRODUCT RESULTS GRID
          ================================================================== -->
     <div style="flex: 1; background: #ffffff; box-shadow: var(--fk-shadow-sm); border-radius: 2px; padding: 16px 20px;">
-      
-      <!-- Flipkart API Integration Status Banner -->
-      <div class="fk-integration-banner" id="fkStatusBanner">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <span style="font-size:1.4rem;">⚡</span>
-          <div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <strong style="font-size:13px;" id="fkModeText">Flipkart Integration: Authorized API Ready</strong>
-              <span class="fk-integration-pill" id="fkPill">Official Integration</span>
-            </div>
-            <div style="font-size:11px; opacity:0.9; margin-top:2px;">
-              Thousands of verified catalog products • 30-min price refresh compliance • Zero scraping policy
-            </div>
-          </div>
-        </div>
-        <div>
-          <button onclick="openFlipkartInfoModal()" style="background:#ffffff; color:#1d4ed8; border:none; padding:6px 12px; border-radius:3px; font-size:12px; font-weight:700; cursor:pointer;">
-            API Status &amp; Policy
-          </button>
-        </div>
-      </div>
-
       <!-- Results Header & Sort Strip -->
       <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; margin-bottom: 12px; flex-wrap: wrap; gap: 12px;">
         <div>
@@ -228,56 +187,6 @@
       </div>
     </div>
 
-  </div>
-</div>
-
-<!-- Flipkart Integration Compliance & Setup Modal -->
-<div class="fk-modal-overlay" id="fkInfoModal" style="display:none; align-items:center; justify-content:center;">
-  <div style="background:#ffffff; border-radius:6px; max-width:620px; width:92%; padding:24px; position:relative; box-shadow:0 12px 36px rgba(0,0,0,0.3); max-height:85vh; overflow-y:auto;">
-    <button class="fk-modal-close" onclick="closeFlipkartInfoModal()" style="position:absolute; right:16px; top:16px; background:none; border:none; font-size:22px; cursor:pointer;">&times;</button>
-    <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
-      <span style="font-size:1.8rem;">⚡</span>
-      <div>
-        <h3 style="margin:0; font-size:18px; color:#212121; font-weight:700;">Flipkart Official API Integration</h3>
-        <div style="font-size:12px; color:#6b7280;">Compliance Standards, Authorized Endpoints &amp; Credential Setup</div>
-      </div>
-    </div>
-    <div id="fkModalContent" style="font-size:13px; color:#374151; line-height:1.6;">
-      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:4px; padding:12px 14px; margin-bottom:14px;">
-        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-          <strong>Provider Status:</strong>
-          <span id="fkModalMode" class="fk-origin-badge fk-origin-catalog">Checking...</span>
-        </div>
-        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-          <strong>Allowed Refresh Frequency:</strong>
-          <span>30 Minutes (per Terms of Service)</span>
-        </div>
-        <div style="display:flex; justify-content:space-between;">
-          <strong>Rate Limit Protection:</strong>
-          <span>60 Requests / Minute (Cached)</span>
-        </div>
-      </div>
-      <h4 style="font-size:14px; margin:12px 0 6px 0; color:#111827;">Compliance &amp; Ethics Guarantee</h4>
-      <p style="margin:0 0 10px 0;">
-        PreTwin AI strictly follows permitted integration policies. We <strong>never scrape</strong>, bypass access controls, or claim sample data as live prices. Live API queries require verified credentials stored safely in server environment variables.
-      </p>
-      <h4 style="font-size:14px; margin:12px 0 6px 0; color:#111827;">Required Environment Variables</h4>
-      <code style="display:block; background:#1e293b; color:#38bdf8; padding:8px 12px; border-radius:4px; font-size:12px; margin-bottom:10px;">
-        FLIPKART_AFFILIATE_ID=your_affiliate_id<br>
-        FLIPKART_AFFILIATE_TOKEN=your_api_token<br>
-        FLIPKART_ENABLED=true
-      </code>
-      <h4 style="font-size:14px; margin:12px 0 6px 0; color:#111827;">Approval Steps for Live Production API</h4>
-      <ol style="margin:0; padding-left:18px; font-size:12px; color:#4b5563;">
-        <li>Register at official Flipkart Affiliate Portal (https://affiliate.flipkart.com).</li>
-        <li>Complete business verification and request API access.</li>
-        <li>Obtain your unique Affiliate ID and Token.</li>
-        <li>Export the credentials into the PreTwin AI environment.</li>
-      </ol>
-    </div>
-    <div style="margin-top:20px; text-align:right;">
-      <button onclick="closeFlipkartInfoModal()" style="background:#2874f0; color:#fff; border:none; padding:8px 18px; border-radius:3px; font-weight:600; cursor:pointer;">Got It</button>
-    </div>
   </div>
 </div>
 {% endblock %}

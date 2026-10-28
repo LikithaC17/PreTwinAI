@@ -24,10 +24,3 @@ class Config:
     GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', '')
     GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET', '')
     GOOGLE_AUTH_ENABLED = bool(GOOGLE_CLIENT_ID)
-    # Flipkart Live Integration & Affiliate Settings
-    FLIPKART_AFFILIATE_ID = os.getenv('FLIPKART_AFFILIATE_ID', '')
-    FLIPKART_AFFILIATE_TOKEN = os.getenv('FLIPKART_AFFILIATE_TOKEN', '')
-    FLIPKART_API_BASE_URL = os.getenv('FLIPKART_API_BASE_URL', 'https://affiliate-api.flipkart.net/affiliate/1.0')
-    FLIPKART_ENABLED = os.getenv('FLIPKART_ENABLED', 'false').lower() == 'true'
-    FLIPKART_CACHE_TTL_SECONDS = int(os.getenv('FLIPKART_CACHE_TTL_SECONDS', '1800'))
-    FLIPKART_RATE_LIMIT_PER_MINUTE = int(os.getenv('FLIPKART_RATE_LIMIT_PER_MINUTE', '60'))
