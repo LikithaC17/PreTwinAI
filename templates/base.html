@@ -146,13 +146,76 @@
             <span class="pretwin-shortcut-text">Savings</span>
           </a>
 
+          <!-- Features Shortcut -->
+          <a href="/features" class="pretwin-shortcut-btn {% if request.path == '/features' %}active{% endif %}" title="PreTwin AI Features Dashboard">
+            <div class="pretwin-shortcut-icon-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+            </div>
+            <span class="pretwin-shortcut-text">Features</span>
+          </a>
+
+          <!-- More Options Shortcut -->
+          <button type="button" class="pretwin-shortcut-btn" onclick="toggleMoreMenu(event)" aria-haspopup="true" aria-expanded="false" title="More Options">
+            <div class="pretwin-shortcut-icon-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="5" r="2.1"></circle>
+                <circle cx="12" cy="12" r="2.1"></circle>
+                <circle cx="12" cy="19" r="2.1"></circle>
+              </svg>
+            </div>
+            <span class="pretwin-shortcut-text">More</span>
+          </button>
+
+          <!-- Profile Shortcut -->
+          {% if is_authenticated and current_user %}
+            <button
+              type="button"
+              class="pretwin-shortcut-btn {% if request.path == '/profile' %}active{% endif %}"
+              onclick="togglePreTwinAccountDropdown(event)"
+              aria-haspopup="true"
+              aria-expanded="false"
+              title="Signed in as {{ current_user.username }}"
+            >
+              <div class="pretwin-shortcut-icon-box">
+                {% if current_user.avatar_url %}
+                  <img src="{{ current_user.avatar_url }}" alt="{{ current_user.username }}" class="pretwin-nav-avatar">
+                {% else %}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                {% endif %}
+              </div>
+              <span class="pretwin-shortcut-text">Profile</span>
+            </button>
+          {% else %}
+            <a
+              href="/profile"
+              class="pretwin-shortcut-btn {% if request.path == '/profile' %}active{% endif %}"
+              title="My Profile &amp; Sign In"
+            >
+              <div class="pretwin-shortcut-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+              <span class="pretwin-shortcut-text">Profile</span>
+            </a>
+          {% endif %}
+
         </nav>
       </div>
     </div>
   </header>
 
   <!-- ======================================================================
-       2. SECOND NAVIGATION BAR (Features, More, and Profile at the End)
+       2. SECOND NAVIGATION BAR (Rewards, Savings, Features, More, Profile)
        ====================================================================== -->
   <nav class="pretwin-second-navbar" id="pretwinSecondNavbar" aria-label="Secondary Features Navigation">
     <div class="pretwin-second-navbar-inner">
@@ -163,8 +226,34 @@
         </span>
       </div>
 
-      <!-- Right: Features, More, and Profile at the Far End in Requested Order -->
+      <!-- Right: Rewards, Savings, Features, More, and Profile in Requested Order -->
       <div class="pretwin-second-nav-right">
+        <!-- Rewards on Second Navbar -->
+        <a href="/rewards" class="pretwin-second-nav-btn {% if request.path == '/rewards' %}active{% endif %}" id="pretwinSecondNavRewardsBtn" title="PreTwin Reward Points (100 = ₹1)">
+          <div class="pretwin-second-nav-icon-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 12 20 22 4 22 4 12"></polyline>
+              <rect x="2" y="7" width="20" height="5"></rect>
+              <line x1="12" y1="22" x2="12" y2="7"></line>
+              <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+              <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+            </svg>
+          </div>
+          <span class="pretwin-second-nav-text">Rewards</span>
+        </a>
+
+        <!-- Savings on Second Navbar -->
+        <a href="/savings" class="pretwin-second-nav-btn {% if request.path == '/savings' %}active{% endif %}" id="pretwinSecondNavSavingsBtn" title="Smart Shopping Savings Plan">
+          <div class="pretwin-second-nav-icon-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-3.5c1-.5 1.5-1 2-2 1.5-3 0-6.5-1-8.5z"></path>
+              <circle cx="16" cy="11" r="1"></circle>
+              <path d="M12 5V2"></path>
+            </svg>
+          </div>
+          <span class="pretwin-second-nav-text">Savings</span>
+        </a>
+
         <!-- 1. Features (Clickable Link to dedicated /features dashboard + Accessible Dropdown) -->
         <div class="pretwin-nav-item pretwin-dropdown-container" id="pretwinFeaturesContainer">
           <a
