@@ -1,14 +1,9 @@
 <!-- ======================================================================
-     PRETWIN MAGICAL FAIRY-TALE STARTUP INTRO ANIMATION OVERLAY
-     - Step 1: Opening scene with background; full-body fairy with magic wand
-     - Step 2: Fairy pulls a magical golden thread from top to bottom,
-               unrolling a full-screen big screen
-     - Step 3: Glowing sparkles emerge from wand tip along the bottom edge of the screen
-     - Step 4: Displays the project name "PreTwin AI" strictly ONLY ONCE with fairy crest
-     - Step 5: Freeze on completion. Enter button displayed indefinitely until clicked
-               Clicking Enter triggers short smooth transition and opens /login
+     PRETWIN STARTUP INTRO ANIMATION OVERLAY (REMOVED / DISABLED)
+     The intro animation is completely removed per user request.
+     The overlay is permanently hidden (display:none !important) and no animations run.
      ====================================================================== -->
-<div id="pretwinStartupIntro" class="pretwin-startup-overlay" aria-hidden="false" role="dialog" aria-label="PreTwin AI Introduction">
+<div id="pretwinStartupIntro" class="pretwin-startup-overlay" style="display:none !important;" aria-hidden="true" role="dialog" aria-label="PreTwin AI Introduction">
   <!-- Accessible Skip Intro Button -->
   <button type="button" id="skipIntroBtn" onclick="skipStartupIntro()" class="pretwin-skip-intro-btn" title="Skip Animation and continue to Sign In" tabindex="0">
     Skip Intro ➔
@@ -204,117 +199,25 @@
 
 <script>
 /**
- * PreTwin AI Magical Fairy-Tale Intro Controller
- * - Sequence (played only once per new session):
- *   1. Fairy enters and grips golden thread
- *   2. Pulls thread from top to bottom, unrolling full-screen big screen
- *   3. Stardust sparkles illuminate bottom edge of descending screen
- *   4. Displays project name "PreTwin AI" strictly ONLY ONCE with glowing crest
- *   5. Intro freezes stationary with Enter button active indefinitely
- *   6. User clicks Enter -> Smooth magical transition -> Opens /login
+ * PreTwin Startup Intro Animation: Removed per user request.
+ * The overlay remains permanently hidden with display:none !important; and no animations are triggered.
  */
+function skipStartupIntro() { finishStartupIntro(true); }
+function finishStartupIntro() {
+  const overlay = document.getElementById('pretwinStartupIntro');
+  if (overlay) {
+    overlay.style.display = 'none';
+    overlay.style.pointerEvents = 'none';
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+  window.location.href = '/login';
+}
 (function() {
   const overlay = document.getElementById('pretwinStartupIntro');
-  if (!overlay) return;
-
-  // If user is already authenticated in this session, do not show intro overlay
-  const isAuthenticated = (typeof window.PRETWIN_IS_AUTHENTICATED !== 'undefined' && window.PRETWIN_IS_AUTHENTICATED) ||
-                          sessionStorage.getItem('pretwin_session_authenticated') === 'true';
-
-  // Also hide intro if already on sign-in / registration pages
-  const currentPath = window.location.pathname.toLowerCase();
-  const isAuthPage = ['/login', '/signin', '/sign-in', '/sign_in', '/auth', '/register', '/signup', '/sign-up'].includes(currentPath);
-
-  if (isAuthenticated || isAuthPage) {
+  if (overlay) {
     overlay.style.display = 'none';
     overlay.style.pointerEvents = 'none';
     overlay.setAttribute('aria-hidden', 'true');
-    return;
   }
-
-  // Ensure intro is visible and active
-  overlay.style.display = 'flex';
-  overlay.style.pointerEvents = 'auto';
-  overlay.setAttribute('aria-hidden', 'false');
-
-  // Step 1: Opening Scene (0 - 300ms)
-  overlay.classList.add('stage-opening');
-
-  // Step 2 & 3: Fairy thread pull gesture & Top-to-Bottom screen unroll with sparkles (300ms)
-  setTimeout(() => {
-    overlay.classList.add('stage-flight');
-    overlay.classList.add('stage-curtain');
-    overlay.classList.add('stage-thread-pull');
-  }, 300);
-
-  // Fairy completes thread pull and wand settles (2000ms)
-  setTimeout(() => {
-    overlay.classList.add('stage-wand');
-  }, 2000);
-
-  // Wand magic beam travels across screen (2400ms)
-  setTimeout(() => {
-    overlay.classList.add('stage-beam');
-  }, 2400);
-
-  // Step 4: Wordmark "PreTwin AI" revealed ONLY ONCE on magical big screen (2800ms)
-  setTimeout(() => {
-    overlay.classList.add('stage-reveal');
-  }, 2800);
-
-  // Tagline reveals (3200ms)
-  setTimeout(() => {
-    overlay.classList.add('stage-tagline');
-  }, 3200);
-
-  // Step 5: Freeze on completion. Stationary state with Enter button active indefinitely (3600ms)
-  setTimeout(() => {
-    overlay.classList.add('stage-freeze');
-    overlay.classList.add('stage-ready');
-    overlay.classList.add('stage-enter');
-    // Set focus to Enter button for keyboard accessibility
-    const enterBtn = document.getElementById('enterWebsiteBtn');
-    if (enterBtn) {
-      enterBtn.focus();
-    }
-  }, 3600);
 })();
-
-// Keyboard accessibility: Enter or Space triggers the Enter button
-document.addEventListener('keydown', function(event) {
-  const overlay = document.getElementById('pretwinStartupIntro');
-  if (overlay && overlay.style.display !== 'none' && overlay.getAttribute('aria-hidden') !== 'true') {
-    if (event.key === 'Enter' || event.key === ' ') {
-      // If user isn't typing in an input, trigger finishStartupIntro
-      if (document.activeElement && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-        event.preventDefault();
-        finishStartupIntro();
-      }
-    }
-  }
-});
-
-function skipStartupIntro() {
-  finishStartupIntro(true);
-}
-
-function finishStartupIntro(skipped) {
-  const overlay = document.getElementById('pretwinStartupIntro');
-  if (!overlay) {
-    window.location.href = '/login';
-    return;
-  }
-
-  // Smooth magical burst & fade transition
-  overlay.classList.add('stage-enter-burst');
-  overlay.classList.add('stage-fadeout');
-
-  // Navigate directly to sign-in page (/login)
-  setTimeout(function() {
-    overlay.style.display = 'none';
-    overlay.style.pointerEvents = 'none';
-    overlay.setAttribute('aria-hidden', 'true');
-    window.location.href = '/login';
-  }, 350);
-}
 </script>

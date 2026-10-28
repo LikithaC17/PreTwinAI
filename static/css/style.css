@@ -2949,8 +2949,8 @@ input, select, textarea {
    PreTwin Magical Startup Animation Overlay
    ========================================================================== */
 .pretwin-startup-overlay {
-  display: flex;
-  pointer-events: auto;
+  display: none !important;
+  pointer-events: none !important;
   position: fixed;
   inset: 0;
   width: 100vw;
