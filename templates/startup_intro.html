@@ -1,11 +1,12 @@
 <!-- ======================================================================
      PRETWIN MAGICAL FAIRY-TALE STARTUP INTRO ANIMATION OVERLAY
-     Step 1: Opening scene with background; introduce full-body fairy with magic wand
-     Step 2: Fairy flies smoothly & pulls a translucent magical screen across the page
-     Step 3: Glowing sparkles emerge from actual wand tip, trailing the unfolding screen
-     Step 4: Reveal project name "PreTwin AI" with elegant fairy-tale glow & branding
-     Step 5: Freeze on completion. Enter button displayed indefinitely until clicked
-             Clicking Enter triggers short smooth transition and opens /login
+     - Step 1: Opening scene with background; full-body fairy with magic wand
+     - Step 2: Fairy pulls a magical golden thread from top to bottom,
+               unrolling a full-screen big screen
+     - Step 3: Glowing sparkles emerge from wand tip along the bottom edge of the screen
+     - Step 4: Displays the project name "PreTwin AI" strictly ONLY ONCE with fairy crest
+     - Step 5: Freeze on completion. Enter button displayed indefinitely until clicked
+               Clicking Enter triggers short smooth transition and opens /login
      ====================================================================== -->
 <div id="pretwinStartupIntro" class="pretwin-startup-overlay" aria-hidden="false" role="dialog" aria-label="PreTwin AI Introduction">
   <!-- Accessible Skip Intro Button -->
@@ -25,14 +26,45 @@
     <div class="star-particle star-8">✨</div>
   </div>
 
-  <!-- Soaring Flying-Wing Logo Stage Container with Fairy & Wand -->
+  <!-- Soaring Flying-Wing Logo Stage Container with Fairy, Pull Thread & Wand -->
   <div class="pretwin-flight-stage">
     
-    <!-- Flying Winged Fairy Emblem with Wand -->
+    <!-- Magical Golden Pull Thread (Tread Pulling) from Top to Bottom -->
+    <div class="pretwin-pull-thread-wrap" id="pullThreadWrap" aria-hidden="true">
+      <svg class="pretwin-thread-svg" viewBox="0 0 60 500" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="threadGoldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+            <stop offset="25%" stop-color="#fef08a" stop-opacity="1" />
+            <stop offset="60%" stop-color="#facc15" stop-opacity="1" />
+            <stop offset="100%" stop-color="#f59e0b" stop-opacity="1" />
+          </linearGradient>
+          <filter id="threadGlow">
+            <feGaussianBlur stdDeviation="2.5" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+        <!-- Golden Cord pulled down from top to bottom -->
+        <line x1="30" y1="0" x2="30" y2="475" stroke="url(#threadGoldGrad)" stroke-width="3" stroke-linecap="round" filter="url(#threadGlow)" class="thread-line" />
+        <!-- Sparkling golden stardust beads along thread -->
+        <circle cx="30" cy="100" r="3" fill="#ffffff" filter="url(#threadGlow)" />
+        <circle cx="30" cy="220" r="3.5" fill="#fef08a" filter="url(#threadGlow)" />
+        <circle cx="30" cy="340" r="3.5" fill="#facc15" filter="url(#threadGlow)" />
+        <circle cx="30" cy="440" r="4" fill="#ffffff" filter="url(#threadGlow)" />
+        <!-- Bottom Thread Tassel / Star Orb gripped by Fairy's pull -->
+        <g transform="translate(30, 480)">
+          <circle cx="0" cy="0" r="6.5" fill="#facc15" filter="url(#threadGlow)" />
+          <circle cx="0" cy="0" r="3.2" fill="#ffffff" />
+          <path d="M -4 7 L 0 17 L 4 7 Z" fill="#f59e0b" />
+        </g>
+      </svg>
+    </div>
+
+    <!-- Flying Winged Fairy Emblem with Wand & Thread Pulling Gesture -->
     <div class="pretwin-flying-emblem-wrap" id="introFlightEmblem">
       
       <!-- Fairy Full-Body SVG Character -->
-      <svg class="pretwin-fairy-svg" viewBox="0 0 130 130" width="140" height="140" aria-label="PreTwin Fairy Logo">
+      <svg class="pretwin-fairy-svg" viewBox="0 0 130 130" width="145" height="145" aria-label="PreTwin Fairy Logo">
         <defs>
           <linearGradient id="introWingGradUpper" x1="0%" y1="100%" x2="100%" y2="0%">
             <stop offset="0%" stop-color="#6d28d9" />
@@ -77,16 +109,17 @@
         </g>
 
         <!-- Full-Body Graceful Fairy Silhouette (Head, Torso, Gown, Legs) -->
-        <!-- Flowing Gown & Legs -->
+        <!-- Flowing Gown & Legs in downward pulling posture -->
         <path d="M 57 52 C 58 48, 62 48, 63 52 C 66 56, 68 64, 66 74 C 64 84, 58 96, 54 102 C 53 96, 55 86, 56 76 C 56 68, 55 60, 57 52 Z" fill="url(#fairyGownGrad)" opacity="0.95" filter="url(#introSoftGlow)" />
         <!-- Fairy Head & Radiant Glow -->
         <circle cx="60" cy="42" r="5.5" fill="#ffffff" filter="url(#introSoftGlow)" />
         <circle cx="60" cy="38" r="1.5" fill="#facc15" />
 
-        <!-- Right Arm naturally holding the Wand -->
+        <!-- Hands reaching to pull the thread downward & hold wand -->
+        <path d="M 58 52 C 52 54, 46 60, 42 66" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" />
         <path d="M 62 50 C 65 50, 72 46, 75 42" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" />
 
-        <!-- Magic Wand (Properly aligned with hand, moving with gesture) -->
+        <!-- Magic Wand (Properly aligned with hand, directing stardust) -->
         <g class="fairy-wand-group">
           <!-- Slender Wand Rod -->
           <line x1="62" y1="52" x2="88" y2="30" stroke="url(#wandRodGrad)" stroke-width="3" stroke-linecap="round" />
@@ -112,7 +145,7 @@
       </div>
     </div>
 
-    <!-- Translucent Magical Full-Screen Big Screen (Pulled from Top to Bottom by Fairy) -->
+    <!-- Translucent Magical Full-Screen Big Screen (Pulled from Top to Bottom via Thread) -->
     <div class="pretwin-magical-curtain-screen" id="magicalCurtainScreen">
       <!-- Glitter Trail along the bottom unfolding edge as the screen rolls down -->
       <div class="curtain-sparkle-trail" id="curtainSparkleTrail" aria-hidden="true">
@@ -125,16 +158,27 @@
         <span class="curtain-edge-sparkle spk-edge-7">✨</span>
       </div>
 
-      <!-- Official PreTwin Project Brand Logo -->
-      <div class="pretwin-intro-official-logo-wrap" id="introOfficialLogoWrap">
+      <!-- Preserved DOM anchor for official logo (hidden to prevent duplicate name display) -->
+      <div class="pretwin-intro-official-logo-wrap" id="introOfficialLogoWrap" style="display:none;" aria-hidden="true">
         <img src="{{ url_for('static', filename='images/pretwin-logo.svg') }}" 
              alt="PreTwin AI Official Logo" 
              class="pretwin-intro-official-logo" 
              id="introOfficialLogo" />
       </div>
 
-      <!-- Project Name Wordmark & Tagline Revealed on Magical Screen -->
+      <!-- Single Majestic Brand Presentation: Name displayed strictly ONLY ONCE -->
       <div class="pretwin-intro-branding" id="introBrandText">
+        <!-- Delicate Fairy Wing Crest Emblem Above Name -->
+        <div class="pretwin-brand-fairy-crest" aria-hidden="true">
+          <svg width="68" height="44" viewBox="0 0 60 40" fill="none">
+            <path d="M 30 20 C 26 12, 16 6, 2 4 C 0 12, 8 20, 22 23 Z" fill="url(#introWingGradUpper)" filter="url(#introSoftGlow)" opacity="0.95"></path>
+            <path d="M 30 20 C 34 12, 44 6, 58 4 C 60 12, 52 20, 38 23 Z" fill="url(#introWingGradUpper)" filter="url(#introSoftGlow)" opacity="0.95"></path>
+            <circle cx="30" cy="18" r="4.5" fill="#facc15" filter="url(#introSoftGlow)"></circle>
+            <circle cx="30" cy="18" r="2.2" fill="#ffffff"></circle>
+          </svg>
+        </div>
+
+        <!-- The project name displayed ONLY ONCE -->
         <div class="pretwin-intro-wordmark" id="introWordmark">PreTwin <span class="intro-ai-badge">AI</span></div>
         <div class="pretwin-intro-tagline" id="introTagline">Your Future. Your Style. Your Twin.</div>
       </div>
@@ -161,9 +205,13 @@
 <script>
 /**
  * PreTwin AI Magical Fairy-Tale Intro Controller
- * - Sequence: Fairy flies -> Pulls translucent magical screen -> Wand sparkles trail edge ->
- *   Reveal "PreTwin AI" -> Freezes stationary with Enter button ->
- *   User clicks Enter -> Short smooth transition -> Opens /login (Sign-In Page).
+ * - Sequence (played only once per new session):
+ *   1. Fairy enters and grips golden thread
+ *   2. Pulls thread from top to bottom, unrolling full-screen big screen
+ *   3. Stardust sparkles illuminate bottom edge of descending screen
+ *   4. Displays project name "PreTwin AI" strictly ONLY ONCE with glowing crest
+ *   5. Intro freezes stationary with Enter button active indefinitely
+ *   6. User clicks Enter -> Smooth magical transition -> Opens /login
  */
 (function() {
   const overlay = document.getElementById('pretwinStartupIntro');
@@ -192,13 +240,14 @@
   // Step 1: Opening Scene (0 - 300ms)
   overlay.classList.add('stage-opening');
 
-  // Step 2 & 3: Fairy flight & Screen pulling gesture with wand sparkles (300ms)
+  // Step 2 & 3: Fairy thread pull gesture & Top-to-Bottom screen unroll with sparkles (300ms)
   setTimeout(() => {
     overlay.classList.add('stage-flight');
     overlay.classList.add('stage-curtain');
+    overlay.classList.add('stage-thread-pull');
   }, 300);
 
-  // Fairy settles wand gesture (2000ms)
+  // Fairy completes thread pull and wand settles (2000ms)
   setTimeout(() => {
     overlay.classList.add('stage-wand');
   }, 2000);
@@ -208,7 +257,7 @@
     overlay.classList.add('stage-beam');
   }, 2400);
 
-  // Step 4: Wordmark "PreTwin AI" revealed on magical screen (2800ms)
+  // Step 4: Wordmark "PreTwin AI" revealed ONLY ONCE on magical big screen (2800ms)
   setTimeout(() => {
     overlay.classList.add('stage-reveal');
   }, 2800);
@@ -218,7 +267,7 @@
     overlay.classList.add('stage-tagline');
   }, 3200);
 
-  // Step 5: Freeze on completion. Stationary state with Enter button active (3600ms)
+  // Step 5: Freeze on completion. Stationary state with Enter button active indefinitely (3600ms)
   setTimeout(() => {
     overlay.classList.add('stage-freeze');
     overlay.classList.add('stage-ready');

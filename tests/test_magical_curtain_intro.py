@@ -45,6 +45,11 @@ def test_magical_curtain_screen_elements_on_intro(app_client):
     assert "curtain-sparkle-trail" in html
     assert "curtain-edge-sparkle" in html
 
+    # Magical golden pull thread (tread pulling from top to bottom)
+    assert 'id="pullThreadWrap"' in html
+    assert "pretwin-thread-svg" in html
+    assert "thread-line" in html
+
     # Wand magic beam & sparkles
     assert "wand-magic-beam" in html
     assert "magic-sparkle" in html
@@ -79,6 +84,10 @@ def test_magical_curtain_screen_css_definitions():
     # Sparkle trail along screen edge
     assert ".curtain-sparkle-trail" in css
     assert ".curtain-edge-sparkle" in css
+
+    # Magical golden pull thread styles
+    assert ".pretwin-pull-thread-wrap" in css
+    assert ".thread-line" in css
 
     # Enter burst animation
     assert ".pretwin-startup-overlay.stage-enter-burst" in css
