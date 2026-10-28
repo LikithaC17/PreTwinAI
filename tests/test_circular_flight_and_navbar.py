@@ -53,6 +53,10 @@ def test_startup_animation_fairy_character_and_elements(app_client):
     assert "introTagline" in html
     assert "Your Future. Your Style. Your Twin." in html
 
+    # 5. Enter Button (Appears after title reveal)
+    assert "enterWebsiteBtn" in html
+    assert "Enter" in html
+
 
 def test_circular_flight_keyframes_in_stylesheet():
     """Verify CSS defines exactly one complete 360-degree circular orbit, single iteration, no infinite loops."""

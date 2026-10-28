@@ -3125,12 +3125,21 @@ input, select, textarea {
 
 /* Character stops and points wand at center in Stage 2 */
 .fairy-wand-group {
-  transform-origin: 62px 52px;
+  transform-origin: 85px 52px;
   transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .stage-wand .fairy-wand-group {
-  transform: rotate(-12deg);
+  animation: fairyWandWave 1.4s ease-in-out forwards;
+}
+
+@keyframes fairyWandWave {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(-18deg) scale(1.05); }
+  40% { transform: rotate(-4deg) scale(0.98); }
+  60% { transform: rotate(-16deg) scale(1.04); }
+  80% { transform: rotate(-6deg) scale(1.0); }
+  100% { transform: rotate(-12deg) scale(1.0); }
 }
 
 .wand-star-tip {
@@ -3151,10 +3160,10 @@ input, select, textarea {
 /* Wand Light Beam traveling across to reveal brand name */
 .wand-magic-beam {
   position: absolute;
-  top: 55px;
-  left: 50%;
-  width: 18px;
-  height: 18px;
+  top: 36px;
+  left: calc(50% + 42px);
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: radial-gradient(circle, #ffffff 0%, #facc15 50%, rgba(168, 85, 247, 0) 100%);
   box-shadow: 0 0 22px #facc15, 0 0 40px #a855f7;
@@ -3170,23 +3179,23 @@ input, select, textarea {
 @keyframes wandBeamTravel {
   0% {
     opacity: 0;
-    transform: translate3d(-170px, -10px, 0) scale(0.4);
+    transform: translate3d(0, 0, 0) scale(0.4);
   }
   15% {
     opacity: 1;
-    transform: translate3d(-120px, 15px, 0) scale(1.3);
+    transform: translate3d(-60px, 20px, 0) scale(1.3);
   }
   50% {
     opacity: 1;
-    transform: translate3d(0px, 20px, 0) scale(1.8);
+    transform: translate3d(-120px, 35px, 0) scale(1.8);
   }
   85% {
     opacity: 0.95;
-    transform: translate3d(120px, 15px, 0) scale(1.3);
+    transform: translate3d(-170px, 25px, 0) scale(1.3);
   }
   100% {
     opacity: 0;
-    transform: translate3d(170px, 10px, 0) scale(0.4);
+    transform: translate3d(-210px, 20px, 0) scale(0.4);
   }
 }
 
@@ -3214,22 +3223,22 @@ input, select, textarea {
 /* Branding Container */
 .pretwin-intro-branding {
   text-align: center;
-  margin-top: 22px;
+  margin-top: 18px;
   position: relative;
   z-index: 12;
 }
 
 /* PreTwin Wordmark with magical left-to-right clip reveal */
 .pretwin-intro-wordmark {
-  font-size: 3.8rem;
+  font-size: clamp(2.4rem, 6vw, 4rem);
   font-weight: 900;
-  letter-spacing: -0.03em;
-  background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 35%, #2563eb 100%);
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #3b0764 0%, #6d28d9 35%, #1e40af 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 4px 14px rgba(124, 58, 237, 0.35));
   line-height: 1.1;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   clip-path: inset(0 100% 0 0);
   transition: clip-path 0.1s linear;
   display: inline-block;
@@ -3271,7 +3280,7 @@ input, select, textarea {
 
 /* Prominently Highlighted Tagline */
 .pretwin-intro-tagline {
-  font-size: 1.35rem;
+  font-size: clamp(1rem, 2.8vw, 1.35rem);
   font-weight: 800;
   letter-spacing: 0.03em;
   background: linear-gradient(90deg, #1e1b4b 0%, #6d28d9 30%, #b45309 60%, #1e1b4b 100%);
@@ -3298,6 +3307,105 @@ input, select, textarea {
 @keyframes taglineShimmer {
   0% { background-position: 0% 50%; }
   100% { background-position: 100% 50%; }
+}
+
+/* Stage Freeze: Stops animations and holds polished final resting state */
+.stage-freeze .pretwin-flying-emblem-wrap {
+  animation-play-state: paused;
+}
+
+.stage-freeze .fairy-wand-group {
+  transform: rotate(-12deg);
+  animation: none !important;
+}
+
+.stage-freeze .wand-star-tip {
+  filter: drop-shadow(0 0 10px #facc15) drop-shadow(0 0 20px #ffffff);
+  animation: none !important;
+}
+
+.stage-freeze .pretwin-intro-wordmark {
+  clip-path: inset(0 0% 0 0) !important;
+  opacity: 1 !important;
+}
+
+.stage-freeze .pretwin-intro-tagline {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Enter Button Wrapper & Button */
+.pretwin-intro-enter-wrap {
+  margin-top: 22px;
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  justify-content: center;
+}
+
+.stage-enter .pretwin-intro-enter-wrap,
+.stage-ready .pretwin-intro-enter-wrap {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.pretwin-enter-intro-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 45%, #4f46e5 100%);
+  color: #ffffff;
+  border: 1.5px solid rgba(254, 240, 138, 0.7);
+  padding: 13px 38px;
+  border-radius: 9999px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.38), 0 0 20px rgba(250, 204, 21, 0.3);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.pretwin-enter-intro-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 45%, #6366f1 100%);
+  border-color: #fde047;
+  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.55), 0 0 28px rgba(250, 204, 21, 0.5);
+}
+
+.pretwin-enter-intro-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.pretwin-enter-intro-btn:focus-visible {
+  outline: 3px solid #facc15;
+  outline-offset: 3px;
+}
+
+.enter-btn-text {
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.enter-btn-icon {
+  font-size: 1.1rem;
+  transition: transform 0.2s ease;
+}
+
+.pretwin-enter-intro-btn:hover .enter-btn-icon {
+  transform: translateX(4px);
+}
+
+.enter-btn-sparkle {
+  font-size: 1.1rem;
+  filter: drop-shadow(0 0 6px #facc15);
+  animation: sparkleTwinkle 1.2s infinite alternate;
 }
 
 @media (prefers-reduced-motion: reduce) {
