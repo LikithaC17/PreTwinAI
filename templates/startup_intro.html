@@ -7,7 +7,7 @@
               and prominent tagline: "Your Future. Your Style. Your Twin."
      Stage 4: Enter button appears; smooth dissolve transition into homepage
      ====================================================================== -->
-<div id="pretwinStartupIntro" class="pretwin-startup-overlay" style="display:none;" aria-hidden="true" role="dialog" aria-label="PreTwin Introduction">
+<div id="pretwinStartupIntro" class="pretwin-startup-overlay" style="display:none !important;" aria-hidden="true" role="dialog" aria-label="PreTwin Introduction">
   <!-- Accessible Skip Intro Button -->
   <button type="button" id="skipIntroBtn" onclick="skipStartupIntro()" class="pretwin-skip-intro-btn" title="Skip Animation and continue">
     Skip Intro ➔
@@ -130,127 +130,24 @@
 
 <script>
 /**
- * PreTwin Original Startup Animation Controller
- * Executes Stage 1 (360° circular orbit), Stage 2 (Wand reveal of PreTwin AI & Tagline), and Stage 3 (Transition to Website).
+ * PreTwin Startup Intro Animation: Disabled / Removed per user request.
+ * The overlay remains permanently hidden with display:none !important; and no animations are triggered.
  */
-(function() {
-  const INTRO_STORAGE_KEY = 'pretwin_intro_played_v10';
+function skipStartupIntro() { finishStartupIntro(true); }
+function finishStartupIntro() {
   const overlay = document.getElementById('pretwinStartupIntro');
-  if (!overlay) return;
-
-  // Reduced motion check
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const introSeen = sessionStorage.getItem(INTRO_STORAGE_KEY);
-  const isLoginPage = ['/login', '/signin', '/sign-in', '/sign_in', '/register', '/signup', '/sign-up', '/auth'].some(p => window.location.pathname.startsWith(p));
-  const isHomePage = window.location.pathname === '/' || window.location.pathname === '';
-
-  // Never play startup animation on login or register screens
-  if (isLoginPage) {
+  if (overlay) {
     overlay.style.display = 'none';
     overlay.style.pointerEvents = 'none';
-    return;
-  }
-
-  // If already seen or reduced motion, bypass immediately
-  if (introSeen || prefersReducedMotion) {
-    overlay.style.display = 'none';
-    overlay.style.pointerEvents = 'none';
-    return;
-  }
-
-  // Only play on fresh visits to homepage
-  if (!isHomePage) {
-    overlay.style.display = 'none';
-    overlay.style.pointerEvents = 'none';
-    return;
-  }
-
-  // Show full-screen overlay
-  overlay.style.display = 'flex';
-  overlay.setAttribute('aria-hidden', 'false');
-
-  // Stage 1: Fly exactly ONE complete circular loop around the central area (2.6s)
-  setTimeout(() => {
-    overlay.classList.add('stage-flight');
-  }, 100);
-
-  // Stage 2a: Character stops near center and raises magic wand at 2.6s
-  setTimeout(() => {
-    overlay.classList.add('stage-wand');
-  }, 2600);
-
-  // Stage 2b: Magic particle beam emerges from wand and sweeps across screen at 2.8s
-  setTimeout(() => {
-    overlay.classList.add('stage-beam');
-  }, 2800);
-
-  // Stage 2c: Wand beam triggers sparkling left-to-right reveal of "PreTwin AI" wordmark
-  setTimeout(() => {
-    overlay.classList.add('stage-reveal');
-  }, 3000);
-
-  // Stage 2d: Reveal official tagline at 3.6s
-  setTimeout(() => {
-    overlay.classList.add('stage-tagline');
-  }, 3600);
-
-  // Stage 3: Enter button becomes available and still screen freeze
-  setTimeout(() => {
-    overlay.classList.add('stage-freeze');
-    overlay.classList.add('stage-ready');
-    overlay.classList.add('stage-enter');
-  }, 4400);
-
-  // Keyboard accessibility: Enter or Space triggers entry once ready
-  window.addEventListener('keydown', function handleIntroKeyPress(e) {
-    if (overlay.style.display !== 'none' && overlay.classList.contains('stage-enter')) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        window.removeEventListener('keydown', handleIntroKeyPress);
-        finishStartupIntro();
-      }
-    }
-  });
-})();
-
-function skipStartupIntro() {
-  finishStartupIntro(true);
-}
-
-function finishStartupIntro(immediate = false) {
-  const overlay = document.getElementById('pretwinStartupIntro');
-  if (!overlay || overlay.dataset.finished === '1') return;
-  overlay.dataset.finished = '1';
-  sessionStorage.setItem('pretwin_intro_played_v10', '1');
-
-  const isLoginPage = window.location.pathname === '/login';
-  const isHomePage = window.location.pathname === '/' || window.location.pathname === '';
-
-  if (immediate) {
-    overlay.style.transition = 'opacity 0.2s ease';
-    overlay.style.opacity = '0';
-    overlay.style.pointerEvents = 'none';
-    setTimeout(() => {
-      overlay.style.display = 'none';
-      overlay.setAttribute('aria-hidden', 'true');
-      const userLoggedIn = window.PRETWIN_IS_AUTHENTICATED || (window.currentUser && window.currentUser.id);
-      if (isHomePage && !userLoggedIn) {
-        window.location.href = '/login';
-      }
-    }, 200);
-    return;
-  }
-
-  // Smooth dissolve transition
-  overlay.classList.add('stage-fadeout');
-  overlay.style.pointerEvents = 'none';
-  setTimeout(() => {
-    overlay.style.display = 'none';
     overlay.setAttribute('aria-hidden', 'true');
-    const userLoggedIn = window.PRETWIN_IS_AUTHENTICATED || (window.currentUser && window.currentUser.id);
-    if (isHomePage && !userLoggedIn) {
-      window.location.href = '/login';
-    }
-  }, 750);
+  }
 }
+(function() {
+  const overlay = document.getElementById('pretwinStartupIntro');
+  if (overlay) {
+    overlay.style.display = 'none';
+    overlay.style.pointerEvents = 'none';
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+})();
 </script>
