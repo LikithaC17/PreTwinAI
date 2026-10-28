@@ -261,11 +261,30 @@
                 </a>
               </div>
             {% else %}
+              <!-- Direct Sign In Navigation Button -->
+              <a
+                href="/login"
+                class="pretwin-shortcut-btn pretwin-signin-nav-btn {% if request.path in ['/login', '/signin', '/sign-in'] %}active{% endif %}"
+                id="nav2SignInBtn"
+                title="Sign In to PreTwin AI"
+                style="background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #ffffff !important; padding: 6px 14px; border-radius: 8px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 10px rgba(124, 58, 237, 0.35); text-decoration: none;"
+              >
+                <div class="pretwin-shortcut-icon-box" style="color: #ffffff;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                    <polyline points="10 17 15 12 10 7"></polyline>
+                    <line x1="15" y1="12" x2="3" y2="12"></line>
+                  </svg>
+                </div>
+                <span class="pretwin-shortcut-text" style="color: #ffffff !important; font-weight: 700;">Sign In</span>
+              </a>
+
+              <!-- Profile Shortcut -->
               <a
                 href="/profile"
                 class="pretwin-shortcut-btn {% if request.path == '/profile' %}active{% endif %}"
                 id="nav2ProfileBtn"
-                title="My Profile &amp; Sign In"
+                title="My Profile"
               >
                 <div class="pretwin-shortcut-icon-box">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
@@ -528,11 +547,28 @@
             </div>
           {% else %}
             <a
+              href="/login"
+              class="pretwin-second-nav-btn pretwin-signin-btn"
+              id="pretwinSignInBtn"
+              title="Sign In to PreTwin AI"
+              aria-label="Sign In"
+              style="color: #c084fc; font-weight: 700;"
+            >
+              <div class="pretwin-second-nav-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                  <polyline points="10 17 15 12 10 7"></polyline>
+                  <line x1="15" y1="12" x2="3" y2="12"></line>
+                </svg>
+              </div>
+              <span class="pretwin-second-nav-text">Sign In</span>
+            </a>
+            <a
               href="/profile"
               class="pretwin-second-nav-btn pretwin-profile-btn"
               id="pretwinProfileBtn"
-              title="My Profile &amp; Sign In"
-              aria-label="Profile and Sign In"
+              title="My Profile"
+              aria-label="My Profile"
             >
               <div class="pretwin-second-nav-icon-box">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
