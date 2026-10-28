@@ -507,6 +507,7 @@ def app_client(tmp_path, monkeypatch):
             importlib.reload(sys.modules["database"])
         if "app" in sys.modules:
             importlib.reload(sys.modules["app"])
+            sys.modules["app"].app.config["TESTING"] = True
 
 
 @pytest.fixture

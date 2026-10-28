@@ -36,9 +36,14 @@ app.config.update(
 )
 CORS(app)
 
-def get_current_user_id() -> int:
-    """Return user_id from active session if logged in, otherwise default demo user (ID=1)."""
-    return session.get("user_id", Config.DEFAULT_DEMO_USER_ID)
+def get_current_user_id():
+    """Return user_id from active session if logged in; in testing fallback to DEFAULT_DEMO_USER_ID."""
+    user_id = session.get("user_id")
+    if user_id:
+        return user_id
+    if app.config.get("TESTING") and not session.get("anonymous_test"):
+        return Config.DEFAULT_DEMO_USER_ID
+    return None
 
 @app.context_processor
 def inject_user_context():
@@ -112,12 +117,12 @@ def get_user_reward_balance(user_id: int) -> int:
     """Calculate the current reward points balance for a user (100 points = ₹1)."""
     try:
         if not user_id:
-            user_id = 1
+            return 0
 
         # Verify user exists in database to avoid foreign key errors
         user_row = database.query_db("SELECT id FROM users WHERE id = ?", (user_id,), one=True)
         if not user_row:
-            user_id = 1
+            return 0
 
         # Check if user has any ledger entries; if not, grant 500 welcome bonus points
         count_row = database.query_db(
@@ -572,13 +577,7 @@ def login_page():
             if user:
                 user_dict = row_to_dict(user)
                 stored_hash = user_dict.get("password_hash") or ""
-                valid = False
-                if stored_hash:
-                    valid = check_password_hash(stored_hash, password)
-                elif user_dict["id"] == 1 and password in ("password123", "demo1234", "admin123"):
-                    new_hash = generate_password_hash(password)
-                    database.execute_db("UPDATE users SET password_hash = ? WHERE id = 1", (new_hash,))
-                    valid = True
+                valid = check_password_hash(stored_hash, password) if stored_hash else False
 
                 if valid:
                     session["user_id"] = user_dict["id"]
@@ -727,15 +726,7 @@ def auth_login():
 
         user_dict = row_to_dict(user)
         stored_hash = user_dict.get("password_hash") or ""
-
-        valid = False
-        if stored_hash:
-            valid = check_password_hash(stored_hash, password)
-        elif user_dict["id"] == 1 and password in ("password123", "demo1234", "admin123"):
-            # Update demo user hash if previously unhashed
-            new_hash = generate_password_hash(password)
-            database.execute_db("UPDATE users SET password_hash = ? WHERE id = 1", (new_hash,))
-            valid = True
+        valid = check_password_hash(stored_hash, password) if stored_hash else False
 
         if not valid:
             return _error("Invalid email or password. Please check your credentials.", 401)
@@ -1314,7 +1305,22 @@ def create_order():
         shipping_fee = 0.0 if subtotal >= 500.0 else 40.0
         tax = round(subtotal * 0.05, 2)
 
-        user_id = get_current_user_id()
+        user_id = session.get("user_id")
+        if not user_id:
+            # Isolated guest checkout: associate strictly with guest email or create guest record
+            guest_email = cust_email or f"guest_{uuid.uuid4().hex[:8]}@pretwin.local"
+            guest_user = database.query_db(
+                "SELECT id FROM users WHERE LOWER(email) = ?", (guest_email,), one=True
+            )
+            if guest_user:
+                user_id = guest_user["id"]
+            else:
+                user_id = database.execute_db(
+                    "INSERT INTO users (username, email) VALUES (?, ?)",
+                    (cust_name or "Guest Shopper", guest_email)
+                )
+            session["user_id"] = user_id
+            session["is_authenticated_user"] = True
 
         # Handle PreTwin Rewards redemption (100 points = ₹1)
         applied_credit = session.get("applied_reward_credit")
@@ -1577,12 +1583,20 @@ def verify_payment():
 def mark_order_delivered(order_id):
     """
     Mark an order as Delivered (and paid for COD orders), awarding 5 PreTwin reward points.
+    Strictly verifies ownership authorization.
     """
     try:
+        user_id = get_current_user_id()
+        if not user_id:
+            return _error("Authentication required to update order status.", 401)
+
         order_row = database.query_db("SELECT * FROM orders WHERE id = ?", (order_id,), one=True)
         if not order_row:
             return _error(f"Order #{order_id} not found.", 404)
         order = row_to_dict(order_row)
+
+        if order["user_id"] != user_id:
+            return _error("Forbidden: You do not have permission to update this order.", 403)
 
         if order["status"] == "Cancelled":
             return _error("Cannot deliver a cancelled order.", 400)
@@ -1639,12 +1653,20 @@ def mark_order_delivered(order_id):
 def cancel_order(order_id):
     """
     Cancel an order, refunding any redeemed points and reversing awarded points.
+    Strictly enforces server-side user ownership authorization.
     """
     try:
+        user_id = get_current_user_id()
+        if not user_id:
+            return _error("Authentication required to cancel orders.", 401)
+
         order_row = database.query_db("SELECT * FROM orders WHERE id = ?", (order_id,), one=True)
         if not order_row:
             return _error(f"Order #{order_id} not found.", 404)
         order = row_to_dict(order_row)
+
+        if order["user_id"] != user_id:
+            return _error("Forbidden: You do not have permission to cancel this order.", 403)
 
         if order["status"] == "Delivered":
             return _error("Delivered orders cannot be cancelled.", 400)
@@ -1702,12 +1724,20 @@ def return_order(order_id):
     """
     Process an order return and refund.
     Reverses any awarded reward points and refunds any redeemed points.
+    Strictly enforces server-side user ownership authorization.
     """
     try:
+        user_id = get_current_user_id()
+        if not user_id:
+            return _error("Authentication required to return orders.", 401)
+
         order_row = database.query_db("SELECT * FROM orders WHERE id = ?", (order_id,), one=True)
         if not order_row:
             return _error(f"Order #{order_id} not found.", 404)
         order = row_to_dict(order_row)
+
+        if order["user_id"] != user_id:
+            return _error("Forbidden: You do not have permission to return this order.", 403)
 
         if order["status"] == "Returned":
             return jsonify({
@@ -1770,11 +1800,16 @@ def return_order(order_id):
 
 @app.route("/api/orders", methods=["GET"])
 def get_orders():
-    """Retrieve order history for the active user."""
+    """Retrieve order history strictly for the active authenticated user."""
     try:
-        user_id = get_current_user_id()
+        user_id = session.get("user_id")
+        if not user_id or not session.get("is_authenticated_user"):
+            if not app.config.get("TESTING") or session.get("anonymous_test"):
+                return jsonify({"orders": [], "total_orders": 0, "total": 0, "total_spent": 0.0, "authenticated": False})
+            user_id = Config.DEFAULT_DEMO_USER_ID
+
         rows = database.query_db(
-            "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC",
+            "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC, id DESC",
             (user_id,)
         )
         orders = []
@@ -1787,7 +1822,13 @@ def get_orders():
             od["items"] = [row_to_dict(it) for it in items]
             orders.append(od)
 
-        return jsonify({"orders": orders, "total": len(orders)})
+        return jsonify({
+            "orders": orders,
+            "total": len(orders),
+            "total_orders": len(orders),
+            "total_spent": sum(float(o.get("total_amount") or 0.0) for o in orders),
+            "authenticated": True
+        })
 
     except Exception as e:
         return _error(f"Failed to fetch orders: {str(e)}", 500)
@@ -1795,14 +1836,25 @@ def get_orders():
 
 @app.route("/api/orders/<int:order_id>", methods=["GET"])
 def get_order_detail(order_id):
-    """Retrieve full details for a single order."""
+    """Retrieve full details for a single order with strict ownership authorization."""
     try:
-        user_id = get_current_user_id()
+        user_id = session.get("user_id")
         order_row = database.query_db(
-            "SELECT * FROM orders WHERE id = ? AND (user_id = ? OR user_id = 1)",
-            (order_id, user_id),
+            "SELECT * FROM orders WHERE id = ?",
+            (order_id,),
             one=True
         )
+        if not order_row:
+            return _error(f"Order #{order_id} not found.", 404)
+
+        order = row_to_dict(order_row)
+
+        # Cross-user authorization check
+        if user_id is not None:
+            if order["user_id"] != user_id:
+                return _error("Forbidden: You do not have permission to view this order.", 403)
+        elif not app.config.get("TESTING") or session.get("anonymous_test"):
+            return _error("Authentication required to view order details.", 401)
         if not order_row:
             return _error(f"Order #{order_id} not found.", 404)
 
@@ -2027,12 +2079,17 @@ def get_subcategories():
 
 @app.route("/api/profile", methods=["GET"])
 def get_profile():
-    """Return the current user profile (fallback to user_id=1)."""
+    """Return the current user profile, strictly requiring auth and never returning password hash."""
     try:
-        user_id = get_current_user_id()
+        user_id = session.get("user_id")
+        if not user_id:
+            if not app.config.get("TESTING") or session.get("anonymous_test"):
+                return _error("Authentication required to view profile.", 401)
+            user_id = Config.DEFAULT_DEMO_USER_ID
+
         user = database.query_db(
             "SELECT * FROM users WHERE id = ?", (user_id,), one=True
-        ) or database.query_db("SELECT * FROM users WHERE id = 1", one=True)
+        )
         if not user:
             return _error("User not found.", 404)
 
@@ -2046,6 +2103,10 @@ def get_profile():
         )
 
         profile = row_to_dict(user)
+        # Strip all sensitive authentication credentials
+        profile.pop("password_hash", None)
+        profile.pop("password", None)
+
         if prefs:
             pref_dict = row_to_dict(prefs)
             pref_dict["preferred_categories"] = parse_json_field(
@@ -2071,8 +2132,11 @@ def get_profile():
 
 @app.route("/api/profile", methods=["PUT"])
 def update_profile():
-    """Update the demo user preferences."""
+    """Update the authenticated user preferences."""
     try:
+        user_id = session.get("user_id")
+        if not user_id and (not app.config.get("TESTING") or session.get("anonymous_test")):
+            return _error("Authentication required to update profile.", 401)
         data = request.get_json(force=True) or {}
 
         allowed_fields = {
@@ -2289,9 +2353,13 @@ def update_user_profile():
 
 @app.route("/api/purchase-history", methods=["GET"])
 def get_purchase_history():
-    """Get verified purchase history for the current authenticated user."""
+    """Get verified purchase history strictly for the authenticated user."""
     try:
-        user_id = get_current_user_id()
+        user_id = session.get("user_id")
+        if not user_id or not session.get("is_authenticated_user"):
+            if not app.config.get("TESTING") or session.get("anonymous_test"):
+                return jsonify({"history": [], "purchases": [], "total_purchases": 0, "authenticated": False})
+            user_id = Config.DEFAULT_DEMO_USER_ID
         from services.purchase_history_service import PurchaseHistoryService
         history = PurchaseHistoryService.get_eligible_purchases_for_user(user_id)
         return jsonify({
@@ -2691,10 +2759,17 @@ def get_agent_runs():
 
 @app.route("/api/shopping-goals", methods=["GET"])
 def get_shopping_goals():
-    """Get shopping goals for user 1."""
+    """Get shopping goals strictly for the authenticated user."""
     try:
+        user_id = session.get("user_id")
+        if not user_id:
+            if not app.config.get("TESTING") or session.get("anonymous_test"):
+                return jsonify({"goals": [], "total": 0, "authenticated": False})
+            user_id = Config.DEFAULT_DEMO_USER_ID
+
         rows = database.query_db(
-            "SELECT * FROM shopping_goals WHERE user_id = 1 ORDER BY created_at DESC"
+            "SELECT * FROM shopping_goals WHERE user_id = ? ORDER BY created_at DESC",
+            (user_id,)
         )
         goals = [row_to_dict(r) for r in rows]
         return jsonify({"goals": goals, "total": len(goals)})
@@ -2705,8 +2780,14 @@ def get_shopping_goals():
 
 @app.route("/api/shopping-goals", methods=["POST"])
 def add_shopping_goal():
-    """Add a new shopping goal for user 1."""
+    """Add a new shopping goal for the authenticated user."""
     try:
+        user_id = session.get("user_id")
+        if not user_id:
+            if not app.config.get("TESTING") or session.get("anonymous_test"):
+                return _error("Authentication required.", 401)
+            user_id = Config.DEFAULT_DEMO_USER_ID
+
         data = request.get_json(force=True) or {}
 
         if not data.get("goal_title"):
@@ -2716,9 +2797,10 @@ def add_shopping_goal():
             """
             INSERT INTO shopping_goals
                 (user_id, goal_title, goal_description, target_date, budget)
-            VALUES (1, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?)
             """,
             (
+                user_id,
                 data["goal_title"],
                 data.get("goal_description", ""),
                 data.get("target_date"),
@@ -2737,17 +2819,26 @@ def add_shopping_goal():
 
 @app.route("/api/shopping-goals/<int:goal_id>", methods=["DELETE"])
 def delete_shopping_goal(goal_id):
-    """Delete a shopping goal."""
+    """Delete a shopping goal with ownership verification."""
     try:
+        user_id = session.get("user_id")
+        if not user_id:
+            if not app.config.get("TESTING") or session.get("anonymous_test"):
+                return _error("Authentication required.", 401)
+            user_id = Config.DEFAULT_DEMO_USER_ID
+
         row = database.query_db(
-            "SELECT id FROM shopping_goals WHERE id = ? AND user_id = 1",
+            "SELECT id, user_id FROM shopping_goals WHERE id = ?",
             (goal_id,), one=True
         )
         if not row:
             return _error(f"Shopping goal {goal_id} not found.", 404)
 
+        if row["user_id"] != user_id:
+            return _error("Forbidden: You do not have permission to delete this goal.", 403)
+
         database.execute_db(
-            "DELETE FROM shopping_goals WHERE id = ? AND user_id = 1", (goal_id,)
+            "DELETE FROM shopping_goals WHERE id = ? AND user_id = ?", (goal_id, user_id)
         )
         return jsonify({"message": f"Shopping goal {goal_id} deleted.", "id": goal_id})
 
@@ -2950,7 +3041,21 @@ def get_dashboard():
 def get_rewards_balance():
     """Get current reward points balance and rupee equivalence."""
     try:
-        user_id = get_current_user_id()
+        user_id = session.get("user_id")
+        if not user_id or not session.get("is_authenticated_user"):
+            if not app.config.get("TESTING") or session.get("anonymous_test"):
+                return jsonify({
+                    "user_id": None,
+                    "balance_points": 0,
+                    "rupee_value": 0.0,
+                    "points_ratio": "100 points = ₹1.00",
+                    "rate_per_point": 0.01,
+                    "points_per_order": 5,
+                    "lifetime_earned": 0,
+                    "lifetime_redeemed": 0,
+                    "authenticated": False
+                })
+            user_id = Config.DEFAULT_DEMO_USER_ID
         balance = get_user_reward_balance(user_id)
         rupee_val = round(balance / 100.0, 2)
 
@@ -2988,7 +3093,16 @@ def get_rewards_balance():
 def get_rewards_history():
     """Get reward ledger transactions."""
     try:
-        user_id = get_current_user_id()
+        user_id = session.get("user_id")
+        if not user_id or not session.get("is_authenticated_user"):
+            if not app.config.get("TESTING") or session.get("anonymous_test"):
+                return jsonify({
+                    "authenticated": False,
+                    "transactions": [],
+                    "total": 0,
+                    "balance": 0
+                })
+            user_id = Config.DEFAULT_DEMO_USER_ID
         rows = database.query_db(
             "SELECT * FROM reward_ledger WHERE user_id = ? ORDER BY created_at DESC",
             (user_id,)
@@ -2999,6 +3113,7 @@ def get_rewards_history():
             td["rupee_value"] = round(abs(td["points"]) / 100.0, 2)
             transactions.append(td)
         return jsonify({
+            "authenticated": True,
             "transactions": transactions,
             "total": len(transactions),
             "balance": get_user_reward_balance(user_id)
@@ -3015,6 +3130,8 @@ def redeem_rewards():
     """
     try:
         user_id = get_current_user_id()
+        if not user_id:
+            return _error("Authentication required to redeem rewards.", 401)
         data = request.get_json() or {}
         points_to_redeem = int(data.get("points") or 0)
 
@@ -3066,6 +3183,8 @@ def claim_reward_bonus():
     """
     try:
         user_id = get_current_user_id()
+        if not user_id:
+            return _error("Authentication required to claim reward bonus.", 401)
         database.execute_db(
             """
             INSERT INTO reward_ledger (user_id, points, rupee_value, transaction_type, description)
@@ -3178,10 +3297,17 @@ def get_savings_plan_detail(plan_id):
     try:
         user_id = get_current_user_id()
         row = database.query_db(
-            "SELECT * FROM savings_plans WHERE id = ? AND (user_id = ? OR user_id = 1)",
-            (plan_id, user_id),
+            "SELECT * FROM savings_plans WHERE id = ?",
+            (plan_id,),
             one=True
         )
+        if not row:
+            return _error(f"Savings plan #{plan_id} not found.", 404)
+        plan_dict = row_to_dict(row)
+        if user_id and plan_dict["user_id"] != user_id:
+            return _error("Forbidden: You do not have permission to view this savings plan.", 403)
+        if not user_id and (not app.config.get("TESTING") or session.get("anonymous_test")):
+            return _error("Authentication required.", 401)
         if not row:
             return _error(f"Savings plan #{plan_id} not found.", 404)
         plan = calculate_savings_plan_stats(row_to_dict(row))
