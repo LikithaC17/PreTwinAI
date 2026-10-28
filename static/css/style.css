@@ -3034,27 +3034,19 @@ input, select, textarea {
 }
 
 .pretwin-flying-emblem-wrap {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -92px;
-  margin-left: -92px;
-  width: 185px;
-  height: 185px;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  pointer-events: none;
-  z-index: 15;
-  transform: translate3d(0px, -150px, 0) scale(0.7) rotate(0deg);
-  transition: opacity 0.3s ease;
+  transform: translate3d(-30vw, -30vh, 0) scale(0.4) rotate(-20deg);
+  transition: all 0.3s ease;
 }
 
 .pretwin-fairy-svg {
-  width: 185px;
-  height: 185px;
+  width: 135px;
+  height: 135px;
   overflow: visible;
   filter: drop-shadow(0 6px 20px rgba(168, 85, 247, 0.4));
 }
@@ -3084,12 +3076,12 @@ input, select, textarea {
 @keyframes introCircularFlight {
   0% {
     opacity: 0;
-    transform: translate3d(0px, -150px, 0) scale(0.65) rotate(0deg);
+    transform: translate3d(0px, -150px, 0) scale(0.6) rotate(0deg);
     filter: blur(2px);
   }
   10% {
     opacity: 1;
-    transform: translate3d(85px, -125px, 0) scale(0.9) rotate(16deg);
+    transform: translate3d(85px, -125px, 0) scale(0.85) rotate(16deg);
     filter: blur(0);
   }
   25% {
@@ -3118,34 +3110,34 @@ input, select, textarea {
   }
   100% {
     opacity: 1;
-    transform: translate3d(180px, -110px, 0) scale(1.0) rotate(2deg);
-    filter: drop-shadow(0 10px 24px rgba(124, 58, 237, 0.4));
+    transform: translate3d(0px, -45px, 0) scale(1.05) rotate(0deg);
+    filter: drop-shadow(0 10px 24px rgba(124, 58, 237, 0.35));
   }
 }
 
-/* Fairy Settles into resting position holding pose */
-.stage-settle .pretwin-flying-emblem-wrap {
-  opacity: 1;
-  transform: translate3d(180px, -110px, 0) scale(1.0) rotate(2deg);
+/* PreTwin Official Brand Logo inside Intro Animation */
+.pretwin-intro-official-logo-wrap {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pretwin-intro-official-logo {
+  max-width: 260px;
+  width: 70vw;
+  height: auto;
+  filter: drop-shadow(0 4px 18px rgba(124, 58, 237, 0.3));
 }
 
 /* Character stops and points wand at center in Stage 2 */
 .fairy-wand-group {
-  transform-origin: 85px 52px;
+  transform-origin: 62px 52px;
   transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .stage-wand .fairy-wand-group {
-  animation: fairyWandWave 1.4s ease-in-out forwards;
-}
-
-@keyframes fairyWandWave {
-  0% { transform: rotate(0deg); }
-  20% { transform: rotate(-22deg) scale(1.06); }
-  40% { transform: rotate(-6deg) scale(0.98); }
-  60% { transform: rotate(-20deg) scale(1.05); }
-  80% { transform: rotate(-8deg) scale(1.0); }
-  100% { transform: rotate(-14deg) scale(1.0); }
+  transform: rotate(-12deg);
 }
 
 .wand-star-tip {
@@ -3154,7 +3146,7 @@ input, select, textarea {
 }
 
 .stage-wand .wand-star-tip {
-  filter: drop-shadow(0 0 16px #facc15) drop-shadow(0 0 28px #ffffff);
+  filter: drop-shadow(0 0 14px #facc15) drop-shadow(0 0 24px #ffffff);
   animation: wandStarPulse 1.2s infinite alternate ease-in-out;
 }
 
@@ -3163,45 +3155,45 @@ input, select, textarea {
   100% { transform: scale(1.35); }
 }
 
-/* Wand Light Beam traveling across from wand tip to right-side title area */
+/* Wand Light Beam traveling across to reveal brand name */
 .wand-magic-beam {
   position: absolute;
-  top: 34px;
-  left: 148px;
-  width: 22px;
-  height: 22px;
+  top: 55px;
+  left: 50%;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: radial-gradient(circle, #ffffff 0%, #facc15 50%, rgba(168, 85, 247, 0) 100%);
-  box-shadow: 0 0 24px #facc15, 0 0 45px #a855f7;
+  box-shadow: 0 0 22px #facc15, 0 0 40px #a855f7;
   opacity: 0;
   pointer-events: none;
-  z-index: 18;
+  z-index: 15;
 }
 
 .stage-beam .wand-magic-beam {
-  animation: wandBeamTravel 1.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: wandBeamTravel 1.1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 @keyframes wandBeamTravel {
   0% {
     opacity: 0;
-    transform: translate3d(0, 0, 0) scale(0.4);
+    transform: translate3d(-170px, -10px, 0) scale(0.4);
   }
-  20% {
+  15% {
     opacity: 1;
-    transform: translate3d(-35px, 25px, 0) scale(1.4);
+    transform: translate3d(-120px, 15px, 0) scale(1.3);
   }
   50% {
     opacity: 1;
-    transform: translate3d(-95px, 60px, 0) scale(1.9);
+    transform: translate3d(0px, 20px, 0) scale(1.8);
   }
-  80% {
+  85% {
     opacity: 0.95;
-    transform: translate3d(-160px, 70px, 0) scale(1.4);
+    transform: translate3d(120px, 15px, 0) scale(1.3);
   }
   100% {
     opacity: 0;
-    transform: translate3d(-220px, 65px, 0) scale(0.4);
+    transform: translate3d(170px, 10px, 0) scale(0.4);
   }
 }
 
@@ -3209,139 +3201,45 @@ input, select, textarea {
 .magic-sparkle {
   position: absolute;
   pointer-events: none;
-  font-size: 1.1rem;
+  font-size: 1rem;
   line-height: 1;
   filter: drop-shadow(0 0 6px #facc15) drop-shadow(0 0 12px #c084fc);
   animation: sparkleTwinkle 0.8s ease-in-out infinite alternate;
 }
 
-.spk-1 { top: -14px; left: -10px; font-size: 1.15rem; color: #facc15; animation-delay: 0.1s; }
-.spk-2 { top: 6px; left: 16px; font-size: 0.95rem; color: #ffffff; animation-delay: 0.25s; }
-.spk-3 { top: -18px; left: 12px; font-size: 0.85rem; color: #c084fc; animation-delay: 0.4s; }
-.spk-4 { top: 12px; left: -8px; font-size: 1.25rem; color: #facc15; animation-delay: 0.15s; }
-.spk-5 { top: -4px; left: 24px; font-size: 1.05rem; color: #a855f7; animation-delay: 0.3s; }
+.spk-1 { top: -14px; left: -10px; font-size: 1.1rem; color: #facc15; animation-delay: 0.1s; }
+.spk-2 { top: 6px; left: 16px; font-size: 0.9rem; color: #ffffff; animation-delay: 0.25s; }
+.spk-3 { top: -18px; left: 12px; font-size: 0.8rem; color: #c084fc; animation-delay: 0.4s; }
+.spk-4 { top: 12px; left: -8px; font-size: 1.2rem; color: #facc15; animation-delay: 0.15s; }
+.spk-5 { top: -4px; left: 24px; font-size: 1rem; color: #a855f7; animation-delay: 0.3s; }
 
 @keyframes sparkleTwinkle {
   0% { transform: scale(0.7) rotate(0deg); opacity: 0.5; }
   100% { transform: scale(1.3) rotate(35deg); opacity: 1; }
 }
 
-/* Side-by-side Horizontal Hero Branding Container: [ Left Logo ]  [ Right Title ] */
+/* Branding Container */
 .pretwin-intro-branding {
   text-align: center;
-  margin-top: 18px;
+  margin-top: 22px;
   position: relative;
-  z-index: 25;
-}
-
-.pretwin-side-by-side-branding {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: clamp(18px, 3.5vw, 32px);
-  margin: 0 auto;
-  position: relative;
-  z-index: 25;
-  text-align: left;
-  flex-wrap: nowrap;
-}
-
-/* LEFT SIDE: Original PreTwin AI Project Logo */
-.pretwin-intro-left-logo-col {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.pretwin-intro-logo-box {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  opacity: 0;
-  transform: scale(0.65) rotate(-6deg);
-  filter: blur(5px);
-  transition: all 0.4s ease;
-}
-
-/* Logo animation begins on the left while title area is ready on the right */
-.stage-logo-enter .pretwin-intro-logo-box {
-  animation: logoOriginalEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-             logoGentleGlowPulse 3s ease-in-out infinite alternate 1.3s;
-}
-
-@keyframes logoOriginalEntrance {
-  0% {
-    opacity: 0;
-    transform: scale(0.6) rotate(-10deg);
-    filter: blur(8px) drop-shadow(0 0 0 rgba(124, 58, 237, 0));
-  }
-  60% {
-    opacity: 1;
-    transform: scale(1.06) rotate(1deg);
-    filter: blur(0) drop-shadow(0 8px 28px rgba(168, 85, 247, 0.75));
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-    filter: drop-shadow(0 6px 22px rgba(124, 58, 237, 0.55));
-  }
-}
-
-@keyframes logoGentleGlowPulse {
-  0% {
-    filter: drop-shadow(0 6px 20px rgba(124, 58, 237, 0.5)) drop-shadow(0 0 10px rgba(250, 204, 21, 0.2));
-  }
-  100% {
-    filter: drop-shadow(0 8px 30px rgba(168, 85, 247, 0.7)) drop-shadow(0 0 20px rgba(250, 204, 21, 0.45));
-  }
-}
-
-.pretwin-intro-icon-logo {
-  width: clamp(68px, 10vw, 96px);
-  height: clamp(68px, 10vw, 96px);
-  border-radius: 22px;
-  object-fit: contain;
-  display: block;
-  box-shadow: 0 10px 28px rgba(124, 58, 237, 0.45), 0 0 20px rgba(250, 204, 21, 0.3);
-  border: 2px solid rgba(254, 240, 138, 0.75);
-  background: rgba(30, 27, 75, 0.75);
-  backdrop-filter: blur(10px);
-  transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
-}
-
-/* RIGHT SIDE: PreTwin AI Project Title */
-.pretwin-intro-right-title-col {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex-shrink: 0;
-}
-
-.pretwin-intro-title-box {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  position: relative;
+  z-index: 12;
 }
 
 /* PreTwin Wordmark with magical left-to-right clip reveal */
 .pretwin-intro-wordmark {
-  font-size: clamp(2.5rem, 6.5vw, 4.4rem);
+  font-size: 3.8rem;
   font-weight: 900;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #ffffff 0%, #f3e8ff 30%, #c084fc 65%, #facc15 100%);
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 35%, #2563eb 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 4px 16px rgba(124, 58, 237, 0.45));
-  line-height: 1;
-  margin: 0;
+  filter: drop-shadow(0 4px 14px rgba(124, 58, 237, 0.35));
+  line-height: 1.1;
+  margin-bottom: 12px;
   clip-path: inset(0 100% 0 0);
-  opacity: 0;
+  transition: clip-path 0.1s linear;
   display: inline-block;
-  white-space: nowrap;
 }
 
 .intro-ai-badge {
@@ -3357,7 +3255,6 @@ input, select, textarea {
 }
 
 .stage-reveal .pretwin-intro-wordmark {
-  opacity: 1;
   animation: wordmarkClipReveal 1.1s cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
 }
 
@@ -3366,59 +3263,34 @@ input, select, textarea {
     clip-path: inset(0 100% 0 0);
     filter: drop-shadow(0 0 0 rgba(124, 58, 237, 0));
     transform: scale(0.96);
-    opacity: 0.2;
-  }
-  30% {
-    opacity: 1;
   }
   70% {
     clip-path: inset(0 0% 0 0);
-    filter: drop-shadow(0 6px 24px rgba(168, 85, 247, 0.75)) drop-shadow(0 0 30px rgba(250, 204, 21, 0.6));
+    filter: drop-shadow(0 6px 24px rgba(168, 85, 247, 0.6));
     transform: scale(1.02);
   }
   100% {
     clip-path: inset(0 0% 0 0);
     filter: drop-shadow(0 4px 14px rgba(124, 58, 237, 0.35));
     transform: scale(1);
-    opacity: 1;
   }
 }
 
-/* Stardust Highlight on Logo and Title when Wand Waves */
-.stage-highlight .pretwin-intro-icon-logo {
-  box-shadow: 0 0 35px rgba(250, 204, 21, 0.85), 0 0 60px rgba(168, 85, 247, 0.7);
-  border-color: #facc15;
-  transform: scale(1.05);
-}
-
-.stage-highlight .pretwin-intro-wordmark {
-  filter: drop-shadow(0 0 24px rgba(250, 204, 21, 0.8)) drop-shadow(0 0 45px rgba(192, 132, 252, 0.7));
-}
-
-/* Prominently Highlighted Tagline Directly Underneath Branding */
-.pretwin-intro-tagline-wrap {
-  margin-top: 14px;
-  display: flex;
-  justify-content: center;
-  position: relative;
-  z-index: 25;
-}
-
+/* Prominently Highlighted Tagline */
 .pretwin-intro-tagline {
-  font-size: clamp(1rem, 2.8vw, 1.35rem);
+  font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: 0.03em;
-  background: linear-gradient(90deg, #fef08a 0%, #ffffff 30%, #facc15 60%, #e9d5ff 100%);
+  background: linear-gradient(90deg, #1e1b4b 0%, #6d28d9 30%, #b45309 60%, #1e1b4b 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 10px rgba(124, 58, 237, 0.35));
+  filter: drop-shadow(0 2px 6px rgba(124, 58, 237, 0.2));
   opacity: 0;
   transform: translateY(14px);
   padding: 4px 16px;
   position: relative;
   display: inline-block;
-  text-align: center;
 }
 
 .stage-tagline .pretwin-intro-tagline {
@@ -3435,24 +3307,18 @@ input, select, textarea {
   100% { background-position: 100% 50%; }
 }
 
-/* Stage Freeze: Stops animations and holds polished final resting state */
+/* Stage Freeze: Stops animations and holds polished resting state */
 .stage-freeze .pretwin-flying-emblem-wrap {
   animation-play-state: paused;
 }
 
 .stage-freeze .fairy-wand-group {
-  transform: rotate(-14deg);
+  transform: rotate(-12deg);
   animation: none !important;
 }
 
 .stage-freeze .wand-star-tip {
   filter: drop-shadow(0 0 10px #facc15) drop-shadow(0 0 20px #ffffff);
-  animation: none !important;
-}
-
-.stage-freeze .pretwin-intro-logo-box {
-  opacity: 1 !important;
-  transform: scale(1) !important;
   animation: none !important;
 }
 
@@ -3467,38 +3333,6 @@ input, select, textarea {
   transform: translateY(0) !important;
 }
 
-@media (max-width: 640px) {
-  .pretwin-flying-emblem-wrap {
-    width: 150px;
-    height: 150px;
-    margin-top: -75px;
-    margin-left: -75px;
-  }
-  .pretwin-fairy-svg {
-    width: 150px;
-    height: 150px;
-  }
-  .wand-magic-beam {
-    top: 28px;
-    left: 120px;
-  }
-  .pretwin-side-by-side-branding {
-    gap: 12px !important;
-  }
-  .pretwin-intro-icon-logo {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
-  }
-  .pretwin-intro-wordmark {
-    font-size: 2.1rem !important;
-  }
-  .pretwin-intro-tagline {
-    font-size: 0.92rem !important;
-    padding: 2px 8px;
-  }
-}
-
 /* Enter Button Wrapper & Button */
 .pretwin-intro-enter-wrap {
   margin-top: 22px;
@@ -3508,6 +3342,8 @@ input, select, textarea {
   transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   justify-content: center;
+  position: relative;
+  z-index: 25;
 }
 
 .stage-enter .pretwin-intro-enter-wrap,
@@ -3571,6 +3407,20 @@ input, select, textarea {
   font-size: 1.1rem;
   filter: drop-shadow(0 0 6px #facc15);
   animation: sparkleTwinkle 1.2s infinite alternate;
+}
+
+@media (max-width: 640px) {
+  .pretwin-fairy-svg {
+    width: 105px;
+    height: 105px;
+  }
+  .pretwin-intro-wordmark {
+    font-size: 2.5rem;
+  }
+  .pretwin-intro-tagline {
+    font-size: 1.05rem;
+    padding: 2px 10px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
