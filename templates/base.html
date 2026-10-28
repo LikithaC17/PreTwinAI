@@ -160,54 +160,123 @@
           </a>
 
           <!-- More Options Shortcut -->
-          <button type="button" class="pretwin-shortcut-btn" onclick="toggleMoreMenu(event)" aria-haspopup="true" aria-expanded="false" title="More Options">
-            <div class="pretwin-shortcut-icon-box">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="5" r="2.1"></circle>
-                <circle cx="12" cy="12" r="2.1"></circle>
-                <circle cx="12" cy="19" r="2.1"></circle>
-              </svg>
+          <div class="pretwin-nav-item pretwin-dropdown-container" id="nav2MoreContainer" style="position:relative;">
+            <button type="button" class="pretwin-shortcut-btn" id="nav2MoreBtn" onclick="toggleNav2MoreMenu(event)" aria-haspopup="true" aria-expanded="false" title="More Options">
+              <div class="pretwin-shortcut-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="2.1"></circle>
+                  <circle cx="12" cy="12" r="2.1"></circle>
+                  <circle cx="12" cy="19" r="2.1"></circle>
+                </svg>
+              </div>
+              <span class="pretwin-shortcut-text">More</span>
+            </button>
+
+            <!-- More Menu Dropdown attached to Nav bar 2 -->
+            <div class="pretwin-more-dropdown" id="nav2MoreDropdown" style="right:0; left:auto;">
+              <a href="/seller" class="pretwin-more-item">
+                <span class="more-item-icon">💼</span>
+                <div>
+                  <div class="more-item-title">Become a Seller</div>
+                  <div class="more-item-desc">Join PreTwin Merchant Partner Hub</div>
+                </div>
+              </a>
+              <a href="/notifications" class="pretwin-more-item">
+                <span class="more-item-icon">🔔</span>
+                <div>
+                  <div class="more-item-title">Notifications</div>
+                  <div class="more-item-desc">Price drop alerts &amp; order updates</div>
+                </div>
+              </a>
+              <a href="/customer-service" class="pretwin-more-item">
+                <span class="more-item-icon">🎧</span>
+                <div>
+                  <div class="more-item-title">Customer Service</div>
+                  <div class="more-item-desc">24x7 Help Center, FAQs &amp; Returns</div>
+                </div>
+              </a>
             </div>
-            <span class="pretwin-shortcut-text">More</span>
-          </button>
+          </div>
 
           <!-- Profile Shortcut -->
-          {% if is_authenticated and current_user %}
-            <button
-              type="button"
-              class="pretwin-shortcut-btn {% if request.path == '/profile' %}active{% endif %}"
-              onclick="togglePreTwinAccountDropdown(event)"
-              aria-haspopup="true"
-              aria-expanded="false"
-              title="Signed in as {{ current_user.username }}"
-            >
-              <div class="pretwin-shortcut-icon-box">
-                {% if current_user.avatar_url %}
-                  <img src="{{ current_user.avatar_url }}" alt="{{ current_user.username }}" class="pretwin-nav-avatar">
-                {% else %}
+          <div class="pretwin-nav-item pretwin-account-item" id="nav2AccountItem" style="position:relative;">
+            {% if is_authenticated and current_user %}
+              <button
+                type="button"
+                class="pretwin-shortcut-btn {% if request.path == '/profile' %}active{% endif %}"
+                id="nav2ProfileBtn"
+                onclick="toggleNav2AccountDropdown(event)"
+                aria-haspopup="true"
+                aria-expanded="false"
+                title="Signed in as {{ current_user.username }}"
+              >
+                <div class="pretwin-shortcut-icon-box">
+                  {% if current_user.avatar_url %}
+                    <img src="{{ current_user.avatar_url }}" alt="{{ current_user.username }}" class="pretwin-nav-avatar">
+                  {% else %}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  {% endif %}
+                </div>
+                <span class="pretwin-shortcut-text">Profile</span>
+              </button>
+
+              <!-- Account Dropdown attached to Nav bar 2 -->
+              <div class="pretwin-account-dropdown" id="nav2AccountDropdown" style="right:0;">
+                <div class="pretwin-dropdown-user-header">
+                  <div class="pretwin-dropdown-user-name">{{ current_user.username }}</div>
+                  <div class="pretwin-dropdown-user-email">{{ current_user.email }}</div>
+                </div>
+                <div class="pretwin-dropdown-divider"></div>
+                <a href="/profile" class="pretwin-dropdown-link" title="My Profile (Personal, Location, Payment)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                  <span>My Profile (Personal, Location, Payment)</span>
+                </a>
+                <a href="/settings" class="pretwin-dropdown-link" title="Account &amp; System Settings">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                  <span>Settings</span>
+                </a>
+                <a href="/twin" class="pretwin-dropdown-link" title="Personalized Shopping Twin">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
+                  <span>Digital Twin Taste Model</span>
+                </a>
+                <a href="/orders" class="pretwin-dropdown-link" title="My Orders &amp; Tracking">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                  <span>My Orders</span>
+                </a>
+                <a href="/wishlist" class="pretwin-dropdown-link" title="Saved Wishlist Items">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  <span>Wishlist</span>
+                </a>
+                <div class="pretwin-dropdown-divider"></div>
+                <a href="/login" class="pretwin-dropdown-link" title="Sign in with another account or create account">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                  <span>Sign In / Switch Account</span>
+                </a>
+                <a href="/logout" class="pretwin-dropdown-link pretwin-dropdown-logout-item" onclick="handlePreTwinLogout(event)" title="Sign out of PreTwin">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                  <span>Sign Out</span>
+                </a>
+              </div>
+            {% else %}
+              <a
+                href="/profile"
+                class="pretwin-shortcut-btn {% if request.path == '/profile' %}active{% endif %}"
+                id="nav2ProfileBtn"
+                title="My Profile &amp; Sign In"
+              >
+                <div class="pretwin-shortcut-icon-box">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                   </svg>
-                {% endif %}
-              </div>
-              <span class="pretwin-shortcut-text">Profile</span>
-            </button>
-          {% else %}
-            <a
-              href="/profile"
-              class="pretwin-shortcut-btn {% if request.path == '/profile' %}active{% endif %}"
-              title="My Profile &amp; Sign In"
-            >
-              <div class="pretwin-shortcut-icon-box">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-              </div>
-              <span class="pretwin-shortcut-text">Profile</span>
-            </a>
-          {% endif %}
+                </div>
+                <span class="pretwin-shortcut-text">Profile</span>
+              </a>
+            {% endif %}
+          </div>
 
         </nav>
       </div>
@@ -215,9 +284,9 @@
   </header>
 
   <!-- ======================================================================
-       2. SECOND NAVIGATION BAR (Rewards, Savings, Features, More, Profile)
+       2. SECOND NAVIGATION BAR (Nav Bar 3: Removed from view per user request)
        ====================================================================== -->
-  <nav class="pretwin-second-navbar" id="pretwinSecondNavbar" aria-label="Secondary Features Navigation">
+  <nav class="pretwin-second-navbar" id="pretwinSecondNavbar" style="display:none !important;" aria-hidden="true" aria-label="Secondary Features Navigation">
     <div class="pretwin-second-navbar-inner">
       <div class="pretwin-second-nav-left">
         <span class="pretwin-second-nav-badge">

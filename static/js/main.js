@@ -1234,6 +1234,38 @@ function toggleMoreMenu(e) {
   }
 }
 
+function toggleNav2MoreMenu(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  const dropdown = document.getElementById('nav2MoreDropdown');
+  const btn = document.getElementById('nav2MoreBtn');
+  if (!dropdown) return;
+  const isOpen = dropdown.classList.contains('is-open');
+  closeAllNavDropdowns();
+  if (!isOpen) {
+    dropdown.classList.add('is-open');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  }
+}
+
+function toggleNav2AccountDropdown(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  const dropdown = document.getElementById('nav2AccountDropdown');
+  const btn = document.getElementById('nav2ProfileBtn');
+  if (!dropdown) return;
+  const isOpen = dropdown.classList.contains('is-open');
+  closeAllNavDropdowns();
+  if (!isOpen) {
+    dropdown.classList.add('is-open');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  }
+}
+
 // Global outside-click listener for all dropdowns & location modal
 document.addEventListener('click', (e) => {
   const containers = [
@@ -1241,7 +1273,9 @@ document.addEventListener('click', (e) => {
     document.getElementById('pretwinNotificationsContainer'),
     document.getElementById('pretwinMoreContainer'),
     document.getElementById('pretwinAccountItem'),
-    document.getElementById('pretwinLocationContainer')
+    document.getElementById('pretwinLocationContainer'),
+    document.getElementById('nav2MoreContainer'),
+    document.getElementById('nav2AccountItem')
   ];
 
   const clickedInside = containers.some(c => c && c.contains(e.target));

@@ -3762,6 +3762,8 @@ input, select, textarea {
    PRETWIN SECOND NAVIGATION BAR (Features, More, Profile at the End)
    ========================================================================== */
 .pretwin-second-navbar {
+  display: none !important;
+  pointer-events: none !important;
   background: linear-gradient(90deg, #1e1b4b 0%, #2e1065 50%, #3b0764 100%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   padding: 6px 16px;
