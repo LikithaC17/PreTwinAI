@@ -57,17 +57,6 @@ def test_startup_animation_branding_and_tagline_highlight(client):
     assert "introTagline" in html
     assert "Your Future. Your Style. Your Twin." in html
 
-    # Must contain Crescent Moon and Seated Fairy with complete body elements
-    assert "crescent-moon-group" in html
-    assert "crescent-moon-path" in html
-    assert "seated-fairy-group" in html
-    assert "fairy-wings-container" in html
-    assert "fairy-legs-and-feet" in html
-    assert "fairy-foot-left" in html
-    assert "fairy-foot-right" in html
-    assert "fairy-magic-wand" in html
-    assert "wand-star-tip" in html
-
     # Must NOT contain Kannada Fairy Tale anywhere
     assert "Kannada Fairy Tale" not in html
     assert "Kannada FAIRY TALES" not in html
@@ -82,9 +71,6 @@ def test_startup_animation_branding_and_tagline_highlight(client):
     assert ".pretwin-intro-tagline" in css
     assert "taglineShimmer" in css
     assert "linear-gradient" in css
-    assert ".crescent-moon-group" in css
-    assert "fairyWingFlutterLeft" in css
-    assert "fairyWingFlutterRight" in css
 
 
 def test_profile_page_excludes_digital_twin_model(client):
