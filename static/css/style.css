@@ -3126,31 +3126,33 @@ input, select, textarea {
   }
 }
 
-/* Translucent Magical Screen Container (Pulled & Unfolded by Fairy) */
+/* Translucent Magical Full-Screen Big Screen (Pulled from Top to Bottom by Fairy) */
 .pretwin-magical-curtain-screen {
   position: relative;
-  max-width: 640px;
-  width: 90vw;
-  margin: 12px auto 0 auto;
-  padding: 32px 36px 28px 36px;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1.5px solid rgba(192, 132, 252, 0.55);
-  border-radius: 26px;
-  box-shadow: 0 20px 50px rgba(124, 58, 237, 0.16), 0 0 35px rgba(250, 204, 21, 0.18), inset 0 0 25px rgba(255, 255, 255, 0.7);
+  max-width: 1120px;
+  width: 95vw;
+  min-height: 82vh;
+  margin: 0 auto;
+  padding: 40px 36px 32px 36px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 2px solid rgba(192, 132, 252, 0.6);
+  border-radius: 28px;
+  box-shadow: 0 24px 70px rgba(124, 58, 237, 0.22), 0 0 50px rgba(250, 204, 21, 0.2), inset 0 0 35px rgba(255, 255, 255, 0.85);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 12;
   overflow: visible;
-  clip-path: inset(0 100% 0 0 round 26px);
+  clip-path: inset(0 0 100% 0 round 28px);
   opacity: 0;
-  transform: scale(0.96);
-  transition: clip-path 1.6s cubic-bezier(0.25, 1, 0.3, 1), opacity 0.6s ease, transform 0.8s ease;
+  transform: translateY(-24px) scale(0.98);
+  transition: clip-path 1.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease, transform 0.8s ease;
 }
 
+/* Big Screen pulled fully down from Top to Bottom */
 .stage-flight .pretwin-magical-curtain-screen,
 .stage-curtain .pretwin-magical-curtain-screen,
 .stage-wand .pretwin-magical-curtain-screen,
@@ -3159,21 +3161,21 @@ input, select, textarea {
 .stage-tagline .pretwin-magical-curtain-screen,
 .stage-freeze .pretwin-magical-curtain-screen,
 .stage-ready .pretwin-magical-curtain-screen {
-  clip-path: inset(0 0% 0 0 round 26px);
+  clip-path: inset(0 0 0% 0 round 28px);
   opacity: 1;
-  transform: scale(1);
+  transform: translateY(0) scale(1);
 }
 
-/* Edge sparkle trail along the unfolding edge */
+/* Edge sparkle trail along the bottom leading edge as the screen unrolls top-to-bottom */
 .curtain-sparkle-trail {
   position: absolute;
-  top: 10px;
-  right: -12px;
-  bottom: 10px;
-  width: 24px;
+  left: 24px;
+  right: 24px;
+  bottom: -16px;
+  height: 32px;
   pointer-events: none;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-around;
   align-items: center;
   opacity: 0;
@@ -3186,19 +3188,23 @@ input, select, textarea {
 }
 
 .stage-freeze .curtain-sparkle-trail {
-  opacity: 0.7;
+  opacity: 0.85;
 }
 
 .curtain-edge-sparkle {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   color: #facc15;
-  filter: drop-shadow(0 0 8px #facc15) drop-shadow(0 0 14px #c084fc);
-  animation: sparkleTwinkle 1s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 8px #facc15) drop-shadow(0 0 16px #c084fc);
+  animation: sparkleTwinkle 0.9s ease-in-out infinite alternate;
 }
 
-.spk-edge-1 { animation-delay: 0.1s; font-size: 1.2rem; color: #facc15; }
-.spk-edge-2 { animation-delay: 0.3s; font-size: 1.0rem; color: #ffffff; }
-.spk-edge-3 { animation-delay: 0.5s; font-size: 0.9rem; color: #c084fc; }
+.spk-edge-1 { animation-delay: 0.05s; font-size: 1.3rem; color: #facc15; }
+.spk-edge-2 { animation-delay: 0.2s; font-size: 1.05rem; color: #ffffff; }
+.spk-edge-3 { animation-delay: 0.35s; font-size: 0.95rem; color: #c084fc; }
+.spk-edge-4 { animation-delay: 0.15s; font-size: 1.25rem; color: #facc15; }
+.spk-edge-5 { animation-delay: 0.3s; font-size: 1.1rem; color: #a855f7; }
+.spk-edge-6 { animation-delay: 0.45s; font-size: 0.95rem; color: #ffffff; }
+.spk-edge-7 { animation-delay: 0.25s; font-size: 1.2rem; color: #facc15; }
 
 /* PreTwin Official Brand Logo inside Intro Animation */
 .pretwin-intro-official-logo-wrap {
@@ -3495,9 +3501,17 @@ input, select, textarea {
 }
 
 @media (max-width: 640px) {
+  .pretwin-magical-curtain-screen {
+    width: 96vw;
+    min-height: 84vh;
+    padding: 24px 16px 20px 16px;
+  }
   .pretwin-fairy-svg {
     width: 105px;
     height: 105px;
+  }
+  .pretwin-intro-official-logo {
+    max-width: 200px;
   }
   .pretwin-intro-wordmark {
     font-size: 2.5rem;

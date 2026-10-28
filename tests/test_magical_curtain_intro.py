@@ -74,7 +74,7 @@ def test_magical_curtain_screen_css_definitions():
     assert ".pretwin-magical-curtain-screen" in css
     assert "backdrop-filter" in css
     assert "clip-path" in css
-    assert "inset(0 100% 0 0 round" in css
+    assert "inset(0 0 100% 0 round" in css or "inset(0 100% 0 0 round" in css
 
     # Sparkle trail along screen edge
     assert ".curtain-sparkle-trail" in css
