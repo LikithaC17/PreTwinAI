@@ -488,20 +488,34 @@ async function loadPurchaseHistory() {
       return;
     }
 
-    tbody.innerHTML = history.map((item) => `
-      <tr>
-        <td>${formatDate(item.purchase_date)}</td>
-        <td><strong>${item.product_name}</strong></td>
-        <td><span class="badge badge-outline">${item.category}</span></td>
-        <td>${item.brand || '--'}</td>
-        <td>${formatCurrency(item.price)}</td>
-        <td>${item.quantity || 1}</td>
-        <td class="text-muted text-sm">${item.notes || '--'}</td>
-        <td>
-          <button class="btn btn-sm btn-outline-danger" onclick="deletePurchaseItem(${item.id})">Delete</button>
-        </td>
-      </tr>
-    `).join('');
+    tbody.innerHTML = history.map((item) => {
+      const orderRef = item.order_number ? `#${item.order_number}` : (item.order_id ? `#${item.order_id}` : 'Direct');
+      const isVerified = item.is_verified_purchase === 1 || item.is_verified_purchase === null;
+      const statusBadge = isVerified
+        ? `<span class="badge badge-success" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-size:0.7rem; padding:2px 6px; border-radius:4px;">Verified Completed</span>`
+        : `<span class="badge" style="background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3); font-size:0.7rem; padding:2px 6px; border-radius:4px;">Disqualified</span>`;
+
+      return `
+        <tr>
+          <td>${formatDate(item.purchase_date)}</td>
+          <td><span style="font-family:monospace; color:#38bdf8;">${orderRef}</span></td>
+          <td><strong>${item.product_name}</strong></td>
+          <td><span class="badge badge-outline">${item.category || 'General'}</span></td>
+          <td>${item.brand || '--'}</td>
+          <td>${formatCurrency(item.price)}</td>
+          <td>${item.quantity || 1}</td>
+          <td>
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              ${statusBadge}
+              <span style="font-size:0.7rem; color:#94a3b8;">${item.payment_method || 'Online'} (${item.payment_status || 'Paid'})</span>
+            </div>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-outline-danger" onclick="deletePurchaseItem(${item.id})">Delete</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
   } catch (err) {
     console.error('Failed to load purchase history:', err);
   }
@@ -663,4 +677,306 @@ function openAddHouseholdTwinModal() {
 document.addEventListener('DOMContentLoaded', () => {
   loadTwinProfile();
   loadHouseholdProfiles();
+  loadTwinPrivacySettings();
+  loadTwinInsights();
 });
+
+
+/**
+ * ---------------------------------------------------------------------------
+ * Digital Twin Intelligence & Verified Purchase History Controller
+ * ---------------------------------------------------------------------------
+ */
+
+async function loadTwinPrivacySettings() {
+  const toggle = document.getElementById('twinHistoryPrivacyToggle');
+  const badge = document.getElementById('privacyStatusBadge');
+  if (!toggle) return;
+
+  try {
+    const res = await fetch('/api/twin/privacy-controls');
+    const data = await res.json();
+    const isOptedIn = data.use_purchase_history_for_twin !== false;
+    toggle.checked = isOptedIn;
+    if (badge) {
+      if (isOptedIn) {
+        badge.textContent = 'Active Learning';
+        badge.style.background = 'rgba(16, 185, 129, 0.15)';
+        badge.style.color = '#34d399';
+        badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+      } else {
+        badge.textContent = 'Paused (Private)';
+        badge.style.background = 'rgba(239, 68, 68, 0.15)';
+        badge.style.color = '#f87171';
+        badge.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+      }
+    }
+  } catch (err) {
+    console.warn('Could not load privacy controls:', err);
+  }
+}
+
+async function toggleHistoryPrivacy(enabled) {
+  const badge = document.getElementById('privacyStatusBadge');
+  try {
+    const res = await fetch('/api/twin/privacy-controls', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ use_purchase_history_for_twin: enabled }),
+    });
+    const data = await res.json();
+    if (badge) {
+      if (enabled) {
+        badge.textContent = 'Active Learning';
+        badge.style.background = 'rgba(16, 185, 129, 0.15)';
+        badge.style.color = '#34d399';
+        badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+      } else {
+        badge.textContent = 'Paused (Private)';
+        badge.style.background = 'rgba(239, 68, 68, 0.15)';
+        badge.style.color = '#f87171';
+        badge.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+      }
+    }
+    showToast(
+      enabled
+        ? 'Purchase history learning enabled for your Digital Twin.'
+        : 'Purchase history learning paused. Your twin will use manual preferences only.',
+      'info'
+    );
+    await loadTwinInsights();
+  } catch (err) {
+    showToast('Failed to update privacy preference: ' + err.message, 'error');
+  }
+}
+
+async function loadTwinInsights() {
+  try {
+    const res = await fetch('/api/twin/insights');
+    const data = await res.json();
+
+    const history = data.history_summary || {};
+    const profile = data.learned_profile || {};
+    const predictions = data.predictions || [];
+    const recommendations = data.recommendations || [];
+
+    // 1. Metric Cards
+    const totalOrdersEl = document.getElementById('insightTotalOrders');
+    const totalItemsEl = document.getElementById('insightTotalItems');
+    const totalSpendEl = document.getElementById('insightTotalSpend');
+    const tierEl = document.getElementById('insightSpendingTier');
+    const avgBasketEl = document.getElementById('insightAvgBasket');
+    const avgItemEl = document.getElementById('insightAvgItem');
+    const cadenceEl = document.getElementById('insightCadence');
+    const cadenceDaysEl = document.getElementById('insightCadenceDays');
+
+    if (totalOrdersEl) totalOrdersEl.textContent = history.total_orders ?? 0;
+    if (totalItemsEl) totalItemsEl.textContent = `${history.total_items_count ?? 0} items delivered / recorded`;
+    if (totalSpendEl) totalSpendEl.textContent = formatCurrency(history.total_spent ?? 0);
+    if (tierEl) tierEl.textContent = `Tier: ${profile.spending_tier || 'Smart Value'}`;
+    if (avgBasketEl) avgBasketEl.textContent = formatCurrency(history.average_order_value ?? 0);
+    if (avgItemEl) avgItemEl.textContent = `Avg ${formatCurrency(history.average_item_price ?? 0)}/item`;
+    if (cadenceEl) cadenceEl.textContent = profile.observed_frequency || 'Monthly';
+    if (cadenceDaysEl) cadenceDaysEl.textContent = `Every ~${profile.cadence_days || 30} days`;
+
+    // 2. Frequently Purchased Products
+    renderFrequentlyPurchased(history.frequently_purchased || []);
+
+    // 3. Replenishment Predictions
+    renderReplenishmentPredictions(predictions);
+
+    // 4. Personalized Recommendations
+    renderCoordinatedRecommendations(recommendations);
+
+  } catch (err) {
+    console.error('Failed to load twin insights:', err);
+  }
+}
+
+function renderFrequentlyPurchased(items) {
+  const grid = document.getElementById('frequentlyPurchasedGrid');
+  if (!grid) return;
+
+  if (!items || items.length === 0) {
+    grid.innerHTML = `
+      <div style="color:#64748b; font-size:0.85rem; padding:18px; grid-column:1 / -1; text-align:center; background:#1e293b; border-radius:10px; border:1px dashed #334155;">
+        No repeat purchases observed yet. As you make purchases on PreTwin AI, your frequent items will appear here for 1-click replenishment.
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = items.slice(0, 6).map(it => `
+    <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.2s;">
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:0.7rem; color:#38bdf8; background:rgba(56,189,248,0.1); padding:2px 6px; border-radius:4px; font-weight:600;">${it.category}</span>
+          <span style="font-size:0.75rem; color:#a855f7; font-weight:700;">Ordered ${it.order_appearances}x (${it.total_quantity} pcs)</span>
+        </div>
+        <h4 style="margin:4px 0 6px; font-size:0.9rem; color:#f8fafc; font-weight:600; line-height:1.3; height:36px; overflow:hidden;">
+          ${it.product_name}
+        </h4>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span style="font-size:1.05rem; font-weight:700; color:#34d399;">${formatCurrency(it.avg_price)}</span>
+          <span style="font-size:0.75rem; color:#94a3b8;">Last: ${it.latest_purchase_date || '--'}</span>
+        </div>
+      </div>
+      <div>
+        <button onclick="quickRepurchase('${encodeURIComponent(it.product_name)}', ${it.product_id || 0})" style="width:100%; background:linear-gradient(135deg, #38bdf8, #6366f1); border:none; color:#fff; padding:7px 12px; border-radius:6px; font-weight:600; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <span>🔁</span> Reorder / Restock
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function quickRepurchase(productName, productId) {
+  try {
+    if (productId && productId > 0) {
+      await addToCartById(productId);
+    } else {
+      // Find product in catalog
+      const res = await fetch(`/api/products?search=${encodeURIComponent(decodeURIComponent(productName))}&limit=1`);
+      const data = await res.json();
+      const p = (data.products || [])[0];
+      if (p) {
+        await addToCartById(p.id);
+      } else {
+        showToast('Added request to shopping card!', 'success');
+      }
+    }
+  } catch (err) {
+    showToast('Could not add to cart: ' + err.message, 'error');
+  }
+}
+
+function renderReplenishmentPredictions(predictions) {
+  const grid = document.getElementById('replenishmentPredictionsGrid');
+  if (!grid) return;
+
+  if (!predictions || predictions.length === 0) {
+    grid.innerHTML = `
+      <div style="color:#64748b; font-size:0.85rem; padding:20px; grid-column:1 / -1; text-align:center; background:#1e293b; border-radius:10px; border:1px dashed #334155;">
+        No repeat replenishment forecasts active yet. Predictions activate automatically as repeat orders or consumable goods are delivered.
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = predictions.map(pred => {
+    const isDue = pred.is_due_soon;
+    const isOver = pred.is_overdue;
+    const statusColor = isOver ? '#ef4444' : (isDue ? '#f59e0b' : '#38bdf8');
+    const statusText = isOver ? 'Restock Overdue' : (isDue ? 'Due Soon' : 'Upcoming');
+
+    return `
+      <div style="background:#1e293b; border:1px solid ${statusColor}44; border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; position:relative;">
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:0.7rem; color:${statusColor}; background:${statusColor}18; border:1px solid ${statusColor}33; padding:2px 8px; border-radius:12px; font-weight:700;">
+              ● ${statusText} (${pred.confidence_label})
+            </span>
+            <span style="font-size:0.75rem; color:#94a3b8;">Est. Interval: ~${pred.average_interval_days}d</span>
+          </div>
+          <h4 style="margin:4px 0 6px; font-size:0.95rem; color:#f8fafc; font-weight:600;">
+            ${pred.product_name}
+          </h4>
+          <div style="font-size:0.8rem; color:#cbd5e1; margin-bottom:8px;">
+            <strong style="color:#38bdf8;">Estimated Restock:</strong> ${pred.estimated_replenishment_date}
+            <span style="color:#64748b; font-size:0.75rem;">(Window: ${pred.estimated_window_start} to ${pred.estimated_window_end})</span>
+          </div>
+          <div style="background:#0f172a; border-left:3px solid #38bdf8; padding:8px 10px; border-radius:0 6px 6px 0; font-size:0.75rem; color:#94a3b8; margin-bottom:12px; line-height:1.35;">
+            <strong style="color:#cbd5e1;">Agent Evidence:</strong> ${pred.evidence_explanation}
+          </div>
+        </div>
+        <div>
+          <button onclick="quickRepurchase('${encodeURIComponent(pred.product_name)}', ${pred.product_id || 0})" style="width:100%; background:linear-gradient(135deg, #10b981, #059669); border:none; color:#fff; padding:8px 12px; border-radius:6px; font-weight:600; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+            <span>🛒</span> Restock This Item
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderCoordinatedRecommendations(recs) {
+  const grid = document.getElementById('twinRecsGrid');
+  if (!grid) return;
+
+  if (!recs || recs.length === 0) {
+    grid.innerHTML = `
+      <div style="text-align:center; padding:36px; color:#64748b; grid-column:1 / -1;">
+        No recommendations available matching current preferences and budget ceiling. Try adjusting your preferences.
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = recs.map(p => `
+    <div class="card" style="background:#1e293b; border:1px solid #334155; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; position:relative; transition:transform 0.2s, border-color 0.2s;" id="recCard-${p.id}">
+      <!-- Dismiss Action -->
+      <button onclick="dismissRecommendation(${p.id})" style="position:absolute; top:8px; right:8px; background:rgba(15,23,42,0.8); border:1px solid #334155; color:#94a3b8; width:26px; height:26px; border-radius:50%; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2;" title="Dismiss recommendation">
+        &times;
+      </button>
+
+      <div style="padding:14px;">
+        <!-- Image -->
+        <div style="height:140px; background:#fff; border-radius:8px; overflow:hidden; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
+          <img src="${p.image_url || '/static/images/placeholder.png'}" alt="${p.name}" style="max-height:100%; max-width:100%; object-fit:contain;">
+        </div>
+
+        <!-- Category & Brand -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase; font-weight:600;">${p.brand || 'PreTwin'}</span>
+          <span style="font-size:0.7rem; background:rgba(99,102,241,0.2); color:#c4b5fd; padding:1px 6px; border-radius:4px;">${p.category}</span>
+        </div>
+
+        <!-- Product Name -->
+        <h4 style="margin:0 0 8px 0; color:#f1f5f9; font-size:0.9rem; font-weight:600; line-height:1.3; height:38px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
+          ${p.name}
+        </h4>
+
+        <!-- Price & Rating -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span style="font-size:1.15rem; font-weight:700; color:#f8fafc;">₹${Math.round(p.price).toLocaleString('en-IN')}</span>
+          <span style="font-size:0.8rem; color:#fbbf24; font-weight:600;">⭐ ${p.rating ? Number(p.rating).toFixed(1) : '4.5'}</span>
+        </div>
+
+        <!-- Why Matches Your Twin -->
+        <div style="background:rgba(168,85,247,0.1); border-left:3px solid #a855f7; padding:8px; border-radius:0 6px 6px 0; font-size:0.75rem; color:#d8b4fe; margin-bottom:12px; line-height:1.35;">
+          <strong style="color:#e9d5ff;">${p.badge || 'AI Match'}:</strong> ${p.recommendation_reason || 'Aligns with your shopping goals and verified budget.'}
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="padding:12px 14px; background:#0f172a; border-top:1px solid #334155; display:flex; gap:8px;">
+        <button onclick="addToCartById(${p.id})" style="flex:1; background:linear-gradient(135deg, #6366f1, #a855f7); color:#fff; border:none; padding:8px 10px; border-radius:6px; font-weight:600; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:4px;">
+          <span>🛒</span> Add to Cart
+        </button>
+        <button onclick="toggleWishlistById(${p.id})" style="background:#1e293b; border:1px solid #475569; color:#f87171; width:34px; height:34px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px;" title="Save to Wishlist">
+          ❤️
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function dismissRecommendation(productId) {
+  const card = document.getElementById(`recCard-${productId}`);
+  if (card) {
+    card.style.transition = 'opacity 0.3s, transform 0.3s';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.9)';
+    setTimeout(() => card.remove(), 300);
+  }
+  showToast('Recommendation dismissed', 'info');
+  try {
+    await fetch('/api/twin/dismiss-recommendation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product_id: productId }),
+    });
+  } catch (err) {
+    console.warn('Could not persist recommendation dismissal:', err);
+  }
+}

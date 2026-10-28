@@ -67,6 +67,11 @@ CREATE TABLE IF NOT EXISTS shopping_preferences (
     shopping_frequency TEXT DEFAULT 'monthly',
     shopping_goals TEXT DEFAULT '',
     notes TEXT DEFAULT '',
+    use_purchase_history_for_twin INTEGER DEFAULT 1,
+    dismissed_recommendation_ids TEXT DEFAULT '[]',
+    spending_tier TEXT DEFAULT 'Value',
+    typical_spending_min REAL DEFAULT 0.0,
+    typical_spending_max REAL DEFAULT 10000.0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -83,6 +88,13 @@ CREATE TABLE IF NOT EXISTS purchase_history (
     purchase_date DATE,
     quantity INTEGER DEFAULT 1,
     notes TEXT DEFAULT '',
+    order_id INTEGER,
+    order_number TEXT DEFAULT '',
+    payment_method TEXT DEFAULT '',
+    payment_status TEXT DEFAULT 'Paid',
+    order_status TEXT DEFAULT 'Delivered',
+    fulfillment_status TEXT DEFAULT 'Delivered',
+    is_verified_purchase INTEGER DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

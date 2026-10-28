@@ -81,6 +81,90 @@
     </div>
   </section>
 
+  <!-- Digital Twin Privacy & Purchase History Control Banner -->
+  <div class="card" style="background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 18px 24px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+    <div style="display: flex; gap: 14px; align-items: center;">
+      <div style="font-size: 1.6rem; background: rgba(99, 102, 241, 0.15); width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(99, 102, 241, 0.3);">
+        🛡️
+      </div>
+      <div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <h4 style="margin: 0; color: #f8fafc; font-size: 1rem; font-weight: 700;">Purchase History &amp; Privacy Controls</h4>
+          <span id="privacyStatusBadge" class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; font-weight: 600;">Active Learning</span>
+        </div>
+        <p style="margin: 3px 0 0; color: #94a3b8; font-size: 0.82rem; max-width: 680px;">
+          Only completed purchases train your twin. Cancelled, returned, or unpaid orders are strictly excluded. You can pause or resume purchase-history learning anytime.
+        </p>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <label style="font-size: 0.85rem; color: #cbd5e1; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" id="twinHistoryPrivacyToggle" onchange="toggleHistoryPrivacy(this.checked)" checked style="width: 18px; height: 18px; accent-color: #6366f1; cursor: pointer;">
+        <span>Use Purchases for AI Personalization</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- AI Purchase Insights Metric Cards -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px;" id="purchaseInsightsMetricsStrip">
+    <div class="card" style="background: #111827; border: 1px solid #1e293b; border-radius: 12px; padding: 18px; position: relative; overflow: hidden;">
+      <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700; letter-spacing: 0.5px;">Verified Completed Orders</div>
+      <div style="font-size: 1.8rem; font-weight: 700; color: #f8fafc; margin: 6px 0 2px;" id="insightTotalOrders">--</div>
+      <div style="font-size: 0.78rem; color: #64748b;" id="insightTotalItems">0 items recorded</div>
+    </div>
+    <div class="card" style="background: #111827; border: 1px solid #1e293b; border-radius: 12px; padding: 18px;">
+      <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700; letter-spacing: 0.5px;">Total Purchase Spend</div>
+      <div style="font-size: 1.8rem; font-weight: 700; color: #34d399; margin: 6px 0 2px;" id="insightTotalSpend">₹0.00</div>
+      <div style="font-size: 0.78rem; color: #64748b;" id="insightSpendingTier">Tier: Smart Value</div>
+    </div>
+    <div class="card" style="background: #111827; border: 1px solid #1e293b; border-radius: 12px; padding: 18px;">
+      <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700; letter-spacing: 0.5px;">Average Basket Value</div>
+      <div style="font-size: 1.8rem; font-weight: 700; color: #38bdf8; margin: 6px 0 2px;" id="insightAvgBasket">₹0.00</div>
+      <div style="font-size: 0.78rem; color: #64748b;" id="insightAvgItem">Avg ₹0/item</div>
+    </div>
+    <div class="card" style="background: #111827; border: 1px solid #1e293b; border-radius: 12px; padding: 18px;">
+      <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700; letter-spacing: 0.5px;">Observed Shopping Cadence</div>
+      <div style="font-size: 1.8rem; font-weight: 700; color: #c084fc; margin: 6px 0 2px;" id="insightCadence">Monthly</div>
+      <div style="font-size: 0.78rem; color: #64748b;" id="insightCadenceDays">Every ~30 days</div>
+    </div>
+  </div>
+
+  <!-- Frequently Purchased Products (1-Click Restock) -->
+  <section class="card" style="background: #111827; border: 1px solid #1e293b; border-radius: 16px; padding: 22px; margin-bottom: 24px;" id="frequentPurchasesSection">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #1e293b; padding-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+      <div>
+        <div style="font-size: 0.75rem; font-weight: 700; color: #38bdf8; text-transform: uppercase;">🔁 Repeat Habits</div>
+        <h3 style="margin: 3px 0 0; color: #f8fafc; font-size: 1.15rem;">My Frequently Purchased Products</h3>
+      </div>
+      <span style="font-size: 0.8rem; color: #94a3b8;">Derived from verified repeat purchases</span>
+    </div>
+    <div id="frequentlyPurchasedGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px;">
+      <div style="color: #64748b; font-size: 0.85rem; padding: 14px; grid-column: 1 / -1;">
+        Loading frequently purchased items...
+      </div>
+    </div>
+  </section>
+
+  <!-- Predicted Future Needs & Restocking Schedule (Agentic AI) -->
+  <section class="card" style="background: linear-gradient(135deg, #131b2e 0%, #111827 100%); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 16px; padding: 24px; margin-bottom: 24px;" id="replenishmentForecastSection">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; border-bottom: 1px solid #1e293b; padding-bottom: 14px;">
+      <div>
+        <div style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 700; color: #38bdf8; text-transform: uppercase;">
+          <span>🤖 PURCHASE PREDICTION AGENT</span>
+        </div>
+        <h3 style="margin: 4px 0 0 0; color: #f8fafc; font-size: 1.25rem;">Predicted Future Needs &amp; Restocking</h3>
+        <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: #94a3b8;">
+          Transparent mathematical forecasting: shows predicted replenishment windows and the empirical evidence behind every forecast.
+        </p>
+      </div>
+    </div>
+    <div id="replenishmentPredictionsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+      <div style="color: #64748b; font-size: 0.85rem; padding: 14px; grid-column: 1 / -1;">
+        Analyzing repeat order cadences...
+      </div>
+    </div>
+  </section>
+
   <!-- Preference Management Tabs & Form Container -->
   <div class="card" style="background: #111827; border: 1px solid #1e293b; border-radius: 16px; padding: 24px; margin-bottom: 24px;">
     <!-- Tab Navigation Buttons -->
@@ -337,12 +421,13 @@
         <thead>
           <tr>
             <th>Date</th>
+            <th>Order Ref</th>
             <th>Product Name</th>
             <th>Category</th>
             <th>Brand</th>
             <th>Price</th>
             <th>Qty</th>
-            <th>Notes</th>
+            <th>Payment &amp; Status</th>
             <th>Action</th>
           </tr>
         </thead>

@@ -1520,6 +1520,13 @@ def verify_payment():
             )
             database.execute_db("UPDATE orders SET reward_points_awarded = 5 WHERE id = ?", (current_db_id,))
 
+        # Record verified purchase history event
+        try:
+            from services.purchase_history_service import PurchaseHistoryService
+            PurchaseHistoryService.record_order_purchase(current_db_id)
+        except Exception as ph_err:
+            app.logger.warning("Could not record purchase history for order %s: %s", current_db_id, ph_err)
+
         return jsonify({
             "success": True,
             "message": "Payment verified successfully! Order is confirmed.",
@@ -1576,6 +1583,13 @@ def mark_order_delivered(order_id):
             )
             database.execute_db("UPDATE orders SET reward_points_awarded = 5 WHERE id = ?", (order_id,))
             points_awarded = 5
+
+        # Record verified purchase history event
+        try:
+            from services.purchase_history_service import PurchaseHistoryService
+            PurchaseHistoryService.record_order_purchase(order_id)
+        except Exception as ph_err:
+            app.logger.warning("Could not record purchase history for delivered order %s: %s", order_id, ph_err)
 
         return jsonify({
             "success": True,
@@ -1634,6 +1648,13 @@ def cancel_order(order_id):
             )
             database.execute_db("UPDATE orders SET reward_points_awarded = 0 WHERE id = ?", (order_id,))
 
+        # Mark purchase history records as disqualified
+        try:
+            from services.purchase_history_service import PurchaseHistoryService
+            PurchaseHistoryService.handle_order_cancellation(order_id)
+        except Exception as ph_err:
+            app.logger.warning("Could not update purchase history for cancelled order %s: %s", order_id, ph_err)
+
         return jsonify({
             "success": True,
             "message": f"Order #{order['order_number']} has been cancelled.",
@@ -1684,6 +1705,13 @@ def return_order(order_id):
                 (order["user_id"], order_id, -awarded, -round(awarded / 100.0, 2), f"Reversed {awarded} points for returned order #{order['order_number']}")
             )
             database.execute_db("UPDATE orders SET reward_points_awarded = 0 WHERE id = ?", (order_id,))
+
+        # Mark purchase history records as returned / refunded
+        try:
+            from services.purchase_history_service import PurchaseHistoryService
+            PurchaseHistoryService.handle_order_return(order_id)
+        except Exception as ph_err:
+            app.logger.warning("Could not update purchase history for returned order %s: %s", order_id, ph_err)
 
         # Refund redeemed points if any were redeemed
         redeemed = order.get("reward_points_redeemed") or 0
@@ -2230,22 +2258,26 @@ def update_user_profile():
 
 @app.route("/api/purchase-history", methods=["GET"])
 def get_purchase_history():
-    """Get all purchase history for user 1."""
+    """Get verified purchase history for the current authenticated user."""
     try:
-        rows = database.query_db(
-            "SELECT * FROM purchase_history WHERE user_id = 1 ORDER BY purchase_date DESC, created_at DESC"
-        )
-        history = [row_to_dict(r) for r in rows]
-        return jsonify({"history": history, "total": len(history)})
-
+        user_id = get_current_user_id()
+        from services.purchase_history_service import PurchaseHistoryService
+        history = PurchaseHistoryService.get_eligible_purchases_for_user(user_id)
+        return jsonify({
+            "history": history,
+            "purchases": history,
+            "total": len(history),
+            "user_id": user_id
+        })
     except Exception as exc:
         return _error(str(exc))
 
 
 @app.route("/api/purchase-history", methods=["POST"])
 def add_purchase_history():
-    """Add a new purchase history item for user 1."""
+    """Add a new purchase history item for the current user."""
     try:
+        user_id = get_current_user_id()
         data = request.get_json(force=True) or {}
 
         required = ["product_name"]
@@ -2256,10 +2288,11 @@ def add_purchase_history():
         row_id = database.execute_db(
             """
             INSERT INTO purchase_history
-                (user_id, product_name, category, brand, price, purchase_date, quantity, notes)
-            VALUES (1, ?, ?, ?, ?, ?, ?, ?)
+                (user_id, product_name, category, brand, price, purchase_date, quantity, notes, is_verified_purchase)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
             """,
             (
+                user_id,
                 data["product_name"],
                 data.get("category", ""),
                 data.get("brand", ""),
@@ -2281,22 +2314,92 @@ def add_purchase_history():
 
 @app.route("/api/purchase-history/<int:item_id>", methods=["DELETE"])
 def delete_purchase_history(item_id):
-    """Delete a purchase history item."""
+    """Delete a purchase history item belonging to the current user."""
     try:
+        user_id = get_current_user_id()
         row = database.query_db(
-            "SELECT id FROM purchase_history WHERE id = ? AND user_id = 1",
-            (item_id,), one=True
+            "SELECT id FROM purchase_history WHERE id = ? AND user_id = ?",
+            (item_id, user_id), one=True
         )
         if not row:
             return _error(f"Purchase history item {item_id} not found.", 404)
 
         database.execute_db(
-            "DELETE FROM purchase_history WHERE id = ? AND user_id = 1", (item_id,)
+            "DELETE FROM purchase_history WHERE id = ? AND user_id = ?", (item_id, user_id)
         )
         return jsonify({"message": f"Purchase history item {item_id} deleted.", "id": item_id})
 
     except Exception as exc:
         return _error(str(exc))
+
+
+# ---------------------------------------------------------------------------
+# API – Digital Twin & Agentic Shopping Intelligence Endpoints
+# ---------------------------------------------------------------------------
+
+@app.route("/api/twin/insights", methods=["GET"])
+def get_twin_insights():
+    """
+    Run RecommendationCoordinatorAgent to synthesize:
+    - Verified purchase history analytics
+    - Learned preferences (with privacy toggle check)
+    - Repeat replenishment forecasts with evidence
+    - Ranked recommendations with explainable badges
+    """
+    try:
+        user_id = get_current_user_id()
+        from agents.agent_recommendation_coordinator import RecommendationCoordinatorAgent
+        coordinator = RecommendationCoordinatorAgent()
+        result = coordinator.run(user_id=user_id)
+        return jsonify(result)
+    except Exception as exc:
+        return _error(str(exc), 500)
+
+
+@app.route("/api/twin/privacy-controls", methods=["POST", "GET"])
+def update_twin_privacy_controls():
+    """Get or toggle whether purchase history is used for Digital Twin personalization."""
+    try:
+        user_id = get_current_user_id()
+        from services.purchase_history_service import PurchaseHistoryService
+        if request.method == "POST":
+            data = request.get_json(force=True) or {}
+            opt_in = bool(data.get("use_purchase_history_for_twin", True))
+            PurchaseHistoryService.set_twin_history_opt_in(user_id, opt_in)
+            return jsonify({
+                "success": True,
+                "user_id": user_id,
+                "use_purchase_history_for_twin": opt_in,
+                "message": "Privacy settings updated successfully."
+            })
+        else:
+            opt_in = PurchaseHistoryService.is_twin_history_opted_in(user_id)
+            return jsonify({
+                "user_id": user_id,
+                "use_purchase_history_for_twin": opt_in
+            })
+    except Exception as exc:
+        return _error(str(exc), 500)
+
+
+@app.route("/api/twin/dismiss-recommendation", methods=["POST"])
+def dismiss_recommendation():
+    """Dismiss a product recommendation for the current user."""
+    try:
+        user_id = get_current_user_id()
+        data = request.get_json(force=True) or {}
+        product_id = data.get("product_id")
+        if not product_id:
+            return _error("product_id is required.", 400)
+        from agents.agent_recommendation_coordinator import RecommendationCoordinatorAgent
+        RecommendationCoordinatorAgent.dismiss_recommendation(user_id, int(product_id))
+        return jsonify({
+            "success": True,
+            "message": f"Product #{product_id} dismissed from recommendations.",
+            "product_id": int(product_id)
+        })
+    except Exception as exc:
+        return _error(str(exc), 500)
 
 
 # ---------------------------------------------------------------------------

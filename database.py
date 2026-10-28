@@ -77,10 +77,45 @@ def init_db():
             purchase_date DATE,
             quantity INTEGER DEFAULT 1,
             notes TEXT DEFAULT '',
+            order_id INTEGER,
+            order_number TEXT DEFAULT '',
+            payment_method TEXT DEFAULT '',
+            payment_status TEXT DEFAULT 'Paid',
+            order_status TEXT DEFAULT 'Delivered',
+            fulfillment_status TEXT DEFAULT 'Delivered',
+            is_verified_purchase INTEGER DEFAULT 1,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )
     """)
+
+    # Safe migrations for purchase_history columns
+    for col, col_type in [
+        ("order_id", "INTEGER"),
+        ("order_number", "TEXT DEFAULT ''"),
+        ("payment_method", "TEXT DEFAULT ''"),
+        ("payment_status", "TEXT DEFAULT 'Paid'"),
+        ("order_status", "TEXT DEFAULT 'Delivered'"),
+        ("fulfillment_status", "TEXT DEFAULT 'Delivered'"),
+        ("is_verified_purchase", "INTEGER DEFAULT 1"),
+    ]:
+        try:
+            cursor.execute(f"ALTER TABLE purchase_history ADD COLUMN {col} {col_type}")
+        except Exception:
+            pass
+
+    # Safe migrations for shopping_preferences columns
+    for col, col_type in [
+        ("use_purchase_history_for_twin", "INTEGER DEFAULT 1"),
+        ("dismissed_recommendation_ids", "TEXT DEFAULT '[]'"),
+        ("spending_tier", "TEXT DEFAULT 'moderate'"),
+        ("typical_spending_min", "REAL DEFAULT 0.0"),
+        ("typical_spending_max", "REAL DEFAULT 0.0"),
+    ]:
+        try:
+            cursor.execute(f"ALTER TABLE shopping_preferences ADD COLUMN {col} {col_type}")
+        except Exception:
+            pass
 
     # --- products ---
     cursor.execute("""
