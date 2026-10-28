@@ -55,6 +55,7 @@ async function initDiscovery() {
     await loadSubcategories(catParam, subcatParam);
   }
 
+  initFlipkartStatusBanner();
   await applyFilters(currentPage);
 }
 
@@ -133,6 +134,8 @@ async function applyFilters(page = 1) {
   const rating4 = document.getElementById('rating4Check')?.checked;
   const rating3 = document.getElementById('rating3Check')?.checked;
   const assuredOnly = document.getElementById('assuredCheck')?.checked;
+  const dataSource = document.getElementById('dataSourceSelect')?.value || 'all';
+  const inStockOnly = document.getElementById('inStockCheck')?.checked;
 
   const discountRadio = document.querySelector('input[name="discountFilter"]:checked');
   const minDiscount = parseInt(discountRadio ? discountRadio.value : '0') || 0;
@@ -146,6 +149,13 @@ async function applyFilters(page = 1) {
   if (!isNaN(maxPrice)) query.set('max_price', maxPrice);
   if (rating4) query.set('min_rating', '4.0');
   else if (rating3) query.set('min_rating', '3.0');
+
+  if (dataSource && dataSource !== 'all') {
+    query.set('source_type', dataSource);
+  }
+  if (inStockOnly) {
+    query.set('availability', 'in_stock');
+  }
 
   if (selectedBrands.size > 0) {
     query.set('brand', Array.from(selectedBrands).join(','));
@@ -296,6 +306,34 @@ function renderGrid() {
     const fallbackImg = getCategoryFallbackImg ? getCategoryFallbackImg(p.category) : 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80';
     const displayImg = p.image_url || fallbackImg;
 
+    const isLiveMarketplace = (p.source_type === 'flipkart_live' || p.data_origin === 'live');
+    let originBadge = '<span class="fk-origin-badge fk-origin-catalog">✦ PreTwin</span>';
+    if (p.data_origin === 'live') {
+      originBadge = '<span class="fk-origin-badge fk-origin-live">⚡ Flipkart Live</span>';
+    } else if (p.data_origin === 'cached') {
+      originBadge = '<span class="fk-origin-badge fk-origin-cached">⏱ Flipkart Cached</span>';
+    }
+
+    let stockBadge = '';
+    if (p.availability === 'limited_stock') {
+      stockBadge = '<span class="fk-stock-badge limited">Only Few Left</span>';
+    } else if (p.availability === 'out_of_stock') {
+      stockBadge = '<span class="fk-stock-badge out-of-stock">Out of Stock</span>';
+    }
+
+    let actionBtn = `
+      <button class="fk-btn-add" onclick="addToCartById(${p.id})">
+        ADD TO CART
+      </button>
+    `;
+    if (isLiveMarketplace && p.external_url) {
+      actionBtn = `
+        <a href="${p.external_url}" target="_blank" rel="noopener noreferrer" class="fk-btn-external" onclick="event.stopPropagation()">
+          View on Flipkart ↗
+        </a>
+      `;
+    }
+
     return `
       <div class="fk-grid-card" onclick="openProductDetail(${p.id})">
         <button 
@@ -315,9 +353,11 @@ function renderGrid() {
           ${p.name}
         </div>
 
-        <div style="display:flex; align-items:center; margin:4px 0;">
+        <div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px; margin:4px 0;">
           <span class="fk-rating-badge">${(p.rating || 4.4).toFixed(1)} ★</span>
-          <span style="color:#878787; font-size:11px; margin-left:6px;">(${p.review_count_demo || 120})</span>
+          <span style="color:#878787; font-size:11px;">(${p.review_count_demo || 120})</span>
+          ${originBadge}
+          ${stockBadge}
           <span style="color:#2874f0; font-size:11px; font-weight:700; margin-left:auto;">PreTwin Assured</span>
         </div>
 
@@ -332,9 +372,7 @@ function renderGrid() {
         </div>
 
         <div class="fk-card-quick-add" onclick="event.stopPropagation()">
-          <button class="fk-btn-add" onclick="addToCartById(${p.id})">
-            ADD TO CART
-          </button>
+          ${actionBtn}
         </div>
       </div>
     `;
@@ -519,6 +557,50 @@ async function triggerVisualSearchModal() {
   } catch (e) {
     alert("Visual search: " + e.message);
   }
+}
+
+async function initFlipkartStatusBanner() {
+  try {
+    const res = await apiGet('/api/flipkart/status');
+    const st = res.status || {};
+    const modeText = document.getElementById('fkModeText');
+    const pill = document.getElementById('fkPill');
+    const modalMode = document.getElementById('fkModalMode');
+
+    if (st.live_active) {
+      if (modeText) modeText.textContent = 'Flipkart Integration: Live API Active';
+      if (pill) {
+        pill.textContent = 'LIVE API SYNCED';
+        pill.style.background = '#059669';
+      }
+      if (modalMode) {
+        modalMode.textContent = 'Live API Active';
+        modalMode.className = 'fk-origin-badge fk-origin-live';
+      }
+    } else {
+      if (modeText) modeText.textContent = 'Flipkart Integration: Verified Catalog Mode';
+      if (pill) pill.textContent = 'Catalog Mode';
+      if (modalMode) {
+        modalMode.textContent = 'Verified Catalog Mode';
+        modalMode.className = 'fk-origin-badge fk-origin-catalog';
+      }
+    }
+  } catch (e) {
+    console.debug('Flipkart status banner init:', e);
+  }
+}
+
+function openFlipkartInfoModal() {
+  const m = document.getElementById('fkInfoModal');
+  if (m) {
+    m.style.display = 'flex';
+    initFlipkartStatusBanner();
+  }
+}
+
+function closeFlipkartInfoModal() {
+  const m = document.getElementById('fkInfoModal');
+  if (m) m.style.display = 'none';
 }
 
 document.addEventListener('DOMContentLoaded', () => {

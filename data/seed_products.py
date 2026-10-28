@@ -1130,46 +1130,144 @@ PRODUCTS = [
 ]
 
 
-def seed_products() -> int:
-    """Insert product catalog into database. Idempotent."""
+from data.catalog_generator import generate_large_catalog
+
+def seed_products(clear_existing: bool = True) -> int:
+    """
+    Insert product catalog into database.
+    Seeds the original 56 demo products (preserving IDs 1..56 for tests)
+    plus 2,100+ generated products across 13 categories.
+    Guarantees duplicate prevention and idempotency.
+    """
     with get_db() as conn:
         cursor = conn.cursor()
 
-        cursor.execute("DELETE FROM products")
-        try:
-            cursor.execute("DELETE FROM sqlite_sequence WHERE name = 'products'")
-        except Exception:
-            pass
+        # Temporarily disable foreign keys during reseeding to preserve existing order history
+        cursor.execute("PRAGMA foreign_keys = OFF")
+
+        if clear_existing:
+            cursor.execute("DELETE FROM products")
+            try:
+                cursor.execute("DELETE FROM sqlite_sequence WHERE name = 'products'")
+            except Exception:
+                pass
+
+        # Existing keys for duplicate prevention
+        cursor.execute("SELECT name, brand, source_id FROM products")
+        existing_names = set()
+        existing_source_ids = set()
+        for row in cursor.fetchall():
+            n = (row[0] or "").strip().lower()
+            b = (row[1] or "").strip().lower()
+            sid = (row[2] or "").strip()
+            existing_names.add((n, b))
+            if sid:
+                existing_source_ids.add(sid)
 
         inserted = 0
+        curr_id = 0
+
+        # Step 1: Insert original 56 products with fixed IDs 1..56 if not present
         for idx, p in enumerate(PRODUCTS, start=1):
-            specs_json = json.dumps(p.get("specifications", {}))
+            key = (p["name"].strip().lower(), p["brand"].strip().lower())
+            sid = f"PT-DEMO-{idx:04d}"
+            if key in existing_names or sid in existing_source_ids:
+                continue
+
+            specs = p.get("specifications", {})
+            mrp = float(specs.get("mrp", p["price"] * 1.2))
+            disc = int(specs.get("discount_percent", round(((mrp - p["price"]) / mrp) * 100)))
+            revs = int(specs.get("review_count", 120))
+            specs_json = json.dumps(specs)
+            ext_url = f"https://www.flipkart.com/search?q={p['name'].replace(' ', '+')}"
+
             cursor.execute(
                 """
                 INSERT INTO products (
-                    id, name, category, brand, price,
-                    specifications, description, image_url,
-                    source_type, rating, stock
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    id, name, category, subcategory, brand, price,
+                    discount_percentage, specifications, description, image_url,
+                    source_type, rating, review_count_demo, stock, featured,
+                    source_id, external_url, availability, data_origin
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     idx,
                     p["name"],
                     p["category"],
+                    p.get("subcategory", p["category"]),
                     p["brand"],
                     float(p["price"]),
+                    disc,
                     specs_json,
                     p["description"],
                     p.get("image_url", ""),
                     "demo",
                     float(p.get("rating", 4.5)),
+                    revs,
                     int(p.get("stock", 50)),
+                    1 if idx % 5 == 0 else 0,
+                    sid,
+                    ext_url,
+                    "in_stock",
+                    "catalog"
                 ),
             )
+            existing_names.add(key)
+            existing_source_ids.add(sid)
+            inserted += 1
+            curr_id = max(curr_id, idx)
+
+        # Step 2: Insert generated 2,100+ products across all 13 categories
+        catalog_items = generate_large_catalog()
+        for p in catalog_items:
+            key = (p["name"].strip().lower(), p["brand"].strip().lower())
+            sid = p.get("source_id", "").strip()
+            if key in existing_names or (sid and sid in existing_source_ids):
+                # Duplicate prevention: skip duplicate product
+                continue
+
+            curr_id += 1
+            specs_json = json.dumps(p.get("specifications", {}))
+
+            cursor.execute(
+                """
+                INSERT INTO products (
+                    id, name, category, subcategory, brand, price,
+                    discount_percentage, specifications, description, image_url,
+                    source_type, rating, review_count_demo, stock, featured,
+                    source_id, external_url, availability, data_origin
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    curr_id,
+                    p["name"],
+                    p["category"],
+                    p.get("subcategory", ""),
+                    p["brand"],
+                    float(p["price"]),
+                    int(p.get("discount_percentage", 20)),
+                    specs_json,
+                    p.get("description", ""),
+                    p.get("image_url", ""),
+                    p.get("source_type", "pretwin_catalog"),
+                    float(p.get("rating", 4.2)),
+                    int(p.get("review_count_demo", 150)),
+                    int(p.get("stock", 50)),
+                    int(p.get("featured", 0)),
+                    sid,
+                    p.get("external_url", ""),
+                    p.get("availability", "in_stock"),
+                    p.get("data_origin", "catalog")
+                ),
+            )
+            existing_names.add(key)
+            if sid:
+                existing_source_ids.add(sid)
             inserted += 1
 
+        cursor.execute("PRAGMA foreign_keys = ON")
         conn.commit()
-        print(f"[seed_products] Successfully populated {inserted} products with rich e-commerce data.")
+        print(f"[seed_products] Successfully populated {inserted} products (total in DB).")
         return inserted
 
 

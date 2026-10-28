@@ -1070,6 +1070,9 @@
           <button class="fk-btn-buy-orange" id="detailBuyNowBtn">
             <span>⚡</span> BUY NOW
           </button>
+          <a class="fk-btn-external-large" id="detailExternalBtn" style="display:none;" target="_blank" rel="noopener noreferrer">
+            <span>↗</span> BUY ON FLIPKART
+          </a>
           <button class="fk-btn-compare-detail" id="detailCompareBtn" style="height:48px; padding:0 16px; border:1.5px solid #7c3aed; background:#ffffff; color:#7c3aed; border-radius:3px; font-weight:700; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s ease;">
             <span>⚖️</span> COMPARE
           </button>
@@ -1080,10 +1083,11 @@
       <div class="fk-detail-right">
         <h2 class="fk-detail-title" id="detailTitle">Product Title</h2>
         
-        <div class="fk-detail-meta">
+        <div class="fk-detail-meta" style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
           <span class="fk-rating-badge" id="detailRating">4.4 ★</span>
           <span style="color:#878787; font-size:13px;" id="detailReviews">(1,420 Ratings &amp; 380 Reviews)</span>
-          <span style="color:#2874f0; font-weight:700; font-size:12px; margin-left:8px;">PreTwin Assured</span>
+          <span id="detailOriginBadge" class="fk-origin-badge fk-origin-catalog">✦ PreTwin Verified</span>
+          <span style="color:#2874f0; font-weight:700; font-size:12px; margin-left:auto;">PreTwin Assured</span>
         </div>
 
         <div class="fk-detail-price-box">
