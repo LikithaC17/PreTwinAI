@@ -357,6 +357,10 @@ async function handlePreTwinLogout(e) {
   currentUser = null;
   localStorage.removeItem(USER_KEY);
   localStorage.removeItem('flipkart_user');
+  try {
+    sessionStorage.removeItem('pretwin_session_authenticated');
+    sessionStorage.removeItem('pretwin_session_active');
+  } catch (e) {}
   window.location.href = '/login?logged_out=1';
 }
 
@@ -382,6 +386,10 @@ async function handleUserLogout() {
   currentUser = null;
   localStorage.removeItem(USER_KEY);
   localStorage.removeItem('flipkart_user');
+  try {
+    sessionStorage.removeItem('pretwin_session_authenticated');
+    sessionStorage.removeItem('pretwin_session_active');
+  } catch (e) {}
   updateAuthUI();
   showToast('Signed out successfully.');
 }

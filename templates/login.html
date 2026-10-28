@@ -546,6 +546,10 @@ async function handleFormLogin(e) {
     if (data.user) {
       localStorage.setItem("pretwin_user", JSON.stringify(data.user));
     }
+    try {
+      sessionStorage.setItem("pretwin_session_authenticated", "true");
+      sessionStorage.setItem("pretwin_session_active", "true");
+    } catch (e) {}
     setTimeout(() => {
       window.location.href = NEXT_REDIRECT_URL || "/";
     }, 400);
@@ -615,6 +619,10 @@ async function handleFormRegister(e) {
     if (data.user) {
       localStorage.setItem("pretwin_user", JSON.stringify(data.user));
     }
+    try {
+      sessionStorage.setItem("pretwin_session_authenticated", "true");
+      sessionStorage.setItem("pretwin_session_active", "true");
+    } catch (e) {}
     setTimeout(() => {
       window.location.href = NEXT_REDIRECT_URL || "/";
     }, 450);
@@ -705,6 +713,10 @@ async function handleGoogleCredentialResponse(response) {
     if (data.user) {
       localStorage.setItem("pretwin_user", JSON.stringify(data.user));
     }
+    try {
+      sessionStorage.setItem("pretwin_session_authenticated", "true");
+      sessionStorage.setItem("pretwin_session_active", "true");
+    } catch (e) {}
     setTimeout(() => {
       window.location.href = data.redirect || NEXT_REDIRECT_URL || "/";
     }, 400);

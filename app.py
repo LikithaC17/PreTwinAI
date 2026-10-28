@@ -576,7 +576,7 @@ def register_page():
 @app.route("/logout")
 def logout_page():
     session.clear()
-    return redirect(url_for("login_page", logged_out=1))
+    return redirect("/login?logged_out=1")
 
 
 @app.route("/wishlist")

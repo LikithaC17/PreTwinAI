@@ -1,20 +1,20 @@
 <!-- ======================================================================
-     PRETWIN ORIGINAL STARTUP INTRO ANIMATION OVERLAY
-     Stage 1: Enter & Fly ONE complete 360-degree circular orbit around center
-     Stage 2: Winged emblem settles at center, points magic wand toward center
-              and emits glowing beam sweeping across screen
-     Stage 3: Magical left-to-right sparkling reveal of "PreTwin AI" wordmark
-              and prominent tagline: "Your Future. Your Style. Your Twin."
-     Stage 4: Enter button appears; smooth dissolve transition into homepage
+     PRETWIN MAGICAL FAIRY-TALE STARTUP INTRO ANIMATION OVERLAY
+     Step 1: Opening scene with background; introduce full-body fairy with magic wand
+     Step 2: Fairy flies smoothly & pulls a translucent magical screen across the page
+     Step 3: Glowing sparkles emerge from actual wand tip, trailing the unfolding screen
+     Step 4: Reveal project name "PreTwin AI" with elegant fairy-tale glow & branding
+     Step 5: Freeze on completion. Enter button displayed indefinitely until clicked
+             Clicking Enter triggers short smooth transition and opens /login
      ====================================================================== -->
-<div id="pretwinStartupIntro" class="pretwin-startup-overlay" style="display:none !important;" aria-hidden="true" role="dialog" aria-label="PreTwin Introduction">
+<div id="pretwinStartupIntro" class="pretwin-startup-overlay" aria-hidden="false" role="dialog" aria-label="PreTwin AI Introduction">
   <!-- Accessible Skip Intro Button -->
-  <button type="button" id="skipIntroBtn" onclick="skipStartupIntro()" class="pretwin-skip-intro-btn" title="Skip Animation and continue">
+  <button type="button" id="skipIntroBtn" onclick="skipStartupIntro()" class="pretwin-skip-intro-btn" title="Skip Animation and continue to Sign In" tabindex="0">
     Skip Intro ➔
   </button>
 
   <!-- Atmospheric Magical Floating Stars Background -->
-  <div class="pretwin-intro-sky">
+  <div class="pretwin-intro-sky" aria-hidden="true">
     <div class="star-particle star-1">✦</div>
     <div class="star-particle star-2">✨</div>
     <div class="star-particle star-3">✦</div>
@@ -25,25 +25,19 @@
     <div class="star-particle star-8">✨</div>
   </div>
 
-  <!-- Soaring Flying-Wing Logo Stage Container -->
+  <!-- Soaring Flying-Wing Logo Stage Container with Fairy & Wand -->
   <div class="pretwin-flight-stage">
     
-    <!-- Flying Winged Character Emblem with Official Logo -->
+    <!-- Flying Winged Fairy Emblem with Wand -->
     <div class="pretwin-flying-emblem-wrap" id="introFlightEmblem">
-      <!-- Official PreTwin Project Brand Logo -->
-      <div class="pretwin-intro-official-logo-wrap" id="introOfficialLogoWrap">
-        <img src="{{ url_for('static', filename='images/pretwin-logo.svg') }}" 
-             alt="PreTwin AI Official Logo" 
-             class="pretwin-intro-official-logo" 
-             id="introOfficialLogo" />
-      </div>
-
-      <svg class="pretwin-fairy-svg" viewBox="0 0 120 120" width="135" height="135" aria-label="PreTwin Fairy Logo">
+      
+      <!-- Fairy Full-Body SVG Character -->
+      <svg class="pretwin-fairy-svg" viewBox="0 0 130 130" width="140" height="140" aria-label="PreTwin Fairy Logo">
         <defs>
           <linearGradient id="introWingGradUpper" x1="0%" y1="100%" x2="100%" y2="0%">
             <stop offset="0%" stop-color="#6d28d9" />
-            <stop offset="40%" stop-color="#8b5cf6" />
-            <stop offset="80%" stop-color="#c4b5fd" />
+            <stop offset="35%" stop-color="#8b5cf6" />
+            <stop offset="75%" stop-color="#c4b5fd" />
             <stop offset="100%" stop-color="#ffffff" />
           </linearGradient>
           <linearGradient id="introWingGradLower" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -56,48 +50,59 @@
             <stop offset="50%" stop-color="#c084fc" />
             <stop offset="100%" stop-color="#7c3aed" />
           </linearGradient>
+          <linearGradient id="fairyGownGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff" />
+            <stop offset="60%" stop-color="#f5d0fe" />
+            <stop offset="100%" stop-color="#c084fc" />
+          </linearGradient>
           <filter id="introSoftGlow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="3.5" result="blur" />
+            <feGaussianBlur stdDeviation="3" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
         </defs>
 
-        <!-- Soft Flight Trail Stream -->
+        <!-- Soft Magical Flight Trail Stream -->
         <path d="M 18 85 C 28 84, 42 76, 52 64 C 58 54, 62 44, 68 36" fill="none" stroke="#d8b4fe" stroke-width="2.5" stroke-dasharray="4,4" opacity="0.75" />
 
-        <!-- Left Wing with Flutter Motion -->
+        <!-- Left Wing with Delicate Flutter Motion -->
         <g class="wing-group-left">
           <path d="M 52 52 C 38 30, 18 16, 2 16 C 0 30, 10 50, 36 60 Z" fill="url(#introWingGradUpper)" filter="url(#introSoftGlow)" />
           <path d="M 50 56 C 38 45, 24 34, 10 38 C 12 47, 20 58, 38 61 Z" fill="url(#introWingGradLower)" opacity="0.85" />
         </g>
 
-        <!-- Right Wing with Flutter Motion -->
+        <!-- Right Wing with Delicate Flutter Motion -->
         <g class="wing-group-right">
           <path d="M 68 50 C 82 28, 102 16, 118 17 C 118 31, 108 51, 82 60 Z" fill="url(#introWingGradUpper)" filter="url(#introSoftGlow)" />
           <path d="M 70 55 C 82 44, 96 33, 110 38 C 108 47, 100 58, 82 62 Z" fill="url(#introWingGradLower)" opacity="0.85" />
         </g>
 
-        <!-- Graceful Silhouette -->
-        <path d="M 57 48 C 58 44, 62 44, 63 48 C 65 52, 64 58, 61 64 C 59 70, 56 77, 54 82 C 56 75, 58 68, 59 62 Z" fill="#ffffff" opacity="0.98" filter="url(#introSoftGlow)" />
-        <circle cx="60" cy="42" r="5" fill="#ffffff" />
+        <!-- Full-Body Graceful Fairy Silhouette (Head, Torso, Gown, Legs) -->
+        <!-- Flowing Gown & Legs -->
+        <path d="M 57 52 C 58 48, 62 48, 63 52 C 66 56, 68 64, 66 74 C 64 84, 58 96, 54 102 C 53 96, 55 86, 56 76 C 56 68, 55 60, 57 52 Z" fill="url(#fairyGownGrad)" opacity="0.95" filter="url(#introSoftGlow)" />
+        <!-- Fairy Head & Radiant Glow -->
+        <circle cx="60" cy="42" r="5.5" fill="#ffffff" filter="url(#introSoftGlow)" />
+        <circle cx="60" cy="38" r="1.5" fill="#facc15" />
 
-        <!-- Magic Wand (Raised to point at center) -->
+        <!-- Right Arm naturally holding the Wand -->
+        <path d="M 62 50 C 65 50, 72 46, 75 42" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" />
+
+        <!-- Magic Wand (Properly aligned with hand, moving with gesture) -->
         <g class="fairy-wand-group">
           <!-- Slender Wand Rod -->
           <line x1="62" y1="52" x2="88" y2="30" stroke="url(#wandRodGrad)" stroke-width="3" stroke-linecap="round" />
           
-          <!-- Wand Star Tip with Glowing Star -->
+          <!-- Wand Star Tip with Radiant Glowing Star -->
           <g class="wand-star-tip" transform="translate(88, 30)">
             <path d="M 0 -9 L 2.5 -2.5 L 9 0 L 2.5 2.5 L 0 9 L -2.5 2.5 L -9 0 L -2.5 -2.5 Z" fill="#facc15" />
-            <circle cx="0" cy="0" r="3" fill="#ffffff" />
-            <!-- Star glints -->
+            <circle cx="0" cy="0" r="3.2" fill="#ffffff" />
+            <!-- Star Glints -->
             <circle cx="-3" cy="-4" r="1" fill="#ffffff" />
             <circle cx="4" cy="3" r="1" fill="#ffffff" />
           </g>
         </g>
       </svg>
 
-      <!-- Glowing Magical Beam with Sparkling Particles Coming from the Wand -->
+      <!-- Glowing Magical Beam & Sparkles Emerging from Wand Star Tip -->
       <div class="wand-magic-beam" id="wandMagicBeam">
         <span class="magic-sparkle spk-1">✨</span>
         <span class="magic-sparkle spk-2">✦</span>
@@ -107,47 +112,156 @@
       </div>
     </div>
 
-    <!-- Wordmark & Tagline Revealed by Wand Magic -->
-    <div class="pretwin-intro-branding" id="introBrandText">
-      <div class="pretwin-intro-wordmark" id="introWordmark">PreTwin <span class="intro-ai-badge">AI</span></div>
-      <div class="pretwin-intro-tagline" id="introTagline">Your Future. Your Style. Your Twin.</div>
+    <!-- Translucent Magical Screen Container (Pulled & Unfolded by Fairy) -->
+    <div class="pretwin-magical-curtain-screen" id="magicalCurtainScreen">
+      <!-- Glitter Trail along the unfolding edge -->
+      <div class="curtain-sparkle-trail" id="curtainSparkleTrail" aria-hidden="true">
+        <span class="curtain-edge-sparkle spk-edge-1">✨</span>
+        <span class="curtain-edge-sparkle spk-edge-2">✦</span>
+        <span class="curtain-edge-sparkle spk-edge-3">✧</span>
+      </div>
+
+      <!-- Official PreTwin Project Brand Logo -->
+      <div class="pretwin-intro-official-logo-wrap" id="introOfficialLogoWrap">
+        <img src="{{ url_for('static', filename='images/pretwin-logo.svg') }}" 
+             alt="PreTwin AI Official Logo" 
+             class="pretwin-intro-official-logo" 
+             id="introOfficialLogo" />
+      </div>
+
+      <!-- Project Name Wordmark & Tagline Revealed on Magical Screen -->
+      <div class="pretwin-intro-branding" id="introBrandText">
+        <div class="pretwin-intro-wordmark" id="introWordmark">PreTwin <span class="intro-ai-badge">AI</span></div>
+        <div class="pretwin-intro-tagline" id="introTagline">Your Future. Your Style. Your Twin.</div>
+      </div>
+
+      <!-- Prominent Enter Website Button on Magical Screen -->
+      <div class="pretwin-intro-enter-wrap" id="introEnterWrap">
+        <button type="button" 
+                id="enterWebsiteBtn" 
+                onclick="finishStartupIntro()" 
+                class="pretwin-enter-intro-btn" 
+                tabindex="0"
+                aria-label="Enter PreTwin AI Sign In"
+                title="Enter PreTwin AI">
+          <span class="enter-btn-sparkle">✨</span>
+          <span class="enter-btn-text">Enter</span>
+          <span class="enter-btn-icon">➔</span>
+        </button>
+      </div>
     </div>
 
-    <!-- Enter Website Button (Appears beneath branding after reveal completes) -->
-    <div class="pretwin-intro-enter-wrap" id="introEnterWrap">
-      <button type="button" 
-              id="enterWebsiteBtn" 
-              onclick="finishStartupIntro()" 
-              class="pretwin-enter-intro-btn" 
-              title="Enter PreTwin AI">
-        <span class="enter-btn-text">Enter</span>
-        <span class="enter-btn-icon">➔</span>
-        <span class="enter-btn-sparkle">✨</span>
-      </button>
-    </div>
   </div>
 </div>
 
 <script>
 /**
- * PreTwin Startup Intro Animation: Disabled / Removed per user request.
- * The overlay remains permanently hidden with display:none !important; and no animations are triggered.
+ * PreTwin AI Magical Fairy-Tale Intro Controller
+ * - Sequence: Fairy flies -> Pulls translucent magical screen -> Wand sparkles trail edge ->
+ *   Reveal "PreTwin AI" -> Freezes stationary with Enter button ->
+ *   User clicks Enter -> Short smooth transition -> Opens /login (Sign-In Page).
  */
-function skipStartupIntro() { finishStartupIntro(true); }
-function finishStartupIntro() {
-  const overlay = document.getElementById('pretwinStartupIntro');
-  if (overlay) {
-    overlay.style.display = 'none';
-    overlay.style.pointerEvents = 'none';
-    overlay.setAttribute('aria-hidden', 'true');
-  }
-}
 (function() {
   const overlay = document.getElementById('pretwinStartupIntro');
-  if (overlay) {
+  if (!overlay) return;
+
+  // If user is already authenticated in this session, do not show intro overlay
+  const isAuthenticated = (typeof window.PRETWIN_IS_AUTHENTICATED !== 'undefined' && window.PRETWIN_IS_AUTHENTICATED) ||
+                          sessionStorage.getItem('pretwin_session_authenticated') === 'true';
+
+  // Also hide intro if already on sign-in / registration pages
+  const currentPath = window.location.pathname.toLowerCase();
+  const isAuthPage = ['/login', '/signin', '/sign-in', '/sign_in', '/auth', '/register', '/signup', '/sign-up'].includes(currentPath);
+
+  if (isAuthenticated || isAuthPage) {
     overlay.style.display = 'none';
     overlay.style.pointerEvents = 'none';
     overlay.setAttribute('aria-hidden', 'true');
+    return;
   }
+
+  // Ensure intro is visible and active
+  overlay.style.display = 'flex';
+  overlay.style.pointerEvents = 'auto';
+  overlay.setAttribute('aria-hidden', 'false');
+
+  // Step 1: Opening Scene (0 - 300ms)
+  overlay.classList.add('stage-opening');
+
+  // Step 2 & 3: Fairy flight & Screen pulling gesture with wand sparkles (300ms)
+  setTimeout(() => {
+    overlay.classList.add('stage-flight');
+    overlay.classList.add('stage-curtain');
+  }, 300);
+
+  // Fairy settles wand gesture (2000ms)
+  setTimeout(() => {
+    overlay.classList.add('stage-wand');
+  }, 2000);
+
+  // Wand magic beam travels across screen (2400ms)
+  setTimeout(() => {
+    overlay.classList.add('stage-beam');
+  }, 2400);
+
+  // Step 4: Wordmark "PreTwin AI" revealed on magical screen (2800ms)
+  setTimeout(() => {
+    overlay.classList.add('stage-reveal');
+  }, 2800);
+
+  // Tagline reveals (3200ms)
+  setTimeout(() => {
+    overlay.classList.add('stage-tagline');
+  }, 3200);
+
+  // Step 5: Freeze on completion. Stationary state with Enter button active (3600ms)
+  setTimeout(() => {
+    overlay.classList.add('stage-freeze');
+    overlay.classList.add('stage-ready');
+    overlay.classList.add('stage-enter');
+    // Set focus to Enter button for keyboard accessibility
+    const enterBtn = document.getElementById('enterWebsiteBtn');
+    if (enterBtn) {
+      enterBtn.focus();
+    }
+  }, 3600);
 })();
+
+// Keyboard accessibility: Enter or Space triggers the Enter button
+document.addEventListener('keydown', function(event) {
+  const overlay = document.getElementById('pretwinStartupIntro');
+  if (overlay && overlay.style.display !== 'none' && overlay.getAttribute('aria-hidden') !== 'true') {
+    if (event.key === 'Enter' || event.key === ' ') {
+      // If user isn't typing in an input, trigger finishStartupIntro
+      if (document.activeElement && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        event.preventDefault();
+        finishStartupIntro();
+      }
+    }
+  }
+});
+
+function skipStartupIntro() {
+  finishStartupIntro(true);
+}
+
+function finishStartupIntro(skipped) {
+  const overlay = document.getElementById('pretwinStartupIntro');
+  if (!overlay) {
+    window.location.href = '/login';
+    return;
+  }
+
+  // Smooth magical burst & fade transition
+  overlay.classList.add('stage-enter-burst');
+  overlay.classList.add('stage-fadeout');
+
+  // Navigate directly to sign-in page (/login)
+  setTimeout(function() {
+    overlay.style.display = 'none';
+    overlay.style.pointerEvents = 'none';
+    overlay.setAttribute('aria-hidden', 'true');
+    window.location.href = '/login';
+  }, 350);
+}
 </script>
