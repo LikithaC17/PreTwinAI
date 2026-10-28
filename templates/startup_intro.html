@@ -1,10 +1,14 @@
 <!-- ======================================================================
-     PRETWIN ENHANCED MAGICAL FAIRY-TALE INTRO ANIMATION OVERLAY
-     Stage 1: Enter & Graceful flight around intro area (Full-body fairy with wings & wand)
-     Stage 2: Fairy settles gracefully, waves magic wand, emitting traveling sparkles
-     Stage 3: Progressive magical reveal of "PreTwin AI" wordmark and tagline
-     Stage 4: Freeze scene in place (fairy poised, title fully visible, flight stopped)
-     Stage 5: "Enter PreTwin AI" button appears — smooth transition on click
+     PRETWIN AI INTRO ANIMATION OVERLAY
+     Sequence:
+       1. Animated Logo First: PreTwin AI project logo emerges at center-left with smooth scale-up & glow
+       2. Side-by-Side Title Reveal: Exact project name "PreTwin AI" reveals immediately to the right
+          on the same horizontal line with magical sparkle effect
+       3. Tagline: "Your Future. Your Style. Your Twin." appears underneath
+       4. Fairy & Magic Wand Sequence: Full-body fairy flies gracefully around intro area, settles,
+          waves wand emitting sparkles from wand tip that briefly highlight the logo & title
+       5. Stationary Final Screen & Enter Button: Intro freezes in place, "Enter" button appears
+          beneath branding; transitions to homepage on click
      ====================================================================== -->
 <div id="pretwinStartupIntro" class="pretwin-startup-overlay" style="display:none;" aria-hidden="true" role="dialog" aria-label="PreTwin Introduction">
   <!-- Accessible Skip Intro Button -->
@@ -27,7 +31,53 @@
   <!-- Soaring Flying-Wing Logo Stage Container -->
   <div class="pretwin-flight-stage" id="introFlightStage">
     
-    <!-- Full-Body Flying Fairy Character with Wings & Magic Wand -->
+    <!-- MAIN HERO BRANDING: Side-by-Side Logo (Left) and Title (Right) on Same Horizontal Line -->
+    <div class="pretwin-intro-branding pretwin-side-by-side-branding" id="introBrandText">
+      
+      <!-- 1. The PreTwin Project Logo (Animates First) -->
+      <div class="pretwin-intro-logo-box" id="introLogoBox">
+        <img src="{{ url_for('static', filename='images/pretwin-icon.svg') }}" 
+             alt="PreTwin AI Logo" 
+             class="pretwin-intro-icon-logo" 
+             id="introIconLogo" />
+        <!-- Preserved asset reference for backward compatibility -->
+        <img src="{{ url_for('static', filename='images/pretwin-logo.svg') }}" 
+             alt="PreTwin AI Official Logo" 
+             class="pretwin-intro-official-logo" 
+             id="introOfficialLogo" 
+             style="display:none;" />
+      </div>
+
+      <!-- 2. The Project Name: PreTwin AI (Revealed Immediately to Right of Logo) -->
+      <div class="pretwin-intro-title-box" id="introTitleBox">
+        <div class="pretwin-intro-wordmark" id="introWordmark">
+          PreTwin <span class="intro-ai-badge">AI</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Prominently Highlighted Tagline directly beneath the horizontal branding -->
+    <div class="pretwin-intro-tagline-wrap" id="introTaglineWrap">
+      <div class="pretwin-intro-tagline" id="introTagline">
+        Your Future. Your Style. Your Twin.
+      </div>
+    </div>
+
+    <!-- Magical Enter Button (Appears beneath branding after reveal completes) -->
+    <div class="pretwin-intro-enter-wrap" id="introEnterWrap">
+      <button type="button" 
+              id="enterWebsiteBtn" 
+              onclick="finishStartupIntro()" 
+              class="pretwin-enter-intro-btn" 
+              title="Enter PreTwin AI">
+        <span class="enter-btn-text">Enter</span>
+        <span class="enter-btn-icon">➔</span>
+        <span class="enter-btn-sparkle">✨</span>
+      </button>
+    </div>
+
+    <!-- Full-Body Flying Fairy Character with Wings & Magic Wand (Enters after side-by-side title reveal) -->
     <div class="pretwin-flying-emblem-wrap" id="introFlightEmblem">
       <svg class="pretwin-fairy-svg" viewBox="0 0 140 140" width="150" height="150" aria-label="PreTwin Fairy Logo">
         <defs>
@@ -102,10 +152,8 @@
         <ellipse cx="70" cy="62" rx="4.2" ry="1.5" fill="#facc15" opacity="0.95" />
 
         <!-- Full Legs and Delicate Pointed Slippers -->
-        <!-- Left Leg and Slipper -->
         <path d="M 63 94 Q 62 106 60 114" fill="none" stroke="url(#fairySkinGrad)" stroke-width="2.2" stroke-linecap="round" />
         <ellipse cx="59.5" cy="114.5" rx="2.8" ry="1.4" fill="#facc15" transform="rotate(-15, 59.5, 114.5)" />
-        <!-- Right Leg and Slipper (Trailing gracefully behind in flight) -->
         <path d="M 67 92 Q 70 104 73 112" fill="none" stroke="url(#fairySkinGrad)" stroke-width="2.2" stroke-linecap="round" />
         <ellipse cx="73.5" cy="112.5" rx="2.8" ry="1.4" fill="#facc15" transform="rotate(22, 73.5, 112.5)" />
 
@@ -138,56 +186,25 @@
       </div>
     </div>
 
-    <!-- Wordmark, Tagline & Enter Button Revealed by Magic Wand -->
-    <div class="pretwin-intro-branding" id="introBrandText">
-      <!-- Official PreTwin Project Brand Logo Asset -->
-      <div class="pretwin-intro-official-logo-wrap" id="introOfficialLogoWrap">
-        <img src="{{ url_for('static', filename='images/pretwin-logo.svg') }}" 
-             alt="PreTwin AI Official Logo" 
-             class="pretwin-intro-official-logo" 
-             id="introOfficialLogo" />
-      </div>
-
-      <!-- Wordmark -->
-      <div class="pretwin-intro-wordmark" id="introWordmark">
-        PreTwin <span class="intro-ai-badge">AI</span>
-      </div>
-
-      <!-- Prominent Highlighted Tagline -->
-      <div class="pretwin-intro-tagline" id="introTagline">
-        Your Future. Your Style. Your Twin.
-      </div>
-
-      <!-- Magical Enter Button (Revealed after project name & tagline appear; intro freezes) -->
-      <div class="pretwin-intro-enter-wrap" id="introEnterWrap">
-        <button type="button" 
-                id="enterWebsiteBtn" 
-                onclick="finishStartupIntro()" 
-                class="pretwin-enter-intro-btn" 
-                title="Enter PreTwin AI">
-          <span class="enter-btn-text">Enter</span>
-          <span class="enter-btn-icon">➔</span>
-          <span class="enter-btn-sparkle">✨</span>
-        </button>
-      </div>
-    </div>
   </div>
 </div>
 
 <script>
 /**
- * PreTwin Enhanced Magical Fairy Startup Animation Controller
+ * PreTwin AI Enhanced Startup Animation Controller
  * Sequence:
  *   1. Atmospheric starry background emerges (0.1s)
- *   2. Full-body fairy flies gracefully in circular path with fluttering wings (0.1s - 2.6s)
- *   3. Fairy settles into poised final position, waves wand emitting sparkling beam (2.6s - 3.4s)
- *   4. Progressive reveal of "PreTwin AI" wordmark and tagline (3.0s - 3.8s)
- *   5. Intro freezes in place (flight & wand waving stop, title fully visible) (4.2s)
- *   6. Enter button fades into view, allowing user to enter when ready (4.2s)
- *   7. User clicks Enter button -> smooth transition into homepage
+ *   2. Logo animates first with gentle scale-up and magical glow (0.1s - 1.3s)
+ *   3. Project name "PreTwin AI" reveals immediately beside the logo on the right (1.3s - 2.2s)
+ *   4. Tagline appears directly underneath (1.9s)
+ *   5. Fairy enters, flies smoothly around intro area in circular path (2.4s - 5.0s)
+ *   6. Fairy settles near top-right, waves wand producing sparkles that highlight the branding (5.0s - 6.0s)
+ *   7. Intro freezes in place (flight & wand stop; logo + title remain stationary side-by-side) (6.2s)
+ *   8. "Enter" button fades in below branding, waiting for user click (6.2s)
+ *   9. User clicks Enter -> smooth transition into homepage
  */
 (function() {
-  const INTRO_STORAGE_KEY = 'pretwin_intro_played_v6';
+  const INTRO_STORAGE_KEY = 'pretwin_intro_played_v7';
   const overlay = document.getElementById('pretwinStartupIntro');
   if (!overlay) return;
 
@@ -222,40 +239,42 @@
   overlay.style.display = 'flex';
   overlay.setAttribute('aria-hidden', 'false');
 
-  // Step 1: Fairy flies smoothly in circular path around the central area (2.6s)
+  // Step 1: Animate Logo First (0.1s - 1.3s)
   setTimeout(() => {
-    overlay.classList.add('stage-flight');
+    overlay.classList.add('stage-logo-enter');
   }, 100);
 
-  // Step 2: Fairy completes flight, settles near title, waves her magic wand (2.6s)
-  setTimeout(() => {
-    overlay.classList.add('stage-wand');
-  }, 2600);
-
-  // Step 3: Sparkles beam emerges from wand tip and travels toward title area (2.8s)
-  setTimeout(() => {
-    overlay.classList.add('stage-beam');
-  }, 2800);
-
-  // Step 4: Title "PreTwin AI" is revealed progressively by the sparkles (3.0s)
+  // Step 2: Reveal Project Name Beside Logo on Same Line (1.3s)
   setTimeout(() => {
     overlay.classList.add('stage-reveal');
-  }, 3000);
+  }, 1300);
 
-  // Step 5: Reveal official tagline underneath with luminous shimmer (3.6s)
+  // Step 3: Reveal Tagline Underneath (1.9s)
   setTimeout(() => {
     overlay.classList.add('stage-tagline');
-  }, 3600);
+  }, 1900);
 
-  // Step 6: FREEZE intro & reveal Enter button (4.2s)
-  // Flight & wand shake stop; fairy remains in poised pose; title remains 100% visible
+  // Step 4: Fairy enters and flies gracefully around intro area (2.4s - 5.0s)
+  setTimeout(() => {
+    overlay.classList.add('stage-flight');
+  }, 2400);
+
+  // Step 5: Fairy completes flight, settles, waves wand producing sparkles over branding (5.0s)
+  setTimeout(() => {
+    overlay.classList.add('stage-wand');
+    overlay.classList.add('stage-beam');
+    overlay.classList.add('stage-highlight');
+  }, 5000);
+
+  // Step 6: FREEZE intro & reveal Enter button (6.2s)
+  // Flight & wand stop; logo + title remain stationary side-by-side; Enter button appears
   setTimeout(() => {
     overlay.classList.add('stage-freeze');
     overlay.classList.add('stage-ready');
     overlay.classList.add('stage-enter');
-  }, 4200);
+  }, 6200);
 
-  // Listen for Enter or Space key when intro is ready
+  // Keyboard accessibility: Enter or Space triggers entry once ready
   window.addEventListener('keydown', function handleIntroKeyPress(e) {
     if (overlay.style.display !== 'none' && overlay.classList.contains('stage-enter')) {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -275,7 +294,7 @@ function finishStartupIntro(immediate = false) {
   const overlay = document.getElementById('pretwinStartupIntro');
   if (!overlay || overlay.dataset.finished === '1') return;
   overlay.dataset.finished = '1';
-  sessionStorage.setItem('pretwin_intro_played_v6', '1');
+  sessionStorage.setItem('pretwin_intro_played_v7', '1');
 
   const isLoginPage = window.location.pathname === '/login';
   const isHomePage = window.location.pathname === '/' || window.location.pathname === '';

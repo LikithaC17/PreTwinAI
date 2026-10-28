@@ -796,19 +796,22 @@ def auth_google():
             idinfo = id_token.verify_oauth2_token(credential, google_requests.Request(), client_id)
         except Exception as auth_lib_err:
             # 2. Fallback to Google TokenInfo verification endpoint
-            import requests as py_requests
-            resp = py_requests.get(
-                "https://oauth2.googleapis.com/tokeninfo",
-                params={"id_token": credential},
-                timeout=5
-            )
-            if resp.status_code == 200:
-                token_data = resp.json()
-                if token_data.get("aud") == client_id:
-                    idinfo = token_data
+            try:
+                import requests as py_requests
+                resp = py_requests.get(
+                    "https://oauth2.googleapis.com/tokeninfo",
+                    params={"id_token": credential},
+                    timeout=5
+                )
+                if resp.status_code == 200:
+                    token_data = resp.json()
+                    if token_data.get("aud") == client_id:
+                        idinfo = token_data
+                    else:
+                        return _error("Google token audience mismatch.", 401)
                 else:
-                    return _error("Google token audience mismatch.", 401)
-            else:
+                    return _error(f"Google token verification failed: {str(auth_lib_err)}", 401)
+            except Exception:
                 return _error(f"Google token verification failed: {str(auth_lib_err)}", 401)
 
         # Validate issuer
