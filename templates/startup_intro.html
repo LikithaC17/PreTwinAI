@@ -1,16 +1,15 @@
 <!-- ======================================================================
      PRETWIN AI INTRO ANIMATION OVERLAY
-     Exact Sequence:
-       Step 1 — Intro background: Atmospheric background prepared, logo/title hidden
-       Step 2 — Fairy appears: Slightly larger (25% bigger) full-body fairy with wand aligned
-       Step 3 — Complete one full flight: Exactly one complete circular round (2.6s)
-       Step 4 — Fairy settles: Reaches resting position in upper-right, pauses briefly
-       Step 5 — Wand shaking: Shakes magic wand naturally together with hand
-       Step 6 — Sparkles release: Stardust stream bursts from the actual wand tip
-       Step 7 — Reveal project name: As sparkles arrive, PreTwin AI is revealed
-                beside the logo on the same horizontal line, with tagline underneath
-       Step 8 — Final still screen: Animations freeze completely; scene holds stationary
-       Step 9 — Enter button: Prominently displayed; waits for user click to enter homepage
+     Layout:
+       [ Animated Project Logo ]    [ PreTwin AI title revealing ]
+     Sequence:
+       1. Logo animation begins on the left while title area is ready on the right
+       2. Full-body fairy flies through exactly one complete circular round
+       3. Fairy returns to her upper-right final position and settles
+       4. Fairy shakes the magic wand naturally with her hand
+       5. Sparkles emerge from actual wand tip and travel toward right-side title area
+       6. Sparkles reveal "PreTwin AI" on the right; logo remains glowing on the left
+       7. Final screen freezes stationary; Enter button appears beneath branding
      ====================================================================== -->
 <div id="pretwinStartupIntro" class="pretwin-startup-overlay" style="display:none;" aria-hidden="true" role="dialog" aria-label="PreTwin Introduction">
   <!-- Accessible Skip Intro Button -->
@@ -30,36 +29,40 @@
     <div class="star-particle star-8">✨</div>
   </div>
 
-  <!-- Soaring Flying-Wing Logo Stage Container -->
+  <!-- Central Intro Stage Container -->
   <div class="pretwin-flight-stage" id="introFlightStage">
     
-    <!-- MAIN HERO BRANDING: Side-by-Side Logo (Left) and Title (Right) on Same Horizontal Line -->
+    <!-- MAIN HERO BRANDING: Left Animated Logo & Right Revealed Title on Same Horizontal Line -->
     <div class="pretwin-intro-branding pretwin-side-by-side-branding" id="introBrandText">
       
-      <!-- 1. The PreTwin Project Logo (Revealed alongside Title by Wand Sparkles) -->
-      <div class="pretwin-intro-logo-box" id="introLogoBox">
-        <img src="{{ url_for('static', filename='images/pretwin-icon.svg') }}" 
-             alt="PreTwin AI Logo" 
-             class="pretwin-intro-icon-logo" 
-             id="introIconLogo" />
-        <!-- Preserved asset reference for backward compatibility -->
-        <img src="{{ url_for('static', filename='images/pretwin-logo.svg') }}" 
-             alt="PreTwin AI Official Logo" 
-             class="pretwin-intro-official-logo" 
-             id="introOfficialLogo" 
-             style="display:none;" />
+      <!-- LEFT SIDE: Original PreTwin AI Project Logo Animation -->
+      <div class="pretwin-intro-left-logo-col" id="introLogoCol">
+        <div class="pretwin-intro-logo-box" id="introLogoBox">
+          <img src="{{ url_for('static', filename='images/pretwin-icon.svg') }}" 
+               alt="PreTwin AI Logo" 
+               class="pretwin-intro-icon-logo" 
+               id="introIconLogo" />
+          <!-- Preserved asset reference for backward compatibility -->
+          <img src="{{ url_for('static', filename='images/pretwin-logo.svg') }}" 
+               alt="PreTwin AI Official Logo" 
+               class="pretwin-intro-official-logo" 
+               id="introOfficialLogo" 
+               style="display:none;" />
+        </div>
       </div>
 
-      <!-- 2. The Project Name: PreTwin AI (Revealed Immediately to Right of Logo) -->
-      <div class="pretwin-intro-title-box" id="introTitleBox">
-        <div class="pretwin-intro-wordmark" id="introWordmark">
-          PreTwin <span class="intro-ai-badge">AI</span>
+      <!-- RIGHT SIDE: PreTwin AI Project Title Revealed by Wand Sparkles -->
+      <div class="pretwin-intro-right-title-col" id="introTitleCol">
+        <div class="pretwin-intro-title-box" id="introTitleBox">
+          <div class="pretwin-intro-wordmark" id="introWordmark">
+            PreTwin <span class="intro-ai-badge">AI</span>
+          </div>
         </div>
       </div>
 
     </div>
 
-    <!-- Prominently Highlighted Tagline directly beneath the horizontal branding -->
+    <!-- Prominently Highlighted Tagline directly beneath the side-by-side branding -->
     <div class="pretwin-intro-tagline-wrap" id="introTaglineWrap">
       <div class="pretwin-intro-tagline" id="introTagline">
         Your Future. Your Style. Your Twin.
@@ -194,19 +197,19 @@
 <script>
 /**
  * PreTwin AI Enhanced Startup Animation Controller
- * Exact Required Sequence:
- *   Step 1: Intro background prepared (0.1s)
- *   Step 2 & 3: Slightly larger fairy appears and completes ONE full circular flight (0.2s - 2.8s)
- *   Step 4: Fairy settles at resting position near branding and pauses briefly (2.8s - 3.1s)
- *   Step 5: Wand shaking naturally in fairy's hand (3.1s - 3.5s)
- *   Step 6: Magical sparkles release from wand tip traveling toward title area (3.4s - 4.5s)
- *   Step 7: Reveal project name PreTwin AI beside the logo using sparkling effect (3.7s - 4.8s)
- *           (Title never appears before wand shaking and sparkles!)
- *   Step 8: Final still screen: flight & wand stop; fairy, logo, and title hold position (5.3s)
- *   Step 9: Enter button appears; stays stationary until user clicks to visit homepage (5.3s+)
+ * Layout: [ Left Animated Logo ]  [ Right PreTwin AI Reveal ]
+ * Sequence:
+ *   1. Logo animation begins on the left while title area is ready on the right (0.1s)
+ *   2. Fairy appears and executes ONE complete circular flight (0.2s - 2.8s)
+ *   3. Fairy settles at resting position in upper-right and pauses briefly (2.8s - 3.1s)
+ *   4. Wand shaking naturally in fairy's hand (3.1s - 3.5s)
+ *   5. Sparkles emerge from wand tip traveling toward right-side title area (3.4s - 4.5s)
+ *   6. Sparkles reveal project name PreTwin AI on the right (3.7s - 4.8s)
+ *   7. Final still screen: animations stop; logo (left) & title (right) stay stationary (5.3s)
+ *   8. Enter button appears beneath branding; stays still until user clicks to visit homepage
  */
 (function() {
-  const INTRO_STORAGE_KEY = 'pretwin_intro_played_v8';
+  const INTRO_STORAGE_KEY = 'pretwin_intro_played_v9';
   const overlay = document.getElementById('pretwinStartupIntro');
   if (!overlay) return;
 
@@ -243,13 +246,17 @@
 
   const fairyWrap = document.getElementById('introFlightEmblem');
 
-  // Step 1: Intro background prepared
-  // Step 2 & 3: Fairy appears and executes exactly ONE full circular flight (200ms - 2800ms)
+  // Step 1: Logo animation begins on the left while title area remains ready on the right
+  setTimeout(() => {
+    overlay.classList.add('stage-logo-enter');
+  }, 100);
+
+  // Step 2: Fairy flies through exactly ONE complete circular round (200ms - 2800ms)
   setTimeout(() => {
     overlay.classList.add('stage-flight');
   }, 200);
 
-  // Synchronize on animation completion if supported
+  // Synchronize on animation completion
   if (fairyWrap) {
     fairyWrap.addEventListener('animationend', function(e) {
       if (e.animationName === 'introCircularFlight') {
@@ -258,35 +265,33 @@
     }, { once: true });
   }
 
-  // Step 4: Fairy settles at resting position after one full round (2800ms)
+  // Step 3: Fairy settles at resting position after one full round (2800ms)
   setTimeout(() => {
     overlay.classList.add('stage-settle');
   }, 2800);
 
-  // Step 5: Wand shaking naturally in fairy's hand (3100ms)
+  // Step 4: Wand shaking naturally in fairy's hand (3100ms)
   setTimeout(() => {
     overlay.classList.add('stage-wand');
   }, 3100);
 
-  // Step 6: Sparkles release from the actual tip of the wand toward title area (3400ms)
+  // Step 5: Sparkles emerge from actual wand tip and travel toward right-side title area (3400ms)
   setTimeout(() => {
     overlay.classList.add('stage-beam');
   }, 3400);
 
-  // Step 7: Reveal the project name PreTwin AI beside the logo using sparkling effect (3700ms)
-  // (Title and logo only appear AFTER wand shaking and sparkles begin to travel!)
+  // Step 6: Sparkles reveal the project name PreTwin AI on the right (3700ms)
   setTimeout(() => {
-    overlay.classList.add('stage-logo-enter');
     overlay.classList.add('stage-reveal');
     overlay.classList.add('stage-highlight');
   }, 3700);
 
-  // Tagline underneath
+  // Tagline appears underneath side-by-side branding
   setTimeout(() => {
     overlay.classList.add('stage-tagline');
   }, 4400);
 
-  // Step 8 & 9: Final still screen & Enter button (5300ms)
+  // Step 7: Final still screen & Enter button (5300ms)
   // Stops flight/wand animations; freezes fairy, logo & title stationary; displays Enter button
   setTimeout(() => {
     overlay.classList.add('stage-freeze');
@@ -314,7 +319,7 @@ function finishStartupIntro(immediate = false) {
   const overlay = document.getElementById('pretwinStartupIntro');
   if (!overlay || overlay.dataset.finished === '1') return;
   overlay.dataset.finished = '1';
-  sessionStorage.setItem('pretwin_intro_played_v8', '1');
+  sessionStorage.setItem('pretwin_intro_played_v9', '1');
 
   const isLoginPage = window.location.pathname === '/login';
   const isHomePage = window.location.pathname === '/' || window.location.pathname === '';
