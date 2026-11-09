@@ -146,48 +146,40 @@ input, select, textarea {
 
 /* ==========================================================================
    DEDICATED FEATURES NAVIGATION BAR (Directly Below Search Navigation Bar)
-   Compact vertical alignment: Highlighted icon on top, small label below.
+   STATIC & SIMULTANEOUSLY VISIBLE:
+   - Preserves exact original navbar dimensions: width 100%, max-width 1248px, height 56px.
+   - 100% static layout: NO scrolling, NO auto-scroll, NO sliding carousel track, NO marquee.
+   - All 8 features fit simultaneously in their fixed positions with icon on top and small label below.
+   - Retains icon highlights, subtle pastel tints, hover scale, and active states.
    ========================================================================== */
 .pretwin-features-navbar {
   position: sticky;
   top: 56px;
   left: 0;
   width: 100%;
+  height: 56px;
   background: #ffffff;
   border-bottom: 1px solid #e2e8f0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   z-index: 995;
-  transition: all 0.2s ease;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .pretwin-features-navbar-inner {
-  max-width: 1360px;
+  max-width: 1248px;
   margin: 0 auto;
+  height: 100%;
   display: flex;
-  align-items: stretch;
+  align-items: center;
   justify-content: space-between;
-  padding: 6px 12px 6px 12px;
-  gap: 6px;
-  overflow-x: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent;
-  -webkit-overflow-scrolling: touch;
+  padding: 0 16px;
+  gap: 4px;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-.pretwin-features-navbar-inner::-webkit-scrollbar {
-  height: 3px;
-}
-
-.pretwin-features-navbar-inner::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.pretwin-features-navbar-inner::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
-}
-
-/* Feature Navigation Item: Vertical Icon + Label layout */
+/* Feature Navigation Item: 100% Static Vertical Icon + Label */
 .pretwin-feat-nav-link {
   display: flex;
   flex-direction: column;
@@ -195,14 +187,18 @@ input, select, textarea {
   justify-content: center;
   text-align: center;
   text-decoration: none;
-  padding: 5px 8px 6px 8px;
-  border-radius: 8px 8px 0 0;
-  border-bottom: 3px solid transparent;
+  height: 100%;
   flex: 1 1 0px;
-  min-width: max-content;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 0;
+  max-width: 100%;
+  padding: 2px 2px;
+  border-radius: 4px 4px 0 0;
+  border-bottom: 2px solid transparent;
   color: #475569;
   cursor: pointer;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: background-color 0.15s ease, border-bottom-color 0.15s ease;
 }
 
 .pretwin-feat-nav-link:hover {
@@ -215,21 +211,21 @@ input, select, textarea {
   border-bottom-color: #4f46e5;
 }
 
-/* 2. Highlight Each Feature Icon: rounded container, subtle background, border & glow */
+/* Highlighted Feature Icon: Compact rounded container (fits within 56px height) */
 .feat-nav-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 13px;
   line-height: 1;
-  margin-bottom: 4px;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-bottom: 2px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
   flex-shrink: 0;
 }
 
@@ -243,10 +239,10 @@ input, select, textarea {
 #navFeatSmartCart .feat-nav-icon { background: #fdf4ff; border-color: #f5d0fe; }
 #navFeatAdvanced .feat-nav-icon { background: #eff6ff; border-color: #bfdbfe; }
 
-/* Hover effects: slight scale-up, glow, and elevated background */
+/* Hover effects: subtle scale-up and glow without shifting position */
 .pretwin-feat-nav-link:hover .feat-nav-icon {
-  transform: translateY(-2px) scale(1.08);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+  transform: scale(1.1);
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.25);
 }
 
 #navFeatTwin:hover .feat-nav-icon { border-color: #a855f7; background: #f3e8ff; }
@@ -261,20 +257,26 @@ input, select, textarea {
 /* Distinct active / selected state */
 .pretwin-feat-nav-link.active .feat-nav-icon {
   border: 1.5px solid #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.22), 0 2px 8px rgba(79, 70, 229, 0.2);
-  transform: translateY(-1px);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.22);
 }
 
 /* Feature Names: Small readable font placed directly below icon */
 .pretwin-feat-nav-link .feat-nav-text {
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 600;
   color: #475569;
-  white-space: nowrap;
-  line-height: 1.25;
-  letter-spacing: 0.1px;
-  transition: color 0.18s ease;
+  line-height: 1.15;
+  letter-spacing: -0.1px;
   text-align: center;
+  width: 100%;
+  max-width: 100%;
+  white-space: normal;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.15s ease;
 }
 
 .pretwin-feat-nav-link:hover .feat-nav-text {
@@ -286,52 +288,88 @@ input, select, textarea {
   font-weight: 700;
 }
 
-/* Responsive Breakpoints */
+/* Responsive Breakpoints: Always static, fitting all 8 features simultaneously */
 @media (max-width: 1200px) {
   .pretwin-features-navbar-inner {
-    padding: 6px 8px 6px 8px;
-    gap: 4px;
+    padding: 0 12px;
+    gap: 3px;
   }
   .pretwin-feat-nav-link .feat-nav-text {
-    font-size: 9.5px;
+    font-size: 9px;
+    line-height: 1.12;
   }
 }
 
 @media (max-width: 1024px) {
   .pretwin-features-navbar-inner {
-    justify-content: flex-start;
-    gap: 12px;
-    padding: 6px 14px 6px 14px;
+    justify-content: space-between;
+    padding: 0 8px;
+    gap: 2px;
+    overflow: hidden;
   }
   .pretwin-feat-nav-link {
-    flex: 0 0 auto;
-    padding: 4px 6px 6px 6px;
+    flex: 1 1 0px;
+    min-width: 0;
+    padding: 2px 1px;
+  }
+  .feat-nav-icon {
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+    border-radius: 5px;
+    margin-bottom: 2px;
   }
   .pretwin-feat-nav-link .feat-nav-text {
-    font-size: 9.5px;
+    font-size: 8.5px;
+    line-height: 1.1;
   }
 }
 
 @media (max-width: 768px) {
   .pretwin-features-navbar {
     top: 56px;
+    height: 56px;
+    overflow: hidden;
   }
   .pretwin-features-navbar-inner {
-    gap: 10px;
-    padding: 5px 10px 5px 10px;
+    padding: 0 4px;
+    gap: 2px;
+    overflow: hidden;
   }
   .pretwin-feat-nav-link {
-    padding: 4px 4px 5px 4px;
+    flex: 1 1 0px;
+    min-width: 0;
+    padding: 1px 1px;
   }
   .feat-nav-icon {
-    width: 32px;
-    height: 32px;
-    font-size: 16px;
-    border-radius: 8px;
-    margin-bottom: 3px;
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+    border-radius: 5px;
+    margin-bottom: 1px;
   }
   .pretwin-feat-nav-link .feat-nav-text {
-    font-size: 9px;
+    font-size: 7.5px;
+    line-height: 1.05;
+    letter-spacing: -0.2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pretwin-features-navbar-inner {
+    padding: 0 2px;
+    gap: 1px;
+  }
+  .feat-nav-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    border-radius: 4px;
+  }
+  .pretwin-feat-nav-link .feat-nav-text {
+    font-size: 7px;
+    line-height: 1.02;
+    letter-spacing: -0.3px;
   }
 }
 
