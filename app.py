@@ -510,6 +510,11 @@ def advanced_ai_page():
     return render_template("advanced_ai.html")
 
 
+@app.route("/about")
+def about_page():
+    return render_template("features_dashboard.html")
+
+
 @app.route("/seller")
 def seller_page():
     return render_template("seller.html")

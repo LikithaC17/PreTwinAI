@@ -151,10 +151,10 @@
           <div class="pretwin-nav-item pretwin-dropdown-container" id="nav2MoreContainer" style="position:relative;">
             <button type="button" class="pretwin-shortcut-btn" id="nav2MoreBtn" onclick="toggleNav2MoreMenu(event)" aria-haspopup="true" aria-expanded="false" title="More Options">
               <div class="pretwin-shortcut-icon-box">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <circle cx="12" cy="5" r="2.1"></circle>
-                  <circle cx="12" cy="12" r="2.1"></circle>
-                  <circle cx="12" cy="19" r="2.1"></circle>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+                  <circle cx="5" cy="12" r="2"></circle>
+                  <circle cx="12" cy="12" r="2"></circle>
+                  <circle cx="19" cy="12" r="2"></circle>
                 </svg>
               </div>
               <span class="pretwin-shortcut-text">More</span>
@@ -531,10 +531,10 @@
         <div class="pretwin-nav-item pretwin-dropdown-container" id="pretwinMoreContainer">
           <button type="button" class="pretwin-second-nav-btn" id="pretwinMoreBtn" onclick="toggleMoreMenu(event)" aria-haspopup="true" aria-expanded="false" title="More Options">
             <div class="pretwin-second-nav-icon-box">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="5" r="2.1"></circle>
-                <circle cx="12" cy="12" r="2.1"></circle>
-                <circle cx="12" cy="19" r="2.1"></circle>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+                <circle cx="5" cy="12" r="2"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+                <circle cx="19" cy="12" r="2"></circle>
               </svg>
             </div>
             <span class="pretwin-second-nav-text">More</span>
@@ -1240,100 +1240,41 @@
   <!-- ======================================================================
        7. REDESIGNED PRETWIN AI 5-COLUMN FOOTER
        ====================================================================== -->
+  <!-- ======================================================================
+       7. COMPACT SIMPLIFIED PRETWIN AI FOOTER
+       ====================================================================== -->
   <footer class="pretwin-footer">
     <div class="pretwin-footer-inner">
-      <div class="pretwin-footer-grid">
-        <!-- Column 1 — About PreTwin -->
-        <div class="pretwin-footer-col pretwin-footer-about">
+      <div class="pretwin-footer-compact-wrap">
+        <!-- Brand & Tagline -->
+        <div class="pretwin-footer-brand-block">
           <a href="/" class="pretwin-footer-logo-link" title="PreTwin AI — Home">
             <img src="/static/images/pretwin-logo.svg" alt="PreTwin AI Logo" class="pretwin-footer-logo">
+            <span class="pretwin-footer-brand-title">PreTwin AI</span>
           </a>
-          <h4 class="pretwin-footer-brand-title">PreTwin AI</h4>
-          <p class="pretwin-footer-tagline"><strong>Your Future. Your Style. Your Twin.</strong></p>
-          <p class="pretwin-footer-desc">
-            An agentic predictive personal shopping twin that anticipates your replenishment needs, protects your budget, and automates intelligent e-commerce decisions.
-          </p>
+          <span class="pretwin-footer-tagline"><strong>Your Future. Your Style. Your Twin.</strong></span>
         </div>
 
-        <!-- Column 2 — Shop -->
-        <div class="pretwin-footer-col">
-          <h4>SHOP</h4>
-          <ul>
-            <li><a href="/recommendations">For You ✨</a></li>
-            <li><a href="/discovery">All Products</a></li>
-            <li><a href="/discovery?category=Fashion">Product Categories</a></li>
-            <li><a href="/wishlist">Wishlist</a></li>
-            <li><a href="javascript:void(0)" onclick="openCartModal()">Cart</a></li>
-            <li><a href="/orders">My Orders</a></li>
-          </ul>
-        </div>
-
-        <!-- Column 3 — AI Shopping Features -->
-        <div class="pretwin-footer-col">
-          <h4>AI SHOPPING FEATURES</h4>
-          <ul>
-            <li><a href="/twin">Personalization and Digital Twin</a></li>
-            <li><a href="/predictions">Predictive Shopping Intelligence</a></li>
-            <li><a href="/discovery">Smart Product Discovery</a></li>
-            <li><a href="/budget">Budget and Price Intelligence</a></li>
-            <li><a href="/comparison">Product Comparison and Decision Support</a></li>
-            <li><a href="/calendar">Future Predictive Calendar</a></li>
-            <li><a href="/smart-cart">Smart Shopping Card</a></li>
-            <li><a href="/advanced-ai">Advanced Features for Future Development</a></li>
-          </ul>
-        </div>
-
-        <!-- Column 4 — Customer Support -->
-        <div class="pretwin-footer-col">
-          <h4>CUSTOMER SUPPORT</h4>
-          <ul>
-            <li><a href="/customer-service">Customer Service</a></li>
-            <li><a href="/faq">FAQs</a></li>
-            <li><a href="/contact">Contact Us</a></li>
-            <li><a href="/orders">Order Tracking</a></li>
-            <li><a href="/returns-refunds">Returns and Refunds</a></li>
-          </ul>
-        </div>
-
-        <!-- Column 5 — Account and Information -->
-        <div class="pretwin-footer-col">
-          <h4>ACCOUNT &amp; INFORMATION</h4>
-          <ul>
-            <li><a href="/twin">My Profile</a></li>
-            <li><a href="/login">Sign Up / Login</a></li>
-            <li><a href="/seller">Become a Seller</a></li>
-            <li><a href="/privacy">Privacy Policy</a></li>
-            <li><a href="/terms">Terms and Conditions</a></li>
-          </ul>
-        </div>
+        <!-- Essential Navigation & Policy Links -->
+        <nav class="pretwin-footer-nav" aria-label="Footer Navigation">
+          <a href="/" class="pretwin-footer-link">Home</a>
+          <a href="/about" class="pretwin-footer-link">About</a>
+          <a href="/contact" class="pretwin-footer-link">Contact</a>
+          <a href="/customer-service" class="pretwin-footer-link">Help</a>
+          <span class="pretwin-footer-divider" aria-hidden="true">•</span>
+          <a href="/privacy" class="pretwin-footer-link">Privacy Policy</a>
+          <a href="/terms" class="pretwin-footer-link">Terms &amp; Conditions</a>
+        </nav>
       </div>
 
-      <!-- Category Quick Directory Strip -->
-      <div class="pretwin-footer-categories-strip">
-        <span class="pretwin-footer-cat-label">POPULAR CATEGORIES:</span>
-        <div class="pretwin-footer-cat-pills">
-          <a href="/discovery?category=Fashion">Fashion</a>
-          <a href="/discovery?category=Mobiles">Mobiles</a>
-          <a href="/discovery?category=Electronics">Electronics</a>
-          <a href="/discovery?category=Home+%26+Kitchen">Home &amp; Kitchen</a>
-          <a href="/discovery?category=Beauty%2C+Toys+%26+More">Beauty &amp; Toys</a>
-          <a href="/discovery?category=Appliances">Appliances</a>
-          <a href="/discovery?category=Food+%26+Grocery">Food &amp; Grocery</a>
-          <a href="/discovery?category=Laptops+%26+Computers">Laptops</a>
-          <a href="/discovery?category=Footwear">Footwear</a>
-          <a href="/discovery?category=Watches+%26+Accessories">Watches</a>
-        </div>
-      </div>
-
-      <!-- Footer Bottom Bar with Dynamic Year and Trust Badges -->
+      <!-- Copyright Bar with Dynamic Year and Trust Badges -->
       <div class="pretwin-footer-bottom">
         <div class="pretwin-footer-copy">
-          © 2024–{{ current_year or 2026 }} PreTwin AI. All rights reserved. <strong>Your Future. Your Style. Your Twin.</strong>
+          © 2024–{{ current_year or 2026 }} PreTwin AI. All rights reserved.
         </div>
         <div class="pretwin-footer-badges">
           <span class="pretwin-footer-badge">Razorpay Verified</span>
           <span class="pretwin-footer-badge">Cash on Delivery</span>
-          <span class="pretwin-footer-badge">100 Pts = ₹1.00</span>
           <span class="pretwin-footer-badge">Safe &amp; Secure SSL</span>
         </div>
       </div>

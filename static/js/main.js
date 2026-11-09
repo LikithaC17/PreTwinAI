@@ -1191,6 +1191,7 @@ function closeAllNavDropdowns() {
   });
   document.querySelectorAll('[aria-expanded="true"]').forEach(el => {
     el.setAttribute('aria-expanded', 'false');
+    el.classList.remove('active');
   });
 }
 
@@ -1254,7 +1255,10 @@ function toggleNav2MoreMenu(e) {
   closeAllNavDropdowns();
   if (!isOpen) {
     dropdown.classList.add('is-open');
-    if (btn) btn.setAttribute('aria-expanded', 'true');
+    if (btn) {
+      btn.setAttribute('aria-expanded', 'true');
+      btn.classList.add('active');
+    }
   }
 }
 

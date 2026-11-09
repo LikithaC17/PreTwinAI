@@ -167,7 +167,7 @@ def test_third_navbar_for_you_and_smart_shopping_card(client):
     assert 'href="/recommendations"' in html[cat_start:cat_start + 800]
 
 
-def test_redesigned_five_column_footer(client):
+def test_compact_simplified_footer(client):
     res = client.get("/")
     assert res.status_code == 200
     html = res.data.decode("utf-8")
@@ -176,47 +176,33 @@ def test_redesigned_five_column_footer(client):
     assert footer_start != -1
     footer_html = html[footer_start:]
 
-    # Column 1: About PreTwin
+    # Logo, Name, and Tagline
     assert "PreTwin AI" in footer_html
     assert "Your Future. Your Style. Your Twin." in footer_html
     assert "pretwin-logo.svg" in footer_html
 
-    # Column 2: Shop
-    assert "SHOP</h4>" in footer_html
-    assert 'href="/recommendations"' in footer_html
-    assert 'href="/discovery"' in footer_html
-    assert 'href="/wishlist"' in footer_html
-    assert 'openCartModal()' in footer_html
-    assert 'href="/orders"' in footer_html
-
-    # Column 3: AI Shopping Features
-    assert "AI SHOPPING FEATURES</h4>" in footer_html
-    assert 'href="/twin"' in footer_html
-    assert 'href="/predictions"' in footer_html
-    assert 'href="/discovery"' in footer_html
-    assert 'href="/budget"' in footer_html
-    assert 'href="/comparison"' in footer_html
-    assert 'href="/calendar"' in footer_html
-    assert 'href="/smart-cart"' in footer_html
-    assert 'href="/advanced-ai"' in footer_html
-
-    # Column 4: Customer Support
-    assert "CUSTOMER SUPPORT</h4>" in footer_html
-    assert 'href="/customer-service"' in footer_html
-    assert 'href="/faq"' in footer_html
+    # Essential Navigation Links
+    assert 'href="/"' in footer_html
+    assert 'Home' in footer_html
+    assert 'href="/about"' in footer_html
+    assert 'About' in footer_html
     assert 'href="/contact"' in footer_html
-    assert 'href="/returns-refunds"' in footer_html
+    assert 'Contact' in footer_html
+    assert 'href="/customer-service"' in footer_html
+    assert 'Help' in footer_html
 
-    # Column 5: Account & Information
-    assert "ACCOUNT &amp; INFORMATION</h4>" in footer_html or "ACCOUNT & INFORMATION</h4>" in footer_html
-    assert 'href="/twin"' in footer_html
-    assert 'href="/login"' in footer_html
-    assert 'href="/seller"' in footer_html
+    # Important Policy Links
     assert 'href="/privacy"' in footer_html
+    assert 'Privacy Policy' in footer_html
     assert 'href="/terms"' in footer_html
+    assert 'Terms &amp; Conditions' in footer_html or 'Terms & Conditions' in footer_html
 
-    # Dynamic copyright year
+    # Dynamic Copyright Year
     assert "© 2024–" in footer_html
+
+    # Redundant sections removed to keep footer compact
+    assert "AI SHOPPING FEATURES</h4>" not in footer_html
+    assert "POPULAR CATEGORIES:" not in footer_html
 
 
 def test_all_new_and_updated_routes(client):

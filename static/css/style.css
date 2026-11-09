@@ -2440,7 +2440,8 @@ input, select, textarea {
   gap: 4px;
 }
 
-.pretwin-shortcut-btn {
+.pretwin-shortcut-btn,
+button.pretwin-shortcut-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2454,16 +2455,29 @@ input, select, textarea {
   text-align: center;
   position: relative;
   border: 1px solid transparent;
+  background: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1;
+  cursor: pointer;
+  outline: none;
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-.pretwin-shortcut-btn:hover {
+.pretwin-shortcut-btn:hover,
+button.pretwin-shortcut-btn:hover {
   background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
   border-color: rgba(196, 181, 253, 0.35);
   transform: translateY(-1px);
 }
 
-.pretwin-shortcut-btn.active {
+.pretwin-shortcut-btn.active,
+button.pretwin-shortcut-btn.active,
+.pretwin-shortcut-btn[aria-expanded="true"],
+button.pretwin-shortcut-btn[aria-expanded="true"] {
   background: rgba(139, 92, 246, 0.28);
   border-color: #a78bfa;
   color: #ffffff;
@@ -2478,6 +2492,12 @@ input, select, textarea {
   height: 20px;
   color: #c4b5fd;
   transition: all 0.2s ease;
+}
+
+.pretwin-shortcut-icon-box svg {
+  display: block;
+  margin: auto;
+  flex-shrink: 0;
 }
 
 .pretwin-shortcut-btn:hover .pretwin-shortcut-icon-box {
@@ -4546,158 +4566,108 @@ input, select, textarea {
 }
 
 /* ==========================================================================
-   REDESIGNED PRETWIN 5-COLUMN FOOTER
+   COMPACT SIMPLIFIED PRETWIN AI FOOTER
    ========================================================================== */
 .pretwin-footer {
   background: #172337;
   color: #ffffff;
-  padding: 40px 16px 20px 16px;
+  padding: 18px 16px 14px 16px;
   border-top: 1px solid #28354a;
   font-family: inherit;
 }
 
 .pretwin-footer-inner {
-  max-width: 1248px;
+  max-width: 1240px;
   margin: 0 auto;
 }
 
-.pretwin-footer-grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1.3fr 1.1fr 1.1fr;
-  gap: 32px;
-  margin-bottom: 36px;
-}
-
-.pretwin-footer-col h4 {
-  font-size: 13px;
-  font-weight: 700;
-  color: #878787;
-  margin: 0 0 16px 0;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-}
-
-.pretwin-footer-col ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.pretwin-footer-compact-wrap {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.pretwin-footer-col ul li a {
-  color: #ffffff;
-  font-size: 12.5px;
-  text-decoration: none;
-  transition: color 0.15s ease;
-  line-height: 1.4;
-  display: inline-block;
-}
-
-.pretwin-footer-col ul li a:hover {
-  color: #2874f0;
-  text-decoration: underline;
-}
-
-/* Column 1 — About PreTwin */
-.pretwin-footer-about {
+.pretwin-footer-brand-block {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .pretwin-footer-logo-link {
-  display: inline-block;
-  margin-bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
 }
 
 .pretwin-footer-logo {
-  height: 36px;
+  height: 28px;
   width: auto;
   filter: drop-shadow(0 2px 6px rgba(167, 139, 250, 0.3));
 }
 
 .pretwin-footer-brand-title {
-  font-size: 18px !important;
+  font-size: 16px !important;
   font-weight: 800 !important;
   color: #ffffff !important;
-  margin: 0 0 4px 0 !important;
+  letter-spacing: -0.2px !important;
+  margin: 0 !important;
   text-transform: none !important;
-  letter-spacing: -0.3px !important;
 }
 
 .pretwin-footer-tagline {
-  font-size: 13px;
-  color: #fef08a;
-  margin: 0 0 10px 0;
-  line-height: 1.4;
-}
-
-.pretwin-footer-desc {
   font-size: 12px;
-  color: #878787;
-  line-height: 1.6;
-  margin: 0;
+  color: #c4b5fd;
+  font-weight: 500;
+  padding-left: 12px;
+  border-left: 1px solid #334155;
+  white-space: nowrap;
 }
 
-/* Category Quick Tag Strip */
-.pretwin-footer-categories-strip {
-  border-top: 1px solid #28354a;
-  border-bottom: 1px solid #28354a;
-  padding: 16px 0;
-  margin-bottom: 24px;
+.pretwin-footer-nav {
   display: flex;
   align-items: center;
+  gap: 14px;
   flex-wrap: wrap;
-  gap: 12px;
 }
 
-.pretwin-footer-cat-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #878787;
-  letter-spacing: 0.5px;
-}
-
-.pretwin-footer-cat-pills {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.pretwin-footer-cat-pills a {
-  color: #b0bec5;
-  font-size: 12px;
+.pretwin-footer-link {
+  color: #cbd5e1;
+  font-size: 12.5px;
+  font-weight: 500;
   text-decoration: none;
-  padding: 2px 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
-  transition: all 0.15s ease;
+  transition: color 0.15s ease;
 }
 
-.pretwin-footer-cat-pills a:hover {
-  background: rgba(40, 116, 240, 0.2);
+.pretwin-footer-link:hover {
   color: #ffffff;
+  text-decoration: underline;
 }
 
-/* Footer Bottom Bar */
+.pretwin-footer-divider {
+  color: #475569;
+  font-size: 12px;
+  user-select: none;
+}
+
 .pretwin-footer-bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 16px;
-  font-size: 12px;
-  color: #878787;
+  gap: 10px;
+  padding-top: 10px;
+  font-size: 11.5px;
+  color: #94a3b8;
 }
 
 .pretwin-footer-copy {
-  line-height: 1.5;
-}
-
-.pretwin-footer-copy strong {
-  color: #cbd5e1;
+  line-height: 1.4;
 }
 
 .pretwin-footer-badges {
@@ -4708,13 +4678,38 @@ input, select, textarea {
 }
 
 .pretwin-footer-badge {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #e2e8f0;
-  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  padding: 2px 8px;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .pretwin-footer-compact-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .pretwin-footer-brand-block {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .pretwin-footer-tagline {
+    border-left: none;
+    padding-left: 0;
+  }
+  .pretwin-footer-nav {
+    gap: 10px;
+  }
+  .pretwin-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
 }
 
 /* Responsive Breakpoints */
