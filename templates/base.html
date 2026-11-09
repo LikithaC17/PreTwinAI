@@ -79,26 +79,6 @@
           <!-- Dynamically populated suggestions -->
         </div>
 
-        <!-- Features Navigation Item directly below the Search Bar -->
-        <div class="fk-search-subbar">
-          <a
-            href="/features"
-            class="pretwin-search-features-btn {% if request.path == '/features' %}active{% endif %}"
-            id="navSearchFeaturesBtn"
-            title="PreTwin AI Features Dashboard"
-            aria-label="PreTwin AI Features Dashboard"
-          >
-            <div class="pretwin-search-features-icon">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="7" height="7"></rect>
-                <rect x="14" y="3" width="7" height="7"></rect>
-                <rect x="14" y="14" width="7" height="7"></rect>
-                <rect x="3" y="14" width="7" height="7"></rect>
-              </svg>
-            </div>
-            <span class="pretwin-search-features-text">Features</span>
-          </a>
-        </div>
       </div>
 
       <!-- 3. Navigation Actions & Shortcuts -->
@@ -309,6 +289,102 @@
       </div>
     </div>
   </header>
+
+  <!-- ======================================================================
+       2. DEDICATED SEPARATE FEATURES NAVIGATION BAR
+       All 8 AI Shopping Features displayed individually as separate horizontal items
+       ====================================================================== -->
+  <nav class="pretwin-features-navbar" id="pretwinFeaturesNavBar" aria-label="PreTwin AI Features Navigation">
+    <div class="pretwin-features-navbar-inner">
+      <!-- 1. Personalization and Digital Twin -->
+      <a
+        href="/twin"
+        class="pretwin-feat-nav-link {% if request.path == '/twin' %}active{% endif %}"
+        id="navFeatTwin"
+        title="Personalization and Digital Twin"
+      >
+        <span class="feat-nav-icon">👤</span>
+        <span class="feat-nav-text">Personalization and Digital Twin</span>
+      </a>
+
+      <!-- 2. Predictive Shopping Intelligence -->
+      <a
+        href="/predictions"
+        class="pretwin-feat-nav-link {% if request.path == '/predictions' %}active{% endif %}"
+        id="navFeatPredictions"
+        title="Predictive Shopping Intelligence"
+      >
+        <span class="feat-nav-icon">🔮</span>
+        <span class="feat-nav-text">Predictive Shopping Intelligence</span>
+      </a>
+
+      <!-- 3. Smart Product Discovery -->
+      <a
+        href="/discovery"
+        class="pretwin-feat-nav-link {% if request.path == '/discovery' %}active{% endif %}"
+        id="navFeatDiscovery"
+        title="Smart Product Discovery"
+      >
+        <span class="feat-nav-icon">🔍</span>
+        <span class="feat-nav-text">Smart Product Discovery</span>
+      </a>
+
+      <!-- 4. Budget and Price Intelligence -->
+      <a
+        href="/budget"
+        class="pretwin-feat-nav-link {% if request.path == '/budget' %}active{% endif %}"
+        id="navFeatBudget"
+        title="Budget and Price Intelligence"
+      >
+        <span class="feat-nav-icon">💰</span>
+        <span class="feat-nav-text">Budget and Price Intelligence</span>
+      </a>
+
+      <!-- 5. Product Comparison and Decision Support -->
+      <a
+        href="/comparison"
+        class="pretwin-feat-nav-link {% if request.path == '/comparison' %}active{% endif %}"
+        id="navFeatComparison"
+        title="Product Comparison and Decision Support"
+      >
+        <span class="feat-nav-icon">⚖️</span>
+        <span class="feat-nav-text">Product Comparison and Decision Support</span>
+      </a>
+
+      <!-- 6. Future Predictive Calendar -->
+      <a
+        href="/calendar"
+        class="pretwin-feat-nav-link {% if request.path == '/calendar' %}active{% endif %}"
+        id="navFeatCalendar"
+        title="Future Predictive Calendar"
+      >
+        <span class="feat-nav-icon">📅</span>
+        <span class="feat-nav-text">Future Predictive Calendar</span>
+      </a>
+
+      <!-- 7. Smart Shopping Card -->
+      <a
+        href="/smart-cart"
+        class="pretwin-feat-nav-link {% if request.path == '/smart-cart' %}active{% endif %}"
+        id="navFeatSmartCart"
+        title="Smart Shopping Card"
+      >
+        <span class="feat-nav-icon">🛒✨</span>
+        <span class="feat-nav-text">Smart Shopping Card</span>
+      </a>
+
+      <!-- 8. Advanced Features for Future Development -->
+      <a
+        href="/advanced-ai"
+        class="pretwin-feat-nav-link {% if request.path == '/advanced-ai' %}active{% endif %}"
+        id="navFeatAdvanced"
+        title="Advanced Features for Future Development"
+      >
+        <span class="feat-nav-icon">🚀</span>
+        <span class="feat-nav-text">Advanced Features for Future Development</span>
+      </a>
+    </div>
+  </nav>
 
   <!-- ======================================================================
        2. SECOND NAVIGATION BAR (Nav Bar 3: Removed from view per user request)
