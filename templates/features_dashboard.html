@@ -3,6 +3,431 @@
 {% block title %}Explore PreTwin AI Features — Autonomous Shopping Intelligence{% endblock %}
 {% block page_title %}Explore PreTwin AI Features{% endblock %}
 
+{% block extra_head %}
+<style>
+/* ==========================================================================
+   PRETWIN DEDICATED ALL FEATURES DASHBOARD (/features)
+   Guaranteed light, clean, elegant e-commerce design with high contrast
+   ========================================================================== */
+.features-dashboard-container {
+  max-width: 1248px !important;
+  margin: 0 auto !important;
+  padding: 16px 16px 48px !important;
+  background: transparent !important;
+}
+
+/* Breadcrumb Navigation */
+.pretwin-breadcrumb {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 12.5px !important;
+  color: #64748b !important;
+  margin-bottom: 18px !important;
+}
+
+.pretwin-breadcrumb a {
+  color: #2563eb !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+}
+
+.pretwin-breadcrumb a:hover {
+  text-decoration: underline !important;
+}
+
+.pretwin-breadcrumb .bc-sep {
+  color: #94a3b8 !important;
+}
+
+.pretwin-breadcrumb .bc-current {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+
+/* Hero Header: Clean White Surface with Subtle Accent */
+.features-hero-header {
+  text-align: center !important;
+  max-width: 900px !important;
+  margin: 0 auto 24px !important;
+  padding: 24px 24px 20px !important;
+  background: #ffffff !important;
+  border-radius: 14px !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.features-hero-header::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 3px !important;
+  background: linear-gradient(90deg, #2563eb, #8b5cf6, #ec4899) !important;
+}
+
+.features-hero-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 4px 12px !important;
+  background: #f5f3ff !important;
+  color: #6d28d9 !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  border-radius: 9999px !important;
+  margin-bottom: 10px !important;
+  border: 1px solid #ddd6fe !important;
+}
+
+.features-main-title {
+  font-size: 1.85rem !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin: 0 0 6px !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.25 !important;
+}
+
+.features-main-subtitle {
+  font-size: 0.95rem !important;
+  color: #475569 !important;
+  line-height: 1.5 !important;
+  max-width: 660px !important;
+  margin: 0 auto 16px !important;
+}
+
+.features-metrics-ribbon {
+  display: flex !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  padding-top: 14px !important;
+  border-top: 1px solid #f1f5f9 !important;
+}
+
+.metric-pill {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 5px 12px !important;
+  background: #f8fafc !important;
+  border-radius: 20px !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.metric-num {
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  color: #2563eb !important;
+  line-height: 1 !important;
+}
+
+.metric-label {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #64748b !important;
+}
+
+/* Dedicated Horizontal Quick-Nav Section */
+.features-nav-section {
+  margin-bottom: 24px !important;
+}
+
+.features-horizontal-navbar-wrapper {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 8px !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  overflow-x: auto !important;
+}
+
+.features-horizontal-navbar {
+  display: flex !important;
+  align-items: stretch !important;
+  gap: 8px !important;
+  min-width: 100% !important;
+}
+
+.feature-nav-item {
+  display: inline-flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  padding: 8px 6px !important;
+  min-width: 110px !important;
+  flex: 1 1 0px !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  color: #334155 !important;
+  text-decoration: none !important;
+}
+
+.feature-nav-item:hover {
+  background: #f0f4ff !important;
+  border-color: #93c5fd !important;
+  color: #1d4ed8 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.12) !important;
+}
+
+.feat-nav-icon-box {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+}
+
+.feat-nav-label {
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  line-height: 1.25 !important;
+  color: inherit !important;
+  display: block !important;
+}
+
+/* Section Header */
+.features-section-title-wrap {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 16px !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+
+.features-section-title {
+  font-size: 1.2rem !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin: 0 !important;
+}
+
+.features-section-badge {
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: #64748b !important;
+  background: #f1f5f9 !important;
+  padding: 4px 10px !important;
+  border-radius: 6px !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+/* Features Cards Grid: 4 columns desktop, 2 tablet, 1 mobile */
+.features-cards-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 16px !important;
+  margin-bottom: 24px !important;
+}
+
+@media (max-width: 1120px) {
+  .features-cards-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .features-cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+
+/* Clean, Light Feature Card */
+.feature-card {
+  display: flex !important;
+  flex-direction: column !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 16px !important;
+  text-decoration: none !important;
+  color: inherit !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  position: relative !important;
+}
+
+.feature-card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.1) !important;
+  border-color: #93c5fd !important;
+}
+
+/* Hover Accent Borders */
+.card-twin:hover { border-color: #c084fc !important; }
+.card-predictions:hover { border-color: #a78bfa !important; }
+.card-discovery:hover { border-color: #7dd3fc !important; }
+.card-budget:hover { border-color: #86efac !important; }
+.card-comparison:hover { border-color: #fde047 !important; }
+.card-calendar:hover { border-color: #fda4af !important; }
+.card-cart:hover { border-color: #f0abfc !important; }
+.card-advanced:hover { border-color: #93c5fd !important; }
+
+.feature-card-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 10px !important;
+}
+
+/* Highlighted Icon Containers */
+.feature-card-icon-box {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 20px !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  flex-shrink: 0 !important;
+  transition: transform 0.2s ease !important;
+}
+
+.card-twin .feature-card-icon-box { background: #faf5ff !important; border-color: #e9d5ff !important; }
+.card-predictions .feature-card-icon-box { background: #f5f3ff !important; border-color: #ddd6fe !important; }
+.card-discovery .feature-card-icon-box { background: #f0f9ff !important; border-color: #bae6fd !important; }
+.card-budget .feature-card-icon-box { background: #f0fdf4 !important; border-color: #bbf7d0 !important; }
+.card-comparison .feature-card-icon-box { background: #fffbeb !important; border-color: #fde68a !important; }
+.card-calendar .feature-card-icon-box { background: #fff1f2 !important; border-color: #fecdd3 !important; }
+.card-cart .feature-card-icon-box { background: #fdf4ff !important; border-color: #f5d0fe !important; }
+.card-advanced .feature-card-icon-box { background: #eff6ff !important; border-color: #bfdbfe !important; }
+
+.feature-card:hover .feature-card-icon-box {
+  transform: scale(1.08) !important;
+}
+
+.feature-card-tag {
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  padding: 2px 7px !important;
+  border-radius: 9999px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+}
+
+.tag-live {
+  background: #f0fdf4 !important;
+  color: #16a34a !important;
+  border: 1px solid #bbf7d0 !important;
+}
+
+.tag-roadmap {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  border: 1px solid #bfdbfe !important;
+}
+
+.feature-card-title {
+  font-size: 1.02rem !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin: 0 0 3px !important;
+  line-height: 1.3 !important;
+}
+
+.feature-card-subtitle {
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: #6d28d9 !important;
+  margin-bottom: 8px !important;
+}
+
+.feature-card-desc {
+  font-size: 12.5px !important;
+  color: #64748b !important;
+  line-height: 1.5 !important;
+  margin: 0 0 12px !important;
+  flex-grow: 1 !important;
+}
+
+/* Compact Feature Chips */
+.feature-card-chips {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 5px !important;
+  margin-bottom: 12px !important;
+}
+
+.feat-tag-chip {
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  color: #475569 !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 2px 7px !important;
+  border-radius: 4px !important;
+  white-space: nowrap !important;
+}
+
+.feature-card-footer {
+  margin-top: auto !important;
+  padding-top: 6px !important;
+  border-top: 1px solid #f8fafc !important;
+}
+
+.feature-action-link {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #2563eb !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  transition: transform 0.15s ease, color 0.15s ease !important;
+}
+
+.feature-card:hover .feature-action-link {
+  color: #1d4ed8 !important;
+  transform: translateX(3px) !important;
+}
+
+/* Bottom Callout Banner: Soft Pastel Surface */
+.features-bottom-callout {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+  background: linear-gradient(135deg, #f0f7ff 0%, #f5f3ff 100%) !important;
+  border: 1px solid #c7d2fe !important;
+  border-radius: 12px !important;
+  padding: 16px 20px !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+}
+
+.callout-title {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin-bottom: 2px !important;
+}
+
+.callout-desc {
+  font-size: 12.5px !important;
+  color: #475569 !important;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="features-dashboard-container">
   <!-- Breadcrumb -->
