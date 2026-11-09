@@ -7,8 +7,23 @@
 <style>
 /* ==========================================================================
    PRETWIN DEDICATED ALL FEATURES DASHBOARD (/features)
-   Glassmorphism + Aurora Gradients + Organic Soft UI
+   Theme: Soft Lavender (#F7F3FF) + Warm Ivory (#FFFDF9) + Champagne Gold (#D6B875)
+   Primary Accent: #C4A6F5 | Secondary Accent: #E9DDFB
+   Main Text: #403653 | Secondary Text: #81778E | Card Border: #EAE1F4
    ========================================================================== */
+
+:root {
+  --pt-dash-bg: #F7F3FF;
+  --pt-dash-card: #FFFDF9;
+  --pt-dash-primary: #C4A6F5;
+  --pt-dash-secondary: #E9DDFB;
+  --pt-dash-gold: #D6B875;
+  --pt-dash-text-main: #403653;
+  --pt-dash-text-sub: #81778E;
+  --pt-dash-border: #EAE1F4;
+}
+
+/* Outer Theme Canvas */
 .features-aurora-wrapper {
   position: relative !important;
   max-width: 1280px !important;
@@ -16,18 +31,19 @@
   padding: 24px 20px 48px !important;
   border-radius: 28px !important;
   overflow: hidden !important;
-  background: 
-    radial-gradient(circle at 12% 16%, rgba(216, 180, 254, 0.42) 0%, transparent 40%),
-    radial-gradient(circle at 88% 20%, rgba(253, 164, 175, 0.38) 0%, transparent 42%),
-    radial-gradient(circle at 50% 45%, rgba(186, 230, 253, 0.4) 0%, transparent 48%),
-    radial-gradient(circle at 18% 80%, rgba(167, 243, 208, 0.38) 0%, transparent 42%),
-    radial-gradient(circle at 82% 84%, rgba(199, 210, 254, 0.42) 0%, transparent 45%),
-    linear-gradient(135deg, #fdf4ff 0%, #f0fdfa 25%, #f0f9ff 50%, #faf5ff 75%, #fff1f2 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.8) !important;
-  box-shadow: 0 12px 40px rgba(147, 128, 210, 0.08) !important;
+  background-color: #F7F3FF !important;
+  background-image: 
+    radial-gradient(circle at 10% 15%, rgba(196, 166, 245, 0.28) 0%, transparent 42%),
+    radial-gradient(circle at 90% 18%, rgba(214, 184, 117, 0.22) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(255, 253, 249, 0.65) 0%, transparent 55%),
+    radial-gradient(circle at 16% 82%, rgba(252, 231, 243, 0.35) 0%, transparent 42%),
+    radial-gradient(circle at 84% 84%, rgba(233, 221, 251, 0.38) 0%, transparent 45%),
+    linear-gradient(135deg, #F7F3FF 0%, #FFFDF9 50%, #F5EFFE 100%) !important;
+  border: 1px solid #EAE1F4 !important;
+  box-shadow: 0 12px 36px rgba(64, 54, 83, 0.06) !important;
 }
 
-/* Ambient Aurora Blur Blobs */
+/* Ambient Soft Glow Blobs */
 .aurora-blob {
   position: absolute !important;
   border-radius: 50% !important;
@@ -38,27 +54,27 @@
 }
 
 .aurora-blob-1 {
-  top: -40px !important;
+  top: -30px !important;
   left: 8% !important;
   width: 320px !important;
   height: 320px !important;
-  background: radial-gradient(circle, rgba(192, 132, 252, 0.45) 0%, rgba(244, 114, 182, 0.2) 100%) !important;
+  background: radial-gradient(circle, rgba(196, 166, 245, 0.4) 0%, rgba(233, 221, 251, 0.15) 100%) !important;
 }
 
 .aurora-blob-2 {
   top: 25% !important;
-  right: 4% !important;
-  width: 360px !important;
-  height: 360px !important;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.4) 0%, rgba(167, 243, 208, 0.2) 100%) !important;
+  right: 5% !important;
+  width: 340px !important;
+  height: 340px !important;
+  background: radial-gradient(circle, rgba(214, 184, 117, 0.3) 0%, rgba(255, 253, 249, 0.15) 100%) !important;
 }
 
 .aurora-blob-3 {
   bottom: 8% !important;
   left: 12% !important;
-  width: 360px !important;
-  height: 360px !important;
-  background: radial-gradient(circle, rgba(244, 114, 182, 0.35) 0%, rgba(168, 85, 247, 0.2) 100%) !important;
+  width: 340px !important;
+  height: 340px !important;
+  background: radial-gradient(circle, rgba(252, 231, 243, 0.35) 0%, rgba(233, 221, 251, 0.15) 100%) !important;
 }
 
 .aurora-blob-4 {
@@ -66,7 +82,7 @@
   right: 18% !important;
   width: 300px !important;
   height: 300px !important;
-  background: radial-gradient(circle, rgba(94, 234, 212, 0.4) 0%, rgba(147, 197, 253, 0.2) 100%) !important;
+  background: radial-gradient(circle, rgba(209, 250, 229, 0.35) 0%, rgba(233, 221, 251, 0.15) 100%) !important;
 }
 
 .features-content-layer {
@@ -80,41 +96,42 @@
   align-items: center !important;
   gap: 8px !important;
   font-size: 12.5px !important;
-  color: #64748b !important;
+  color: #81778E !important;
   margin-bottom: 20px !important;
 }
 
 .features-aurora-wrapper .pretwin-breadcrumb a {
-  color: #4f46e5 !important;
+  color: #7C3AED !important;
   text-decoration: none !important;
   font-weight: 600 !important;
 }
 
 .features-aurora-wrapper .pretwin-breadcrumb a:hover {
+  color: #403653 !important;
   text-decoration: underline !important;
 }
 
 .features-aurora-wrapper .pretwin-breadcrumb .bc-sep {
-  color: #94a3b8 !important;
+  color: #C4A6F5 !important;
 }
 
 .features-aurora-wrapper .pretwin-breadcrumb .bc-current {
-  color: #1e1b4b !important;
+  color: #403653 !important;
   font-weight: 700 !important;
 }
 
-/* Hero Header: Glassmorphism Card with Aurora Accents */
+/* Hero Header: Warm Ivory Card with Lavender & Gold Accents */
 .features-aurora-wrapper .features-hero-header {
   text-align: center !important;
   max-width: 920px !important;
   margin: 0 auto 26px !important;
   padding: 30px 26px 24px !important;
-  background: rgba(255, 255, 255, 0.65) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  background: rgba(255, 253, 249, 0.88) !important;
+  backdrop-filter: blur(16px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
   border-radius: 24px !important;
-  border: 1px solid rgba(255, 255, 255, 0.85) !important;
-  box-shadow: 0 10px 32px rgba(139, 92, 246, 0.08), 0 1px 2px rgba(255, 255, 255, 0.9) inset !important;
+  border: 1px solid #EAE1F4 !important;
+  box-shadow: 0 8px 28px rgba(64, 54, 83, 0.05), 0 1px 2px rgba(255, 255, 255, 0.9) inset !important;
   position: relative !important;
   overflow: hidden !important;
 }
@@ -125,8 +142,8 @@
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
-  height: 3px !important;
-  background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899, #06b6d4) !important;
+  height: 3.5px !important;
+  background: linear-gradient(90deg, #C4A6F5 0%, #D6B875 50%, #E9DDFB 100%) !important;
 }
 
 .features-aurora-wrapper .features-hero-badge {
@@ -134,16 +151,19 @@
   align-items: center !important;
   gap: 7px !important;
   padding: 5px 14px !important;
-  background: rgba(245, 243, 255, 0.75) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
-  color: #6d28d9 !important;
+  background: #E9DDFB !important;
+  color: #403653 !important;
   font-size: 12px !important;
   font-weight: 700 !important;
   border-radius: 9999px !important;
   margin-bottom: 12px !important;
-  border: 1px solid rgba(196, 181, 253, 0.5) !important;
-  box-shadow: 0 2px 10px rgba(124, 58, 237, 0.1) !important;
+  border: 1px solid #C4A6F5 !important;
+  box-shadow: 0 2px 8px rgba(196, 166, 245, 0.25) !important;
+}
+
+.features-aurora-wrapper .features-hero-badge span:first-child {
+  color: #D6B875 !important;
+  font-size: 13px !important;
 }
 
 .features-aurora-wrapper .features-main-title {
@@ -152,14 +172,12 @@
   letter-spacing: -0.025em !important;
   line-height: 1.25 !important;
   margin: 0 0 8px !important;
-  background: linear-gradient(135deg, #0f172a 0%, #312e81 40%, #7c3aed 75%, #db2777 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
+  color: #403653 !important;
 }
 
 .features-aurora-wrapper .features-main-subtitle {
   font-size: 0.98rem !important;
-  color: #475569 !important;
+  color: #81778E !important;
   line-height: 1.55 !important;
   max-width: 660px !important;
   margin: 0 auto 18px !important;
@@ -171,7 +189,7 @@
   flex-wrap: wrap !important;
   gap: 12px !important;
   padding-top: 16px !important;
-  border-top: 1px solid rgba(241, 245, 249, 0.8) !important;
+  border-top: 1px solid #EAE1F4 !important;
 }
 
 .features-aurora-wrapper .metric-pill {
@@ -179,46 +197,44 @@
   align-items: center !important;
   gap: 7px !important;
   padding: 6px 14px !important;
-  background: rgba(255, 255, 255, 0.6) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
+  background: #FFFDF9 !important;
   border-radius: 9999px !important;
-  border: 1px solid rgba(255, 255, 255, 0.85) !important;
-  box-shadow: 0 2px 8px rgba(148, 163, 184, 0.08) !important;
-  transition: transform 0.2s ease, background 0.2s ease !important;
+  border: 1px solid #EAE1F4 !important;
+  box-shadow: 0 2px 6px rgba(64, 54, 83, 0.04) !important;
+  transition: transform 0.2s ease, border-color 0.2s ease !important;
 }
 
 .features-aurora-wrapper .metric-pill:hover {
   transform: translateY(-1px) !important;
-  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: #C4A6F5 !important;
 }
 
 .features-aurora-wrapper .metric-num {
   font-size: 12.5px !important;
   font-weight: 800 !important;
-  color: #4f46e5 !important;
+  color: #7C3AED !important;
   line-height: 1 !important;
 }
 
 .features-aurora-wrapper .metric-label {
   font-size: 11px !important;
   font-weight: 600 !important;
-  color: #64748b !important;
+  color: #81778E !important;
 }
 
-/* Dedicated Horizontal Quick-Nav Section (Glassmorphism) */
+/* Dedicated Horizontal Quick-Nav Section */
 .features-aurora-wrapper .features-nav-section {
   margin-bottom: 26px !important;
 }
 
 .features-aurora-wrapper .features-horizontal-navbar-wrapper {
-  background: rgba(255, 255, 255, 0.6) !important;
-  backdrop-filter: blur(16px) saturate(170%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(170%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  background: rgba(255, 253, 249, 0.85) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid #EAE1F4 !important;
   border-radius: 18px !important;
   padding: 8px !important;
-  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.06), 0 1px 2px rgba(255, 255, 255, 0.9) inset !important;
+  box-shadow: 0 6px 20px rgba(64, 54, 83, 0.04) !important;
   overflow-x: auto !important;
 }
 
@@ -238,41 +254,42 @@
   padding: 8px 6px !important;
   min-width: 110px !important;
   flex: 1 1 0px !important;
-  background: rgba(255, 255, 255, 0.5) !important;
-  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  background: #FFFDF9 !important;
+  border: 1px solid #EAE1F4 !important;
   border-radius: 14px !important;
   cursor: pointer !important;
   text-align: center !important;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  color: #334155 !important;
+  color: #403653 !important;
   text-decoration: none !important;
 }
 
 .features-aurora-wrapper .feature-nav-item:hover {
-  background: rgba(255, 255, 255, 0.9) !important;
-  border-color: rgba(167, 139, 250, 0.5) !important;
-  color: #4338ca !important;
+  background: #E9DDFB !important;
+  border-color: #C4A6F5 !important;
+  color: #403653 !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.15) !important;
+  box-shadow: 0 6px 16px rgba(196, 166, 245, 0.25) !important;
 }
 
 .features-aurora-wrapper .feat-nav-icon-box {
   width: 36px !important;
   height: 36px !important;
   border-radius: 12px !important;
-  background: rgba(255, 255, 255, 0.85) !important;
-  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  background: #F7F3FF !important;
+  border: 1px solid #EAE1F4 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   font-size: 16px !important;
   line-height: 1 !important;
-  box-shadow: 0 2px 6px rgba(148, 163, 184, 0.1) !important;
+  box-shadow: 0 2px 4px rgba(64, 54, 83, 0.04) !important;
   transition: transform 0.2s ease !important;
 }
 
 .features-aurora-wrapper .feature-nav-item:hover .feat-nav-icon-box {
   transform: scale(1.1) !important;
+  border-color: #C4A6F5 !important;
 }
 
 .features-aurora-wrapper .feat-nav-label {
@@ -296,21 +313,19 @@
 .features-aurora-wrapper .features-section-title {
   font-size: 1.25rem !important;
   font-weight: 800 !important;
-  color: #0f172a !important;
+  color: #403653 !important;
   margin: 0 !important;
 }
 
 .features-aurora-wrapper .features-section-badge {
   font-size: 11.5px !important;
   font-weight: 600 !important;
-  color: #4f46e5 !important;
-  background: rgba(255, 255, 255, 0.7) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
+  color: #403653 !important;
+  background: #E9DDFB !important;
   padding: 4px 12px !important;
   border-radius: 9999px !important;
-  border: 1px solid rgba(199, 210, 254, 0.6) !important;
-  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.08) !important;
+  border: 1px solid #C4A6F5 !important;
+  box-shadow: 0 2px 6px rgba(196, 166, 245, 0.15) !important;
 }
 
 /* Features Cards Grid: 4 columns desktop, 2 tablet, 1 mobile */
@@ -335,39 +350,38 @@
   }
 }
 
-/* Glassmorphism Feature Card: Organic, Frosted, Floating */
+/* Feature Card: Warm Ivory (#FFFDF9) Surface with Light Lavender Border (#EAE1F4) */
 .features-aurora-wrapper .feature-card {
   position: relative !important;
   display: flex !important;
   flex-direction: column !important;
-  background: rgba(255, 255, 255, 0.65) !important;
-  backdrop-filter: blur(18px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  background: #FFFDF9 !important;
+  border: 1px solid #EAE1F4 !important;
   border-radius: 20px !important;
   padding: 20px 18px 16px !important;
   text-decoration: none !important;
   color: inherit !important;
-  box-shadow: 0 8px 28px rgba(147, 128, 210, 0.08), 0 1px 2px rgba(255, 255, 255, 0.9) inset !important;
+  box-shadow: 0 6px 20px rgba(64, 54, 83, 0.05), 0 1px 2px rgba(255, 255, 255, 0.9) inset !important;
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease, background-color 0.28s ease !important;
   overflow: hidden !important;
 }
 
 .features-aurora-wrapper .feature-card:hover {
-  transform: translateY(-5px) !important;
-  background: rgba(255, 255, 255, 0.85) !important;
-  box-shadow: 0 16px 36px rgba(124, 58, 237, 0.14), 0 0 24px rgba(196, 181, 253, 0.25) !important;
+  transform: translateY(-4px) !important;
+  background: #FFFFFF !important;
+  border-color: #C4A6F5 !important;
+  box-shadow: 0 14px 30px rgba(64, 54, 83, 0.09), 0 0 16px rgba(196, 166, 245, 0.25) !important;
 }
 
-/* Individual Card Hover Glowing Borders */
-.features-aurora-wrapper .card-twin:hover { border-color: rgba(168, 85, 247, 0.6) !important; }
-.features-aurora-wrapper .card-predictions:hover { border-color: rgba(129, 140, 248, 0.6) !important; }
-.features-aurora-wrapper .card-discovery:hover { border-color: rgba(56, 189, 248, 0.6) !important; }
-.features-aurora-wrapper .card-budget:hover { border-color: rgba(52, 211, 153, 0.6) !important; }
-.features-aurora-wrapper .card-comparison:hover { border-color: rgba(251, 191, 36, 0.6) !important; }
-.features-aurora-wrapper .card-calendar:hover { border-color: rgba(251, 113, 133, 0.6) !important; }
-.features-aurora-wrapper .card-cart:hover { border-color: rgba(232, 121, 249, 0.6) !important; }
-.features-aurora-wrapper .card-advanced:hover { border-color: rgba(96, 165, 250, 0.6) !important; }
+/* Hover Accent Borders */
+.features-aurora-wrapper .card-twin:hover { border-color: #C4A6F5 !important; }
+.features-aurora-wrapper .card-predictions:hover { border-color: #F472B6 !important; }
+.features-aurora-wrapper .card-discovery:hover { border-color: #D6B875 !important; }
+.features-aurora-wrapper .card-budget:hover { border-color: #6EE7B7 !important; }
+.features-aurora-wrapper .card-comparison:hover { border-color: #D6B875 !important; }
+.features-aurora-wrapper .card-calendar:hover { border-color: #FDA4AF !important; }
+.features-aurora-wrapper .card-cart:hover { border-color: #C4A6F5 !important; }
+.features-aurora-wrapper .card-advanced:hover { border-color: #A5B4FC !important; }
 
 .features-aurora-wrapper .feature-card-header {
   display: flex !important;
@@ -376,7 +390,7 @@
   margin-bottom: 12px !important;
 }
 
-/* Highlighted Organic Icon Containers with Soft Glowing Gradients */
+/* Consistent 48x48px Icon Containers with Varied Pastel Tints */
 .features-aurora-wrapper .feature-card-icon-box {
   width: 48px !important;
   height: 48px !important;
@@ -386,7 +400,6 @@
   justify-content: center !important;
   font-size: 22px !important;
   flex-shrink: 0 !important;
-  border: 1px solid rgba(255, 255, 255, 0.9) !important;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease !important;
 }
 
@@ -394,53 +407,60 @@
   transform: scale(1.1) !important;
 }
 
-/* Soft Glowing Pastel Gradient Highlights */
+/* 1. Twin: Pastel Lavender */
 .features-aurora-wrapper .card-twin .feature-card-icon-box {
-  background: linear-gradient(135deg, rgba(216, 180, 254, 0.55), rgba(168, 85, 247, 0.25)) !important;
-  border-color: rgba(192, 132, 252, 0.6) !important;
-  box-shadow: 0 4px 14px rgba(168, 85, 247, 0.2) !important;
+  background: #E9DDFB !important;
+  border: 1px solid #C4A6F5 !important;
+  box-shadow: 0 4px 12px rgba(196, 166, 245, 0.3) !important;
 }
 
+/* 2. Predictions: Soft Pink */
 .features-aurora-wrapper .card-predictions .feature-card-icon-box {
-  background: linear-gradient(135deg, rgba(199, 210, 254, 0.6), rgba(99, 102, 241, 0.25)) !important;
-  border-color: rgba(165, 180, 252, 0.6) !important;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.2) !important;
+  background: #FCE7F3 !important;
+  border: 1px solid #F472B6 !important;
+  box-shadow: 0 4px 12px rgba(244, 114, 182, 0.25) !important;
 }
 
+/* 3. Discovery: Champagne Gold */
 .features-aurora-wrapper .card-discovery .feature-card-icon-box {
-  background: linear-gradient(135deg, rgba(186, 230, 253, 0.6), rgba(14, 165, 233, 0.25)) !important;
-  border-color: rgba(125, 211, 252, 0.6) !important;
-  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.2) !important;
+  background: #FEF3C7 !important;
+  border: 1px solid #D6B875 !important;
+  box-shadow: 0 4px 12px rgba(214, 184, 117, 0.3) !important;
 }
 
+/* 4. Budget: Pastel Mint */
 .features-aurora-wrapper .card-budget .feature-card-icon-box {
-  background: linear-gradient(135deg, rgba(167, 243, 208, 0.6), rgba(16, 185, 129, 0.25)) !important;
-  border-color: rgba(110, 231, 183, 0.6) !important;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2) !important;
+  background: #D1FAE5 !important;
+  border: 1px solid #6EE7B7 !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25) !important;
 }
 
+/* 5. Comparison: Warm Amber Gold */
 .features-aurora-wrapper .card-comparison .feature-card-icon-box {
-  background: linear-gradient(135deg, rgba(254, 240, 138, 0.65), rgba(245, 158, 11, 0.25)) !important;
-  border-color: rgba(253, 224, 71, 0.6) !important;
-  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2) !important;
+  background: #FFFBEB !important;
+  border: 1px solid #D6B875 !important;
+  box-shadow: 0 4px 12px rgba(214, 184, 117, 0.25) !important;
 }
 
+/* 6. Calendar: Soft Rose */
 .features-aurora-wrapper .card-calendar .feature-card-icon-box {
-  background: linear-gradient(135deg, rgba(254, 205, 211, 0.6), rgba(244, 63, 94, 0.25)) !important;
-  border-color: rgba(253, 164, 175, 0.6) !important;
-  box-shadow: 0 4px 14px rgba(244, 63, 94, 0.2) !important;
+  background: #FFE4E6 !important;
+  border: 1px solid #FDA4AF !important;
+  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.25) !important;
 }
 
+/* 7. Smart Cart: Lavender Plum */
 .features-aurora-wrapper .card-cart .feature-card-icon-box {
-  background: linear-gradient(135deg, rgba(245, 208, 254, 0.6), rgba(217, 70, 239, 0.25)) !important;
-  border-color: rgba(240, 171, 252, 0.6) !important;
-  box-shadow: 0 4px 14px rgba(217, 70, 239, 0.2) !important;
+  background: #F3E8FF !important;
+  border: 1px solid #C4A6F5 !important;
+  box-shadow: 0 4px 12px rgba(196, 166, 245, 0.25) !important;
 }
 
+/* 8. Advanced AI: Periwinkle Mint */
 .features-aurora-wrapper .card-advanced .feature-card-icon-box {
-  background: linear-gradient(135deg, rgba(191, 219, 254, 0.6), rgba(37, 99, 235, 0.25)) !important;
-  border-color: rgba(147, 197, 253, 0.6) !important;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2) !important;
+  background: #E0E7FF !important;
+  border: 1px solid #A5B4FC !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25) !important;
 }
 
 /* Feature Card Tags */
@@ -454,21 +474,21 @@
 }
 
 .features-aurora-wrapper .tag-live {
-  background: rgba(240, 253, 244, 0.85) !important;
-  color: #15803d !important;
-  border: 1px solid rgba(187, 247, 208, 0.8) !important;
+  background: #E9DDFB !important;
+  color: #403653 !important;
+  border: 1px solid #C4A6F5 !important;
 }
 
 .features-aurora-wrapper .tag-roadmap {
-  background: rgba(239, 246, 255, 0.85) !important;
-  color: #1d4ed8 !important;
-  border: 1px solid rgba(191, 219, 254, 0.8) !important;
+  background: #FEF3C7 !important;
+  color: #78350F !important;
+  border: 1px solid #D6B875 !important;
 }
 
 .features-aurora-wrapper .feature-card-title {
   font-size: 1.05rem !important;
   font-weight: 750 !important;
-  color: #0f172a !important;
+  color: #403653 !important;
   margin: 0 0 3px !important;
   line-height: 1.3 !important;
 }
@@ -476,19 +496,19 @@
 .features-aurora-wrapper .feature-card-subtitle {
   font-size: 11.5px !important;
   font-weight: 650 !important;
-  color: #6366f1 !important;
+  color: #8B5CF6 !important;
   margin-bottom: 8px !important;
 }
 
 .features-aurora-wrapper .feature-card-desc {
   font-size: 12.5px !important;
-  color: #475569 !important;
+  color: #81778E !important;
   line-height: 1.5 !important;
   margin: 0 0 12px !important;
   flex-grow: 1 !important;
 }
 
-/* Compact Feature Chips */
+/* Feature Tag Chips */
 .features-aurora-wrapper .feature-card-chips {
   display: flex !important;
   flex-wrap: wrap !important;
@@ -499,25 +519,25 @@
 .features-aurora-wrapper .feat-tag-chip {
   font-size: 10.5px !important;
   font-weight: 600 !important;
-  color: #334155 !important;
-  background: rgba(255, 255, 255, 0.75) !important;
-  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  color: #403653 !important;
+  background: #F7F3FF !important;
+  border: 1px solid #EAE1F4 !important;
   padding: 3px 8px !important;
   border-radius: 9999px !important;
   white-space: nowrap !important;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03) !important;
+  box-shadow: 0 1px 2px rgba(64, 54, 83, 0.03) !important;
 }
 
 .features-aurora-wrapper .feature-card-footer {
   margin-top: auto !important;
   padding-top: 8px !important;
-  border-top: 1px solid rgba(226, 232, 240, 0.6) !important;
+  border-top: 1px solid #EAE1F4 !important;
 }
 
 .features-aurora-wrapper .feature-action-link {
   font-size: 12px !important;
   font-weight: 700 !important;
-  color: #4f46e5 !important;
+  color: #7C3AED !important;
   display: inline-flex !important;
   align-items: center !important;
   gap: 5px !important;
@@ -525,42 +545,42 @@
 }
 
 .features-aurora-wrapper .feature-card:hover .feature-action-link {
-  color: #312e81 !important;
+  color: #403653 !important;
   transform: translateX(4px) !important;
 }
 
-/* Bottom Callout Banner: Frosted Glass & Aurora CTA */
+/* Bottom Callout Banner: Warm Ivory (#FFFDF9) Surface + Champagne Gold Accent */
 .features-aurora-wrapper .features-bottom-callout {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
   gap: 16px !important;
   flex-wrap: wrap !important;
-  background: rgba(255, 255, 255, 0.68) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border: 1px solid rgba(199, 210, 254, 0.6) !important;
+  background: rgba(255, 253, 249, 0.92) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid #EAE1F4 !important;
   border-radius: 20px !important;
   padding: 18px 24px !important;
-  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.08), 0 1px 2px rgba(255, 255, 255, 0.9) inset !important;
+  box-shadow: 0 8px 24px rgba(64, 54, 83, 0.05) !important;
 }
 
 .features-aurora-wrapper .callout-title {
   font-size: 14.5px !important;
   font-weight: 750 !important;
-  color: #0f172a !important;
+  color: #403653 !important;
   margin-bottom: 3px !important;
 }
 
 .features-aurora-wrapper .callout-desc {
   font-size: 12.5px !important;
-  color: #475569 !important;
+  color: #81778E !important;
 }
 
 .features-aurora-wrapper .btn-aurora-primary {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%) !important;
+  background: linear-gradient(135deg, #C4A6F5 0%, #A78BFA 60%, #D6B875 100%) !important;
   border: none !important;
-  color: #ffffff !important;
+  color: #FFFFFF !important;
   padding: 10px 22px !important;
   font-weight: 700 !important;
   font-size: 13.5px !important;
@@ -569,20 +589,20 @@
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
-  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35) !important;
+  box-shadow: 0 4px 16px rgba(196, 166, 245, 0.4) !important;
   transition: transform 0.2s ease, box-shadow 0.2s ease !important;
 }
 
 .features-aurora-wrapper .btn-aurora-primary:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45) !important;
+  box-shadow: 0 6px 20px rgba(196, 166, 245, 0.55) !important;
 }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="features-aurora-wrapper">
-  <!-- Atmospheric Aurora Blurred Color Blobs -->
+  <!-- Atmospheric Ambient Blur Blobs (Lavender, Pink, Gold, Mint) -->
   <div class="aurora-blob aurora-blob-1" aria-hidden="true"></div>
   <div class="aurora-blob aurora-blob-2" aria-hidden="true"></div>
   <div class="aurora-blob aurora-blob-3" aria-hidden="true"></div>
@@ -596,7 +616,7 @@
       <span class="bc-current">AI Features Dashboard</span>
     </nav>
 
-    <!-- Dashboard Header: Glassmorphism Card -->
+    <!-- Dashboard Header: Warm Ivory Card with Lavender & Gold Highlights -->
     <header class="features-hero-header">
       <div class="features-hero-badge">
         <span>✨</span>
@@ -607,7 +627,7 @@
         Discover smarter ways to explore products, plan purchases, manage your budget, and make shopping decisions.
       </p>
 
-      <!-- Key Metrics Ribbon: Frosted Glass Capsules -->
+      <!-- Key Metrics Ribbon: Warm Ivory Capsules -->
       <div class="features-metrics-ribbon">
         <div class="metric-pill">
           <span class="metric-num">8</span>
@@ -629,7 +649,7 @@
     </header>
 
     <!-- ======================================================================
-         DEDICATED HORIZONTAL FEATURE NAVIGATION BAR (Glassmorphism)
+         DEDICATED HORIZONTAL FEATURE NAVIGATION BAR
          All eight feature icons, with each feature name displayed directly underneath.
          Clicking any icon directly opens its particular dashboard!
          ====================================================================== -->
@@ -730,8 +750,8 @@
     </section>
 
     <!-- ======================================================================
-         ALL 8 FEATURES PRESENTED TOGETHER (Glassmorphism & Aurora UI)
-         Clicking any feature icon or card directly opens its particular dashboard!
+         ALL 8 FEATURES PRESENTED TOGETHER
+         Warm Ivory Feature Cards + Pastel Icon Highlights
          ====================================================================== -->
     <section class="features-grid-section" aria-label="All PreTwin AI Features Overview">
       <div class="features-section-title-wrap">
@@ -912,7 +932,7 @@
       </div>
     </section>
 
-    <!-- Bottom Quick Links Callout: Glassmorphic Banner -->
+    <!-- Bottom Quick Links Callout: Warm Ivory Card -->
     <div class="features-bottom-callout">
       <div class="callout-left">
         <div class="callout-title">Ready to start shopping with your Twin?</div>
@@ -935,8 +955,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const targetCard = document.getElementById(`panel-${hash}`) || document.getElementById(`tab-${hash}`);
     if (targetCard) {
       targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      targetCard.style.outline = '2px solid #8b5cf6';
-      targetCard.style.boxShadow = '0 0 24px rgba(139, 92, 246, 0.4)';
+      targetCard.style.outline = '2px solid #C4A6F5';
+      targetCard.style.boxShadow = '0 0 20px rgba(196, 166, 245, 0.45)';
       setTimeout(() => {
         targetCard.style.outline = '';
         targetCard.style.boxShadow = '';
