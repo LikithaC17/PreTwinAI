@@ -78,6 +78,27 @@
         <div class="fk-search-dropdown" id="fkSearchDropdown">
           <!-- Dynamically populated suggestions -->
         </div>
+
+        <!-- Features Navigation Item directly below the Search Bar -->
+        <div class="fk-search-subbar">
+          <a
+            href="/features"
+            class="pretwin-search-features-btn {% if request.path == '/features' %}active{% endif %}"
+            id="navSearchFeaturesBtn"
+            title="PreTwin AI Features Dashboard"
+            aria-label="PreTwin AI Features Dashboard"
+          >
+            <div class="pretwin-search-features-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+            </div>
+            <span class="pretwin-search-features-text">Features</span>
+          </a>
+        </div>
       </div>
 
       <!-- 3. Navigation Actions & Shortcuts -->
@@ -144,19 +165,6 @@
               </svg>
             </div>
             <span class="pretwin-shortcut-text">Savings</span>
-          </a>
-
-          <!-- Features Shortcut -->
-          <a href="/features" class="pretwin-shortcut-btn {% if request.path == '/features' %}active{% endif %}" title="PreTwin AI Features Dashboard">
-            <div class="pretwin-shortcut-icon-box">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="7" height="7"></rect>
-                <rect x="14" y="3" width="7" height="7"></rect>
-                <rect x="14" y="14" width="7" height="7"></rect>
-                <rect x="3" y="14" width="7" height="7"></rect>
-              </svg>
-            </div>
-            <span class="pretwin-shortcut-text">Features</span>
           </a>
 
           <!-- More Options Shortcut -->
