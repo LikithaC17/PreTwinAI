@@ -7,193 +7,275 @@
 <style>
 /* ==========================================================================
    PRETWIN DEDICATED ALL FEATURES DASHBOARD (/features)
-   Guaranteed light, clean, elegant e-commerce design with high contrast
+   Glassmorphism + Aurora Gradients + Organic Soft UI
    ========================================================================== */
-.features-dashboard-container {
-  max-width: 1248px !important;
-  margin: 0 auto !important;
-  padding: 16px 16px 48px !important;
-  background: transparent !important;
+.features-aurora-wrapper {
+  position: relative !important;
+  max-width: 1280px !important;
+  margin: 12px auto 40px !important;
+  padding: 24px 20px 48px !important;
+  border-radius: 28px !important;
+  overflow: hidden !important;
+  background: 
+    radial-gradient(circle at 12% 16%, rgba(216, 180, 254, 0.42) 0%, transparent 40%),
+    radial-gradient(circle at 88% 20%, rgba(253, 164, 175, 0.38) 0%, transparent 42%),
+    radial-gradient(circle at 50% 45%, rgba(186, 230, 253, 0.4) 0%, transparent 48%),
+    radial-gradient(circle at 18% 80%, rgba(167, 243, 208, 0.38) 0%, transparent 42%),
+    radial-gradient(circle at 82% 84%, rgba(199, 210, 254, 0.42) 0%, transparent 45%),
+    linear-gradient(135deg, #fdf4ff 0%, #f0fdfa 25%, #f0f9ff 50%, #faf5ff 75%, #fff1f2 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 12px 40px rgba(147, 128, 210, 0.08) !important;
+}
+
+/* Ambient Aurora Blur Blobs */
+.aurora-blob {
+  position: absolute !important;
+  border-radius: 50% !important;
+  filter: blur(65px) !important;
+  opacity: 0.55 !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+.aurora-blob-1 {
+  top: -40px !important;
+  left: 8% !important;
+  width: 320px !important;
+  height: 320px !important;
+  background: radial-gradient(circle, rgba(192, 132, 252, 0.45) 0%, rgba(244, 114, 182, 0.2) 100%) !important;
+}
+
+.aurora-blob-2 {
+  top: 25% !important;
+  right: 4% !important;
+  width: 360px !important;
+  height: 360px !important;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.4) 0%, rgba(167, 243, 208, 0.2) 100%) !important;
+}
+
+.aurora-blob-3 {
+  bottom: 8% !important;
+  left: 12% !important;
+  width: 360px !important;
+  height: 360px !important;
+  background: radial-gradient(circle, rgba(244, 114, 182, 0.35) 0%, rgba(168, 85, 247, 0.2) 100%) !important;
+}
+
+.aurora-blob-4 {
+  bottom: 12% !important;
+  right: 18% !important;
+  width: 300px !important;
+  height: 300px !important;
+  background: radial-gradient(circle, rgba(94, 234, 212, 0.4) 0%, rgba(147, 197, 253, 0.2) 100%) !important;
+}
+
+.features-content-layer {
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 /* Breadcrumb Navigation */
-.pretwin-breadcrumb {
+.features-aurora-wrapper .pretwin-breadcrumb {
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
   font-size: 12.5px !important;
   color: #64748b !important;
-  margin-bottom: 18px !important;
+  margin-bottom: 20px !important;
 }
 
-.pretwin-breadcrumb a {
-  color: #2563eb !important;
+.features-aurora-wrapper .pretwin-breadcrumb a {
+  color: #4f46e5 !important;
   text-decoration: none !important;
-  font-weight: 500 !important;
-}
-
-.pretwin-breadcrumb a:hover {
-  text-decoration: underline !important;
-}
-
-.pretwin-breadcrumb .bc-sep {
-  color: #94a3b8 !important;
-}
-
-.pretwin-breadcrumb .bc-current {
-  color: #334155 !important;
   font-weight: 600 !important;
 }
 
-/* Hero Header: Clean White Surface with Subtle Accent */
-.features-hero-header {
+.features-aurora-wrapper .pretwin-breadcrumb a:hover {
+  text-decoration: underline !important;
+}
+
+.features-aurora-wrapper .pretwin-breadcrumb .bc-sep {
+  color: #94a3b8 !important;
+}
+
+.features-aurora-wrapper .pretwin-breadcrumb .bc-current {
+  color: #1e1b4b !important;
+  font-weight: 700 !important;
+}
+
+/* Hero Header: Glassmorphism Card with Aurora Accents */
+.features-aurora-wrapper .features-hero-header {
   text-align: center !important;
-  max-width: 900px !important;
-  margin: 0 auto 24px !important;
-  padding: 24px 24px 20px !important;
-  background: #ffffff !important;
-  border-radius: 14px !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04) !important;
+  max-width: 920px !important;
+  margin: 0 auto 26px !important;
+  padding: 30px 26px 24px !important;
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border-radius: 24px !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 10px 32px rgba(139, 92, 246, 0.08), 0 1px 2px rgba(255, 255, 255, 0.9) inset !important;
   position: relative !important;
   overflow: hidden !important;
 }
 
-.features-hero-header::before {
+.features-aurora-wrapper .features-hero-header::before {
   content: "" !important;
   position: absolute !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
   height: 3px !important;
-  background: linear-gradient(90deg, #2563eb, #8b5cf6, #ec4899) !important;
+  background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899, #06b6d4) !important;
 }
 
-.features-hero-badge {
+.features-aurora-wrapper .features-hero-badge {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 6px !important;
-  padding: 4px 12px !important;
-  background: #f5f3ff !important;
+  gap: 7px !important;
+  padding: 5px 14px !important;
+  background: rgba(245, 243, 255, 0.75) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
   color: #6d28d9 !important;
-  font-size: 11.5px !important;
+  font-size: 12px !important;
   font-weight: 700 !important;
   border-radius: 9999px !important;
-  margin-bottom: 10px !important;
-  border: 1px solid #ddd6fe !important;
+  margin-bottom: 12px !important;
+  border: 1px solid rgba(196, 181, 253, 0.5) !important;
+  box-shadow: 0 2px 10px rgba(124, 58, 237, 0.1) !important;
 }
 
-.features-main-title {
-  font-size: 1.85rem !important;
-  font-weight: 800 !important;
-  color: #0f172a !important;
-  margin: 0 0 6px !important;
-  letter-spacing: -0.02em !important;
+.features-aurora-wrapper .features-main-title {
+  font-size: 2.1rem !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.025em !important;
   line-height: 1.25 !important;
+  margin: 0 0 8px !important;
+  background: linear-gradient(135deg, #0f172a 0%, #312e81 40%, #7c3aed 75%, #db2777 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
 }
 
-.features-main-subtitle {
-  font-size: 0.95rem !important;
+.features-aurora-wrapper .features-main-subtitle {
+  font-size: 0.98rem !important;
   color: #475569 !important;
-  line-height: 1.5 !important;
+  line-height: 1.55 !important;
   max-width: 660px !important;
-  margin: 0 auto 16px !important;
+  margin: 0 auto 18px !important;
 }
 
-.features-metrics-ribbon {
+.features-aurora-wrapper .features-metrics-ribbon {
   display: flex !important;
   justify-content: center !important;
   flex-wrap: wrap !important;
-  gap: 10px !important;
-  padding-top: 14px !important;
-  border-top: 1px solid #f1f5f9 !important;
+  gap: 12px !important;
+  padding-top: 16px !important;
+  border-top: 1px solid rgba(241, 245, 249, 0.8) !important;
 }
 
-.metric-pill {
+.features-aurora-wrapper .metric-pill {
   display: flex !important;
   align-items: center !important;
-  gap: 6px !important;
-  padding: 5px 12px !important;
-  background: #f8fafc !important;
-  border-radius: 20px !important;
-  border: 1px solid #e2e8f0 !important;
+  gap: 7px !important;
+  padding: 6px 14px !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-radius: 9999px !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 2px 8px rgba(148, 163, 184, 0.08) !important;
+  transition: transform 0.2s ease, background 0.2s ease !important;
 }
 
-.metric-num {
-  font-size: 12px !important;
+.features-aurora-wrapper .metric-pill:hover {
+  transform: translateY(-1px) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+}
+
+.features-aurora-wrapper .metric-num {
+  font-size: 12.5px !important;
   font-weight: 800 !important;
-  color: #2563eb !important;
+  color: #4f46e5 !important;
   line-height: 1 !important;
 }
 
-.metric-label {
+.features-aurora-wrapper .metric-label {
   font-size: 11px !important;
   font-weight: 600 !important;
   color: #64748b !important;
 }
 
-/* Dedicated Horizontal Quick-Nav Section */
-.features-nav-section {
-  margin-bottom: 24px !important;
+/* Dedicated Horizontal Quick-Nav Section (Glassmorphism) */
+.features-aurora-wrapper .features-nav-section {
+  margin-bottom: 26px !important;
 }
 
-.features-horizontal-navbar-wrapper {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 12px !important;
+.features-aurora-wrapper .features-horizontal-navbar-wrapper {
+  background: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(16px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(170%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  border-radius: 18px !important;
   padding: 8px !important;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.06), 0 1px 2px rgba(255, 255, 255, 0.9) inset !important;
   overflow-x: auto !important;
 }
 
-.features-horizontal-navbar {
+.features-aurora-wrapper .features-horizontal-navbar {
   display: flex !important;
   align-items: stretch !important;
   gap: 8px !important;
   min-width: 100% !important;
 }
 
-.feature-nav-item {
+.features-aurora-wrapper .feature-nav-item {
   display: inline-flex !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 5px !important;
+  gap: 6px !important;
   padding: 8px 6px !important;
   min-width: 110px !important;
   flex: 1 1 0px !important;
-  background: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  border-radius: 14px !important;
   cursor: pointer !important;
   text-align: center !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
   color: #334155 !important;
   text-decoration: none !important;
 }
 
-.feature-nav-item:hover {
-  background: #f0f4ff !important;
-  border-color: #93c5fd !important;
-  color: #1d4ed8 !important;
+.features-aurora-wrapper .feature-nav-item:hover {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(167, 139, 250, 0.5) !important;
+  color: #4338ca !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.12) !important;
+  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.15) !important;
 }
 
-.feat-nav-icon-box {
-  width: 32px !important;
-  height: 32px !important;
-  border-radius: 8px !important;
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
+.features-aurora-wrapper .feat-nav-icon-box {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   line-height: 1 !important;
+  box-shadow: 0 2px 6px rgba(148, 163, 184, 0.1) !important;
+  transition: transform 0.2s ease !important;
 }
 
-.feat-nav-label {
+.features-aurora-wrapper .feature-nav-item:hover .feat-nav-icon-box {
+  transform: scale(1.1) !important;
+}
+
+.features-aurora-wrapper .feat-nav-label {
   font-size: 10.5px !important;
   font-weight: 600 !important;
   line-height: 1.25 !important;
@@ -201,566 +283,644 @@
   display: block !important;
 }
 
-/* Section Header */
-.features-section-title-wrap {
+/* Section Title Wrap */
+.features-aurora-wrapper .features-section-title-wrap {
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  margin-bottom: 16px !important;
+  margin-bottom: 18px !important;
   flex-wrap: wrap !important;
   gap: 8px !important;
 }
 
-.features-section-title {
-  font-size: 1.2rem !important;
+.features-aurora-wrapper .features-section-title {
+  font-size: 1.25rem !important;
   font-weight: 800 !important;
   color: #0f172a !important;
   margin: 0 !important;
 }
 
-.features-section-badge {
+.features-aurora-wrapper .features-section-badge {
   font-size: 11.5px !important;
   font-weight: 600 !important;
-  color: #64748b !important;
-  background: #f1f5f9 !important;
-  padding: 4px 10px !important;
-  border-radius: 6px !important;
-  border: 1px solid #e2e8f0 !important;
+  color: #4f46e5 !important;
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  padding: 4px 12px !important;
+  border-radius: 9999px !important;
+  border: 1px solid rgba(199, 210, 254, 0.6) !important;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.08) !important;
 }
 
 /* Features Cards Grid: 4 columns desktop, 2 tablet, 1 mobile */
-.features-cards-grid {
+.features-aurora-wrapper .features-cards-grid {
   display: grid !important;
   grid-template-columns: repeat(4, 1fr) !important;
-  gap: 16px !important;
-  margin-bottom: 24px !important;
+  gap: 18px !important;
+  margin-bottom: 26px !important;
 }
 
 @media (max-width: 1120px) {
-  .features-cards-grid {
+  .features-aurora-wrapper .features-cards-grid {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 14px !important;
+    gap: 16px !important;
   }
 }
 
 @media (max-width: 640px) {
-  .features-cards-grid {
+  .features-aurora-wrapper .features-cards-grid {
     grid-template-columns: 1fr !important;
-    gap: 12px !important;
+    gap: 14px !important;
   }
 }
 
-/* Clean, Light Feature Card */
-.feature-card {
+/* Glassmorphism Feature Card: Organic, Frosted, Floating */
+.features-aurora-wrapper .feature-card {
+  position: relative !important;
   display: flex !important;
   flex-direction: column !important;
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 12px !important;
-  padding: 16px !important;
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(18px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  border-radius: 20px !important;
+  padding: 20px 18px 16px !important;
   text-decoration: none !important;
   color: inherit !important;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease !important;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
-  position: relative !important;
+  box-shadow: 0 8px 28px rgba(147, 128, 210, 0.08), 0 1px 2px rgba(255, 255, 255, 0.9) inset !important;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease, background-color 0.28s ease !important;
+  overflow: hidden !important;
 }
 
-.feature-card:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.1) !important;
-  border-color: #93c5fd !important;
+.features-aurora-wrapper .feature-card:hover {
+  transform: translateY(-5px) !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 16px 36px rgba(124, 58, 237, 0.14), 0 0 24px rgba(196, 181, 253, 0.25) !important;
 }
 
-/* Hover Accent Borders */
-.card-twin:hover { border-color: #c084fc !important; }
-.card-predictions:hover { border-color: #a78bfa !important; }
-.card-discovery:hover { border-color: #7dd3fc !important; }
-.card-budget:hover { border-color: #86efac !important; }
-.card-comparison:hover { border-color: #fde047 !important; }
-.card-calendar:hover { border-color: #fda4af !important; }
-.card-cart:hover { border-color: #f0abfc !important; }
-.card-advanced:hover { border-color: #93c5fd !important; }
+/* Individual Card Hover Glowing Borders */
+.features-aurora-wrapper .card-twin:hover { border-color: rgba(168, 85, 247, 0.6) !important; }
+.features-aurora-wrapper .card-predictions:hover { border-color: rgba(129, 140, 248, 0.6) !important; }
+.features-aurora-wrapper .card-discovery:hover { border-color: rgba(56, 189, 248, 0.6) !important; }
+.features-aurora-wrapper .card-budget:hover { border-color: rgba(52, 211, 153, 0.6) !important; }
+.features-aurora-wrapper .card-comparison:hover { border-color: rgba(251, 191, 36, 0.6) !important; }
+.features-aurora-wrapper .card-calendar:hover { border-color: rgba(251, 113, 133, 0.6) !important; }
+.features-aurora-wrapper .card-cart:hover { border-color: rgba(232, 121, 249, 0.6) !important; }
+.features-aurora-wrapper .card-advanced:hover { border-color: rgba(96, 165, 250, 0.6) !important; }
 
-.feature-card-header {
+.features-aurora-wrapper .feature-card-header {
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  margin-bottom: 10px !important;
+  margin-bottom: 12px !important;
 }
 
-/* Highlighted Icon Containers */
-.feature-card-icon-box {
-  width: 42px !important;
-  height: 42px !important;
-  border-radius: 10px !important;
+/* Highlighted Organic Icon Containers with Soft Glowing Gradients */
+.features-aurora-wrapper .feature-card-icon-box {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 16px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-size: 20px !important;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05) !important;
-  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  font-size: 22px !important;
   flex-shrink: 0 !important;
-  transition: transform 0.2s ease !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease !important;
 }
 
-.card-twin .feature-card-icon-box { background: #faf5ff !important; border-color: #e9d5ff !important; }
-.card-predictions .feature-card-icon-box { background: #f5f3ff !important; border-color: #ddd6fe !important; }
-.card-discovery .feature-card-icon-box { background: #f0f9ff !important; border-color: #bae6fd !important; }
-.card-budget .feature-card-icon-box { background: #f0fdf4 !important; border-color: #bbf7d0 !important; }
-.card-comparison .feature-card-icon-box { background: #fffbeb !important; border-color: #fde68a !important; }
-.card-calendar .feature-card-icon-box { background: #fff1f2 !important; border-color: #fecdd3 !important; }
-.card-cart .feature-card-icon-box { background: #fdf4ff !important; border-color: #f5d0fe !important; }
-.card-advanced .feature-card-icon-box { background: #eff6ff !important; border-color: #bfdbfe !important; }
-
-.feature-card:hover .feature-card-icon-box {
-  transform: scale(1.08) !important;
+.features-aurora-wrapper .feature-card:hover .feature-card-icon-box {
+  transform: scale(1.1) !important;
 }
 
-.feature-card-tag {
+/* Soft Glowing Pastel Gradient Highlights */
+.features-aurora-wrapper .card-twin .feature-card-icon-box {
+  background: linear-gradient(135deg, rgba(216, 180, 254, 0.55), rgba(168, 85, 247, 0.25)) !important;
+  border-color: rgba(192, 132, 252, 0.6) !important;
+  box-shadow: 0 4px 14px rgba(168, 85, 247, 0.2) !important;
+}
+
+.features-aurora-wrapper .card-predictions .feature-card-icon-box {
+  background: linear-gradient(135deg, rgba(199, 210, 254, 0.6), rgba(99, 102, 241, 0.25)) !important;
+  border-color: rgba(165, 180, 252, 0.6) !important;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.2) !important;
+}
+
+.features-aurora-wrapper .card-discovery .feature-card-icon-box {
+  background: linear-gradient(135deg, rgba(186, 230, 253, 0.6), rgba(14, 165, 233, 0.25)) !important;
+  border-color: rgba(125, 211, 252, 0.6) !important;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.2) !important;
+}
+
+.features-aurora-wrapper .card-budget .feature-card-icon-box {
+  background: linear-gradient(135deg, rgba(167, 243, 208, 0.6), rgba(16, 185, 129, 0.25)) !important;
+  border-color: rgba(110, 231, 183, 0.6) !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2) !important;
+}
+
+.features-aurora-wrapper .card-comparison .feature-card-icon-box {
+  background: linear-gradient(135deg, rgba(254, 240, 138, 0.65), rgba(245, 158, 11, 0.25)) !important;
+  border-color: rgba(253, 224, 71, 0.6) !important;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2) !important;
+}
+
+.features-aurora-wrapper .card-calendar .feature-card-icon-box {
+  background: linear-gradient(135deg, rgba(254, 205, 211, 0.6), rgba(244, 63, 94, 0.25)) !important;
+  border-color: rgba(253, 164, 175, 0.6) !important;
+  box-shadow: 0 4px 14px rgba(244, 63, 94, 0.2) !important;
+}
+
+.features-aurora-wrapper .card-cart .feature-card-icon-box {
+  background: linear-gradient(135deg, rgba(245, 208, 254, 0.6), rgba(217, 70, 239, 0.25)) !important;
+  border-color: rgba(240, 171, 252, 0.6) !important;
+  box-shadow: 0 4px 14px rgba(217, 70, 239, 0.2) !important;
+}
+
+.features-aurora-wrapper .card-advanced .feature-card-icon-box {
+  background: linear-gradient(135deg, rgba(191, 219, 254, 0.6), rgba(37, 99, 235, 0.25)) !important;
+  border-color: rgba(147, 197, 253, 0.6) !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2) !important;
+}
+
+/* Feature Card Tags */
+.features-aurora-wrapper .feature-card-tag {
   font-size: 10.5px !important;
   font-weight: 700 !important;
-  padding: 2px 7px !important;
+  padding: 3px 8px !important;
   border-radius: 9999px !important;
   text-transform: uppercase !important;
   letter-spacing: 0.03em !important;
 }
 
-.tag-live {
-  background: #f0fdf4 !important;
-  color: #16a34a !important;
-  border: 1px solid #bbf7d0 !important;
+.features-aurora-wrapper .tag-live {
+  background: rgba(240, 253, 244, 0.85) !important;
+  color: #15803d !important;
+  border: 1px solid rgba(187, 247, 208, 0.8) !important;
 }
 
-.tag-roadmap {
-  background: #eff6ff !important;
-  color: #2563eb !important;
-  border: 1px solid #bfdbfe !important;
+.features-aurora-wrapper .tag-roadmap {
+  background: rgba(239, 246, 255, 0.85) !important;
+  color: #1d4ed8 !important;
+  border: 1px solid rgba(191, 219, 254, 0.8) !important;
 }
 
-.feature-card-title {
-  font-size: 1.02rem !important;
-  font-weight: 700 !important;
+.features-aurora-wrapper .feature-card-title {
+  font-size: 1.05rem !important;
+  font-weight: 750 !important;
   color: #0f172a !important;
   margin: 0 0 3px !important;
   line-height: 1.3 !important;
 }
 
-.feature-card-subtitle {
+.features-aurora-wrapper .feature-card-subtitle {
   font-size: 11.5px !important;
-  font-weight: 600 !important;
-  color: #6d28d9 !important;
+  font-weight: 650 !important;
+  color: #6366f1 !important;
   margin-bottom: 8px !important;
 }
 
-.feature-card-desc {
+.features-aurora-wrapper .feature-card-desc {
   font-size: 12.5px !important;
-  color: #64748b !important;
+  color: #475569 !important;
   line-height: 1.5 !important;
   margin: 0 0 12px !important;
   flex-grow: 1 !important;
 }
 
 /* Compact Feature Chips */
-.feature-card-chips {
+.features-aurora-wrapper .feature-card-chips {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 5px !important;
-  margin-bottom: 12px !important;
+  margin-bottom: 14px !important;
 }
 
-.feat-tag-chip {
+.features-aurora-wrapper .feat-tag-chip {
   font-size: 10.5px !important;
   font-weight: 600 !important;
-  color: #475569 !important;
-  background: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
-  padding: 2px 7px !important;
-  border-radius: 4px !important;
+  color: #334155 !important;
+  background: rgba(255, 255, 255, 0.75) !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  padding: 3px 8px !important;
+  border-radius: 9999px !important;
   white-space: nowrap !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03) !important;
 }
 
-.feature-card-footer {
+.features-aurora-wrapper .feature-card-footer {
   margin-top: auto !important;
-  padding-top: 6px !important;
-  border-top: 1px solid #f8fafc !important;
+  padding-top: 8px !important;
+  border-top: 1px solid rgba(226, 232, 240, 0.6) !important;
 }
 
-.feature-action-link {
+.features-aurora-wrapper .feature-action-link {
   font-size: 12px !important;
   font-weight: 700 !important;
-  color: #2563eb !important;
+  color: #4f46e5 !important;
   display: inline-flex !important;
   align-items: center !important;
-  gap: 4px !important;
-  transition: transform 0.15s ease, color 0.15s ease !important;
+  gap: 5px !important;
+  transition: transform 0.2s ease, color 0.2s ease !important;
 }
 
-.feature-card:hover .feature-action-link {
-  color: #1d4ed8 !important;
-  transform: translateX(3px) !important;
+.features-aurora-wrapper .feature-card:hover .feature-action-link {
+  color: #312e81 !important;
+  transform: translateX(4px) !important;
 }
 
-/* Bottom Callout Banner: Soft Pastel Surface */
-.features-bottom-callout {
+/* Bottom Callout Banner: Frosted Glass & Aurora CTA */
+.features-aurora-wrapper .features-bottom-callout {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
   gap: 16px !important;
   flex-wrap: wrap !important;
-  background: linear-gradient(135deg, #f0f7ff 0%, #f5f3ff 100%) !important;
-  border: 1px solid #c7d2fe !important;
-  border-radius: 12px !important;
-  padding: 16px 20px !important;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  background: rgba(255, 255, 255, 0.68) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(199, 210, 254, 0.6) !important;
+  border-radius: 20px !important;
+  padding: 18px 24px !important;
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.08), 0 1px 2px rgba(255, 255, 255, 0.9) inset !important;
 }
 
-.callout-title {
-  font-size: 14px !important;
-  font-weight: 700 !important;
+.features-aurora-wrapper .callout-title {
+  font-size: 14.5px !important;
+  font-weight: 750 !important;
   color: #0f172a !important;
-  margin-bottom: 2px !important;
+  margin-bottom: 3px !important;
 }
 
-.callout-desc {
+.features-aurora-wrapper .callout-desc {
   font-size: 12.5px !important;
   color: #475569 !important;
+}
+
+.features-aurora-wrapper .btn-aurora-primary {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+  padding: 10px 22px !important;
+  font-weight: 700 !important;
+  font-size: 13.5px !important;
+  text-decoration: none !important;
+  border-radius: 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.features-aurora-wrapper .btn-aurora-primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45) !important;
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="features-dashboard-container">
-  <!-- Breadcrumb -->
-  <nav class="pretwin-breadcrumb" aria-label="Breadcrumb">
-    <a href="/">Home</a>
-    <span class="bc-sep">&rsaquo;</span>
-    <span class="bc-current">AI Features Dashboard</span>
-  </nav>
+<div class="features-aurora-wrapper">
+  <!-- Atmospheric Aurora Blurred Color Blobs -->
+  <div class="aurora-blob aurora-blob-1" aria-hidden="true"></div>
+  <div class="aurora-blob aurora-blob-2" aria-hidden="true"></div>
+  <div class="aurora-blob aurora-blob-3" aria-hidden="true"></div>
+  <div class="aurora-blob aurora-blob-4" aria-hidden="true"></div>
 
-  <!-- Dashboard Header -->
-  <header class="features-hero-header">
-    <div class="features-hero-badge">
-      <span class="features-badge-sparkle">✨</span>
-      <span>Autonomous Shopping Intelligence</span>
-    </div>
-    <h1 class="features-main-title">Explore PreTwin AI Features</h1>
-    <p class="features-main-subtitle">
-      Discover smarter ways to explore products, plan purchases, manage your budget, and make shopping decisions.
-    </p>
+  <div class="features-content-layer">
+    <!-- Breadcrumb -->
+    <nav class="pretwin-breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span class="bc-sep">&rsaquo;</span>
+      <span class="bc-current">AI Features Dashboard</span>
+    </nav>
 
-    <!-- Key Metrics Ribbon -->
-    <div class="features-metrics-ribbon">
-      <div class="metric-pill">
-        <span class="metric-num">8</span>
-        <span class="metric-label">Intelligent Engines</span>
+    <!-- Dashboard Header: Glassmorphism Card -->
+    <header class="features-hero-header">
+      <div class="features-hero-badge">
+        <span>✨</span>
+        <span>Autonomous Shopping Intelligence</span>
       </div>
-      <div class="metric-pill">
-        <span class="metric-num">1,040+</span>
-        <span class="metric-label">Catalog Products</span>
-      </div>
-      <div class="metric-pill">
-        <span class="metric-num">100%</span>
-        <span class="metric-label">Verified Data</span>
-      </div>
-      <div class="metric-pill">
-        <span class="metric-num">100 Pts = ₹1</span>
-        <span class="metric-label">Reward Redemption</span>
-      </div>
-    </div>
-  </header>
+      <h1 class="features-main-title">Explore PreTwin AI Features</h1>
+      <p class="features-main-subtitle">
+        Discover smarter ways to explore products, plan purchases, manage your budget, and make shopping decisions.
+      </p>
 
-  <!-- ======================================================================
-       DEDICATED HORIZONTAL FEATURE NAVIGATION BAR
-       All eight feature icons, with each feature name displayed directly underneath.
-       Clicking any icon directly opens its particular dashboard!
-       ====================================================================== -->
-  <section class="features-nav-section" aria-label="Feature Navigation Bar">
-    <div class="features-horizontal-navbar-wrapper">
-      <nav class="features-horizontal-navbar" id="featuresHorizontalNav" role="navigation" aria-label="All Features Navigation">
+      <!-- Key Metrics Ribbon: Frosted Glass Capsules -->
+      <div class="features-metrics-ribbon">
+        <div class="metric-pill">
+          <span class="metric-num">8</span>
+          <span class="metric-label">Intelligent Engines</span>
+        </div>
+        <div class="metric-pill">
+          <span class="metric-num">1,040+</span>
+          <span class="metric-label">Catalog Products</span>
+        </div>
+        <div class="metric-pill">
+          <span class="metric-num">100%</span>
+          <span class="metric-label">Verified Data</span>
+        </div>
+        <div class="metric-pill">
+          <span class="metric-num">100 Pts = ₹1</span>
+          <span class="metric-label">Reward Redemption</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ======================================================================
+         DEDICATED HORIZONTAL FEATURE NAVIGATION BAR (Glassmorphism)
+         All eight feature icons, with each feature name displayed directly underneath.
+         Clicking any icon directly opens its particular dashboard!
+         ====================================================================== -->
+    <section class="features-nav-section" aria-label="Feature Navigation Bar">
+      <div class="features-horizontal-navbar-wrapper">
+        <nav class="features-horizontal-navbar" id="featuresHorizontalNav" role="navigation" aria-label="All Features Navigation">
+          
+          <!-- 1. Personalization and Digital Twin -->
+          <a
+            href="/twin"
+            class="feature-nav-item"
+            id="tab-twin"
+            title="Open Personalization &amp; Digital Twin Dashboard"
+          >
+            <div class="feat-nav-icon-box">👤</div>
+            <span class="feat-nav-label">Personalization and<br>Digital Twin</span>
+          </a>
+
+          <!-- 2. Predictive Shopping Intelligence -->
+          <a
+            href="/predictions"
+            class="feature-nav-item"
+            id="tab-predictions"
+            title="Open Predictive Shopping Intelligence Dashboard"
+          >
+            <div class="feat-nav-icon-box">🔮</div>
+            <span class="feat-nav-label">Predictive Shopping<br>Intelligence</span>
+          </a>
+
+          <!-- 3. Smart Product Discovery -->
+          <a
+            href="/discovery"
+            class="feature-nav-item"
+            id="tab-discovery"
+            title="Open Smart Product Discovery Dashboard"
+          >
+            <div class="feat-nav-icon-box">🔍</div>
+            <span class="feat-nav-label">Smart Product<br>Discovery</span>
+          </a>
+
+          <!-- 4. Budget and Price Intelligence -->
+          <a
+            href="/budget"
+            class="feature-nav-item"
+            id="tab-budget"
+            title="Open Budget and Price Intelligence Dashboard"
+          >
+            <div class="feat-nav-icon-box">💰</div>
+            <span class="feat-nav-label">Budget and Price<br>Intelligence</span>
+          </a>
+
+          <!-- 5. Product Comparison and Decision Support -->
+          <a
+            href="/comparison"
+            class="feature-nav-item"
+            id="tab-comparison"
+            title="Open Product Comparison &amp; Decision Support Dashboard"
+          >
+            <div class="feat-nav-icon-box">⚖️</div>
+            <span class="feat-nav-label">Product Comparison &amp;<br>Decision Support</span>
+          </a>
+
+          <!-- 6. Future Predictive Calendar -->
+          <a
+            href="/calendar"
+            class="feature-nav-item"
+            id="tab-calendar"
+            title="Open Future Predictive Calendar Dashboard"
+          >
+            <div class="feat-nav-icon-box">📅</div>
+            <span class="feat-nav-label">Future Predictive<br>Calendar</span>
+          </a>
+
+          <!-- 7. Smart Shopping Card -->
+          <a
+            href="/smart-cart"
+            class="feature-nav-item"
+            id="tab-cart"
+            title="Open Smart Shopping Card Dashboard"
+          >
+            <div class="feat-nav-icon-box">🛒✨</div>
+            <span class="feat-nav-label">Smart Shopping<br>Card</span>
+          </a>
+
+          <!-- 8. Advanced Features for Future Development -->
+          <a
+            href="/advanced-ai"
+            class="feature-nav-item"
+            id="tab-advanced"
+            title="Open Advanced Features Roadmap Dashboard"
+          >
+            <div class="feat-nav-icon-box">🚀</div>
+            <span class="feat-nav-label">Advanced Features for<br>Future Development</span>
+          </a>
+
+        </nav>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         ALL 8 FEATURES PRESENTED TOGETHER (Glassmorphism & Aurora UI)
+         Clicking any feature icon or card directly opens its particular dashboard!
+         ====================================================================== -->
+    <section class="features-grid-section" aria-label="All PreTwin AI Features Overview">
+      <div class="features-section-title-wrap">
+        <h2 class="features-section-title">All Eight AI Shopping Engines</h2>
+        <span class="features-section-badge">Click Any Feature to Open Its Studio</span>
+      </div>
+
+      <div class="features-cards-grid">
         
-        <!-- 1. Personalization and Digital Twin -->
-        <a
-          href="/twin"
-          class="feature-nav-item"
-          id="tab-twin"
-          title="Open Personalization &amp; Digital Twin Dashboard"
-        >
-          <div class="feat-nav-icon-box">👤</div>
-          <span class="feat-nav-label">Personalization and<br>Digital Twin</span>
+        <!-- Card 1: Personalization and Digital Twin -->
+        <a href="/twin" class="feature-card card-twin" id="panel-twin" title="Open Personalization and Digital Twin Dashboard">
+          <div class="feature-card-header">
+            <div class="feature-card-icon-box">👤</div>
+            <span class="feature-card-tag tag-live">Active Engine</span>
+          </div>
+          <h3 class="feature-card-title">1. Personalization and Digital Twin</h3>
+          <div class="feature-card-subtitle">Taste Modeling &amp; Multi-Profile Twin</div>
+          <p class="feature-card-desc">
+            Learns your authentic taste profile using verified purchase history and preferences, while managing independent household twins.
+          </p>
+          <div class="feature-card-chips">
+            <span class="feat-tag-chip">🧠 Taste Learning</span>
+            <span class="feat-tag-chip">👥 Household Twins</span>
+            <span class="feat-tag-chip">🔒 Privacy First</span>
+          </div>
+          <div class="feature-card-footer">
+            <span class="feature-action-link">Explore Feature ➔</span>
+          </div>
         </a>
 
-        <!-- 2. Predictive Shopping Intelligence -->
-        <a
-          href="/predictions"
-          class="feature-nav-item"
-          id="tab-predictions"
-          title="Open Predictive Shopping Intelligence Dashboard"
-        >
-          <div class="feat-nav-icon-box">🔮</div>
-          <span class="feat-nav-label">Predictive Shopping<br>Intelligence</span>
+        <!-- Card 2: Predictive Shopping Intelligence -->
+        <a href="/predictions" class="feature-card card-predictions" id="panel-predictions" title="Open Predictive Shopping Intelligence Dashboard">
+          <div class="feature-card-header">
+            <div class="feature-card-icon-box">🔮</div>
+            <span class="feature-card-tag tag-live">Forecasts</span>
+          </div>
+          <h3 class="feature-card-title">2. Predictive Shopping Intelligence</h3>
+          <div class="feature-card-subtitle">Reorder Cycles &amp; Event Forecasts</div>
+          <p class="feature-card-desc">
+            Analyzes consumption rhythms and seasonal trends to project exact replenishment dates before household essentials run out.
+          </p>
+          <div class="feature-card-chips">
+            <span class="feat-tag-chip">⏳ Depletion Cycles</span>
+            <span class="feat-tag-chip">🌤️ Seasonal Trends</span>
+            <span class="feat-tag-chip">⚡ 1-Click Restock</span>
+          </div>
+          <div class="feature-card-footer">
+            <span class="feature-action-link">Explore Feature ➔</span>
+          </div>
         </a>
 
-        <!-- 3. Smart Product Discovery -->
-        <a
-          href="/discovery"
-          class="feature-nav-item"
-          id="tab-discovery"
-          title="Open Smart Product Discovery Dashboard"
-        >
-          <div class="feat-nav-icon-box">🔍</div>
-          <span class="feat-nav-label">Smart Product<br>Discovery</span>
+        <!-- Card 3: Smart Product Discovery -->
+        <a href="/discovery" class="feature-card card-discovery" id="panel-discovery" title="Open Smart Product Discovery Dashboard">
+          <div class="feature-card-header">
+            <div class="feature-card-icon-box">🔍</div>
+            <span class="feature-card-tag tag-live">Catalog NLP</span>
+          </div>
+          <h3 class="feature-card-title">3. Smart Product Discovery</h3>
+          <div class="feature-card-subtitle">Natural-Language &amp; Visual Search</div>
+          <p class="feature-card-desc">
+            Search products across real catalog items using natural lifestyle prompts, budget constraints, or visual image matching.
+          </p>
+          <div class="feature-card-chips">
+            <span class="feat-tag-chip">💬 Lifestyle Prompts</span>
+            <span class="feat-tag-chip">🏷️ 20 Subcategories</span>
+            <span class="feat-tag-chip">🛡️ PreTwin Assured</span>
+          </div>
+          <div class="feature-card-footer">
+            <span class="feature-action-link">Explore Feature ➔</span>
+          </div>
         </a>
 
-        <!-- 4. Budget and Price Intelligence -->
-        <a
-          href="/budget"
-          class="feature-nav-item"
-          id="tab-budget"
-          title="Open Budget and Price Intelligence Dashboard"
-        >
-          <div class="feat-nav-icon-box">💰</div>
-          <span class="feat-nav-label">Budget and Price<br>Intelligence</span>
+        <!-- Card 4: Budget and Price Intelligence -->
+        <a href="/budget" class="feature-card card-budget" id="panel-budget" title="Open Budget and Price Intelligence Dashboard">
+          <div class="feature-card-header">
+            <div class="feature-card-icon-box">💰</div>
+            <span class="feature-card-tag tag-live">Price Tracking</span>
+          </div>
+          <h3 class="feature-card-title">4. Budget and Price Intelligence</h3>
+          <div class="feature-card-subtitle">Price Drops, History &amp; Best Value</div>
+          <p class="feature-card-desc">
+            Track 60-day price trajectories, activate instant price drop alerts, and enforce monthly shopping ceilings with zero overspending.
+          </p>
+          <div class="feature-card-chips">
+            <span class="feat-tag-chip">📈 60-Day History</span>
+            <span class="feat-tag-chip">🔔 Drop Alerts</span>
+            <span class="feat-tag-chip">🛡️ Budget Guardrails</span>
+          </div>
+          <div class="feature-card-footer">
+            <span class="feature-action-link">Explore Feature ➔</span>
+          </div>
         </a>
 
-        <!-- 5. Product Comparison and Decision Support -->
-        <a
-          href="/comparison"
-          class="feature-nav-item"
-          id="tab-comparison"
-          title="Open Product Comparison &amp; Decision Support Dashboard"
-        >
-          <div class="feat-nav-icon-box">⚖️</div>
-          <span class="feat-nav-label">Product Comparison &amp;<br>Decision Support</span>
+        <!-- Card 5: Product Comparison and Decision Support -->
+        <a href="/comparison" class="feature-card card-comparison" id="panel-comparison" title="Open Product Comparison Dashboard">
+          <div class="feature-card-header">
+            <div class="feature-card-icon-box">⚖️</div>
+            <span class="feature-card-tag tag-live">Tradeoff Engine</span>
+          </div>
+          <h3 class="feature-card-title">5. Product Comparison &amp; Decision Support</h3>
+          <div class="feature-card-subtitle">Weighted Multi-Factor Tradeoffs</div>
+          <p class="feature-card-desc">
+            Compare 2 to 4 products side-by-side with customizable weight sliders for price, customer ratings, specifications, and brand trust.
+          </p>
+          <div class="feature-card-chips">
+            <span class="feat-tag-chip">🎚️ Weight Sliders</span>
+            <span class="feat-tag-chip">🏆 Winner Detection</span>
+            <span class="feat-tag-chip">📊 Spec Matrix</span>
+          </div>
+          <div class="feature-card-footer">
+            <span class="feature-action-link">Explore Feature ➔</span>
+          </div>
         </a>
 
-        <!-- 6. Future Predictive Calendar -->
-        <a
-          href="/calendar"
-          class="feature-nav-item"
-          id="tab-calendar"
-          title="Open Future Predictive Calendar Dashboard"
-        >
-          <div class="feat-nav-icon-box">📅</div>
-          <span class="feat-nav-label">Future Predictive<br>Calendar</span>
+        <!-- Card 6: Future Predictive Calendar -->
+        <a href="/calendar" class="feature-card card-calendar" id="panel-calendar" title="Open Future Predictive Calendar Dashboard">
+          <div class="feature-card-header">
+            <div class="feature-card-icon-box">📅</div>
+            <span class="feature-card-tag tag-live">Gifting &amp; Voice</span>
+          </div>
+          <h3 class="feature-card-title">6. Future Predictive Calendar</h3>
+          <div class="feature-card-subtitle">Milestone Forecasts &amp; Voice Assistant</div>
+          <p class="feature-card-desc">
+            Automates gift planning for upcoming birthdays and festivals, paired with natural voice shopping commands for hands-free reordering.
+          </p>
+          <div class="feature-card-chips">
+            <span class="feat-tag-chip">🎂 Milestone Gifting</span>
+            <span class="feat-tag-chip">🎙️ Voice Shopping</span>
+            <span class="feat-tag-chip">⏰ Holiday Countdowns</span>
+          </div>
+          <div class="feature-card-footer">
+            <span class="feature-action-link">Explore Feature ➔</span>
+          </div>
         </a>
 
-        <!-- 7. Smart Shopping Card -->
-        <a
-          href="/smart-cart"
-          class="feature-nav-item"
-          id="tab-cart"
-          title="Open Smart Shopping Card Dashboard"
-        >
-          <div class="feat-nav-icon-box">🛒✨</div>
-          <span class="feat-nav-label">Smart Shopping<br>Card</span>
+        <!-- Card 7: Smart Shopping Card -->
+        <a href="/smart-cart" class="feature-card card-cart" id="panel-cart" title="Open Smart Shopping Card Dashboard">
+          <div class="feature-card-header">
+            <div class="feature-card-icon-box">🛒✨</div>
+            <span class="feature-card-tag tag-live">Smart Card</span>
+          </div>
+          <h3 class="feature-card-title">7. Smart Shopping Card</h3>
+          <div class="feature-card-subtitle">Duplicate Alerts, Bundles &amp; Rewards</div>
+          <p class="feature-card-desc">
+            Real-time duplicate detection, complementary bundle discounts, and seamless 100 points = ₹1.00 reward redemption during checkout.
+          </p>
+          <div class="feature-card-chips">
+            <span class="feat-tag-chip">⚠️ Duplicate Warning</span>
+            <span class="feat-tag-chip">🎁 Bundle Synergy</span>
+            <span class="feat-tag-chip">💳 100 Pts = ₹1</span>
+          </div>
+          <div class="feature-card-footer">
+            <span class="feature-action-link">Explore Feature ➔</span>
+          </div>
         </a>
 
-        <!-- 8. Advanced Features for Future Development -->
-        <a
-          href="/advanced-ai"
-          class="feature-nav-item"
-          id="tab-advanced"
-          title="Open Advanced Features Roadmap Dashboard"
-        >
-          <div class="feat-nav-icon-box">🚀</div>
-          <span class="feat-nav-label">Advanced Features for<br>Future Development</span>
+        <!-- Card 8: Advanced Features for Future Development -->
+        <a href="/advanced-ai" class="feature-card card-advanced" id="panel-advanced" title="Open Advanced Features Roadmap Dashboard">
+          <div class="feature-card-header">
+            <div class="feature-card-icon-box">🚀</div>
+            <span class="feature-card-tag tag-roadmap">Future Roadmap</span>
+          </div>
+          <h3 class="feature-card-title">8. Advanced Features for Future Development</h3>
+          <div class="feature-card-subtitle">Try-On Simulator &amp; Autonomous Agents</div>
+          <p class="feature-card-desc">
+            Interactive previews of experimental shopping capabilities including 3D virtual try-ons, autonomous buying agents, and AR fitting.
+          </p>
+          <div class="feature-card-chips">
+            <span class="feat-tag-chip">👗 3D Try-On</span>
+            <span class="feat-tag-chip">🤖 Autonomous Buying</span>
+            <span class="feat-tag-chip">🤝 Price Bargaining</span>
+          </div>
+          <div class="feature-card-footer">
+            <span class="feature-action-link">Explore Feature ➔</span>
+          </div>
         </a>
 
-      </nav>
-    </div>
-  </section>
+      </div>
+    </section>
 
-  <!-- ======================================================================
-       ALL 8 FEATURES PRESENTED TOGETHER
-       Clicking any feature icon or card directly opens its particular dashboard!
-       ====================================================================== -->
-  <section class="features-grid-section" aria-label="All PreTwin AI Features Overview">
-    <div class="features-section-title-wrap">
-      <h2 class="features-section-title">All Eight AI Shopping Engines</h2>
-      <span class="features-section-badge">Click Any Feature Icon to Open Its Dashboard</span>
-    </div>
-
-    <div class="features-cards-grid">
-      
-      <!-- Card 1: Personalization and Digital Twin -->
-      <a href="/twin" class="feature-card card-twin" id="panel-twin" title="Open Personalization and Digital Twin Dashboard">
-        <div class="feature-card-header">
-          <div class="feature-card-icon-box">👤</div>
-          <span class="feature-card-tag tag-live">Active Engine</span>
-        </div>
-        <h3 class="feature-card-title">1. Personalization and Digital Twin</h3>
-        <div class="feature-card-subtitle">Taste Modeling &amp; Multi-Profile Twin</div>
-        <p class="feature-card-desc">
-          Learns your authentic taste profile using verified purchase history and preferences, while managing independent household twins.
-        </p>
-        <div class="feature-card-chips">
-          <span class="feat-tag-chip">🧠 Taste Learning</span>
-          <span class="feat-tag-chip">👥 Household Twins</span>
-          <span class="feat-tag-chip">🔒 Privacy First</span>
-        </div>
-        <div class="feature-card-footer">
-          <span class="feature-action-link">Explore Feature ➔</span>
-        </div>
-      </a>
-
-      <!-- Card 2: Predictive Shopping Intelligence -->
-      <a href="/predictions" class="feature-card card-predictions" id="panel-predictions" title="Open Predictive Shopping Intelligence Dashboard">
-        <div class="feature-card-header">
-          <div class="feature-card-icon-box">🔮</div>
-          <span class="feature-card-tag tag-live">Forecasts</span>
-        </div>
-        <h3 class="feature-card-title">2. Predictive Shopping Intelligence</h3>
-        <div class="feature-card-subtitle">Reorder Cycles &amp; Event Forecasts</div>
-        <p class="feature-card-desc">
-          Analyzes consumption rhythms and seasonal trends to project exact replenishment dates before household essentials run out.
-        </p>
-        <div class="feature-card-chips">
-          <span class="feat-tag-chip">⏳ Depletion Cycles</span>
-          <span class="feat-tag-chip">🌤️ Seasonal Trends</span>
-          <span class="feat-tag-chip">⚡ 1-Click Restock</span>
-        </div>
-        <div class="feature-card-footer">
-          <span class="feature-action-link">Explore Feature ➔</span>
-        </div>
-      </a>
-
-      <!-- Card 3: Smart Product Discovery -->
-      <a href="/discovery" class="feature-card card-discovery" id="panel-discovery" title="Open Smart Product Discovery Dashboard">
-        <div class="feature-card-header">
-          <div class="feature-card-icon-box">🔍</div>
-          <span class="feature-card-tag tag-live">Catalog NLP</span>
-        </div>
-        <h3 class="feature-card-title">3. Smart Product Discovery</h3>
-        <div class="feature-card-subtitle">Natural-Language &amp; Visual Search</div>
-        <p class="feature-card-desc">
-          Search products across real catalog items using natural lifestyle prompts, budget constraints, or visual image matching.
-        </p>
-        <div class="feature-card-chips">
-          <span class="feat-tag-chip">💬 Lifestyle Prompts</span>
-          <span class="feat-tag-chip">🏷️ 20 Subcategories</span>
-          <span class="feat-tag-chip">🛡️ PreTwin Assured</span>
-        </div>
-        <div class="feature-card-footer">
-          <span class="feature-action-link">Explore Feature ➔</span>
-        </div>
-      </a>
-
-      <!-- Card 4: Budget and Price Intelligence -->
-      <a href="/budget" class="feature-card card-budget" id="panel-budget" title="Open Budget and Price Intelligence Dashboard">
-        <div class="feature-card-header">
-          <div class="feature-card-icon-box">💰</div>
-          <span class="feature-card-tag tag-live">Price Tracking</span>
-        </div>
-        <h3 class="feature-card-title">4. Budget and Price Intelligence</h3>
-        <div class="feature-card-subtitle">Price Drops, History &amp; Best Value</div>
-        <p class="feature-card-desc">
-          Track 60-day price trajectories, activate instant price drop alerts, and enforce monthly shopping ceilings with zero overspending.
-        </p>
-        <div class="feature-card-chips">
-          <span class="feat-tag-chip">📈 60-Day History</span>
-          <span class="feat-tag-chip">🔔 Drop Alerts</span>
-          <span class="feat-tag-chip">🛡️ Budget Guardrails</span>
-        </div>
-        <div class="feature-card-footer">
-          <span class="feature-action-link">Explore Feature ➔</span>
-        </div>
-      </a>
-
-      <!-- Card 5: Product Comparison and Decision Support -->
-      <a href="/comparison" class="feature-card card-comparison" id="panel-comparison" title="Open Product Comparison Dashboard">
-        <div class="feature-card-header">
-          <div class="feature-card-icon-box">⚖️</div>
-          <span class="feature-card-tag tag-live">Tradeoff Engine</span>
-        </div>
-        <h3 class="feature-card-title">5. Product Comparison &amp; Decision Support</h3>
-        <div class="feature-card-subtitle">Weighted Multi-Factor Tradeoffs</div>
-        <p class="feature-card-desc">
-          Compare 2 to 4 products side-by-side with customizable weight sliders for price, customer ratings, specifications, and brand trust.
-        </p>
-        <div class="feature-card-chips">
-          <span class="feat-tag-chip">🎚️ Weight Sliders</span>
-          <span class="feat-tag-chip">🏆 Winner Detection</span>
-          <span class="feat-tag-chip">📊 Spec Matrix</span>
-        </div>
-        <div class="feature-card-footer">
-          <span class="feature-action-link">Explore Feature ➔</span>
-        </div>
-      </a>
-
-      <!-- Card 6: Future Predictive Calendar -->
-      <a href="/calendar" class="feature-card card-calendar" id="panel-calendar" title="Open Future Predictive Calendar Dashboard">
-        <div class="feature-card-header">
-          <div class="feature-card-icon-box">📅</div>
-          <span class="feature-card-tag tag-live">Gifting &amp; Voice</span>
-        </div>
-        <h3 class="feature-card-title">6. Future Predictive Calendar</h3>
-        <div class="feature-card-subtitle">Milestone Forecasts &amp; Voice Assistant</div>
-        <p class="feature-card-desc">
-          Automates gift planning for upcoming birthdays and festivals, paired with natural voice shopping commands for hands-free reordering.
-        </p>
-        <div class="feature-card-chips">
-          <span class="feat-tag-chip">🎂 Milestone Gifting</span>
-          <span class="feat-tag-chip">🎙️ Voice Shopping</span>
-          <span class="feat-tag-chip">⏰ Holiday Countdowns</span>
-        </div>
-        <div class="feature-card-footer">
-          <span class="feature-action-link">Explore Feature ➔</span>
-        </div>
-      </a>
-
-      <!-- Card 7: Smart Shopping Card -->
-      <a href="/smart-cart" class="feature-card card-cart" id="panel-cart" title="Open Smart Shopping Card Dashboard">
-        <div class="feature-card-header">
-          <div class="feature-card-icon-box">🛒✨</div>
-          <span class="feature-card-tag tag-live">Smart Card</span>
-        </div>
-        <h3 class="feature-card-title">7. Smart Shopping Card</h3>
-        <div class="feature-card-subtitle">Duplicate Alerts, Bundles &amp; Rewards</div>
-        <p class="feature-card-desc">
-          Real-time duplicate detection, complementary bundle discounts, and seamless 100 points = ₹1.00 reward redemption during checkout.
-        </p>
-        <div class="feature-card-chips">
-          <span class="feat-tag-chip">⚠️ Duplicate Warning</span>
-          <span class="feat-tag-chip">🎁 Bundle Synergy</span>
-          <span class="feat-tag-chip">💳 100 Pts = ₹1</span>
-        </div>
-        <div class="feature-card-footer">
-          <span class="feature-action-link">Explore Feature ➔</span>
-        </div>
-      </a>
-
-      <!-- Card 8: Advanced Features for Future Development -->
-      <a href="/advanced-ai" class="feature-card card-advanced" id="panel-advanced" title="Open Advanced Features Roadmap Dashboard">
-        <div class="feature-card-header">
-          <div class="feature-card-icon-box">🚀</div>
-          <span class="feature-card-tag tag-roadmap">Future Roadmap</span>
-        </div>
-        <h3 class="feature-card-title">8. Advanced Features for Future Development</h3>
-        <div class="feature-card-subtitle">Try-On Simulator &amp; Autonomous Agents</div>
-        <p class="feature-card-desc">
-          Interactive previews of experimental shopping capabilities including 3D virtual try-ons, autonomous buying agents, and AR fitting.
-        </p>
-        <div class="feature-card-chips">
-          <span class="feat-tag-chip">👗 3D Try-On</span>
-          <span class="feat-tag-chip">🤖 Autonomous Buying</span>
-          <span class="feat-tag-chip">🤝 Price Bargaining</span>
-        </div>
-        <div class="feature-card-footer">
-          <span class="feature-action-link">Explore Feature ➔</span>
-        </div>
-      </a>
-
-    </div>
-  </section>
-
-  <!-- Bottom Quick Links Callout -->
-  <div class="features-bottom-callout">
-    <div class="callout-left">
-      <div class="callout-title">Ready to start shopping with your Twin?</div>
-      <div class="callout-desc">Browse our complete product catalog with personalized recommendations.</div>
-    </div>
-    <div class="callout-right">
-      <a href="/recommendations" class="btn btn-primary" style="padding: 10px 22px; font-weight: 700; text-decoration: none;">Explore For You Catalog ✨</a>
+    <!-- Bottom Quick Links Callout: Glassmorphic Banner -->
+    <div class="features-bottom-callout">
+      <div class="callout-left">
+        <div class="callout-title">Ready to start shopping with your Twin?</div>
+        <div class="callout-desc">Browse our complete product catalog with personalized recommendations.</div>
+      </div>
+      <div class="callout-right">
+        <a href="/recommendations" class="btn-aurora-primary">Explore For You Catalog ✨</a>
+      </div>
     </div>
   </div>
 </div>
@@ -775,8 +935,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const targetCard = document.getElementById(`panel-${hash}`) || document.getElementById(`tab-${hash}`);
     if (targetCard) {
       targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      targetCard.style.outline = '2px solid #6366f1';
-      targetCard.style.boxShadow = '0 0 16px rgba(99, 102, 241, 0.3)';
+      targetCard.style.outline = '2px solid #8b5cf6';
+      targetCard.style.boxShadow = '0 0 24px rgba(139, 92, 246, 0.4)';
       setTimeout(() => {
         targetCard.style.outline = '';
         targetCard.style.boxShadow = '';
