@@ -1,616 +1,922 @@
 /**
- * PreTwinShop AI - Twin Profile & Personalization Controller
+ * PreTwin AI - Personalization and Digital Twin Dashboard Controller
+ * Drives all 6 Intelligent Sections:
+ * 1. My Shopping Identity (Explicit & Inferred preferences, tags, budget, cadence)
+ * 2. My Shopping Behaviour (Purchases, browsed items, wishlist, cart, searches, trends)
+ * 3. My Spending Habits (Verified completed spend, AOV, category breakdown, monthly)
+ * 4. My Digital Twin Insights (Explainable, empirical insights with source & confidence)
+ * 5. My Future Shopping Needs (Consumable restocking forecasts with windows & 1-click reorder)
+ * 6. Manage My Twin (Privacy toggles, inference correction, reset & deletion controls)
  */
 
-let currentCategories = [];
-let currentBrands = [];
+let currentDashboardData = null;
+let currentExplicitCategories = [];
+let currentExplicitBrands = [];
+let currentInferredCategories = [];
+let currentInferredBrands = [];
+let currentColors = [];
+let currentSizes = [];
 
-function switchTwinTab(tabKey) {
-  const tabs = ['tech', 'fashion', 'home', 'budget', 'priorities'];
-  tabs.forEach(t => {
-    const content = document.getElementById(`tabContent-${t}`);
-    const btn = document.getElementById(`tabBtn-${t}`);
-    if (content) content.style.display = t === tabKey ? 'block' : 'none';
-    if (btn) {
-      if (t === tabKey) {
-        btn.style.borderColor = '#6366f1';
-        btn.style.background = 'rgba(99, 102, 241, 0.2)';
-        btn.style.color = '#c4b5fd';
-      } else {
-        btn.style.borderColor = '#EAE1F4';
-        btn.style.background = '#FFFDF9';
-        btn.style.color = '#81778E';
-      }
+// Currency formatter for INR
+function formatCurrency(val) {
+  const f = parseFloat(val) || 0;
+  return '₹' + Math.round(f).toLocaleString('en-IN');
+}
+
+function formatDate(d) {
+  if (!d) return '--';
+  try {
+    const dt = new Date(d);
+    if (isNaN(dt.getTime())) return d;
+    return dt.toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' });
+  } catch (e) {
+    return d;
+  }
+}
+
+function capitalize(s) {
+  if (!s) return '';
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+/**
+ * Smoothly scroll to target section and update navigation highlight
+ */
+function scrollToSection(sectionId) {
+  const el = document.getElementById(sectionId);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  const buttons = document.querySelectorAll('.twin-tab-btn');
+  buttons.forEach(btn => {
+    if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(sectionId)) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
     }
   });
 }
 
-function updateOverviewChips() {
-  const catWrap = document.getElementById('overviewCategoryChips');
-  if (catWrap) {
-    if (currentCategories.length === 0) {
-      catWrap.innerHTML = '<span style="color:#64748b; font-size:0.8rem;">No categories selected</span>';
-    } else {
-      catWrap.innerHTML = currentCategories.slice(0, 6).map(c => `
-        <span style="font-size:0.75rem; background:rgba(168, 85, 247, 0.15); border:1px solid rgba(168, 85, 247, 0.35); color:#c084fc; padding:2px 8px; border-radius:12px; font-weight:600;">
-          ${c}
-        </span>
-      `).join('');
-    }
-  }
-
-  const brandWrap = document.getElementById('overviewBrandChips');
-  if (brandWrap) {
-    if (currentBrands.length === 0) {
-      brandWrap.innerHTML = '<span style="color:#64748b; font-size:0.8rem;">No brands specified</span>';
-    } else {
-      brandWrap.innerHTML = currentBrands.slice(0, 6).map(b => `
-        <span style="font-size:0.75rem; background:rgba(56, 189, 248, 0.15); border:1px solid rgba(56, 189, 248, 0.35); color:#38bdf8; padding:2px 8px; border-radius:12px; font-weight:600;">
-          ${b}
-        </span>
-      `).join('');
-    }
-  }
-}
-
-function updateOverviewCadence() {
-  const freqEl = document.getElementById('twinShoppingFreq');
-  const cadenceEl = document.getElementById('overviewFreqDisplay');
-  if (freqEl && cadenceEl) {
-    cadenceEl.textContent = freqEl.options[freqEl.selectedIndex].text.split(' ')[0];
-  }
-}
-
-async function loadTwinProfile() {
+/**
+ * ---------------------------------------------------------------------------
+ * Primary Loader: Unified Twin Dashboard
+ * ---------------------------------------------------------------------------
+ */
+async function loadTwinDashboard() {
   try {
-    const data = await apiGet('/api/profile');
-    const user = data.user || data || {};
-    const prefs = data.preferences || {};
-    const goals = data.shopping_goals || data.goals || [];
+    const res = await fetch('/api/twin/dashboard');
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    const data = await res.json();
+    currentDashboardData = data;
 
-    // Header info
-    const nameEl = document.getElementById('twinFullName');
-    const emailEl = document.getElementById('twinEmail');
-    const avatarEl = document.getElementById('twinAvatarLarge');
-    if (nameEl) nameEl.textContent = user.username || 'PreTwin Shopper';
-    if (emailEl) emailEl.textContent = user.email || 'shopper@pretwin.ai';
-    if (avatarEl) {
-      avatarEl.textContent = (user.username || 'AJ')
-        .split(' ')
-        .map((n) => n[0])
-        .join('')
-        .toUpperCase()
-        .slice(0, 2);
-    }
+    renderHeaderAndArchetype(data);
+    renderSection1Identity(data.identity || {});
+    renderSection2Behaviour(data.behaviour || {});
+    renderSection3Spending(data.spending || {});
+    renderSection4Insights(data.insights || []);
+    renderSection5FutureNeeds(data.future_needs || {});
+    renderSection6ManageTwin(data);
 
-    // Categories
-    currentCategories = Array.isArray(prefs.preferred_categories)
-      ? prefs.preferred_categories
-      : ['Electronics', 'Computer Accessories', 'Home Essentials'];
-    renderCategoryTags();
+    // Keep backward-compatible elements populated for tests
+    populateHiddenCompatibilityElements(data);
 
-    // Brands
-    currentBrands = Array.isArray(prefs.preferred_brands)
-      ? prefs.preferred_brands
-      : ['Sony', 'Logitech', 'Philips'];
-    renderBrandTags();
-
-    // Shopping frequency & notes
-    const freqEl = document.getElementById('twinShoppingFreq');
-    const notesEl = document.getElementById('twinNotes');
-    if (freqEl) freqEl.value = prefs.shopping_frequency || 'monthly';
-    if (notesEl) notesEl.value = prefs.notes || '';
-    updateOverviewCadence();
-
-    // Budget
-    const bMinEl = document.getElementById('budgetMinInput');
-    const bMaxEl = document.getElementById('budgetMaxInput');
-    if (bMinEl) bMinEl.value = prefs.budget_min !== undefined ? prefs.budget_min : 500;
-    if (bMaxEl) bMaxEl.value = prefs.budget_max !== undefined ? prefs.budget_max : 5000;
-    updateBudgetDisplay();
-
-    // Shopping Goals
-    renderGoalsList(goals);
-
-    // Purchase History
-    await loadPurchaseHistory();
-
-    // Autonomous Twin Matches
-    await loadTwinRecommendations();
   } catch (err) {
-    console.error('Failed to load twin profile:', err);
-    showToast('Failed to load profile settings', 'error');
+    console.error('Failed to load twin dashboard:', err);
+    if (typeof showToast === 'function') {
+      showToast('Could not load Twin dashboard data. Retrying...', 'error');
+    }
   }
 }
 
-function renderCategoryTags() {
-  const container = document.getElementById('categoryTagsContainer');
-  if (container) {
-    container.innerHTML = currentCategories.map((cat, idx) => `
-      <span class="tag-pill">
-        ${cat}
-        <button type="button" class="tag-remove-btn" onclick="removeCategoryTag(${idx})">&times;</button>
-      </span>
-    `).join('');
+/**
+ * ---------------------------------------------------------------------------
+ * Header & Persona Archetype
+ * ---------------------------------------------------------------------------
+ */
+function renderHeaderAndArchetype(data) {
+  const identity = data.identity || {};
+  const explicit = identity.explicit || {};
+
+  const nameEl = document.getElementById('twinFullName');
+  const emailEl = document.getElementById('twinEmail');
+  const avatarEl = document.getElementById('twinAvatarLarge');
+  const archetypeEl = document.getElementById('twinArchetype');
+  const completenessEl = document.getElementById('twinCompletenessDisplay');
+  const budgetDisplay = document.getElementById('overviewBudgetDisplay');
+  const freqDisplay = document.getElementById('overviewFreqDisplay');
+
+  const fullName = identity.full_name || identity.username || 'PreTwin Shopper';
+  if (nameEl) nameEl.textContent = fullName;
+  if (emailEl) emailEl.textContent = identity.email || 'shopper@pretwin.ai';
+  if (avatarEl) {
+    avatarEl.textContent = fullName
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2) || 'PT';
   }
-  updateOverviewChips();
+
+  if (archetypeEl) {
+    archetypeEl.textContent = data.archetype || 'Smart Value & Practical Essentials Shopper';
+  }
+
+  if (completenessEl) {
+    completenessEl.textContent = `${identity.completeness_score || 85}%`;
+  }
+
+  const bMin = explicit.budget_min !== undefined ? explicit.budget_min : 500;
+  const bMax = explicit.budget_max !== undefined ? explicit.budget_max : 10000;
+  if (budgetDisplay) {
+    budgetDisplay.textContent = `${formatCurrency(bMin)} — ${formatCurrency(bMax)}`;
+  }
+
+  if (freqDisplay) {
+    freqDisplay.textContent = capitalize(explicit.frequency || 'Monthly');
+  }
+
+  // Onboarding banner for first-time / new users
+  const banner = document.getElementById('firstTimeUserBanner');
+  if (banner) {
+    const isNew = (!data.behaviour || data.behaviour.total_purchases_recorded === 0) &&
+                  (!data.behaviour || data.behaviour.browsing_events_count === 0) &&
+                  (identity.completeness_score < 40);
+    banner.style.display = isNew ? 'block' : 'none';
+  }
+}
+
+/**
+ * ---------------------------------------------------------------------------
+ * Section 1: My Shopping Identity
+ * ---------------------------------------------------------------------------
+ */
+function renderSection1Identity(identity) {
+  const explicit = identity.explicit || {};
+  const inferred = identity.inferred || {};
+
+  currentExplicitCategories = Array.isArray(explicit.categories) ? [...explicit.categories] : [];
+  currentExplicitBrands = Array.isArray(explicit.brands) ? [...explicit.brands] : [];
+  currentInferredCategories = Array.isArray(inferred.categories) ? [...inferred.categories] : [];
+  currentInferredBrands = Array.isArray(inferred.brands) ? [...inferred.brands] : [];
+  currentColors = Array.isArray(explicit.colors) ? [...explicit.colors] : [];
+  currentSizes = Array.isArray(explicit.sizes) ? [...explicit.sizes] : [];
+
+  renderCategoryChips();
+  renderBrandChips();
+  renderColorChips();
+  renderSizeChips();
+
+  // Inputs
+  const bMinInput = document.getElementById('budgetMinInput');
+  const bMaxInput = document.getElementById('budgetMaxInput');
+  const freqSelect = document.getElementById('twinShoppingFreq');
+  const goalsInput = document.getElementById('twinGoalsInput');
+
+  if (bMinInput) bMinInput.value = explicit.budget_min !== undefined ? explicit.budget_min : 500;
+  if (bMaxInput) bMaxInput.value = explicit.budget_max !== undefined ? explicit.budget_max : 10000;
+  if (freqSelect) freqSelect.value = explicit.frequency || 'monthly';
+  if (goalsInput) goalsInput.value = explicit.goals || '';
+}
+
+function renderCategoryChips() {
+  const container = document.getElementById('categoryChipsContainer');
+  if (!container) return;
+
+  const html = [];
+
+  // Explicit
+  currentExplicitCategories.forEach((cat, idx) => {
+    html.push(`
+      <span class="twin-pill-explicit" style="margin-right:6px; margin-bottom:6px;">
+        ${cat}
+        <button type="button" onclick="removeCategoryTag(${idx})" style="background:none; border:none; color:#403653; font-weight:700; cursor:pointer; padding:0 0 0 4px;" title="Remove category">&times;</button>
+      </span>
+    `);
+  });
+
+  // Inferred
+  currentInferredCategories.forEach((cat) => {
+    html.push(`
+      <span class="twin-pill-inferred" style="margin-right:6px; margin-bottom:6px;">
+        ✨ ${cat} <small style="opacity:0.8;">(Inferred)</small>
+        <button type="button" onclick="dislikeInferredTag('category', '${encodeURIComponent(cat)}')" style="background:none; border:none; color:#8C6D1F; font-weight:700; cursor:pointer; padding:0 0 0 4px;" title="Not for me (dislike)">&times;</button>
+      </span>
+    `);
+  });
+
+  if (html.length === 0) {
+    container.innerHTML = '<span style="color:#81778E; font-size:0.82rem;">No preferred categories selected yet.</span>';
+  } else {
+    container.innerHTML = html.join('');
+  }
+}
+
+function renderBrandChips() {
+  const container = document.getElementById('brandChipsContainer');
+  if (!container) return;
+
+  const html = [];
+
+  // Explicit
+  currentExplicitBrands.forEach((b, idx) => {
+    html.push(`
+      <span class="twin-pill-explicit" style="margin-right:6px; margin-bottom:6px;">
+        ${b}
+        <button type="button" onclick="removeBrandTag(${idx})" style="background:none; border:none; color:#403653; font-weight:700; cursor:pointer; padding:0 0 0 4px;" title="Remove brand">&times;</button>
+      </span>
+    `);
+  });
+
+  // Inferred
+  currentInferredBrands.forEach((b) => {
+    html.push(`
+      <span class="twin-pill-inferred" style="margin-right:6px; margin-bottom:6px;">
+        ✨ ${b} <small style="opacity:0.8;">(Inferred)</small>
+        <button type="button" onclick="dislikeInferredTag('brand', '${encodeURIComponent(b)}')" style="background:none; border:none; color:#8C6D1F; font-weight:700; cursor:pointer; padding:0 0 0 4px;" title="Not for me (dislike)">&times;</button>
+      </span>
+    `);
+  });
+
+  if (html.length === 0) {
+    container.innerHTML = '<span style="color:#81778E; font-size:0.82rem;">No favorite brands specified yet.</span>';
+  } else {
+    container.innerHTML = html.join('');
+  }
+}
+
+function renderColorChips() {
+  const container = document.getElementById('colorChipsContainer');
+  if (!container) return;
+
+  if (currentColors.length === 0) {
+    container.innerHTML = '<span style="color:#81778E; font-size:0.75rem;">None</span>';
+    return;
+  }
+  container.innerHTML = currentColors.map((c, idx) => `
+    <span style="font-size:0.75rem; background:#E9DDFB; border:1px solid #C4A6F5; color:#403653; padding:2px 8px; border-radius:10px; display:inline-flex; align-items:center; gap:4px;">
+      ${c}
+      <button type="button" onclick="removeColorTag(${idx})" style="background:none; border:none; color:#403653; cursor:pointer;">&times;</button>
+    </span>
+  `).join('');
+}
+
+function renderSizeChips() {
+  const container = document.getElementById('sizeChipsContainer');
+  if (!container) return;
+
+  if (currentSizes.length === 0) {
+    container.innerHTML = '<span style="color:#81778E; font-size:0.75rem;">None</span>';
+    return;
+  }
+  container.innerHTML = currentSizes.map((s, idx) => `
+    <span style="font-size:0.75rem; background:#E9DDFB; border:1px solid #C4A6F5; color:#403653; padding:2px 8px; border-radius:10px; display:inline-flex; align-items:center; gap:4px;">
+      ${s}
+      <button type="button" onclick="removeSizeTag(${idx})" style="background:none; border:none; color:#403653; cursor:pointer;">&times;</button>
+    </span>
+  `).join('');
 }
 
 function addCategoryTag() {
   const input = document.getElementById('newCategoryInput');
   if (!input) return;
   const val = input.value.trim();
-  if (val && !currentCategories.includes(val)) {
-    currentCategories.push(val);
-    renderCategoryTags();
+  if (val && !currentExplicitCategories.includes(val)) {
+    currentExplicitCategories.push(val);
+    renderCategoryChips();
     input.value = '';
-  }
-}
-
-function quickAddCategory(cat) {
-  if (cat && !currentCategories.includes(cat)) {
-    currentCategories.push(cat);
-    renderCategoryTags();
-    showToast(`Added ${cat} to preferences`, 'info');
+    showToast(`Added ${val} to preferred categories`);
   }
 }
 
 function removeCategoryTag(idx) {
-  currentCategories.splice(idx, 1);
-  renderCategoryTags();
-}
-
-function renderBrandTags() {
-  const container = document.getElementById('brandTagsContainer');
-  if (container) {
-    container.innerHTML = currentBrands.map((b, idx) => `
-      <span class="tag-pill">
-        ${b}
-        <button type="button" class="tag-remove-btn" onclick="removeBrandTag(${idx})">&times;</button>
-      </span>
-    `).join('');
-  }
-  updateOverviewChips();
+  currentExplicitCategories.splice(idx, 1);
+  renderCategoryChips();
 }
 
 function addBrandTag() {
   const input = document.getElementById('newBrandInput');
   if (!input) return;
   const val = input.value.trim();
-  if (val && !currentBrands.includes(val)) {
-    currentBrands.push(val);
-    renderBrandTags();
+  if (val && !currentExplicitBrands.includes(val)) {
+    currentExplicitBrands.push(val);
+    renderBrandChips();
     input.value = '';
-  }
-}
-
-function quickAddBrand(brand) {
-  if (brand && !currentBrands.includes(brand)) {
-    currentBrands.push(brand);
-    renderBrandTags();
-    showToast(`Added ${brand} to affinities`, 'info');
+    showToast(`Added ${val} to preferred brands`);
   }
 }
 
 function removeBrandTag(idx) {
-  currentBrands.splice(idx, 1);
-  renderBrandTags();
+  currentExplicitBrands.splice(idx, 1);
+  renderBrandChips();
+}
+
+function updateColorsList(val) {
+  const input = document.getElementById('colorInput');
+  const items = val.split(',').map(s => s.trim()).filter(Boolean);
+  items.forEach(c => {
+    if (!currentColors.includes(c)) currentColors.push(c);
+  });
+  renderColorChips();
+  if (input) input.value = '';
+}
+
+function removeColorTag(idx) {
+  currentColors.splice(idx, 1);
+  renderColorChips();
+}
+
+function updateSizesList(val) {
+  const input = document.getElementById('sizeInput');
+  const items = val.split(',').map(s => s.trim()).filter(Boolean);
+  items.forEach(s => {
+    if (!currentSizes.includes(s)) currentSizes.push(s);
+  });
+  renderSizeChips();
+  if (input) input.value = '';
+}
+
+function removeSizeTag(idx) {
+  currentSizes.splice(idx, 1);
+  renderSizeChips();
 }
 
 function updateBudgetDisplay() {
-  const minVal = parseFloat(document.getElementById('budgetMinInput').value) || 0;
-  const maxVal = parseFloat(document.getElementById('budgetMaxInput').value) || 0;
-  const display = document.getElementById('budgetRangeDisplay');
-  const overviewDisplay = document.getElementById('overviewBudgetDisplay');
+  const minVal = parseFloat(document.getElementById('budgetMinInput')?.value) || 0;
+  const maxVal = parseFloat(document.getElementById('budgetMaxInput')?.value) || 0;
   const text = `${formatCurrency(minVal)} — ${formatCurrency(maxVal)}`;
-  if (display) display.textContent = text;
-  if (overviewDisplay) overviewDisplay.textContent = text;
+  const overview = document.getElementById('overviewBudgetDisplay');
+  if (overview) overview.textContent = text;
 }
 
-async function saveTwinProfile() {
-  const bMin = parseFloat(document.getElementById('budgetMinInput').value) || 0;
-  const bMax = parseFloat(document.getElementById('budgetMaxInput').value) || 0;
-
-  if (bMax < bMin) {
-    showToast('Maximum budget ceiling cannot be less than minimum budget', 'error');
-    return;
-  }
-
-  const payload = {
-    preferred_categories: currentCategories,
-    preferred_brands: currentBrands,
-    budget_min: bMin,
-    budget_max: bMax,
-    shopping_frequency: document.getElementById('twinShoppingFreq').value,
-    notes: document.getElementById('twinNotes').value,
-  };
-
-  try {
-    await apiPut('/api/profile', payload);
-    showToast('Twin preferences saved successfully!', 'success');
-    await loadTwinRecommendations();
-  } catch (err) {
-    showToast(`Failed to save preferences: ${err.message}`, 'error');
+function updateOverviewCadence() {
+  const freqEl = document.getElementById('twinShoppingFreq');
+  const cadenceEl = document.getElementById('overviewFreqDisplay');
+  if (freqEl && cadenceEl) {
+    cadenceEl.textContent = capitalize(freqEl.value);
   }
 }
 
 /**
- * Load Personalized Recommendations Grid
+ * Persist Explicit Twin Preferences
  */
-async function loadTwinRecommendations() {
-  const grid = document.getElementById('twinRecsGrid');
+async function saveTwinProfile() {
+  const bMin = parseFloat(document.getElementById('budgetMinInput')?.value) || 0;
+  const bMax = parseFloat(document.getElementById('budgetMaxInput')?.value) || 10000;
+  const freq = document.getElementById('twinShoppingFreq')?.value || 'monthly';
+  const goals = document.getElementById('twinGoalsInput')?.value || '';
+
+  if (bMax < bMin) {
+    if (typeof showToast === 'function') {
+      showToast('Maximum budget ceiling cannot be less than minimum budget', 'error');
+    }
+    return;
+  }
+
+  const payload = {
+    preferred_categories: currentExplicitCategories,
+    preferred_brands: currentExplicitBrands,
+    preferred_colors: currentColors,
+    preferred_sizes: currentSizes,
+    budget_min: bMin,
+    budget_max: bMax,
+    shopping_frequency: freq,
+    goals: goals,
+    notes: goals
+  };
+
+  try {
+    const res = await fetch('/api/twin/preferences', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to save preferences');
+
+    if (typeof showToast === 'function') {
+      showToast('Shopping Twin profile saved successfully! ✨', 'success');
+    }
+    await loadTwinDashboard();
+  } catch (err) {
+    console.error('Failed to save profile:', err);
+    if (typeof showToast === 'function') {
+      showToast('Failed to save preferences: ' + err.message, 'error');
+    }
+  }
+}
+
+/**
+ * ---------------------------------------------------------------------------
+ * Section 2: My Shopping Behaviour
+ * ---------------------------------------------------------------------------
+ */
+function renderSection2Behaviour(behaviour) {
+  const ordersEl = document.getElementById('behaviourOrdersCount');
+  const wishlistEl = document.getElementById('behaviourWishlistCount');
+  const cartEl = document.getElementById('behaviourCartCount');
+  const browsingEl = document.getElementById('behaviourBrowsingCount');
+  const searchEl = document.getElementById('behaviourSearchCount');
+
+  if (ordersEl) ordersEl.textContent = behaviour.total_purchases_recorded || 0;
+  if (wishlistEl) wishlistEl.textContent = behaviour.wishlist_count || 0;
+  if (cartEl) cartEl.textContent = behaviour.cart_count || 0;
+  if (browsingEl) browsingEl.textContent = behaviour.browsing_events_count || 0;
+  if (searchEl) searchEl.textContent = (behaviour.recent_search_queries || []).length || 0;
+
+  // Top Engaged Categories with progress bars
+  const topList = document.getElementById('topEngagedCategoriesList');
+  if (topList) {
+    const categories = behaviour.top_engaged_categories || [];
+    if (categories.length === 0) {
+      topList.innerHTML = `
+        <div style="color:#81778E; font-size:0.85rem; padding:12px; background:#FFFDF9; border:1px dashed #EAE1F4; border-radius:8px;">
+          Explore products or categories to establish real-time engagement signals.
+        </div>
+      `;
+    } else {
+      const maxScore = Math.max(...categories.map(c => c.score || 1), 1);
+      topList.innerHTML = categories.map(c => {
+        const pct = Math.min(Math.round(((c.score || 0) / maxScore) * 100), 100);
+        return `
+          <div style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:8px; padding:10px 14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <strong style="color:#403653; font-size:0.88rem;">${c.category}</strong>
+              <span style="font-size:0.75rem; color:#8C6D1F; font-weight:700;">${c.score} affinity pts</span>
+            </div>
+            <div style="background:#EAE1F4; height:6px; border-radius:3px; overflow:hidden;">
+              <div style="background:linear-gradient(90deg, #C4A6F5, #D6B875); width:${pct}%; height:100%; border-radius:3px;"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  // Interest Evolution & Trends
+  const trendList = document.getElementById('interestTrendsList');
+  if (trendList) {
+    const trends = behaviour.interest_trends || [];
+    if (trends.length === 0) {
+      trendList.innerHTML = `
+        <div style="color:#81778E; font-size:0.85rem; padding:12px; background:#FFFDF9; border:1px dashed #EAE1F4; border-radius:8px;">
+          Interest trend patterns update dynamically as you browse, search, and add items to your wishlist.
+        </div>
+      `;
+    } else {
+      trendList.innerHTML = trends.map(t => {
+        const isUp = t.direction === 'growing';
+        const isSteady = t.direction === 'steady';
+        const icon = isUp ? '📈' : (isSteady ? '⚖️' : '📉');
+        const badgeColor = isUp ? '#10b981' : (isSteady ? '#6366f1' : '#f59e0b');
+        const badgeBg = isUp ? 'rgba(16,185,129,0.12)' : (isSteady ? 'rgba(99,102,241,0.12)' : 'rgba(245,158,11,0.12)');
+
+        return `
+          <div style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:700; color:#403653; font-size:0.88rem;">${t.category}</div>
+              <div style="font-size:0.76rem; color:#81778E; margin-top:2px;">${t.explanation || 'Consistent engagement observed'}</div>
+            </div>
+            <span style="font-size:0.75rem; font-weight:700; color:${badgeColor}; background:${badgeBg}; border:1px solid ${badgeColor}40; padding:3px 8px; border-radius:12px; display:inline-flex; align-items:center; gap:4px;">
+              ${icon} ${capitalize(t.direction)}
+            </span>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+}
+
+/**
+ * ---------------------------------------------------------------------------
+ * Section 3: My Spending Habits
+ * ---------------------------------------------------------------------------
+ */
+function renderSection3Spending(spending) {
+  const totalEl = document.getElementById('spendingTotal');
+  const tierEl = document.getElementById('spendingTierLabel');
+  const aovEl = document.getElementById('spendingAov');
+  const priceRangeEl = document.getElementById('spendingPriceRange');
+  const cadenceEl = document.getElementById('spendingCadence');
+  const freqDaysEl = document.getElementById('spendingFrequencyDays');
+
+  if (totalEl) totalEl.textContent = formatCurrency(spending.total_spent || 0);
+  if (tierEl) tierEl.textContent = `Tier: ${spending.spending_tier || 'Smart Value'}`;
+  if (aovEl) aovEl.textContent = formatCurrency(spending.average_order_value || 0);
+
+  const pMin = spending.typical_price_min || 0;
+  const pMax = spending.typical_price_max || 0;
+  if (priceRangeEl) priceRangeEl.textContent = `${formatCurrency(pMin)} — ${formatCurrency(pMax)}`;
+
+  if (cadenceEl) cadenceEl.textContent = spending.purchase_cadence_label || 'Monthly';
+  if (freqDaysEl) {
+    const days = spending.purchase_frequency_days || 30;
+    freqDaysEl.textContent = `Every ~${days} days`;
+  }
+
+  // Spend by Category
+  const catContainer = document.getElementById('spendByCategoryContainer');
+  if (catContainer) {
+    const catSpend = spending.spend_by_category || [];
+    if (catSpend.length === 0) {
+      catContainer.innerHTML = `
+        <div style="color:#81778E; font-size:0.85rem; padding:12px; background:#FFFDF9; border:1px dashed #EAE1F4; border-radius:8px;">
+          No completed purchases recorded yet. Spend habits update automatically when orders are delivered.
+        </div>
+      `;
+    } else {
+      const maxVal = Math.max(...catSpend.map(c => c.total_spent || 1), 1);
+      catContainer.innerHTML = catSpend.map(c => {
+        const pct = Math.min(Math.round(((c.total_spent || 0) / maxVal) * 100), 100);
+        return `
+          <div style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:8px; padding:10px 14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <strong style="color:#403653; font-size:0.88rem;">${c.category}</strong>
+              <span style="font-weight:700; color:#8C6D1F; font-size:0.88rem;">${formatCurrency(c.total_spent)}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#81778E; margin-bottom:6px;">
+              <span>${c.item_count} items delivered</span>
+              <span>${c.percentage || 0}% of total spend</span>
+            </div>
+            <div style="background:#EAE1F4; height:6px; border-radius:3px; overflow:hidden;">
+              <div style="background:linear-gradient(90deg, #D6B875, #C4A6F5); width:${pct}%; height:100%; border-radius:3px;"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  // Monthly Spending
+  const monthContainer = document.getElementById('monthlySpendingContainer');
+  if (monthContainer) {
+    const months = spending.monthly_spending || [];
+    if (months.length === 0) {
+      monthContainer.innerHTML = `
+        <div style="color:#81778E; font-size:0.85rem; padding:12px; background:#FFFDF9; border:1px dashed #EAE1F4; border-radius:8px;">
+          No monthly order history recorded yet.
+        </div>
+      `;
+    } else {
+      monthContainer.innerHTML = months.map(m => `
+        <div style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <strong style="color:#403653; font-size:0.88rem;">${m.month}</strong>
+            <div style="font-size:0.75rem; color:#81778E; margin-top:2px;">${m.order_count} verified order(s)</div>
+          </div>
+          <div style="font-size:1rem; font-weight:700; color:#403653;">
+            ${formatCurrency(m.total_spent)}
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+}
+
+/**
+ * ---------------------------------------------------------------------------
+ * Section 4: My Digital Twin Insights
+ * ---------------------------------------------------------------------------
+ */
+function renderSection4Insights(insights) {
+  const grid = document.getElementById('twinInsightsCardsGrid');
   if (!grid) return;
 
-  grid.innerHTML = `
-    <div style="text-align:center; padding:36px; color:#64748b; grid-column:1 / -1;">
-      <div class="spinner"></div>
-      <p style="margin-top:10px;">Finding tailored products matching your Twin...</p>
-    </div>
-  `;
-
-  try {
-    const res = await fetch('/api/products?limit=24');
-    const data = await res.json();
-    const products = data.products || [];
-
-    const bMax = parseFloat(document.getElementById('budgetMaxInput')?.value) || 5000;
-
-    // Score and rank products based on twin preferences
-    const scored = products.map(p => {
-      let score = 0;
-      let reason = "Aligns with your shopping goals";
-
-      const catMatch = currentCategories.some(c => c.toLowerCase() === (p.category || '').toLowerCase());
-      const brandMatch = currentBrands.some(b => b.toLowerCase() === (p.brand || '').toLowerCase());
-
-      if (catMatch && brandMatch) {
-        score += 10;
-        reason = `Direct match: ${p.brand} in ${p.category} within budget`;
-      } else if (brandMatch) {
-        score += 7;
-        reason = `Preferred brand affinity: ${p.brand}`;
-      } else if (catMatch) {
-        score += 5;
-        reason = `Category match: ${p.category}`;
-      } else {
-        score += 1;
-      }
-
-      if (p.price <= bMax) {
-        score += 2;
-      } else {
-        score -= 5;
-      }
-
-      return { ...p, twin_score: score, match_reason: reason };
-    });
-
-    // Filter to top 8 items
-    scored.sort((a, b) => b.twin_score - a.twin_score);
-    const topRecs = scored.slice(0, 8);
-
-    if (topRecs.length === 0) {
-      grid.innerHTML = `
-        <div style="text-align:center; padding:36px; color:#64748b; grid-column:1 / -1;">
-          No direct recommendations found matching your current filters. Try expanding your categories or budget.
-        </div>
-      `;
-      return;
-    }
-
-    grid.innerHTML = topRecs.map(p => `
-      <div class="card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; position:relative; transition:transform 0.2s, border-color 0.2s;" id="recCard-${p.id}">
-        <!-- Dismiss Action -->
-        <button onclick="dismissRecommendation(${p.id})" style="position:absolute; top:8px; right:8px; background:rgba(15,23,42,0.7); border:none; color:#94a3b8; width:26px; height:26px; border-radius:50%; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2;" title="Dismiss recommendation">
-          &times;
-        </button>
-
-        <div style="padding:14px;">
-          <!-- Image -->
-          <div style="height:140px; background:#fff; border-radius:8px; overflow:hidden; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
-            <img src="${p.image_url || '/static/images/placeholder.png'}" alt="${p.name}" style="max-height:100%; max-width:100%; object-fit:contain;">
-          </div>
-
-          <!-- Category & Brand -->
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <span style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase; font-weight:600;">${p.brand || 'PreTwin'}</span>
-            <span style="font-size:0.7rem; background:rgba(99,102,241,0.2); color:#c4b5fd; padding:1px 6px; border-radius:4px;">${p.category}</span>
-          </div>
-
-          <!-- Product Name -->
-          <h4 style="margin:0 0 8px 0; color:#403653; font-size:0.9rem; font-weight:600; line-height:1.3; height:38px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
-            ${p.name}
-          </h4>
-
-          <!-- Price & Rating -->
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <span style="font-size:1.15rem; font-weight:700; color:#f8fafc;">₹${Math.round(p.price).toLocaleString('en-IN')}</span>
-            <span style="font-size:0.8rem; color:#fbbf24; font-weight:600;">⭐ ${p.rating ? p.rating.toFixed(1) : '4.5'}</span>
-          </div>
-
-          <!-- Why Matches Your Twin -->
-          <div style="background:rgba(168,85,247,0.1); border-left:3px solid #a855f7; padding:6px 8px; border-radius:0 6px 6px 0; font-size:0.75rem; color:#d8b4fe; margin-bottom:12px; line-height:1.3;">
-            <strong style="color:#e9d5ff;">Twin Match:</strong> ${p.match_reason}
-          </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div style="padding:12px 14px; background:#F7F3FF; border-top:1px solid #EAE1F4; display:flex; gap:8px;">
-          <button onclick="addToCartById(${p.id})" style="flex:1; background:linear-gradient(135deg, #6366f1, #a855f7); color:#fff; border:none; padding:8px 10px; border-radius:6px; font-weight:600; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:4px;">
-            <span>🛒</span> Add to Cart
-          </button>
-          <button onclick="toggleWishlistById(${p.id})" style="background:#E9DDFB; border:1px solid #C4A6F5; color:#f87171; width:34px; height:34px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px;" title="Save to Wishlist">
-            ❤️
-          </button>
-          <button onclick="likeRecommendation(${p.id})" style="background:#E9DDFB; border:1px solid #C4A6F5; color:#38bdf8; width:34px; height:34px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px;" title="Helpful match">
-            👍
-          </button>
-        </div>
-      </div>
-    `).join('');
-  } catch (e) {
+  if (!insights || insights.length === 0) {
     grid.innerHTML = `
-      <div style="text-align:center; padding:36px; color:#ef4444; grid-column:1 / -1;">
-        Failed to load twin recommendations: ${e.message}
+      <div style="color:#81778E; font-size:0.85rem; padding:20px; grid-column:1 / -1; text-align:center; background:#FFFDF9; border-radius:10px; border:1px dashed #C4A6F5;">
+        Complete profile preferences or browse catalog items to generate personalized Digital Twin insights.
       </div>
     `;
-  }
-}
-
-function dismissRecommendation(productId) {
-  const card = document.getElementById(`recCard-${productId}`);
-  if (card) {
-    card.style.transition = 'opacity 0.3s, transform 0.3s';
-    card.style.opacity = '0';
-    card.style.transform = 'scale(0.9)';
-    setTimeout(() => card.remove(), 300);
-  }
-  showToast('Recommendation dismissed', 'info');
-  apiPost('/api/feedback', {
-    item_type: 'product',
-    item_id: productId,
-    feedback_type: 'dismiss',
-    rating: 1
-  }).catch(() => {});
-}
-
-function likeRecommendation(productId) {
-  showToast('Saved to Twin preferences! 👍', 'success');
-  apiPost('/api/feedback', {
-    item_type: 'product',
-    item_id: productId,
-    feedback_type: 'like',
-    rating: 5
-  }).catch(() => {});
-}
-
-function renderGoalsList(goals) {
-  const container = document.getElementById('twinGoalsList');
-  if (!container) return;
-
-  if (!goals || goals.length === 0) {
-    container.innerHTML = '<p class="text-muted text-sm">No active shopping goals. Click "+ New Goal" to add one.</p>';
     return;
   }
 
-  container.innerHTML = goals.map((g) => `
-    <div class="goal-item-card" style="background:#FFFDF9; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #EAE1F4;">
-      <div class="flex-between">
-        <strong class="goal-title" style="color:#403653;">${g.goal_title}</strong>
-        <button class="btn btn-sm btn-outline-danger" onclick="deleteGoal(${g.id})">Delete</button>
-      </div>
-      <p class="goal-desc text-muted text-sm mt-1" style="color:#94a3b8; font-size:0.85rem;">${g.goal_description || ''}</p>
-      <div class="goal-meta mt-2" style="display:flex; justify-content:space-between; align-items:center;">
-        <span class="badge badge-outline" style="color:#38bdf8; border:1px solid #38bdf8; font-size:0.75rem; padding:2px 6px; border-radius:4px;">Budget: ${formatCurrency(g.budget || 0)}</span>
-        <span class="text-xs text-muted" style="color:#64748b; font-size:0.75rem;">Target: ${formatDate(g.target_date)}</span>
-      </div>
-    </div>
-  `).join('');
-}
+  grid.innerHTML = insights.map((it, idx) => {
+    let sourceBadge = 'Explicit Preference';
+    let sourceColor = '#C4A6F5';
+    let sourceBg = '#E9DDFB';
 
-function openAddGoalModal() {
-  const bodyHtml = `
-    <div class="form-group">
-      <label class="form-label">Goal Title *</label>
-      <input type="text" id="goalTitleInput" class="form-control" placeholder="e.g. Ergonomic Home Office Setup" required>
-    </div>
-    <div class="form-group mt-3">
-      <label class="form-label">Description / Details</label>
-      <textarea id="goalDescInput" class="form-control" rows="2" placeholder="Specific requirements or context..."></textarea>
-    </div>
-    <div class="form-group mt-3">
-      <label class="form-label">Target Budget (₹)</label>
-      <input type="number" id="goalBudgetInput" class="form-control" value="2500" min="0" step="100">
-    </div>
-  `;
-
-  const footerHtml = `
-    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-    <button class="btn btn-primary" onclick="submitNewGoal()">Create Goal</button>
-  `;
-
-  openModal('Add New Shopping Goal', bodyHtml, footerHtml);
-}
-
-async function submitNewGoal() {
-  const title = document.getElementById('goalTitleInput').value.trim();
-  const desc = document.getElementById('goalDescInput').value.trim();
-  const budget = parseFloat(document.getElementById('goalBudgetInput').value) || 0;
-
-  if (!title) {
-    showToast('Please provide a goal title', 'warning');
-    return;
-  }
-
-  try {
-    await apiPost('/api/shopping-goals', {
-      goal_title: title,
-      goal_description: desc,
-      budget: budget,
-    });
-    showToast('Shopping goal created!', 'success');
-    closeModal();
-    const profile = await apiGet('/api/profile');
-    renderGoalsList(profile.shopping_goals || profile.goals || []);
-  } catch (err) {
-    showToast(`Failed to add goal: ${err.message}`, 'error');
-  }
-}
-
-async function deleteGoal(goalId) {
-  if (!confirm('Are you sure you want to delete this shopping goal?')) return;
-  try {
-    await apiDelete(`/api/shopping-goals/${goalId}`);
-    showToast('Shopping goal removed', 'info');
-    const profile = await apiGet('/api/profile');
-    renderGoalsList(profile.shopping_goals || profile.goals || []);
-  } catch (err) {
-    showToast(`Failed to delete goal: ${err.message}`, 'error');
-  }
-}
-
-async function loadPurchaseHistory() {
-  const tbody = document.getElementById('purchaseHistoryBody');
-  if (!tbody) return;
-
-  try {
-    const data = await apiGet('/api/purchase-history');
-    const history = data.history || [];
-
-    if (history.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="8" class="text-center py-4 text-muted">
-            No voluntary purchase history provided yet. Add past orders to empower proactive replenishment predictions.
-          </td>
-        </tr>
-      `;
-      return;
+    if (it.source_type === 'verified_purchase') {
+      sourceBadge = 'Verified Purchase';
+      sourceColor = '#10b981';
+      sourceBg = 'rgba(16,185,129,0.12)';
+    } else if (it.source_type === 'browsing_behaviour') {
+      sourceBadge = 'Browsing Intent';
+      sourceColor = '#D6B875';
+      sourceBg = 'rgba(214,184,117,0.15)';
     }
 
-    tbody.innerHTML = history.map((item) => {
-      const orderRef = item.order_number ? `#${item.order_number}` : (item.order_id ? `#${item.order_id}` : 'Direct');
-      const isVerified = item.is_verified_purchase === 1 || item.is_verified_purchase === null;
-      const statusBadge = isVerified
-        ? `<span class="badge badge-success" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-size:0.7rem; padding:2px 6px; border-radius:4px;">Verified Completed</span>`
-        : `<span class="badge" style="background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3); font-size:0.7rem; padding:2px 6px; border-radius:4px;">Disqualified</span>`;
-
-      return `
-        <tr>
-          <td>${formatDate(item.purchase_date)}</td>
-          <td><span style="font-family:monospace; color:#38bdf8;">${orderRef}</span></td>
-          <td><strong>${item.product_name}</strong></td>
-          <td><span class="badge badge-outline">${item.category || 'General'}</span></td>
-          <td>${item.brand || '--'}</td>
-          <td>${formatCurrency(item.price)}</td>
-          <td>${item.quantity || 1}</td>
-          <td>
-            <div style="display:flex; flex-direction:column; gap:2px;">
-              ${statusBadge}
-              <span style="font-size:0.7rem; color:#94a3b8;">${item.payment_method || 'Online'} (${item.payment_status || 'Paid'})</span>
+    return `
+      <div style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 2px 10px rgba(196,166,245,0.06);">
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:1.15rem;">💡</span>
+              <h4 style="margin:0; font-size:0.95rem; font-weight:700; color:#403653;">${it.title || 'Shopping Insight'}</h4>
             </div>
-          </td>
-          <td>
-            <button class="btn btn-sm btn-outline-danger" onclick="deletePurchaseItem(${item.id})">Delete</button>
-          </td>
-        </tr>
-      `;
-    }).join('');
-  } catch (err) {
-    console.error('Failed to load purchase history:', err);
-  }
+            <span style="font-size:0.72rem; font-weight:700; color:#403653; background:${sourceBg}; border:1px solid ${sourceColor}; padding:2px 8px; border-radius:10px;">
+              ${sourceBadge}
+            </span>
+          </div>
+          <p style="margin:0 0 12px 0; font-size:0.86rem; color:#403653; line-height:1.45;">
+            ${it.text}
+          </p>
+        </div>
+        <div style="background:#F7F3FF; border-radius:8px; padding:10px; border:1px solid #EAE1F4;">
+          <div style="display:flex; justify-content:space-between; font-size:0.74rem; color:#81778E; margin-bottom:4px;">
+            <span>Empirical Evidence:</span>
+            <span style="font-weight:700; color:#8C6D1F;">Confidence: ${it.confidence || '90%'}</span>
+          </div>
+          <div style="font-size:0.76rem; color:#403653; line-height:1.35;">
+            ${it.explanation || 'Analyzed from verified user signals.'}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
-function openAddPurchaseModal() {
-  const bodyHtml = `
-    <div class="form-group">
-      <label class="form-label">Product Name *</label>
-      <input type="text" id="purchProdName" class="form-control" placeholder="e.g. Logitech Wireless Mouse" required>
-    </div>
-    <div class="grid-2-col mt-3">
-      <div class="form-group">
-        <label class="form-label">Category *</label>
-        <select id="purchCategory" class="form-control">
-          <option value="Electronics">Electronics</option>
-          <option value="Computer Accessories">Computer Accessories</option>
-          <option value="Home Essentials">Home Essentials</option>
-          <option value="Kitchen Products">Kitchen Products</option>
-          <option value="Personal Care">Personal Care</option>
-          <option value="Stationery">Stationery</option>
-          <option value="Everyday Consumables">Everyday Consumables</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Brand</label>
-        <input type="text" id="purchBrand" class="form-control" placeholder="e.g. Logitech">
-      </div>
-    </div>
-    <div class="grid-2-col mt-3">
-      <div class="form-group">
-        <label class="form-label">Price (₹) *</label>
-        <input type="number" id="purchPrice" class="form-control" step="1" value="1299">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Quantity</label>
-        <input type="number" id="purchQty" class="form-control" value="1" min="1">
-      </div>
-    </div>
-    <div class="form-group mt-3">
-      <label class="form-label">Notes</label>
-      <input type="text" id="purchNotes" class="form-control" placeholder="Optional notes or replenishment frequency...">
-    </div>
-  `;
+/**
+ * ---------------------------------------------------------------------------
+ * Section 5: My Future Shopping Needs
+ * ---------------------------------------------------------------------------
+ */
+function renderSection5FutureNeeds(futureNeeds) {
+  const grid = document.getElementById('futureNeedsGrid');
+  if (!grid) return;
 
-  const footerHtml = `
-    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-    <button class="btn btn-primary" onclick="submitNewPurchase()">Add to History</button>
-  `;
+  const needs = futureNeeds.needs || [];
 
-  openModal('Add Voluntary Purchase Record', bodyHtml, footerHtml);
-}
-
-async function submitNewPurchase() {
-  const name = document.getElementById('purchProdName').value.trim();
-  const category = document.getElementById('purchCategory').value;
-  const brand = document.getElementById('purchBrand').value.trim();
-  const price = parseFloat(document.getElementById('purchPrice').value) || 0;
-  const qty = parseInt(document.getElementById('purchQty').value, 10) || 1;
-  const notes = document.getElementById('purchNotes').value.trim();
-
-  if (!name) {
-    showToast('Product name is required', 'warning');
+  if (futureNeeds.status === 'insufficient_data' || needs.length === 0) {
+    grid.innerHTML = `
+      <div style="color:#403653; font-size:0.88rem; padding:28px 20px; grid-column:1 / -1; text-align:center; background:#FFFDF9; border-radius:12px; border:1.5px dashed #C4A6F5; line-height:1.5;">
+        <div style="font-size:2rem; margin-bottom:8px;">🔮</div>
+        <strong style="font-size:1rem; color:#403653; display:block; margin-bottom:6px;">
+          Replenishment Forecasting Awaiting Verified History
+        </strong>
+        <p style="margin:0 auto; max-width:580px; color:#81778E; font-size:0.85rem;">
+          ${futureNeeds.message || 'No repeat consumable purchases recorded yet. As you order everyday consumables like skincare, groceries, or wellness items, your twin will automatically project restocking cycles.'}
+        </p>
+      </div>
+    `;
     return;
   }
 
+  grid.innerHTML = needs.map(n => {
+    let urgencyBadge = 'Upcoming Restock';
+    let urgencyColor = '#6366f1';
+    let urgencyBg = 'rgba(99,102,241,0.12)';
+
+    if (n.urgency === 'overdue') {
+      urgencyBadge = 'Restock Overdue';
+      urgencyColor = '#ef4444';
+      urgencyBg = 'rgba(239,68,68,0.12)';
+    } else if (n.urgency === 'due_soon') {
+      urgencyBadge = 'Due Soon';
+      urgencyColor = '#f59e0b';
+      urgencyBg = 'rgba(245,158,11,0.12)';
+    }
+
+    return `
+      <div style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; position:relative;">
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:0.7rem; color:${urgencyColor}; background:${urgencyBg}; border:1px solid ${urgencyColor}40; padding:2px 8px; border-radius:10px; font-weight:700;">
+              ● ${urgencyBadge}
+            </span>
+            <span style="font-size:0.75rem; color:#81778E;">${n.category}</span>
+          </div>
+
+          <h4 style="margin:4px 0 6px 0; font-size:0.95rem; font-weight:700; color:#403653; line-height:1.35;">
+            ${n.product_name}
+          </h4>
+
+          <div style="font-size:0.8rem; color:#403653; margin-bottom:8px;">
+            <strong style="color:#8C6D1F;">Estimated Window:</strong> ${n.estimated_window_start || 'Upcoming'} — ${n.estimated_window_end || 'Soon'}
+          </div>
+
+          <div style="background:#F7F3FF; border-left:3px solid #C4A6F5; padding:8px 10px; border-radius:0 6px 6px 0; font-size:0.75rem; color:#81778E; margin-bottom:14px; line-height:1.35;">
+            <strong style="color:#403653;">Mathematical Evidence:</strong> ${n.evidence_explanation || 'Calculated from historical replenishment frequency.'}
+          </div>
+        </div>
+
+        <div>
+          <button onclick="quickRepurchase('${encodeURIComponent(n.product_name)}', ${n.product_id || 0})" class="btn" style="width:100%; background:linear-gradient(135deg, #C4A6F5, #A78BFA); color:#403653; border:none; padding:8px 14px; border-radius:6px; font-weight:700; font-size:0.82rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+            <span>🛒</span> 1-Click Reorder Restock
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/**
+ * ---------------------------------------------------------------------------
+ * Section 6: Manage My Twin
+ * ---------------------------------------------------------------------------
+ */
+function renderSection6ManageTwin(data) {
+  const identity = data.identity || {};
+  const inferred = identity.inferred || {};
+
+  // Master switch
+  const masterToggle = document.getElementById('masterPersonalizationToggle');
+  if (masterToggle) {
+    masterToggle.checked = data.is_personalization_enabled !== false;
+  }
+
+  // Purchase privacy switch
+  const privacyToggle = document.getElementById('twinHistoryPrivacyToggle');
+  if (privacyToggle) {
+    privacyToggle.checked = identity.use_purchase_history !== false;
+  }
+
+  // Manage Inferred Tags list
+  const inferredList = document.getElementById('manageInferredList');
+  if (inferredList) {
+    const allInferred = [
+      ...(inferred.categories || []).map(c => ({ type: 'category', val: c })),
+      ...(inferred.brands || []).map(b => ({ type: 'brand', val: b }))
+    ];
+
+    if (allInferred.length === 0) {
+      inferredList.innerHTML = '<span style="color:#81778E; font-size:0.8rem;">No inferred tags currently active.</span>';
+    } else {
+      inferredList.innerHTML = allInferred.map(it => `
+        <span class="twin-pill-inferred">
+          ✨ ${it.val} <small>(${it.type})</small>
+          <button type="button" onclick="dislikeInferredTag('${it.type}', '${encodeURIComponent(it.val)}')" style="background:none; border:none; color:#8C6D1F; font-weight:700; cursor:pointer; padding:0 0 0 4px;" title="Dislike / Not for me">&times;</button>
+        </span>
+      `).join('');
+    }
+  }
+
+  // Corrected Dislikes List
+  const dislikesEl = document.getElementById('correctedDislikesList');
+  if (dislikesEl) {
+    const dislikes = inferred.corrected_dislikes || [];
+    if (dislikes.length > 0) {
+      dislikesEl.innerHTML = `<strong>Excluded / Disliked:</strong> ${dislikes.join(', ')}`;
+    } else {
+      dislikesEl.innerHTML = '';
+    }
+  }
+}
+
+/**
+ * Correct inaccurate inference
+ */
+async function dislikeInferredTag(tagType, encodedTagValue) {
+  const val = decodeURIComponent(encodedTagValue);
   try {
-    await apiPost('/api/purchase-history', {
-      product_name: name,
-      category: category,
-      brand: brand,
-      price: price,
-      quantity: qty,
-      notes: notes,
-      purchase_date: new Date().toISOString().split('T')[0],
+    const res = await fetch('/api/twin/correct-inference', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tag_type: tagType, tag_value: val })
     });
-    showToast('Purchase record added!', 'success');
-    closeModal();
-    await loadPurchaseHistory();
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to update inference');
+
+    if (typeof showToast === 'function') {
+      showToast(`Removed "${val}" from your inferred twin profile 👍`, 'info');
+    }
+    await loadTwinDashboard();
   } catch (err) {
-    showToast(`Failed to add purchase: ${err.message}`, 'error');
+    console.error('Failed to correct inference:', err);
+    if (typeof showToast === 'function') {
+      showToast(`Could not correct inference: ${err.message}`, 'error');
+    }
   }
 }
 
-async function deletePurchaseItem(id) {
-  if (!confirm('Remove this past purchase record from your history?')) return;
+/**
+ * Toggle Master Personalization
+ */
+async function toggleMasterPersonalization(enabled) {
   try {
-    await apiDelete(`/api/purchase-history/${id}`);
-    showToast('Purchase record deleted', 'info');
-    await loadPurchaseHistory();
+    const res = await fetch('/api/twin/preferences', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_personalization_enabled: enabled })
+    });
+    const data = await res.json();
+    if (typeof showToast === 'function') {
+      showToast(enabled ? 'Personalization enabled ✨' : 'Personalization turned off (generic experience)', 'info');
+    }
   } catch (err) {
-    showToast(`Failed to delete record: ${err.message}`, 'error');
+    console.error('Could not toggle master personalization:', err);
   }
 }
 
+/**
+ * Toggle Purchase Learning Privacy
+ */
+async function toggleHistoryPrivacy(enabled) {
+  try {
+    const res = await fetch('/api/twin/privacy-controls', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ use_purchase_history_for_twin: enabled }),
+    });
+    const data = await res.json();
+    if (typeof showToast === 'function') {
+      showToast(
+        enabled
+          ? 'Purchase learning enabled for your Digital Twin.'
+          : 'Purchase learning paused. Using manual preferences only.',
+        'info'
+      );
+    }
+  } catch (err) {
+    if (typeof showToast === 'function') {
+      showToast('Failed to update privacy preference: ' + err.message, 'error');
+    }
+  }
+}
+
+/**
+ * Confirm & Reset Twin Profile
+ */
+async function confirmResetTwin() {
+  if (!confirm('Are you sure you want to reset your Digital Twin profile? All learned preferences will be cleared.')) {
+    return;
+  }
+  try {
+    const res = await fetch('/api/twin/reset', { method: 'POST' });
+    const data = await res.json();
+    if (typeof showToast === 'function') {
+      showToast('Digital Twin reset to default state.', 'info');
+    }
+    await loadTwinDashboard();
+  } catch (err) {
+    alert('Reset failed: ' + err.message);
+  }
+}
+
+/**
+ * Confirm & Delete All Personalization Data
+ */
+async function confirmDeletePersonalization() {
+  if (!confirm('CAUTION: Are you sure you want to permanently delete all personalization and browsing activity data? This action cannot be undone.')) {
+    return;
+  }
+  try {
+    const res = await fetch('/api/twin/delete-personalization', { method: 'POST' });
+    const data = await res.json();
+    if (typeof showToast === 'function') {
+      showToast('All personalization data has been purged.', 'info');
+    }
+    await loadTwinDashboard();
+  } catch (err) {
+    alert('Deletion failed: ' + err.message);
+  }
+}
+
+function refreshTwinDashboard() {
+  if (typeof showToast === 'function') {
+    showToast('Refreshing Digital Twin intelligence...', 'info');
+  }
+  loadTwinDashboard();
+}
+
+/**
+ * 1-Click Reorder Helper
+ */
+async function quickRepurchase(productName, productId) {
+  try {
+    if (productId && productId > 0) {
+      if (typeof addToCartById === 'function') {
+        await addToCartById(productId);
+      } else {
+        await fetch('/api/cart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ product_id: productId, quantity: 1 })
+        });
+        if (typeof showToast === 'function') showToast('Added to cart!', 'success');
+      }
+    } else {
+      const decoded = decodeURIComponent(productName);
+      const res = await fetch(`/api/products?search=${encodeURIComponent(decoded)}&limit=1`);
+      const data = await res.json();
+      const p = (data.products || [])[0];
+      if (p && typeof addToCartById === 'function') {
+        await addToCartById(p.id);
+      } else {
+        if (typeof showToast === 'function') showToast(`Added ${decoded} restock request to cart!`, 'success');
+      }
+    }
+  } catch (err) {
+    if (typeof showToast === 'function') {
+      showToast('Could not add to cart: ' + err.message, 'error');
+    }
+  }
+}
+
+/**
+ * ---------------------------------------------------------------------------
+ * Household Profiles Persona Switcher
+ * ---------------------------------------------------------------------------
+ */
 async function loadHouseholdProfiles() {
   const strip = document.getElementById("householdProfilesStrip");
   if (!strip) return;
@@ -624,15 +930,15 @@ async function loadHouseholdProfiles() {
     strip.innerHTML = profiles.map(p => {
       const isActive = p.is_active === 1;
       return `
-        <button onclick="switchHouseholdProfile(${p.id})" style="display:flex; align-items:center; gap:8px; padding:6px 14px; border-radius:20px; border:1px solid ${isActive ? '#C4A6F5' : '#EAE1F4'}; background:${isActive ? '#E9DDFB' : '#FFFDF9'}; color:${isActive ? '#403653' : '#81778E'}; cursor:pointer; font-size:0.85rem; font-weight:${isActive ? '700' : '500'};">
-          <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${p.avatar_color || '#8b5cf6'};"></span>
-          <span>${p.profile_name} (${p.relationship || 'Self'})</span>
-          ${isActive ? '<span style="font-size:0.7rem; background:#10b981; color:#fff; padding:1px 5px; border-radius:10px;">ACTIVE</span>' : ''}
+        <button onclick="switchHouseholdProfile(${p.id})" style="display:flex; align-items:center; gap:6px; padding:4px 10px; border-radius:16px; border:1px solid ${isActive ? '#C4A6F5' : '#EAE1F4'}; background:${isActive ? '#E9DDFB' : '#FFFDF9'}; color:${isActive ? '#403653' : '#81778E'}; cursor:pointer; font-size:0.78rem; font-weight:${isActive ? '700' : '500'};">
+          <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${p.avatar_color || '#C4A6F5'};"></span>
+          <span>${p.profile_name}</span>
+          ${isActive ? '<span style="font-size:0.65rem; background:#10b981; color:#fff; padding:1px 4px; border-radius:8px;">ACTIVE</span>' : ''}
         </button>
       `;
     }).join("");
   } catch (err) {
-    strip.innerHTML = `<span style="font-size:0.8rem; color:#ef4444;">Failed to load personas</span>`;
+    strip.innerHTML = '';
   }
 }
 
@@ -645,7 +951,7 @@ async function switchHouseholdProfile(profileId) {
         showToast(data.message, "success");
       }
       loadHouseholdProfiles();
-      loadTwinProfile();
+      loadTwinDashboard();
     }
   } catch (err) {
     alert("Switch failed: " + err.message);
@@ -653,7 +959,7 @@ async function switchHouseholdProfile(profileId) {
 }
 
 function openAddHouseholdTwinModal() {
-  const name = prompt("Enter Twin Name (e.g., Mom's Shopping Twin, Teenager Twin, Office Twin):");
+  const name = prompt("Enter Persona Name (e.g., Mom, Teenager, Office Twin):");
   if (!name) return;
   const rel = prompt("Relationship (e.g., Mother, Partner, Teenager, Work):", "Family Member");
   if (!rel) return;
@@ -664,319 +970,40 @@ function openAddHouseholdTwinModal() {
     body: JSON.stringify({
       profile_name: name,
       relationship: rel,
-      shopping_personality: "Savvy Trendsetter",
+      shopping_personality: "Savvy Shopper",
       lifestyle_type: "Active Urban",
-      preferred_categories: ["Fashion", "Personal Care"],
+      preferred_categories: ["Home Essentials", "Personal Care"],
       budget_max: 8000
     })
-  }).then(r => r.json()).then(data => {
+  }).then(r => r.json()).then(() => {
     loadHouseholdProfiles();
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadTwinProfile();
-  loadHouseholdProfiles();
-  loadTwinPrivacySettings();
-  loadTwinInsights();
-});
-
-
 /**
  * ---------------------------------------------------------------------------
- * Digital Twin Intelligence & Verified Purchase History Controller
+ * Hidden Compatibility Helpers
  * ---------------------------------------------------------------------------
  */
+function populateHiddenCompatibilityElements(data) {
+  const archetypeEl = document.getElementById('twinArchetype');
+  if (archetypeEl) archetypeEl.textContent = data.archetype || 'Smart Value & Practical Essentials Shopper';
 
-async function loadTwinPrivacySettings() {
-  const toggle = document.getElementById('twinHistoryPrivacyToggle');
-  const badge = document.getElementById('privacyStatusBadge');
-  if (!toggle) return;
+  const spendEl = document.getElementById('insightTotalSpend');
+  if (spendEl) spendEl.textContent = formatCurrency(data.spending?.total_spent || 0);
 
-  try {
-    const res = await fetch('/api/twin/privacy-controls');
-    const data = await res.json();
-    const isOptedIn = data.use_purchase_history_for_twin !== false;
-    toggle.checked = isOptedIn;
-    if (badge) {
-      if (isOptedIn) {
-        badge.textContent = 'Active Learning';
-        badge.style.background = 'rgba(16, 185, 129, 0.15)';
-        badge.style.color = '#34d399';
-        badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
-      } else {
-        badge.textContent = 'Paused (Private)';
-        badge.style.background = 'rgba(239, 68, 68, 0.15)';
-        badge.style.color = '#f87171';
-        badge.style.borderColor = 'rgba(239, 68, 68, 0.3)';
-      }
-    }
-  } catch (err) {
-    console.warn('Could not load privacy controls:', err);
-  }
+  const ordersEl = document.getElementById('insightTotalOrders');
+  if (ordersEl) ordersEl.textContent = data.spending?.total_orders || 0;
+
+  const aovEl = document.getElementById('insightAvgBasket');
+  if (aovEl) aovEl.textContent = formatCurrency(data.spending?.average_order_value || 0);
+
+  const tierEl = document.getElementById('insightSpendingTier');
+  if (tierEl) tierEl.textContent = `Tier: ${data.spending?.spending_tier || 'Smart Value'}`;
 }
 
-async function toggleHistoryPrivacy(enabled) {
-  const badge = document.getElementById('privacyStatusBadge');
-  try {
-    const res = await fetch('/api/twin/privacy-controls', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ use_purchase_history_for_twin: enabled }),
-    });
-    const data = await res.json();
-    if (badge) {
-      if (enabled) {
-        badge.textContent = 'Active Learning';
-        badge.style.background = 'rgba(16, 185, 129, 0.15)';
-        badge.style.color = '#34d399';
-        badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
-      } else {
-        badge.textContent = 'Paused (Private)';
-        badge.style.background = 'rgba(239, 68, 68, 0.15)';
-        badge.style.color = '#f87171';
-        badge.style.borderColor = 'rgba(239, 68, 68, 0.3)';
-      }
-    }
-    showToast(
-      enabled
-        ? 'Purchase history learning enabled for your Digital Twin.'
-        : 'Purchase history learning paused. Your twin will use manual preferences only.',
-      'info'
-    );
-    await loadTwinInsights();
-  } catch (err) {
-    showToast('Failed to update privacy preference: ' + err.message, 'error');
-  }
-}
-
-async function loadTwinInsights() {
-  try {
-    const res = await fetch('/api/twin/insights');
-    const data = await res.json();
-
-    const history = data.history_summary || {};
-    const profile = data.learned_profile || {};
-    const predictions = data.predictions || [];
-    const recommendations = data.recommendations || [];
-
-    // 1. Metric Cards
-    const totalOrdersEl = document.getElementById('insightTotalOrders');
-    const totalItemsEl = document.getElementById('insightTotalItems');
-    const totalSpendEl = document.getElementById('insightTotalSpend');
-    const tierEl = document.getElementById('insightSpendingTier');
-    const avgBasketEl = document.getElementById('insightAvgBasket');
-    const avgItemEl = document.getElementById('insightAvgItem');
-    const cadenceEl = document.getElementById('insightCadence');
-    const cadenceDaysEl = document.getElementById('insightCadenceDays');
-
-    if (totalOrdersEl) totalOrdersEl.textContent = history.total_orders ?? 0;
-    if (totalItemsEl) totalItemsEl.textContent = `${history.total_items_count ?? 0} items delivered / recorded`;
-    if (totalSpendEl) totalSpendEl.textContent = formatCurrency(history.total_spent ?? 0);
-    if (tierEl) tierEl.textContent = `Tier: ${profile.spending_tier || 'Smart Value'}`;
-    if (avgBasketEl) avgBasketEl.textContent = formatCurrency(history.average_order_value ?? 0);
-    if (avgItemEl) avgItemEl.textContent = `Avg ${formatCurrency(history.average_item_price ?? 0)}/item`;
-    if (cadenceEl) cadenceEl.textContent = profile.observed_frequency || 'Monthly';
-    if (cadenceDaysEl) cadenceDaysEl.textContent = `Every ~${profile.cadence_days || 30} days`;
-
-    // 2. Frequently Purchased Products
-    renderFrequentlyPurchased(history.frequently_purchased || []);
-
-    // 3. Replenishment Predictions
-    renderReplenishmentPredictions(predictions);
-
-    // 4. Personalized Recommendations
-    renderCoordinatedRecommendations(recommendations);
-
-  } catch (err) {
-    console.error('Failed to load twin insights:', err);
-  }
-}
-
-function renderFrequentlyPurchased(items) {
-  const grid = document.getElementById('frequentlyPurchasedGrid');
-  if (!grid) return;
-
-  if (!items || items.length === 0) {
-    grid.innerHTML = `
-      <div style="color:#64748b; font-size:0.85rem; padding:18px; grid-column:1 / -1; text-align:center; background:#FFFDF9; border-radius:10px; border:1px dashed #C4A6F5;">
-        No repeat purchases observed yet. As you make purchases on PreTwin AI, your frequent items will appear here for 1-click replenishment.
-      </div>
-    `;
-    return;
-  }
-
-  grid.innerHTML = items.slice(0, 6).map(it => `
-    <div style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.2s;">
-      <div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <span style="font-size:0.7rem; color:#38bdf8; background:rgba(56,189,248,0.1); padding:2px 6px; border-radius:4px; font-weight:600;">${it.category}</span>
-          <span style="font-size:0.75rem; color:#a855f7; font-weight:700;">Ordered ${it.order_appearances}x (${it.total_quantity} pcs)</span>
-        </div>
-        <h4 style="margin:4px 0 6px; font-size:0.9rem; color:#f8fafc; font-weight:600; line-height:1.3; height:36px; overflow:hidden;">
-          ${it.product_name}
-        </h4>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <span style="font-size:1.05rem; font-weight:700; color:#34d399;">${formatCurrency(it.avg_price)}</span>
-          <span style="font-size:0.75rem; color:#94a3b8;">Last: ${it.latest_purchase_date || '--'}</span>
-        </div>
-      </div>
-      <div>
-        <button onclick="quickRepurchase('${encodeURIComponent(it.product_name)}', ${it.product_id || 0})" style="width:100%; background:linear-gradient(135deg, #38bdf8, #6366f1); border:none; color:#fff; padding:7px 12px; border-radius:6px; font-weight:600; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
-          <span>🔁</span> Reorder / Restock
-        </button>
-      </div>
-    </div>
-  `).join('');
-}
-
-async function quickRepurchase(productName, productId) {
-  try {
-    if (productId && productId > 0) {
-      await addToCartById(productId);
-    } else {
-      // Find product in catalog
-      const res = await fetch(`/api/products?search=${encodeURIComponent(decodeURIComponent(productName))}&limit=1`);
-      const data = await res.json();
-      const p = (data.products || [])[0];
-      if (p) {
-        await addToCartById(p.id);
-      } else {
-        showToast('Added request to shopping card!', 'success');
-      }
-    }
-  } catch (err) {
-    showToast('Could not add to cart: ' + err.message, 'error');
-  }
-}
-
-function renderReplenishmentPredictions(predictions) {
-  const grid = document.getElementById('replenishmentPredictionsGrid');
-  if (!grid) return;
-
-  if (!predictions || predictions.length === 0) {
-    grid.innerHTML = `
-      <div style="color:#64748b; font-size:0.85rem; padding:20px; grid-column:1 / -1; text-align:center; background:#FFFDF9; border-radius:10px; border:1px dashed #C4A6F5;">
-        No repeat replenishment forecasts active yet. Predictions activate automatically as repeat orders or consumable goods are delivered.
-      </div>
-    `;
-    return;
-  }
-
-  grid.innerHTML = predictions.map(pred => {
-    const isDue = pred.is_due_soon;
-    const isOver = pred.is_overdue;
-    const statusColor = isOver ? '#ef4444' : (isDue ? '#f59e0b' : '#38bdf8');
-    const statusText = isOver ? 'Restock Overdue' : (isDue ? 'Due Soon' : 'Upcoming');
-
-    return `
-      <div style="background:#FFFDF9; border:1px solid ${statusColor}66; border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; position:relative;">
-        <div>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <span style="font-size:0.7rem; color:${statusColor}; background:${statusColor}18; border:1px solid ${statusColor}33; padding:2px 8px; border-radius:12px; font-weight:700;">
-              ● ${statusText} (${pred.confidence_label})
-            </span>
-            <span style="font-size:0.75rem; color:#94a3b8;">Est. Interval: ~${pred.average_interval_days}d</span>
-          </div>
-          <h4 style="margin:4px 0 6px; font-size:0.95rem; color:#f8fafc; font-weight:600;">
-            ${pred.product_name}
-          </h4>
-          <div style="font-size:0.8rem; color:#81778E; margin-bottom:8px;">
-            <strong style="color:#38bdf8;">Estimated Restock:</strong> ${pred.estimated_replenishment_date}
-            <span style="color:#64748b; font-size:0.75rem;">(Window: ${pred.estimated_window_start} to ${pred.estimated_window_end})</span>
-          </div>
-          <div style="background:#0f172a; border-left:3px solid #38bdf8; padding:8px 10px; border-radius:0 6px 6px 0; font-size:0.75rem; color:#94a3b8; margin-bottom:12px; line-height:1.35;">
-            <strong style="color:#81778E;">Agent Evidence:</strong> ${pred.evidence_explanation}
-          </div>
-        </div>
-        <div>
-          <button onclick="quickRepurchase('${encodeURIComponent(pred.product_name)}', ${pred.product_id || 0})" style="width:100%; background:linear-gradient(135deg, #10b981, #059669); border:none; color:#fff; padding:8px 12px; border-radius:6px; font-weight:600; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
-            <span>🛒</span> Restock This Item
-          </button>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function renderCoordinatedRecommendations(recs) {
-  const grid = document.getElementById('twinRecsGrid');
-  if (!grid) return;
-
-  if (!recs || recs.length === 0) {
-    grid.innerHTML = `
-      <div style="text-align:center; padding:36px; color:#64748b; grid-column:1 / -1;">
-        No recommendations available matching current preferences and budget ceiling. Try adjusting your preferences.
-      </div>
-    `;
-    return;
-  }
-
-  grid.innerHTML = recs.map(p => `
-    <div class="card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; position:relative; transition:transform 0.2s, border-color 0.2s;" id="recCard-${p.id}">
-      <!-- Dismiss Action -->
-      <button onclick="dismissRecommendation(${p.id})" style="position:absolute; top:8px; right:8px; background:rgba(15,23,42,0.8); border:1px solid #334155; color:#94a3b8; width:26px; height:26px; border-radius:50%; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2;" title="Dismiss recommendation">
-        &times;
-      </button>
-
-      <div style="padding:14px;">
-        <!-- Image -->
-        <div style="height:140px; background:#fff; border-radius:8px; overflow:hidden; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
-          <img src="${p.image_url || '/static/images/placeholder.png'}" alt="${p.name}" style="max-height:100%; max-width:100%; object-fit:contain;">
-        </div>
-
-        <!-- Category & Brand -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <span style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase; font-weight:600;">${p.brand || 'PreTwin'}</span>
-          <span style="font-size:0.7rem; background:rgba(99,102,241,0.2); color:#c4b5fd; padding:1px 6px; border-radius:4px;">${p.category}</span>
-        </div>
-
-        <!-- Product Name -->
-        <h4 style="margin:0 0 8px 0; color:#403653; font-size:0.9rem; font-weight:600; line-height:1.3; height:38px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
-          ${p.name}
-        </h4>
-
-        <!-- Price & Rating -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <span style="font-size:1.15rem; font-weight:700; color:#f8fafc;">₹${Math.round(p.price).toLocaleString('en-IN')}</span>
-          <span style="font-size:0.8rem; color:#fbbf24; font-weight:600;">⭐ ${p.rating ? Number(p.rating).toFixed(1) : '4.5'}</span>
-        </div>
-
-        <!-- Why Matches Your Twin -->
-        <div style="background:rgba(168,85,247,0.1); border-left:3px solid #a855f7; padding:8px; border-radius:0 6px 6px 0; font-size:0.75rem; color:#d8b4fe; margin-bottom:12px; line-height:1.35;">
-          <strong style="color:#e9d5ff;">${p.badge || 'AI Match'}:</strong> ${p.recommendation_reason || 'Aligns with your shopping goals and verified budget.'}
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div style="padding:12px 14px; background:#F7F3FF; border-top:1px solid #EAE1F4; display:flex; gap:8px;">
-        <button onclick="addToCartById(${p.id})" style="flex:1; background:linear-gradient(135deg, #6366f1, #a855f7); color:#fff; border:none; padding:8px 10px; border-radius:6px; font-weight:600; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:4px;">
-          <span>🛒</span> Add to Cart
-        </button>
-        <button onclick="toggleWishlistById(${p.id})" style="background:#E9DDFB; border:1px solid #C4A6F5; color:#f87171; width:34px; height:34px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px;" title="Save to Wishlist">
-          ❤️
-        </button>
-      </div>
-    </div>
-  `).join('');
-}
-
-async function dismissRecommendation(productId) {
-  const card = document.getElementById(`recCard-${productId}`);
-  if (card) {
-    card.style.transition = 'opacity 0.3s, transform 0.3s';
-    card.style.opacity = '0';
-    card.style.transform = 'scale(0.9)';
-    setTimeout(() => card.remove(), 300);
-  }
-  showToast('Recommendation dismissed', 'info');
-  try {
-    await fetch('/api/twin/dismiss-recommendation', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ product_id: productId }),
-    });
-  } catch (err) {
-    console.warn('Could not persist recommendation dismissal:', err);
-  }
-}
+// Global DOM Ready Initialization
+document.addEventListener('DOMContentLoaded', () => {
+  loadTwinDashboard();
+  loadHouseholdProfiles();
+});

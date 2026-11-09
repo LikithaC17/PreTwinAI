@@ -2441,6 +2441,237 @@ def delete_purchase_history(item_id):
 # API – Digital Twin & Agentic Shopping Intelligence Endpoints
 # ---------------------------------------------------------------------------
 
+@app.route("/api/twin/dashboard", methods=["GET"])
+def get_twin_dashboard():
+    """
+    Unified endpoint for Feature 1 (Personalization and Digital Twin).
+    Assembles all 6 sections:
+    1. My Shopping Identity
+    2. My Shopping Behaviour
+    3. My Spending Habits
+    4. My Digital Twin Insights
+    5. My Future Shopping Needs
+    6. Manage My Twin
+    """
+    try:
+        user_id = get_current_user_id()
+        from agents.agent_twin_coordinator import DigitalTwinCoordinator
+        coordinator = DigitalTwinCoordinator()
+        payload = coordinator.get_full_twin_dashboard(user_id)
+        return jsonify(payload)
+    except Exception as exc:
+        return _error(str(exc), 500)
+
+
+@app.route("/api/twin/preferences", methods=["PUT"])
+def update_twin_preferences():
+    """Update customer's explicit shopping identity preferences."""
+    try:
+        user_id = get_current_user_id()
+        data = request.get_json(force=True) or {}
+
+        categories = data.get("preferred_categories", [])
+        brands = data.get("preferred_brands", [])
+        colors = data.get("preferred_colors", [])
+        styles = data.get("preferred_styles", [])
+        sizes = data.get("preferred_sizes", [])
+        budget_min = float(data.get("budget_min", 0.0) or 0.0)
+        budget_max = float(data.get("budget_max", 10000.0) or 10000.0)
+        frequency = data.get("shopping_frequency", "monthly")
+        goals = data.get("shopping_goals", "")
+        notes = data.get("notes", "")
+
+        if budget_max < budget_min:
+            return _error("budget_max cannot be smaller than budget_min", 400)
+
+        # Upsert into shopping_preferences
+        existing = database.query_db("SELECT id FROM shopping_preferences WHERE user_id = ?", (user_id,), one=True)
+        if existing:
+            database.execute_db(
+                """UPDATE shopping_preferences
+                   SET preferred_categories = ?,
+                       preferred_brands = ?,
+                       preferred_colors = ?,
+                       preferred_styles = ?,
+                       preferred_sizes = ?,
+                       budget_min = ?,
+                       budget_max = ?,
+                       shopping_frequency = ?,
+                       shopping_goals = ?,
+                       notes = ?,
+                       updated_at = CURRENT_TIMESTAMP
+                   WHERE user_id = ?""",
+                (
+                    json.dumps(categories),
+                    json.dumps(brands),
+                    json.dumps(colors),
+                    json.dumps(styles),
+                    json.dumps(sizes),
+                    budget_min,
+                    budget_max,
+                    frequency,
+                    goals,
+                    notes,
+                    user_id,
+                ),
+            )
+        else:
+            database.execute_db(
+                """INSERT INTO shopping_preferences
+                   (user_id, preferred_categories, preferred_brands, preferred_colors,
+                    preferred_styles, preferred_sizes, budget_min, budget_max,
+                    shopping_frequency, shopping_goals, notes)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                (
+                    user_id,
+                    json.dumps(categories),
+                    json.dumps(brands),
+                    json.dumps(colors),
+                    json.dumps(styles),
+                    json.dumps(sizes),
+                    budget_min,
+                    budget_max,
+                    frequency,
+                    goals,
+                    notes,
+                ),
+            )
+
+        return jsonify({
+            "success": True,
+            "message": "Shopping identity preferences updated successfully.",
+            "user_id": user_id,
+        })
+    except Exception as exc:
+        return _error(str(exc), 500)
+
+
+@app.route("/api/twin/correct-inference", methods=["POST"])
+def correct_twin_inference():
+    """Correct an inaccurate inferred preference, immediately removing it from active twin learning."""
+    try:
+        user_id = get_current_user_id()
+        data = request.get_json(force=True) or {}
+        disliked_item = (data.get("disliked_item") or data.get("tag_value") or "").strip()
+        item_type = data.get("type") or data.get("tag_type") or "category"
+
+        if not disliked_item:
+            return _error("disliked_item is required", 400)
+
+        pref_row = database.query_db("SELECT * FROM shopping_preferences WHERE user_id = ?", (user_id,), one=True)
+        if not pref_row:
+            database.execute_db(
+                "INSERT INTO shopping_preferences (user_id, preferred_categories, preferred_brands, corrected_dislikes) VALUES (?, '[]', '[]', ?)",
+                (user_id, json.dumps([disliked_item])),
+            )
+            return jsonify({"success": True, "message": f"Recorded preference correction for {disliked_item}"})
+
+        prefs = dict(pref_row)
+        dislikes = json.loads(prefs.get("corrected_dislikes") or "[]")
+        if disliked_item not in dislikes:
+            dislikes.append(disliked_item)
+
+        inferred_cats = [c for c in json.loads(prefs.get("inferred_categories") or "[]") if c.lower() != disliked_item.lower()]
+        inferred_brands = [b for b in json.loads(prefs.get("inferred_brands") or "[]") if b.lower() != disliked_item.lower()]
+
+        database.execute_db(
+            """UPDATE shopping_preferences
+               SET corrected_dislikes = ?,
+                   inferred_categories = ?,
+                   inferred_brands = ?,
+                   updated_at = CURRENT_TIMESTAMP
+               WHERE user_id = ?""",
+            (json.dumps(dislikes), json.dumps(inferred_cats), json.dumps(inferred_brands), user_id),
+        )
+
+        return jsonify({
+            "success": True,
+            "message": f"Inference corrected. '{disliked_item}' will no longer influence your Digital Twin.",
+            "corrected_dislikes": dislikes,
+        })
+    except Exception as exc:
+        return _error(str(exc), 500)
+
+
+@app.route("/api/twin/reset", methods=["POST"])
+def reset_twin_profile():
+    """Reset Digital Twin inferred intelligence and learning while keeping account and completed orders intact."""
+    try:
+        user_id = get_current_user_id()
+        database.execute_db(
+            """UPDATE shopping_preferences
+               SET inferred_categories = '[]',
+                   inferred_brands = '[]',
+                   inferred_styles = '[]',
+                   corrected_dislikes = '[]',
+                   dismissed_recommendation_ids = '[]',
+                   updated_at = CURRENT_TIMESTAMP
+               WHERE user_id = ?""",
+            (user_id,),
+        )
+        return jsonify({
+            "success": True,
+            "message": "Digital Twin profile reset successfully. Your twin will re-learn organically.",
+        })
+    except Exception as exc:
+        return _error(str(exc), 500)
+
+
+@app.route("/api/twin/delete-personalization", methods=["POST"])
+def delete_personalization_data():
+    """Delete all inferred preferences, browsing history, and disable personalization for the current user."""
+    try:
+        user_id = get_current_user_id()
+        database.execute_db(
+            """UPDATE shopping_preferences
+               SET is_personalization_enabled = 0,
+                   use_purchase_history_for_twin = 0,
+                   inferred_categories = '[]',
+                   inferred_brands = '[]',
+                   inferred_styles = '[]',
+                   corrected_dislikes = '[]',
+                   dismissed_recommendation_ids = '[]',
+                   updated_at = CURRENT_TIMESTAMP
+               WHERE user_id = ?""",
+            (user_id,),
+        )
+        database.execute_db("DELETE FROM user_activity WHERE user_id = ?", (user_id,))
+        return jsonify({
+            "success": True,
+            "message": "Personalization data deleted and learning disabled. PreTwin AI will only show generic catalog items.",
+        })
+    except Exception as exc:
+        return _error(str(exc), 500)
+
+
+@app.route("/api/activity/log", methods=["POST"])
+def log_user_activity():
+    """Log customer engagement (browse, search, cart, wishlist) for behavioral intelligence."""
+    try:
+        user_id = get_current_user_id()
+        data = request.get_json(force=True) or {}
+        activity_type = data.get("activity_type", "browse")
+        product_id = data.get("product_id")
+        query_or_category = (
+            data.get("query_or_category")
+            or data.get("search_query")
+            or data.get("category")
+            or ""
+        )
+
+        from services.activity_service import ActivityService
+        ActivityService.log_activity(
+            user_id=user_id,
+            activity_type=activity_type,
+            product_id=product_id,
+            query_or_category=query_or_category,
+            details=data.get("details", {}),
+        )
+        return jsonify({"success": True})
+    except Exception as exc:
+        return _error(str(exc), 500)
+
+
 @app.route("/api/twin/insights", methods=["GET"])
 def get_twin_insights():
     """

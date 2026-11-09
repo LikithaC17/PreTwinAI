@@ -72,6 +72,14 @@ CREATE TABLE IF NOT EXISTS shopping_preferences (
     spending_tier TEXT DEFAULT 'Value',
     typical_spending_min REAL DEFAULT 0.0,
     typical_spending_max REAL DEFAULT 10000.0,
+    preferred_colors TEXT DEFAULT '[]',
+    preferred_sizes TEXT DEFAULT '[]',
+    preferred_styles TEXT DEFAULT '[]',
+    inferred_categories TEXT DEFAULT '[]',
+    inferred_brands TEXT DEFAULT '[]',
+    inferred_styles TEXT DEFAULT '[]',
+    corrected_dislikes TEXT DEFAULT '[]',
+    is_personalization_enabled INTEGER DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -391,6 +399,17 @@ CREATE TABLE IF NOT EXISTS wishlist_items (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
     UNIQUE(user_id, product_id)
+);
+
+CREATE TABLE IF NOT EXISTS user_activity (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    activity_type TEXT NOT NULL,
+    product_id INTEGER,
+    query_or_category TEXT DEFAULT '',
+    details_json TEXT DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 """
 

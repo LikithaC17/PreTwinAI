@@ -111,6 +111,14 @@ def init_db():
         ("spending_tier", "TEXT DEFAULT 'moderate'"),
         ("typical_spending_min", "REAL DEFAULT 0.0"),
         ("typical_spending_max", "REAL DEFAULT 0.0"),
+        ("preferred_colors", "TEXT DEFAULT '[]'"),
+        ("preferred_sizes", "TEXT DEFAULT '[]'"),
+        ("preferred_styles", "TEXT DEFAULT '[]'"),
+        ("inferred_categories", "TEXT DEFAULT '[]'"),
+        ("inferred_brands", "TEXT DEFAULT '[]'"),
+        ("inferred_styles", "TEXT DEFAULT '[]'"),
+        ("corrected_dislikes", "TEXT DEFAULT '[]'"),
+        ("is_personalization_enabled", "INTEGER DEFAULT 1"),
     ]:
         try:
             cursor.execute(f"ALTER TABLE shopping_preferences ADD COLUMN {col} {col_type}")
@@ -521,6 +529,20 @@ def init_db():
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
             FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
             UNIQUE(user_id, product_id)
+        )
+    """)
+
+    # --- user_activity (browsing, search, engagement tracking) ---
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS user_activity (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            activity_type TEXT NOT NULL,
+            product_id INTEGER,
+            query_or_category TEXT DEFAULT '',
+            details_json TEXT DEFAULT '{}',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )
     """)
 
