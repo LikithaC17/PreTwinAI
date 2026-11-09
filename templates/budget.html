@@ -1,25 +1,60 @@
 {% extends "base.html" %}
 
 {% block title %}Budget and Price Intelligence — PreTwin AI{% endblock %}
+{% block extra_head %}
+<style>
+/* PreTwin Lavender & Warm Ivory Theme Scoped for Budget Page */
+.budget-page-wrapper {
+  background: #F7F3FF !important;
+  color: #403653 !important;
+  border-radius: 24px !important;
+  padding: 24px 20px 48px !important;
+}
+.budget-page-wrapper .card {
+  background: #FFFDF9 !important;
+  border: 1px solid #EAE1F4 !important;
+  color: #403653 !important;
+  box-shadow: 0 6px 20px rgba(64, 54, 83, 0.04) !important;
+}
+.budget-page-wrapper h1, .budget-page-wrapper h2, .budget-page-wrapper h3, .budget-page-wrapper h4 {
+  color: #403653 !important;
+}
+.budget-page-wrapper .form-control, .budget-page-wrapper select, .budget-page-wrapper input {
+  background: #FFFFFF !important;
+  border: 1.5px solid #EAE1F4 !important;
+  color: #403653 !important;
+}
+.budget-page-wrapper table th {
+  color: #81778E !important;
+  border-bottom: 1px solid #EAE1F4 !important;
+  background: #F7F3FF !important;
+}
+.budget-page-wrapper table td {
+  color: #403653 !important;
+  border-bottom: 1px solid #EAE1F4 !important;
+}
+</style>
+{% endblock %}
+
 
 {% block content %}
-<div class="container" style="max-width: 1240px; margin: 24px auto; padding: 0 16px;">
+<div class="container budget-page-wrapper" style="max-width: 1240px; margin: 24px auto; padding: 24px 20px 48px;">
   <!-- Header Banner -->
-  <div class="card" style="background: linear-gradient(135deg, #181438 0%, #2e1065 50%, #1e1b4b 100%); border: 1px solid rgba(167, 139, 250, 0.35); padding: 28px; border-radius: 16px; margin-bottom: 24px; color: #fff; box-shadow: 0 8px 32px rgba(0,0,0,0.25);">
+  <div class="card" style="background: linear-gradient(135deg, #F7F3FF 0%, #FFFDF9 50%, #E9DDFB 100%); border: 1px solid #EAE1F4; padding: 28px; border-radius: 16px; margin-bottom: 24px; color: #403653; box-shadow: 0 8px 24px rgba(64,54,83,0.05);">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
       <div>
-        <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(167, 139, 250, 0.18); padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600; color:#c4b5fd; margin-bottom:10px; border:1px solid rgba(167, 139, 250, 0.3);">
+        <div style="display:inline-flex; align-items:center; gap:8px; background:#E9DDFB; padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:700; color:#403653; margin-bottom:10px; border:1px solid #C4A6F5;">
           <span>📉 INTELLIGENT COMMERCE</span>
           <span>•</span>
           <span>PRICE DROP ALERTS &amp; BUY/WAIT ADVICE</span>
         </div>
-        <h1 style="font-size:1.9rem; font-weight:700; margin:0 0 8px 0; color:#fff;">Budget and Price Intelligence</h1>
-        <p style="margin:0; color:#cbd5e1; font-size:0.95rem; max-width:720px; line-height:1.5;">
+        <h1 style="font-size:1.9rem; font-weight:700; margin:0 0 8px 0; color:#403653;">Budget and Price Intelligence</h1>
+        <p style="margin:0; color:#81778E; font-size:0.95rem; max-width:720px; line-height:1.5;">
           Monitor real-time price volatility, track discounts, analyse 30–90 day price history curves, and receive data-driven buy vs. wait recommendations.
         </p>
       </div>
       <div style="text-align:right;">
-        <a href="/savings" class="btn btn-secondary" style="background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.2); padding:10px 18px; border-radius:8px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:600;">
+        <a href="/savings" class="btn btn-secondary" style="background:rgba(255,255,255,0.12); color:#403653; border:1px solid rgba(255,255,255,0.2); padding:10px 18px; border-radius:8px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:600;">
           <span>💰 Smart Savings Plans</span>
         </a>
       </div>
@@ -29,15 +64,15 @@
   <!-- Budget Overview Stats -->
   <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px; margin-bottom: 24px;">
     <!-- Monthly Budget Card -->
-    <div class="card" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:20px;">
+    <div class="card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:20px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <span style="color:#94a3b8; font-size:0.85rem; font-weight:600; text-transform:uppercase;">Monthly Twin Budget</span>
-        <span id="budgetHealthBadge" style="background:#10b981; color:#fff; font-size:0.75rem; padding:3px 8px; border-radius:12px; font-weight:600;">Healthy</span>
+        <span id="budgetHealthBadge" style="background:#10b981; color:#403653; font-size:0.75rem; padding:3px 8px; border-radius:12px; font-weight:600;">Healthy</span>
       </div>
-      <div style="font-size:1.8rem; font-weight:700; color:#f1f5f9; margin-bottom:4px;">
+      <div style="font-size:1.8rem; font-weight:700; color:#403653; margin-bottom:4px;">
         ₹<span id="monthlySpent">0</span> <span style="font-size:1rem; color:#64748b; font-weight:400;">/ ₹<span id="budgetMax">15,000</span></span>
       </div>
-      <div style="background:#1e293b; border-radius:6px; height:8px; overflow:hidden; margin:10px 0;">
+      <div style="background:#EAE1F4; border-radius:6px; height:8px; overflow:hidden; margin:10px 0;">
         <div id="budgetProgressBar" style="background:linear-gradient(90deg, #6366f1, #a855f7); width:0%; height:100%; transition:width 0.4s ease;"></div>
       </div>
       <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#94a3b8;">
@@ -47,7 +82,7 @@
     </div>
 
     <!-- Active Price Alerts -->
-    <div class="card" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:20px;">
+    <div class="card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:20px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <span style="color:#94a3b8; font-size:0.85rem; font-weight:600; text-transform:uppercase;">Price Drop Alerts</span>
         <span style="font-size:1.2rem;">🔔</span>
@@ -61,7 +96,7 @@
     </div>
 
     <!-- Savings Potential -->
-    <div class="card" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:20px;">
+    <div class="card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:20px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <span style="color:#94a3b8; font-size:0.85rem; font-weight:600; text-transform:uppercase;">Unlocked Savings</span>
         <span style="font-size:1.2rem;">🏷️</span>
@@ -76,35 +111,35 @@
   </div>
 
   <!-- Interactive 60-Day Price History & AI Wait-vs-Buy Advisor -->
-  <div class="card" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:24px; margin-bottom:24px;">
+  <div class="card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:24px; margin-bottom:24px;">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:20px;">
       <div>
-        <h3 style="margin:0 0 4px 0; color:#f1f5f9; font-size:1.25rem;">60-Day Price History &amp; Buy-or-Wait Advisor</h3>
+        <h3 style="margin:0 0 4px 0; color:#403653; font-size:1.25rem;">60-Day Price History &amp; Buy-or-Wait Advisor</h3>
         <p style="margin:0; color:#94a3b8; font-size:0.85rem;">Select any product to inspect historical pricing and AI timing prediction.</p>
       </div>
       <div style="display:flex; gap:10px; align-items:center;">
-        <select id="priceHistoryProductSelect" style="background:#1e293b; color:#f1f5f9; border:1px solid #334155; padding:8px 12px; border-radius:8px; font-size:0.9rem; min-width:240px;" onchange="loadProductPriceHistory(this.value)">
+        <select id="priceHistoryProductSelect" style="background:#1e293b; color:#403653; border:1px solid #334155; padding:8px 12px; border-radius:8px; font-size:0.9rem; min-width:240px;" onchange="loadProductPriceHistory(this.value)">
           <option value="1">Wireless Over-Ear ANC Headphones</option>
           <option value="2">Mechanical RGB Gaming Keyboard</option>
           <option value="3">4K Ultra HD Smart LED TV (55 inch)</option>
           <option value="4">Men's Breathable Running Shoes</option>
           <option value="5">Smart Stainless Steel Electric Kettle</option>
         </select>
-        <button class="btn btn-primary" onclick="trackCurrentProduct()" style="padding:8px 14px; border-radius:8px; font-size:0.85rem; background:#6366f1; color:#fff; border:none; cursor:pointer;">
+        <button class="btn btn-primary" onclick="trackCurrentProduct()" style="padding:8px 14px; border-radius:8px; font-size:0.85rem; background:#6366f1; color:#403653; border:none; cursor:pointer;">
           + Track Price Drop
         </button>
       </div>
     </div>
 
     <!-- AI Advisor Banner -->
-    <div id="aiAdvisorBox" style="background:rgba(99, 102, 241, 0.1); border:1px solid rgba(99, 102, 241, 0.3); border-radius:10px; padding:16px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+    <div id="aiAdvisorBox" style="background:#F7F3FF; border:1px solid #EAE1F4; border-radius:10px; padding:16px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
       <div style="display:flex; align-items:center; gap:14px;">
-        <div id="advisorBadge" style="background:#10b981; color:#fff; font-weight:700; padding:6px 14px; border-radius:8px; font-size:0.9rem; letter-spacing:0.5px;">
+        <div id="advisorBadge" style="background:#10b981; color:#403653; font-weight:700; padding:6px 14px; border-radius:8px; font-size:0.9rem; letter-spacing:0.5px;">
           BUY NOW
         </div>
         <div>
-          <div style="font-weight:600; color:#f1f5f9; font-size:0.95rem;" id="advisorTitle">Current Price is at 60-Day Low</div>
-          <div style="color:#cbd5e1; font-size:0.85rem;" id="advisorReason">Historical data indicates current price is within 3% of the recorded all-time low.</div>
+          <div style="font-weight:600; color:#403653; font-size:0.95rem;" id="advisorTitle">Current Price is at 60-Day Low</div>
+          <div style="color:#81778E; font-size:0.85rem;" id="advisorReason">Historical data indicates current price is within 3% of the recorded all-time low.</div>
         </div>
       </div>
       <div style="display:flex; gap:20px; font-size:0.85rem;">
@@ -112,7 +147,7 @@
           <span style="color:#94a3b8;">Lowest:</span> <strong style="color:#10b981;">₹<span id="statLowest">--</span></strong>
         </div>
         <div>
-          <span style="color:#94a3b8;">Average:</span> <strong style="color:#f1f5f9;">₹<span id="statAverage">--</span></strong>
+          <span style="color:#94a3b8;">Average:</span> <strong style="color:#403653;">₹<span id="statAverage">--</span></strong>
         </div>
         <div>
           <span style="color:#94a3b8;">Highest:</span> <strong style="color:#ef4444;">₹<span id="statHighest">--</span></strong>
@@ -127,16 +162,16 @@
   </div>
 
   <!-- Active Tracked Products Table -->
-  <div class="card" style="background:#111827; border:1px solid #1e293b; border-radius:12px; padding:24px; margin-bottom:24px;">
+  <div class="card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:24px; margin-bottom:24px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
-      <h3 style="margin:0; color:#f1f5f9; font-size:1.25rem;">Active Price Drop Alerts</h3>
+      <h3 style="margin:0; color:#403653; font-size:1.25rem;">Active Price Drop Alerts</h3>
       <span style="font-size:0.85rem; color:#94a3b8;">PreTwin checks catalogue prices automatically</span>
     </div>
 
     <div style="overflow-x:auto;">
-      <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.9rem; color:#cbd5e1;">
+      <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.9rem; color:#81778E;">
         <thead>
-          <tr style="border-bottom:1px solid #1e293b; color:#94a3b8; font-size:0.8rem; text-transform:uppercase;">
+          <tr style="border-bottom:1px solid #EAE1F4; color:#94a3b8; font-size:0.8rem; text-transform:uppercase;">
             <th style="padding:10px 14px;">Product</th>
             <th style="padding:10px 14px;">Category</th>
             <th style="padding:10px 14px;">Target Price</th>

@@ -81,8 +81,8 @@ function renderTrackedTable(items) {
   tbody.innerHTML = items.map(item => {
     const isReached = item.is_drop_reached;
     return `
-      <tr style="border-bottom:1px solid #1e293b; transition:background 0.2s ease;">
-        <td style="padding:12px 14px; font-weight:600; color:#f1f5f9;">
+      <tr style="border-bottom:1px solid #EAE1F4; transition:background 0.2s ease;">
+        <td style="padding:12px 14px; font-weight:600; color:#403653;">
           <div style="display:flex; align-items:center; gap:10px;">
             ${item.image_url ? `<img src="${item.image_url}" style="width:36px; height:36px; object-fit:contain; border-radius:6px; background:#fff; padding:2px;">` : ""}
             <span>${item.name || "Product #" + item.product_id}</span>
@@ -90,7 +90,7 @@ function renderTrackedTable(items) {
         </td>
         <td style="padding:12px 14px; color:#94a3b8;">${item.category || "General"}</td>
         <td style="padding:12px 14px; color:#22d3ee; font-weight:600;">₹${Math.round(item.target_price).toLocaleString("en-IN")}</td>
-        <td style="padding:12px 14px; color:#f1f5f9; font-weight:600;">₹${Math.round(item.current_price).toLocaleString("en-IN")}</td>
+        <td style="padding:12px 14px; color:#403653; font-weight:600;">₹${Math.round(item.current_price).toLocaleString("en-IN")}</td>
         <td style="padding:12px 14px;">
           ${isReached
             ? `<span style="background:rgba(16, 185, 129, 0.2); color:#10b981; border:1px solid #10b981; padding:3px 8px; border-radius:6px; font-size:0.75rem; font-weight:700;">🎯 TARGET REACHED (-₹${Math.round(item.savings_amount)})</span>`

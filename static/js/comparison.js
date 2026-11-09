@@ -45,7 +45,7 @@ function renderSelectedPills() {
     const p = window.catalogMap?.[id] || (window.allCatalogProducts && window.allCatalogProducts.find(x => x.id === id));
     const title = p ? p.name : `Product #${id}`;
     return `
-      <span style="display:inline-flex; align-items:center; gap:6px; background:#1e293b; border:1px solid #475569; color:#f1f5f9; padding:4px 10px; border-radius:16px; font-size:0.8rem;">
+      <span style="display:inline-flex; align-items:center; gap:6px; background:#E9DDFB; border:1px solid #C4A6F5; color:#403653; padding:4px 10px; border-radius:16px; font-size:0.8rem;">
         <span>${title}</span>
         <button onclick="removeProductFromComparison(${id})" style="background:none; border:none; color:#f87171; cursor:pointer; font-weight:700; font-size:12px; line-height:1;" title="Remove">&times;</button>
       </span>
@@ -151,7 +151,7 @@ function renderComparisonTable(products, winnerId, winnerReason) {
 
   // Build header columns
   thead.innerHTML = `
-    <th class="spec-col-header" style="width: 220px; padding: 18px 20px; position: sticky; left: 0; background: #1e293b; z-index: 2; border-right: 1px solid #334155; color: #94a3b8; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">
+    <th class="spec-col-header" style="width: 220px; padding: 18px 20px; position: sticky; left: 0; background: #F7F3FF; z-index: 2; border-right: 1px solid #EAE1F4; color: #81778E; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">
       Products &amp; Criteria
     </th>
     ${products.map((p) => {
@@ -163,18 +163,18 @@ function renderComparisonTable(products, winnerId, winnerReason) {
       const name = p.product_name || p.name || 'Product';
 
       return `
-        <th class="comp-col-header" style="min-width: 240px; padding: 18px 16px; text-align: center; border-right: 1px solid #334155; vertical-align: top; background: ${isWinner ? 'rgba(124, 58, 237, 0.12)' : '#1e293b'};">
+        <th class="comp-col-header" style="min-width: 240px; padding: 18px 16px; text-align: center; border-right: 1px solid #EAE1F4; vertical-align: top; background: ${isWinner ? '#E9DDFB' : '#FFFDF9'}; color: #403653;">
           <div style="position:relative;">
             <button onclick="removeProductFromComparison(${pid})" style="position:absolute; top:-6px; right:-6px; background:#334155; color:#cbd5e1; border:none; border-radius:50%; width:24px; height:24px; font-weight:700; cursor:pointer; font-size:14px; line-height:1;" title="Remove this product">&times;</button>
             
             ${isWinner ? '<div style="display:inline-block; background:#7c3aed; color:#fff; font-size:0.7rem; font-weight:800; padding:3px 10px; border-radius:10px; text-transform:uppercase; margin-bottom:8px;">👑 Top Pick</div>' : ''}
             ${isLowest ? '<div style="display:inline-block; background:#10b981; color:#fff; font-size:0.7rem; font-weight:800; padding:3px 10px; border-radius:10px; text-transform:uppercase; margin-bottom:8px; margin-left:4px;">🏷️ Lowest Price</div>' : ''}
 
-            <div style="width: 100px; height: 100px; margin: 0 auto 10px auto; background: #0f172a; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #334155;">
+            <div style="width: 100px; height: 100px; margin: 0 auto 10px auto; background: #F7F3FF; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #334155;">
               <img src="${img}" alt="${name}" style="max-width: 90%; max-height: 90%; object-fit: contain;" onerror="this.onerror=null; this.src='${fallbackImg}';">
             </div>
 
-            <div style="font-size: 0.95rem; font-weight: 700; color: #f1f5f9; line-height: 1.3; min-height: 38px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" title="${name}">
+            <div style="font-size: 0.95rem; font-weight: 700; color: #403653; line-height: 1.3; min-height: 38px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" title="${name}">
               ${name}
             </div>
 
@@ -213,7 +213,7 @@ function renderComparisonTable(products, winnerId, winnerReason) {
 
   // Section 1: Overview & Brand
   html += `
-    <tr style="background:#1e293b;"><td colspan="${products.length + 1}" style="padding:10px 18px; font-weight:800; color:#c084fc; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">1. Product Basics &amp; Trust</td></tr>
+    <tr style="background:#F7F3FF;"><td colspan="${products.length + 1}" style="padding:10px 18px; font-weight:800; color:#403653; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">1. Product Basics &amp; Trust</td></tr>
     ${createRow('Category', (p) => p.category || '--', products, winnerId)}
     ${createRow('Brand', (p) => p.brand ? `<strong>${p.brand}</strong>` : '--', products, winnerId)}
     ${createRow('Customer Rating', (p) => `⭐ ${(Number(p.rating) || 4.4).toFixed(1)} / 5.0`, products, winnerId)}
@@ -222,7 +222,7 @@ function renderComparisonTable(products, winnerId, winnerReason) {
 
   // Section 2: Pricing & Budget
   html += `
-    <tr style="background:#1e293b;"><td colspan="${products.length + 1}" style="padding:10px 18px; font-weight:800; color:#c084fc; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">2. Price &amp; Value Analysis</td></tr>
+    <tr style="background:#F7F3FF;"><td colspan="${products.length + 1}" style="padding:10px 18px; font-weight:800; color:#403653; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">2. Price &amp; Value Analysis</td></tr>
     ${createRow('Current Price', (p) => `<span style="font-weight:700; color:#38bdf8;">${formatPrice(p.price)}</span>`, products, winnerId)}
     ${createRow('Price Comparison', (p) => {
       const diff = Number(p.price) - minPrice;
@@ -234,7 +234,7 @@ function renderComparisonTable(products, winnerId, winnerReason) {
 
   // Section 3: Verified Catalogue Specs
   if (specRows.length > 0) {
-    html += `<tr style="background:#1e293b;"><td colspan="${products.length + 1}" style="padding:10px 18px; font-weight:800; color:#c084fc; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">3. Verified Catalogue Specifications</td></tr>`;
+    html += `<tr style="background:#F7F3FF;"><td colspan="${products.length + 1}" style="padding:10px 18px; font-weight:800; color:#403653; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">3. Verified Catalogue Specifications</td></tr>`;
     specRows.forEach(key => {
       html += createRow(key.replace(/_/g, ' '), (p) => {
         let s = p.specifications || p.specs || {};
@@ -248,7 +248,7 @@ function renderComparisonTable(products, winnerId, winnerReason) {
 
   // Section 4: Agent D Decision Insights
   html += `
-    <tr style="background:#1e293b;"><td colspan="${products.length + 1}" style="padding:10px 18px; font-weight:800; color:#c084fc; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">4. Agent D Decision Intelligence</td></tr>
+    <tr style="background:#F7F3FF;"><td colspan="${products.length + 1}" style="padding:10px 18px; font-weight:800; color:#403653; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">4. Agent D Decision Intelligence</td></tr>
     ${createRow('Key Advantages', (p) => {
       const adv = Array.isArray(p.advantages) ? p.advantages : [p.advantages || 'High quality build'];
       return `<ul style="margin:0; padding-left:18px; text-align:left; color:#a7f3d0; font-size:0.82rem;">${adv.map(a => `<li>${a}</li>`).join('')}</ul>`;
@@ -259,7 +259,7 @@ function renderComparisonTable(products, winnerId, winnerReason) {
     }, products, winnerId)}
     ${createRow('Agent D Score', (p) => {
       const score = p.comparison_score || (p.scores && p.scores.composite) || 85.0;
-      return `<div style="font-weight:800; color:#c084fc; font-size:1.05rem;">${score} pts</div>`;
+      return `<div style="font-weight:800; color:#403653; font-size:1.05rem;">${score} pts</div>`;
     }, products, winnerId)}
   `;
 
@@ -268,15 +268,15 @@ function renderComparisonTable(products, winnerId, winnerReason) {
 
 function createRow(label, valueFn, products, winnerId) {
   return `
-    <tr style="border-bottom: 1px solid #1e293b;">
-      <td class="spec-label" style="padding: 14px 18px; font-weight: 600; color: #cbd5e1; background: #0f172a; position: sticky; left: 0; z-index: 1; border-right: 1px solid #334155; font-size: 0.88rem;">
+    <tr style="border-bottom: 1px solid #EAE1F4;">
+      <td class="spec-label" style="padding: 14px 18px; font-weight: 600; color: #cbd5e1; background: #F7F3FF; position: sticky; left: 0; z-index: 1; border-right: 1px solid #EAE1F4; font-size: 0.88rem;">
         ${label}
       </td>
       ${products.map(p => {
         const pid = p.product_id || p.id;
         const isWinner = pid === winnerId;
         return `
-          <td style="padding: 14px 16px; text-align: center; color: #f1f5f9; border-right: 1px solid #1e293b; background: ${isWinner ? 'rgba(124, 58, 237, 0.05)' : 'transparent'}; font-size: 0.88rem; vertical-align: middle;">
+          <td style="padding: 14px 16px; text-align: center; color: #403653; border-right: 1px solid #EAE1F4; background: ${isWinner ? 'rgba(124, 58, 237, 0.05)' : 'transparent'}; font-size: 0.88rem; vertical-align: middle;">
             ${valueFn(p)}
           </td>
         `;

@@ -4,29 +4,29 @@
 
 {% block content %}
 <div class="fk-container" style="padding-top: 10px; padding-bottom: 30px;">
-  <!-- PreTwin AI Natural-Language Finder & Visual Search Strip -->
-  <div style="background: linear-gradient(135deg, #181438 0%, #2e1065 50%, #1e1b4b 100%); border: 1px solid rgba(167, 139, 250, 0.35); padding: 18px 24px; border-radius: 10px; margin-bottom: 14px; color: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.15);">
+  <!-- PreTwin AI Natural-Language Finder & Visual Search Strip (Soft Lavender & Warm Ivory) -->
+  <div style="background: linear-gradient(135deg, #F7F3FF 0%, #FFFDF9 50%, #E9DDFB 100%); border: 1px solid #EAE1F4; padding: 20px 24px; border-radius: 14px; margin-bottom: 14px; color: #403653; box-shadow: 0 6px 20px rgba(64,54,83,0.05);">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
       <div style="display:flex; align-items:center; gap:10px;">
-        <span style="font-size:1.4rem;">🔮</span>
+        <span style="font-size:1.4rem;">🔍</span>
         <div>
-          <strong style="font-size:1.05rem; color:#fff;">Smart Product Discovery AI</strong>
-          <span style="font-size:0.8rem; color:#cbd5e1; margin-left:8px;">Semantic Intent Parser &amp; Visual Search</span>
+          <strong style="font-size:1.05rem; color:#403653;">Smart Product Discovery AI</strong>
+          <span style="font-size:0.8rem; color:#81778E; margin-left:8px;">Semantic Intent Parser &amp; Visual Search</span>
         </div>
       </div>
       <div>
-        <button onclick="triggerVisualSearchModal()" style="background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.25); padding:6px 14px; border-radius:6px; font-size:0.8rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+        <button onclick="triggerVisualSearchModal()" style="background:#E9DDFB; color:#403653; border:1px solid #C4A6F5; padding:6px 14px; border-radius:8px; font-size:0.8rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition: transform 0.2s ease;">
           <span>📷 Visual Product Search</span>
         </button>
       </div>
     </div>
     <div style="display:flex; gap:10px;">
-      <input type="text" id="aiNlSearchInput" placeholder="Try natural search: 'Running shoes under 2000 for gym' or 'Silent mechanical keyboard for work'" style="flex:1; background:#ffffff; color:#212121; border:none; padding:10px 16px; border-radius:6px; font-size:0.9rem; outline:none;" onkeypress="if(event.key==='Enter') executeNlSearch()">
-      <button onclick="executeNlSearch()" style="background:#2874f0; color:#fff; border:none; padding:10px 20px; border-radius:6px; font-weight:600; font-size:0.9rem; cursor:pointer;">
+      <input type="text" id="aiNlSearchInput" placeholder="Try natural search: 'Running shoes under 2000 for gym' or 'Silent mechanical keyboard for work'" style="flex:1; background:#ffffff; color:#403653; border:1.5px solid #EAE1F4; padding:10px 16px; border-radius:8px; font-size:0.9rem; outline:none;" onkeypress="if(event.key==='Enter') executeNlSearch()">
+      <button onclick="executeNlSearch()" style="background:linear-gradient(135deg, #C4A6F5 0%, #A78BFA 60%, #D6B875 100%); color:#fff; border:none; padding:10px 20px; border-radius:8px; font-weight:700; font-size:0.9rem; cursor:pointer; box-shadow:0 4px 14px rgba(196,166,245,0.35);">
         AI Search
       </button>
     </div>
-    <div id="nlSearchFeedback" style="display:none; margin-top:10px; font-size:0.8rem; color:#c4b5fd;"></div>
+    <div id="nlSearchFeedback" style="display:none; margin-top:10px; font-size:0.8rem; color:#81778E;"></div>
   </div>
 
   <div style="display: flex; gap: 12px; align-items: flex-start;">

@@ -17,9 +17,9 @@ function switchTwinTab(tabKey) {
         btn.style.background = 'rgba(99, 102, 241, 0.2)';
         btn.style.color = '#c4b5fd';
       } else {
-        btn.style.borderColor = '#334155';
-        btn.style.background = '#1e293b';
-        btn.style.color = '#94a3b8';
+        btn.style.borderColor = '#EAE1F4';
+        btn.style.background = '#FFFDF9';
+        btn.style.color = '#81778E';
       }
     }
   });
@@ -299,7 +299,7 @@ async function loadTwinRecommendations() {
     }
 
     grid.innerHTML = topRecs.map(p => `
-      <div class="card" style="background:#1e293b; border:1px solid #334155; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; position:relative; transition:transform 0.2s, border-color 0.2s;" id="recCard-${p.id}">
+      <div class="card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; position:relative; transition:transform 0.2s, border-color 0.2s;" id="recCard-${p.id}">
         <!-- Dismiss Action -->
         <button onclick="dismissRecommendation(${p.id})" style="position:absolute; top:8px; right:8px; background:rgba(15,23,42,0.7); border:none; color:#94a3b8; width:26px; height:26px; border-radius:50%; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2;" title="Dismiss recommendation">
           &times;
@@ -318,7 +318,7 @@ async function loadTwinRecommendations() {
           </div>
 
           <!-- Product Name -->
-          <h4 style="margin:0 0 8px 0; color:#f1f5f9; font-size:0.9rem; font-weight:600; line-height:1.3; height:38px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
+          <h4 style="margin:0 0 8px 0; color:#403653; font-size:0.9rem; font-weight:600; line-height:1.3; height:38px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
             ${p.name}
           </h4>
 
@@ -335,14 +335,14 @@ async function loadTwinRecommendations() {
         </div>
 
         <!-- Action Buttons -->
-        <div style="padding:12px 14px; background:#0f172a; border-top:1px solid #334155; display:flex; gap:8px;">
+        <div style="padding:12px 14px; background:#F7F3FF; border-top:1px solid #EAE1F4; display:flex; gap:8px;">
           <button onclick="addToCartById(${p.id})" style="flex:1; background:linear-gradient(135deg, #6366f1, #a855f7); color:#fff; border:none; padding:8px 10px; border-radius:6px; font-weight:600; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:4px;">
             <span>🛒</span> Add to Cart
           </button>
-          <button onclick="toggleWishlistById(${p.id})" style="background:#1e293b; border:1px solid #475569; color:#f87171; width:34px; height:34px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px;" title="Save to Wishlist">
+          <button onclick="toggleWishlistById(${p.id})" style="background:#E9DDFB; border:1px solid #C4A6F5; color:#f87171; width:34px; height:34px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px;" title="Save to Wishlist">
             ❤️
           </button>
-          <button onclick="likeRecommendation(${p.id})" style="background:#1e293b; border:1px solid #475569; color:#38bdf8; width:34px; height:34px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px;" title="Helpful match">
+          <button onclick="likeRecommendation(${p.id})" style="background:#E9DDFB; border:1px solid #C4A6F5; color:#38bdf8; width:34px; height:34px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px;" title="Helpful match">
             👍
           </button>
         </div>
@@ -394,9 +394,9 @@ function renderGoalsList(goals) {
   }
 
   container.innerHTML = goals.map((g) => `
-    <div class="goal-item-card" style="background:#1e293b; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #334155;">
+    <div class="goal-item-card" style="background:#FFFDF9; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #EAE1F4;">
       <div class="flex-between">
-        <strong class="goal-title" style="color:#f1f5f9;">${g.goal_title}</strong>
+        <strong class="goal-title" style="color:#403653;">${g.goal_title}</strong>
         <button class="btn btn-sm btn-outline-danger" onclick="deleteGoal(${g.id})">Delete</button>
       </div>
       <p class="goal-desc text-muted text-sm mt-1" style="color:#94a3b8; font-size:0.85rem;">${g.goal_description || ''}</p>
@@ -624,7 +624,7 @@ async function loadHouseholdProfiles() {
     strip.innerHTML = profiles.map(p => {
       const isActive = p.is_active === 1;
       return `
-        <button onclick="switchHouseholdProfile(${p.id})" style="display:flex; align-items:center; gap:8px; padding:6px 14px; border-radius:20px; border:1px solid ${isActive ? '#a855f7' : '#334155'}; background:${isActive ? 'rgba(168, 85, 247, 0.2)' : '#1e293b'}; color:${isActive ? '#fff' : '#94a3b8'}; cursor:pointer; font-size:0.85rem; font-weight:${isActive ? '700' : '500'};">
+        <button onclick="switchHouseholdProfile(${p.id})" style="display:flex; align-items:center; gap:8px; padding:6px 14px; border-radius:20px; border:1px solid ${isActive ? '#C4A6F5' : '#EAE1F4'}; background:${isActive ? '#E9DDFB' : '#FFFDF9'}; color:${isActive ? '#403653' : '#81778E'}; cursor:pointer; font-size:0.85rem; font-weight:${isActive ? '700' : '500'};">
           <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${p.avatar_color || '#8b5cf6'};"></span>
           <span>${p.profile_name} (${p.relationship || 'Self'})</span>
           ${isActive ? '<span style="font-size:0.7rem; background:#10b981; color:#fff; padding:1px 5px; border-radius:10px;">ACTIVE</span>' : ''}
@@ -799,7 +799,7 @@ function renderFrequentlyPurchased(items) {
 
   if (!items || items.length === 0) {
     grid.innerHTML = `
-      <div style="color:#64748b; font-size:0.85rem; padding:18px; grid-column:1 / -1; text-align:center; background:#1e293b; border-radius:10px; border:1px dashed #334155;">
+      <div style="color:#64748b; font-size:0.85rem; padding:18px; grid-column:1 / -1; text-align:center; background:#FFFDF9; border-radius:10px; border:1px dashed #C4A6F5;">
         No repeat purchases observed yet. As you make purchases on PreTwin AI, your frequent items will appear here for 1-click replenishment.
       </div>
     `;
@@ -807,7 +807,7 @@ function renderFrequentlyPurchased(items) {
   }
 
   grid.innerHTML = items.slice(0, 6).map(it => `
-    <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.2s;">
+    <div style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.2s;">
       <div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
           <span style="font-size:0.7rem; color:#38bdf8; background:rgba(56,189,248,0.1); padding:2px 6px; border-radius:4px; font-weight:600;">${it.category}</span>
@@ -856,7 +856,7 @@ function renderReplenishmentPredictions(predictions) {
 
   if (!predictions || predictions.length === 0) {
     grid.innerHTML = `
-      <div style="color:#64748b; font-size:0.85rem; padding:20px; grid-column:1 / -1; text-align:center; background:#1e293b; border-radius:10px; border:1px dashed #334155;">
+      <div style="color:#64748b; font-size:0.85rem; padding:20px; grid-column:1 / -1; text-align:center; background:#FFFDF9; border-radius:10px; border:1px dashed #C4A6F5;">
         No repeat replenishment forecasts active yet. Predictions activate automatically as repeat orders or consumable goods are delivered.
       </div>
     `;
@@ -870,7 +870,7 @@ function renderReplenishmentPredictions(predictions) {
     const statusText = isOver ? 'Restock Overdue' : (isDue ? 'Due Soon' : 'Upcoming');
 
     return `
-      <div style="background:#1e293b; border:1px solid ${statusColor}44; border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; position:relative;">
+      <div style="background:#FFFDF9; border:1px solid ${statusColor}66; border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; position:relative;">
         <div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
             <span style="font-size:0.7rem; color:${statusColor}; background:${statusColor}18; border:1px solid ${statusColor}33; padding:2px 8px; border-radius:12px; font-weight:700;">
@@ -881,12 +881,12 @@ function renderReplenishmentPredictions(predictions) {
           <h4 style="margin:4px 0 6px; font-size:0.95rem; color:#f8fafc; font-weight:600;">
             ${pred.product_name}
           </h4>
-          <div style="font-size:0.8rem; color:#cbd5e1; margin-bottom:8px;">
+          <div style="font-size:0.8rem; color:#81778E; margin-bottom:8px;">
             <strong style="color:#38bdf8;">Estimated Restock:</strong> ${pred.estimated_replenishment_date}
             <span style="color:#64748b; font-size:0.75rem;">(Window: ${pred.estimated_window_start} to ${pred.estimated_window_end})</span>
           </div>
           <div style="background:#0f172a; border-left:3px solid #38bdf8; padding:8px 10px; border-radius:0 6px 6px 0; font-size:0.75rem; color:#94a3b8; margin-bottom:12px; line-height:1.35;">
-            <strong style="color:#cbd5e1;">Agent Evidence:</strong> ${pred.evidence_explanation}
+            <strong style="color:#81778E;">Agent Evidence:</strong> ${pred.evidence_explanation}
           </div>
         </div>
         <div>
@@ -913,7 +913,7 @@ function renderCoordinatedRecommendations(recs) {
   }
 
   grid.innerHTML = recs.map(p => `
-    <div class="card" style="background:#1e293b; border:1px solid #334155; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; position:relative; transition:transform 0.2s, border-color 0.2s;" id="recCard-${p.id}">
+    <div class="card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; position:relative; transition:transform 0.2s, border-color 0.2s;" id="recCard-${p.id}">
       <!-- Dismiss Action -->
       <button onclick="dismissRecommendation(${p.id})" style="position:absolute; top:8px; right:8px; background:rgba(15,23,42,0.8); border:1px solid #334155; color:#94a3b8; width:26px; height:26px; border-radius:50%; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2;" title="Dismiss recommendation">
         &times;
@@ -932,7 +932,7 @@ function renderCoordinatedRecommendations(recs) {
         </div>
 
         <!-- Product Name -->
-        <h4 style="margin:0 0 8px 0; color:#f1f5f9; font-size:0.9rem; font-weight:600; line-height:1.3; height:38px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
+        <h4 style="margin:0 0 8px 0; color:#403653; font-size:0.9rem; font-weight:600; line-height:1.3; height:38px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
           ${p.name}
         </h4>
 
@@ -949,11 +949,11 @@ function renderCoordinatedRecommendations(recs) {
       </div>
 
       <!-- Action Buttons -->
-      <div style="padding:12px 14px; background:#0f172a; border-top:1px solid #334155; display:flex; gap:8px;">
+      <div style="padding:12px 14px; background:#F7F3FF; border-top:1px solid #EAE1F4; display:flex; gap:8px;">
         <button onclick="addToCartById(${p.id})" style="flex:1; background:linear-gradient(135deg, #6366f1, #a855f7); color:#fff; border:none; padding:8px 10px; border-radius:6px; font-weight:600; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:4px;">
           <span>🛒</span> Add to Cart
         </button>
-        <button onclick="toggleWishlistById(${p.id})" style="background:#1e293b; border:1px solid #475569; color:#f87171; width:34px; height:34px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px;" title="Save to Wishlist">
+        <button onclick="toggleWishlistById(${p.id})" style="background:#E9DDFB; border:1px solid #C4A6F5; color:#f87171; width:34px; height:34px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px;" title="Save to Wishlist">
           ❤️
         </button>
       </div>

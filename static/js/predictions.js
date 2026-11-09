@@ -41,9 +41,9 @@ function filterPredictions(filter) {
       p.style.background = 'rgba(99,102,241,0.2)';
       p.style.color = '#c4b5fd';
     } else {
-      p.style.borderColor = '#334155';
-      p.style.background = '#1e293b';
-      p.style.color = '#94a3b8';
+      p.style.borderColor = '#EAE1F4';
+      p.style.background = '#FFFDF9';
+      p.style.color = '#81778E';
     }
   });
 
@@ -78,7 +78,7 @@ function renderUpcomingNeedsTimeline() {
     const badgeLabel = idx === 0 ? '⚡ Immediate Replenishment' : idx === 1 ? '⏳ Near Term Need' : '📅 Forward Horizon';
 
     return `
-      <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; position:relative;">
+      <div style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; position:relative;">
         <div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <span style="font-size:0.75rem; font-weight:700; color:#38bdf8; background:rgba(56,189,248,0.15); padding:2px 8px; border-radius:10px; border:1px solid rgba(56,189,248,0.3);">
@@ -89,7 +89,7 @@ function renderUpcomingNeedsTimeline() {
             </span>
           </div>
 
-          <h4 style="margin:0 0 6px 0; color:#f1f5f9; font-size:1.05rem; font-weight:700;">
+          <h4 style="margin:0 0 6px 0; color:#403653; font-size:1.05rem; font-weight:700;">
             ${product}
           </h4>
           <div style="font-size:0.8rem; color:#c4b5fd; margin-bottom:8px;">
@@ -97,15 +97,15 @@ function renderUpcomingNeedsTimeline() {
           </div>
 
           <!-- Transparent Explanation -->
-          <div style="background:#0f172a; border-left:3px solid #6366f1; padding:8px 10px; border-radius:0 6px 6px 0; font-size:0.75rem; color:#cbd5e1; margin-bottom:14px; line-height:1.4;">
+          <div style="background:#0f172a; border-left:3px solid #6366f1; padding:8px 10px; border-radius:0 6px 6px 0; font-size:0.75rem; color:#81778E; margin-bottom:14px; line-height:1.4;">
             <strong style="color:#a855f7;">Heuristic Reason:</strong> ${p.reason || 'Calculated from voluntary purchase velocity and category cadence.'}
           </div>
         </div>
 
         <!-- Direct Recommendation Link -->
-        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #334155; padding-top:12px; margin-top:8px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #EAE1F4; padding-top:12px; margin-top:8px;">
           <span style="font-size:0.75rem; color:#94a3b8;">${p.recommended_action || 'Review matched options'}</span>
-          <a href="/discovery?category=${encodeURIComponent(category)}" style="background:linear-gradient(135deg, #6366f1, #a855f7); color:#fff; text-decoration:none; padding:6px 12px; border-radius:6px; font-size:0.8rem; font-weight:600; display:inline-flex; align-items:center; gap:4px;">
+          <a href="/discovery?category=${encodeURIComponent(category)}" style="background:linear-gradient(135deg, #C4A6F5, #A78BFA, #D6B875); color:#fff; text-decoration:none; padding:6px 12px; border-radius:6px; font-size:0.8rem; font-weight:600; display:inline-flex; align-items:center; gap:4px;">
             Shop ${category} ➔
           </a>
         </div>
@@ -132,9 +132,9 @@ function renderPredictions() {
     grid.innerHTML = `
       <div class="empty-state py-5 w-100" style="text-align:center; padding:30px; grid-column:1/-1;">
         <span class="empty-icon" style="font-size:2rem; display:block; margin-bottom:8px;">🔮</span>
-        <h4 style="color:#f1f5f9; margin:0 0 6px;">No Predictions in this View</h4>
+        <h4 style="color:#403653; margin:0 0 6px;">No Predictions in this View</h4>
         <p style="color:#94a3b8; font-size:0.85rem;">No predicted shopping needs match your current filter. Generate fresh predictions to re-analyze your profile.</p>
-        <button class="btn btn-primary mt-2" onclick="generateNewPredictions()" style="background:#6366f1; color:#fff; border:none; padding:8px 16px; border-radius:6px; font-size:0.85rem; cursor:pointer;">Generate Fresh Predictions</button>
+        <button class="btn btn-primary mt-2" onclick="generateNewPredictions()" style="background:linear-gradient(135deg, #C4A6F5, #A78BFA, #D6B875); color:#fff; border:none; padding:8px 16px; border-radius:6px; font-size:0.85rem; cursor:pointer;">Generate Fresh Predictions</button>
       </div>
     `;
     return;
@@ -150,7 +150,7 @@ function renderPredictions() {
     const action = p.recommended_action || 'Review candidate items';
 
     return `
-      <div class="prediction-card" style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
+      <div class="prediction-card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
         <div>
           <div class="prediction-card-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <span class="category-pill" style="font-size:0.75rem; background:rgba(99,102,241,0.15); color:#c4b5fd; padding:2px 8px; border-radius:10px; border:1px solid rgba(99,102,241,0.3);">${category}</span>
@@ -158,19 +158,19 @@ function renderPredictions() {
           </div>
 
           <div class="prediction-card-body">
-            <h4 class="pred-title" style="margin:0 0 8px 0; color:#f1f5f9; font-size:1rem; font-weight:700;">${productName}</h4>
-            <p class="pred-reason" style="margin:0 0 12px 0; color:#cbd5e1; font-size:0.85rem; line-height:1.4;">${ruleReason}</p>
+            <h4 class="pred-title" style="margin:0 0 8px 0; color:#403653; font-size:1rem; font-weight:700;">${productName}</h4>
+            <p class="pred-reason" style="margin:0 0 12px 0; color:#81778E; font-size:0.85rem; line-height:1.4;">${ruleReason}</p>
 
             <div class="pred-meta-grid" style="background:#0f172a; padding:10px; border-radius:8px; font-size:0.75rem; color:#94a3b8; display:grid; gap:4px; margin-bottom:12px;">
-              <div><strong style="color:#cbd5e1;">⏱️ Timeframe:</strong> ${timeframe}</div>
-              <div><strong style="color:#cbd5e1;">💡 Suggested Action:</strong> ${action}</div>
+              <div><strong style="color:#81778E;">⏱️ Timeframe:</strong> ${timeframe}</div>
+              <div><strong style="color:#81778E;">💡 Suggested Action:</strong> ${action}</div>
             </div>
           </div>
         </div>
 
-        <div class="prediction-card-footer" style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #334155; padding-top:12px; margin-top:8px;">
+        <div class="prediction-card-footer" style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #EAE1F4; padding-top:12px; margin-top:8px;">
           <button class="btn btn-sm btn-outline-danger" onclick="dismissPrediction(${idx})" style="background:transparent; border:1px solid #ef4444; color:#ef4444; padding:4px 10px; border-radius:6px; font-size:0.75rem; cursor:pointer;">Dismiss</button>
-          <a href="/discovery?category=${encodeURIComponent(category)}" class="btn btn-sm btn-primary" style="background:#6366f1; color:#fff; text-decoration:none; padding:5px 12px; border-radius:6px; font-size:0.8rem; font-weight:600;">
+          <a href="/discovery?category=${encodeURIComponent(category)}" class="btn btn-sm btn-primary" style="background:linear-gradient(135deg, #C4A6F5, #A78BFA, #D6B875); color:#fff; text-decoration:none; padding:5px 12px; border-radius:6px; font-size:0.8rem; font-weight:600;">
             Find Products ➔
           </a>
         </div>
@@ -222,7 +222,7 @@ async function loadSeasonalSuggestions() {
     container.innerHTML = seasonalPicks.map((p, idx) => {
       const occasion = idx === 0 ? "☀️ Summer Tech & Hydration" : idx === 1 ? "🏃 Health & Fitness Cycle" : idx === 2 ? "💼 Workstation Efficiency" : "🏡 Home Comfort Upgrade";
       return `
-        <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; position:relative;" id="seasonalCard-${p.id}">
+        <div style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; position:relative;" id="seasonalCard-${p.id}">
           <button onclick="dismissSeasonalCard(${p.id})" style="position:absolute; top:8px; right:8px; background:rgba(15,23,42,0.6); border:none; color:#94a3b8; width:24px; height:24px; border-radius:50%; font-size:12px; cursor:pointer;" title="Dismiss">✕</button>
 
           <div>
@@ -232,7 +232,7 @@ async function loadSeasonalSuggestions() {
             <div style="height:100px; background:#fff; border-radius:6px; overflow:hidden; display:flex; align-items:center; justify-content:center; margin-bottom:10px;">
               <img src="${p.image_url || '/static/images/placeholder.png'}" alt="${p.name}" style="max-height:100%; max-width:100%; object-fit:contain;">
             </div>
-            <div style="font-size:0.85rem; font-weight:600; color:#f1f5f9; height:34px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
+            <div style="font-size:0.85rem; font-weight:600; color:#403653; height:34px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
               ${p.name}
             </div>
             <div style="font-size:1rem; font-weight:700; color:#38bdf8; margin:6px 0;">
@@ -241,7 +241,7 @@ async function loadSeasonalSuggestions() {
           </div>
 
           <div style="display:flex; gap:8px; margin-top:8px;">
-            <button onclick="addToCartById(${p.id})" style="flex:1; background:linear-gradient(135deg, #6366f1, #a855f7); color:#fff; border:none; padding:7px; border-radius:6px; font-size:0.75rem; font-weight:600; cursor:pointer;">
+            <button onclick="addToCartById(${p.id})" style="flex:1; background:linear-gradient(135deg, #C4A6F5, #A78BFA, #D6B875); color:#fff; border:none; padding:7px; border-radius:6px; font-size:0.75rem; font-weight:600; cursor:pointer;">
               🛒 Quick Add
             </button>
             <button onclick="toggleWishlistById(${p.id})" style="background:#0f172a; border:1px solid #475569; color:#f87171; padding:7px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem;">
@@ -295,9 +295,9 @@ async function loadReminders() {
       }
 
       return `
-        <div style="background:#1e293b; border:1px solid #334155; border-radius:8px; padding:12px 14px; display:flex; justify-content:space-between; align-items:center;">
+        <div style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:8px; padding:12px 14px; display:flex; justify-content:space-between; align-items:center;">
           <div>
-            <div style="font-weight:600; color:#f1f5f9; font-size:0.9rem;">${r.title}</div>
+            <div style="font-weight:600; color:#403653; font-size:0.9rem;">${r.title}</div>
             <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;">
               ${r.category} • Every ${r.estimated_cycle_days} days
             </div>

@@ -130,23 +130,23 @@ function renderCartItems(cart) {
   }
 
   container.innerHTML = cart.map((item, idx) => `
-    <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid #1e293b; gap:14px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid #EAE1F4; gap:14px;">
       <div style="display:flex; align-items:center; gap:14px;">
         ${item.image_url ? `<img src="${item.image_url}" style="width:54px; height:54px; object-fit:contain; border-radius:8px; background:#fff; padding:4px;">` : ""}
         <div>
-          <div style="font-weight:600; color:#f1f5f9; font-size:0.95rem;">${item.name}</div>
+          <div style="font-weight:600; color:#403653; font-size:0.95rem;">${item.name}</div>
           <div style="font-size:0.8rem; color:#94a3b8; margin-top:2px;">
             ${item.category || "General"} • ₹${Math.round(item.price).toLocaleString("en-IN")} each
           </div>
         </div>
       </div>
       <div style="display:flex; align-items:center; gap:16px;">
-        <div style="display:flex; align-items:center; background:#1e293b; border-radius:6px; border:1px solid #334155;">
-          <button onclick="changeQty(${idx}, -1)" style="background:transparent; border:none; color:#cbd5e1; padding:4px 10px; cursor:pointer; font-weight:700;">-</button>
-          <span style="color:#f1f5f9; font-size:0.85rem; padding:0 6px;">${item.quantity || 1}</span>
-          <button onclick="changeQty(${idx}, 1)" style="background:transparent; border:none; color:#cbd5e1; padding:4px 10px; cursor:pointer; font-weight:700;">+</button>
+        <div style="display:flex; align-items:center; background:#E9DDFB; border-radius:6px; border:1px solid #C4A6F5;">
+          <button onclick="changeQty(${idx}, -1)" style="background:transparent; border:none; color:#403653; padding:4px 10px; cursor:pointer; font-weight:700;">-</button>
+          <span style="color:#403653; font-size:0.85rem; padding:0 6px;">${item.quantity || 1}</span>
+          <button onclick="changeQty(${idx}, 1)" style="background:transparent; border:none; color:#403653; padding:4px 10px; cursor:pointer; font-weight:700;">+</button>
         </div>
-        <div style="font-weight:700; color:#f1f5f9; min-width:80px; text-align:right;">
+        <div style="font-weight:700; color:#403653; min-width:80px; text-align:right;">
           ₹${Math.round(item.price * (item.quantity || 1)).toLocaleString("en-IN")}
         </div>
         <button onclick="removeItem(${idx})" style="background:transparent; border:none; color:#ef4444; cursor:pointer; font-size:1.1rem; padding:4px;" title="Remove Item">×</button>
@@ -286,9 +286,9 @@ function renderCompanionItems(items) {
   }
 
   container.innerHTML = items.map(item => `
-    <div style="background:#1e293b; border:1px solid #334155; border-radius:8px; padding:12px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+    <div style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:8px; padding:12px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
       <div>
-        <div style="font-size:0.9rem; font-weight:600; color:#f1f5f9;">${item.name}</div>
+        <div style="font-size:0.9rem; font-weight:600; color:#403653;">${item.name}</div>
         <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;">${item.reason}</div>
         <div style="font-size:0.85rem; font-weight:700; color:#22d3ee; margin-top:4px;">₹${item.price}</div>
       </div>
