@@ -850,7 +850,7 @@ function scrollTrack(trackId, offset) {
 }
 
 function scrollCatBar(offset) {
-  const bar = document.getElementById('categoryBar');
+  const bar = document.getElementById('categoryBar') || document.getElementById('fkCatInner');
   if (bar) {
     bar.scrollBy({ left: offset, behavior: 'smooth' });
   }

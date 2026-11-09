@@ -617,156 +617,195 @@ input, select, textarea {
 }
 
 /* ==========================================================================
-   2. E-COMMERCE CATEGORY BAR (Slightly Reduced Height & Width)
+   2. E-COMMERCE CATEGORY BAR (Compact, Neatly Aligned, Highlighted Icons)
    ========================================================================== */
 .fk-category-bar {
   background: #ffffff;
-  box-shadow: var(--fk-shadow-sm);
-  max-width: 1180px;
-  width: calc(100% - 24px);
-  margin: 0 auto 8px auto;
-  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #f1f5f9;
+  width: 100%;
+  margin-bottom: 8px;
   position: relative;
   user-select: none;
 }
 
 .fk-cat-bar-wrapper {
-  max-width: 100%;
+  max-width: 1248px;
   margin: 0 auto;
   position: relative;
   display: flex;
   align-items: center;
+  padding: 0 4px;
+  box-sizing: border-box;
 }
 
 .fk-cat-inner {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 10px;
+  gap: 14px;
+  padding: 6px 36px; /* 36px clearance guarantees prev/next buttons NEVER overlap the first or last category */
   overflow-x: auto;
   scroll-behavior: smooth;
   scrollbar-width: none;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .fk-cat-inner::-webkit-scrollbar {
   display: none;
 }
 
+/* Category Navigation Scroll Buttons (Prev & Next) */
 .fk-cat-nav-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 26px;
-  height: 38px;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  width: 24px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 100;
-  font-size: 14px;
-  color: #212121;
+  font-size: 13px;
+  color: #334155;
   transition: all 0.2s ease;
 }
 
 .fk-cat-nav-btn:hover {
   background: #ffffff;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.16);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   color: var(--fk-blue);
+  border-color: #94a3b8;
 }
 
 .fk-cat-nav-btn.prev {
-  left: 0;
-  border-radius: 0 4px 4px 0;
+  left: 6px;
+  border-radius: 4px;
 }
 
 .fk-cat-nav-btn.next {
-  right: 0;
-  border-radius: 4px 0 0 4px;
+  right: 6px;
+  border-radius: 4px;
 }
 
+/* Category Item Container - Centered, Equal Spacing */
 .fk-cat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-decoration: none;
   cursor: pointer;
-  min-width: 72px;
+  min-width: 68px;
   flex-shrink: 0;
   position: relative;
-  padding: 4px 4px;
-  border-radius: 6px;
-  transition: all 0.2s ease;
+  padding: 3px 5px 4px 5px;
+  border-radius: 8px;
+  transition: all 0.18s ease;
+  box-sizing: border-box;
+  text-align: center;
 }
 
 .fk-cat-item:hover {
-  background: #f8faff;
+  background: rgba(40, 116, 240, 0.04);
 }
 
+.fk-cat-link-wrap {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+
+/* 3. Highlighted Category Icon Containers */
 .fk-cat-icon-circle {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
   flex-shrink: 0;
 }
 
 .fk-cat-item:hover .fk-cat-icon-circle {
-  transform: translateY(-2px) scale(1.06);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px) scale(1.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.85);
+  border-color: rgba(40, 116, 240, 0.4);
+}
+
+.fk-cat-item.active .fk-cat-icon-circle,
+.fk-cat-item:active .fk-cat-icon-circle {
+  border: 1.5px solid var(--fk-blue);
+  box-shadow: 0 0 0 2.5px rgba(40, 116, 240, 0.25), 0 2px 6px rgba(40, 116, 240, 0.2);
+  transform: translateY(-1px);
 }
 
 .fk-cat-icon-circle svg {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   transition: transform 0.2s ease;
 }
 
 .fk-cat-img-box {
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border-radius: 50%;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .fk-cat-img-box img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  transition: transform 0.25s ease;
+  transition: transform 0.2s ease;
 }
 
 .fk-cat-item:hover .fk-cat-img-box img {
-  transform: scale(1.06);
+  transform: scale(1.08);
 }
 
+/* Category Title */
 .fk-cat-title {
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 500;
   color: var(--fk-text);
-  margin-top: 4px;
+  margin-top: 3px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 3px;
   white-space: nowrap;
   text-align: center;
+  line-height: 1.2;
+  transition: color 0.15s ease;
 }
 
 .fk-cat-item:hover .fk-cat-title {
   color: var(--fk-blue);
 }
 
+.fk-cat-item.active .fk-cat-title {
+  color: var(--fk-blue);
+  font-weight: 700;
+}
+
 .fk-cat-caret {
-  font-size: 8px;
+  font-size: 7.5px;
   color: #878787;
   transition: transform 0.2s ease;
 }
@@ -775,25 +814,19 @@ input, select, textarea {
   transform: rotate(180deg);
 }
 
-@media (max-width: 768px) {
-  .fk-category-bar {
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto 6px auto;
-    border-radius: 0;
-  }
+/* Responsive category bar */
+@media (max-width: 1024px) {
   .fk-cat-inner {
-    gap: 8px;
-    padding: 6px 6px;
+    gap: 10px;
+    padding: 5px 32px;
   }
   .fk-cat-item {
-    min-width: 60px;
-    padding: 2px 2px;
+    min-width: 62px;
   }
   .fk-cat-icon-circle,
   .fk-cat-img-box {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
   }
   .fk-cat-icon-circle svg {
     width: 18px;
@@ -801,7 +834,37 @@ input, select, textarea {
   }
   .fk-cat-title {
     font-size: 11px;
-    margin-top: 3px;
+  }
+}
+
+@media (max-width: 768px) {
+  .fk-category-bar {
+    margin-bottom: 6px;
+  }
+  .fk-cat-bar-wrapper {
+    padding: 0 2px;
+  }
+  .fk-cat-inner {
+    gap: 8px;
+    padding: 5px 28px;
+  }
+  .fk-cat-item {
+    min-width: 56px;
+    padding: 2px 2px;
+  }
+  .fk-cat-icon-circle,
+  .fk-cat-img-box {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+  }
+  .fk-cat-icon-circle svg {
+    width: 17px;
+    height: 17px;
+  }
+  .fk-cat-title {
+    font-size: 10.5px;
+    margin-top: 2px;
   }
 }
 
