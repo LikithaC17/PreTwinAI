@@ -444,6 +444,15 @@ def comparison_page():
     return render_template("comparison.html")
 
 
+@app.route("/product/<int:product_id>")
+def product_detail_page(product_id: int):
+    prod = database.query_db("SELECT * FROM products WHERE id = ?", (product_id,), one=True)
+    if not prod:
+        return "Product not found", 404
+    p = row_to_dict(prod)
+    return render_template("dashboard.html", active_product=p)
+
+
 @app.route("/recommendations")
 def recommendations_page():
     return render_template("recommendations.html")
@@ -1132,6 +1141,74 @@ def clear_wishlist():
         return jsonify({"success": True, "message": "Wishlist cleared."})
     except Exception as e:
         return _error(f"Failed to clear wishlist: {str(e)}", 500)
+
+
+@app.route("/api/wishlist/toggle", methods=["POST"])
+def toggle_wishlist_api():
+    """Toggle wishlist item for customer."""
+    try:
+        user_id = get_current_user_id()
+        data = request.get_json(force=True) or {}
+        product_id = data.get("product_id")
+        if not product_id:
+            return _error("Product ID is required.", 400)
+        existing = database.query_db(
+            "SELECT id FROM wishlist_items WHERE user_id = ? AND product_id = ?",
+            (user_id, product_id),
+            one=True
+        )
+        if existing:
+            database.execute_db(
+                "DELETE FROM wishlist_items WHERE user_id = ? AND product_id = ?",
+                (user_id, product_id)
+            )
+            return jsonify({"success": True, "action": "removed", "product_id": product_id})
+        else:
+            database.execute_db(
+                "INSERT INTO wishlist_items (user_id, product_id) VALUES (?, ?)",
+                (user_id, product_id)
+            )
+            return jsonify({"success": True, "action": "added", "product_id": product_id})
+    except Exception as e:
+        return _error(str(e), 500)
+
+
+@app.route("/api/cart", methods=["GET", "POST"])
+def cart_api():
+    """Handle cart items for user."""
+    try:
+        user_id = get_current_user_id()
+        if request.method == "POST":
+            data = request.get_json(force=True) or {}
+            product_id = data.get("product_id")
+            qty = max(1, int(data.get("quantity", 1)))
+            if not product_id:
+                return _error("product_id is required", 400)
+            existing = database.query_db(
+                "SELECT id, quantity FROM cart_items WHERE user_id = ? AND product_id = ?",
+                (user_id, product_id),
+                one=True
+            )
+            if existing:
+                database.execute_db(
+                    "UPDATE cart_items SET quantity = quantity + ? WHERE user_id = ? AND product_id = ?",
+                    (qty, user_id, product_id)
+                )
+            else:
+                database.execute_db(
+                    "INSERT INTO cart_items (user_id, product_id, quantity) VALUES (?, ?, ?)",
+                    (user_id, product_id, qty)
+                )
+            return jsonify({"success": True, "message": "Product added to cart", "product_id": product_id, "quantity": qty})
+        else:
+            rows = database.query_db(
+                "SELECT c.id, c.product_id, c.quantity, p.name, p.price, p.image_url FROM cart_items c JOIN products p ON c.product_id = p.id WHERE c.user_id = ?",
+                (user_id,)
+            ) or []
+            items = [row_to_dict(r) for r in rows]
+            return jsonify({"items": items, "count": len(items)})
+    except Exception as e:
+        return _error(str(e), 500)
 
 
 # ---------------------------------------------------------------------------

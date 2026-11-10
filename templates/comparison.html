@@ -1,189 +1,694 @@
 {% extends "base.html" %}
 
 {% block title %}Product Comparison &amp; Decision Support — PreTwin AI{% endblock %}
-{% block page_title %}Feature &amp; Price Comparison (Agent D){% endblock %}
+{% block page_title %}Product Comparison &amp; Decision Support{% endblock %}
+
 {% block extra_head %}
 <style>
-/* PreTwin Lavender & Warm Ivory Theme Scoped for Comparison Page */
-.comparison-page {
-  background: #F7F3FF !important;
-  color: #403653 !important;
-  border-radius: 24px !important;
-  padding: 24px 20px 48px !important;
+/* PreTwin Soft Lavender + Warm Ivory + Champagne Gold Scoped Theme */
+:root {
+  --pt-bg: #F7F3FF;
+  --pt-card-bg: #FFFDF9;
+  --pt-primary: #C4A6F5;
+  --pt-primary-hover: #b18ef0;
+  --pt-secondary: #E9DDFB;
+  --pt-gold: #D6B875;
+  --pt-text: #403653;
+  --pt-text-muted: #81778E;
+  --pt-border: #EAE1F4;
+  --pt-success: #10B981;
+  --pt-warning: #F59E0B;
+  --pt-danger: #EF4444;
 }
-.comparison-page .card {
-  background: #FFFDF9 !important;
-  border: 1px solid #EAE1F4 !important;
-  color: #403653 !important;
-  box-shadow: 0 6px 20px rgba(64, 54, 83, 0.04) !important;
+
+.comparison-page-wrapper {
+  background: var(--pt-bg);
+  color: var(--pt-text);
+  border-radius: 20px;
+  padding: 24px 20px 80px;
+  max-width: 1320px;
+  margin: 0 auto;
 }
-.comparison-page h1, .comparison-page h2, .comparison-page h3, .comparison-page h4 {
-  color: #403653 !important;
+
+/* Glassmorphism & Aurora Gradients */
+.comp-card {
+  background: var(--pt-card-bg);
+  border: 1px solid var(--pt-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(64, 54, 83, 0.04);
+  padding: 24px;
+  margin-bottom: 24px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.comparison-page .form-control, .comparison-page select {
-  background: #FFFFFF !important;
-  border: 1.5px solid #EAE1F4 !important;
-  color: #403653 !important;
+
+.comp-hero {
+  background: linear-gradient(135deg, #F7F3FF 0%, #FFFDF9 50%, #E9DDFB 100%);
+  border: 1.5px solid var(--pt-border);
+  border-radius: 18px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 30px rgba(196, 166, 245, 0.12);
 }
-.comparison-page .btn-primary {
-  background: linear-gradient(135deg, #C4A6F5, #A78BFA, #D6B875) !important;
-  color: #FFFFFF !important;
-  border: none !important;
+
+/* Quick Nav Bar */
+.comp-nav-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 10px 4px 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--pt-border);
+  scrollbar-width: thin;
 }
-.comparison-table th {
-  background: #F7F3FF !important;
-  color: #81778E !important;
-  border-color: #EAE1F4 !important;
+.comp-nav-btn {
+  background: var(--pt-card-bg);
+  border: 1px solid var(--pt-border);
+  color: var(--pt-text);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 24px;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  text-decoration: none;
 }
-.comparison-table td {
-  color: #403653 !important;
-  border-color: #EAE1F4 !important;
+.comp-nav-btn:hover, .comp-nav-btn.active {
+  background: var(--pt-secondary);
+  border-color: var(--pt-primary);
+  color: var(--pt-text);
+  box-shadow: 0 2px 8px rgba(196, 166, 245, 0.25);
+}
+
+/* Badges */
+.badge-lowest {
+  background: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #86EFAC;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.badge-discount {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.badge-value {
+  background: #F3E8FF;
+  color: #7E22CE;
+  border: 1px solid #D8B4FE;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.badge-gold {
+  background: #FFFBEB;
+  color: #92400E;
+  border: 1px solid var(--pt-gold);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Comparison Table Styling */
+.table-scroll-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 14px;
+  border: 1px solid var(--pt-border);
+  background: #FFFFFF;
+}
+.pt-comp-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 820px;
+}
+.pt-comp-table th, .pt-comp-table td {
+  border-bottom: 1px solid var(--pt-border);
+  border-right: 1px solid var(--pt-border);
+  padding: 14px 16px;
+  font-size: 0.9rem;
+}
+.pt-comp-table th:last-child, .pt-comp-table td:last-child {
+  border-right: none;
+}
+.pt-comp-table thead th {
+  background: #FDFBFF;
+  color: var(--pt-text);
+  font-weight: 700;
+  vertical-align: top;
+}
+.pt-comp-table .sticky-col {
+  position: sticky;
+  left: 0;
+  background: #FAF7FD;
+  z-index: 2;
+  font-weight: 700;
+  color: var(--pt-text);
+  width: 220px;
+  min-width: 200px;
+}
+.pt-comp-table tr.group-header td {
+  background: var(--pt-secondary);
+  color: var(--pt-text);
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 10px 18px;
+}
+.pt-comp-table tr.row-identical {
+  background: #FCFAFF;
+}
+.pt-comp-table tr.row-diff {
+  background: #FFFFFF;
+}
+.pt-comp-table tr.row-diff td.val-best {
+  background: rgba(214, 184, 117, 0.12);
+  font-weight: 700;
+}
+
+/* Sliders */
+.weight-slider-card {
+  background: var(--pt-bg);
+  border: 1px solid var(--pt-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.weight-slider-card input[type=range] {
+  width: 100%;
+  accent-color: #8B5CF6;
+  cursor: pointer;
+}
+
+/* Buttons */
+.btn-primary-pt {
+  background: linear-gradient(135deg, #C4A6F5, #A78BFA, #D6B875);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.25);
+  text-decoration: none;
+}
+.btn-primary-pt:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(167, 139, 250, 0.35);
+  color: #FFFFFF;
+}
+.btn-outline-pt {
+  background: #FFFFFF;
+  border: 1.5px solid var(--pt-border);
+  color: var(--pt-text);
+  border-radius: 10px;
+  padding: 9px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+.btn-outline-pt:hover {
+  background: var(--pt-secondary);
+  border-color: var(--pt-primary);
+}
+
+/* Search Dropdown / Picker */
+.search-results-tray {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 340px;
+  overflow-y: auto;
+  background: #FFFFFF;
+  border: 1.5px solid var(--pt-border);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(64, 54, 83, 0.12);
+  z-index: 50;
+  display: none;
+}
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--pt-border);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.search-result-item:hover {
+  background: var(--pt-bg);
+}
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+/* Section Anchor */
+.section-anchor {
+  scroll-margin-top: 80px;
 }
 </style>
 {% endblock %}
 
-
 {% block content %}
-<div class="comparison-page" style="max-width: 1240px; margin: 0 auto; padding: 20px 16px 80px 16px;">
+<div class="comparison-page-wrapper" id="productComparisonContainer">
 
-  <!-- Hero Header -->
-  <section class="card" style="background: linear-gradient(135deg, #F7F3FF 0%, #FFFDF9 50%, #E9DDFB 100%); border: 1px solid #EAE1F4; padding: 24px 28px; border-radius: 16px; margin-bottom: 24px; color: #403653; box-shadow: 0 8px 24px rgba(64,54,83,0.05);">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+  <!-- ========================================================================= -->
+  <!-- Top Hero Header -->
+  <!-- ========================================================================= -->
+  <section class="comp-hero">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:20px;">
       <div>
-        <div style="display:inline-flex; align-items:center; gap:8px; background:#E9DDFB; padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:700; color:#403653; margin-bottom:8px; border:1px solid #C4A6F5;">
-          <span>⚖️ AGENT D DECISION SUPPORT</span>
+        <div style="display:inline-flex; align-items:center; gap:8px; background:var(--pt-secondary); border:1px solid var(--pt-primary); padding:4px 14px; border-radius:20px; font-size:0.8rem; font-weight:800; color:var(--pt-text); margin-bottom:10px;">
+          <span>⚖️ PRETWIN AI FEATURE 5</span>
           <span>•</span>
-          <span>SIDE-BY-SIDE VERIFIED INTELLIGENCE</span>
+          <span>VERIFIED CATALOGUE INTELLIGENCE</span>
         </div>
-        <h2 style="margin:0 0 6px 0; font-size:1.6rem; font-weight:800; color:#403653;">
-          Multi-Attribute Product Comparison
-        </h2>
-        <p style="margin:0; font-size:0.92rem; color:#81778E; max-width:760px; line-height:1.5;">
-          Compare genuine catalogue specifications, prices, customer ratings, advantages, and limitations side-by-side to make confident shopping decisions.
+        <h1 style="margin:0 0 8px 0; font-size:1.85rem; font-weight:800; color:var(--pt-text); letter-spacing:-0.5px;">
+          Product Comparison &amp; Decision Support
+        </h1>
+        <p style="margin:0; font-size:0.95rem; color:var(--pt-text-muted); max-width:800px; line-height:1.6;">
+          Compare real specifications, prices, discounts, customer ratings, and fact-based pros &amp; cons side-by-side. Our Smart Decision Assistant evaluates products according to your priorities with transparent, explainable scoring.
         </p>
       </div>
 
-      <div style="display:flex; gap:10px; align-items:center;">
-        <button class="btn btn-sm btn-outline" onclick="loadSampleComparison()" style="background:#E9DDFB; border:1px solid #C4A6F5; color:#403653; border-radius:8px; padding:9px 16px; font-weight:600; cursor:pointer;">
-          Load Sample Comparison
-        </button>
-        <button class="btn btn-sm" onclick="clearAllComparison()" style="background:rgba(239, 68, 68, 0.15); border:1px solid rgba(239, 68, 68, 0.3); color:#fca5a5; border-radius:8px; padding:9px 16px; font-weight:600; cursor:pointer;">
-          Clear All
+      <!-- Quick Action Controls -->
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <div style="background:var(--pt-card-bg); border:1.5px solid var(--pt-border); padding:8px 16px; border-radius:12px; text-align:center;">
+          <span style="display:block; font-size:0.75rem; color:var(--pt-text-muted); font-weight:700; text-transform:uppercase;">Selected</span>
+          <strong id="selectedCountBadge" style="font-size:1.15rem; color:var(--pt-text);">0 / 4</strong>
+        </div>
+        <button class="btn-outline-pt" onclick="promptClearAllComparison()" id="clearAllBtn" title="Remove all products from comparison">
+          <span>🗑️ Clear All</span>
         </button>
       </div>
     </div>
   </section>
 
-  <!-- Product Selector & Decision Weight Sliders Card -->
-  <section class="card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:22px; margin-bottom:24px;">
-    <!-- Selector Bar -->
-    <div style="display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap;">
-      <div style="flex:1; min-width:280px;">
-        <label for="addProductSelect" style="display:block; font-size:0.88rem; font-weight:700; color:#403653; margin-bottom:6px;">
-          Select Products from Catalogue to Compare:
-        </label>
-        <select id="addProductSelect" class="form-control" style="width:100%; padding:10px 14px; background:#1e293b; border:1.5px solid #334155; color:#403653; border-radius:8px; font-size:0.92rem;">
-          <option value="">Choose a product from catalogue...</option>
+  <!-- ========================================================================= -->
+  <!-- 7 Clearly Labelled Navigation Section Tabs -->
+  <!-- ========================================================================= -->
+  <nav class="comp-nav-strip" aria-label="Comparison Sections">
+    <a href="#sectionSelect" class="comp-nav-btn active">
+      <span>1. Select Products</span>
+    </a>
+    <a href="#sectionSideBySide" class="comp-nav-btn">
+      <span>2. Side-by-Side</span>
+    </a>
+    <a href="#sectionFeatureAnalysis" class="comp-nav-btn">
+      <span>3. Feature Analysis</span>
+    </a>
+    <a href="#sectionPriceValue" class="comp-nav-btn">
+      <span>4. Price &amp; Value</span>
+    </a>
+    <a href="#sectionProsCons" class="comp-nav-btn">
+      <span>5. Pros &amp; Cons</span>
+    </a>
+    <a href="#sectionDecisionAssistant" class="comp-nav-btn">
+      <span>6. Smart Decision Assistant</span>
+    </a>
+    <a href="#sectionFinalActions" class="comp-nav-btn">
+      <span>7. Final Decision</span>
+    </a>
+  </nav>
+
+  <!-- ========================================================================= -->
+  <!-- SECTION 1: SELECT PRODUCTS TO COMPARE -->
+  <!-- ========================================================================= -->
+  <section class="comp-card section-anchor" id="sectionSelect">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+      <div>
+        <h2 style="margin:0 0 4px 0; font-size:1.25rem; font-weight:800; color:var(--pt-text);">
+          1. Select Products to Compare
+        </h2>
+        <p style="margin:0; font-size:0.88rem; color:var(--pt-text-muted);">
+          Search the genuine PreTwin catalogue by name or brand, browse by category, and select up to 4 items.
+        </p>
+      </div>
+      <span style="font-size:0.8rem; background:var(--pt-secondary); padding:4px 10px; border-radius:12px; color:var(--pt-text); font-weight:700;">
+        Max Limit: 4 Products
+      </span>
+    </div>
+
+    <!-- Search & Filter Controls Bar -->
+    <div style="display:grid; grid-template-columns: 2fr 1fr auto; gap:12px; margin-bottom:16px;" class="comp-search-bar-grid">
+      <!-- Search Input with Dropdown Tray -->
+      <div style="position:relative;">
+        <input type="text" id="compSearchInput" class="form-control" placeholder="Search product by name, brand, or feature..." autocomplete="off"
+               style="width:100%; padding:11px 16px; border-radius:10px; border:1.5px solid var(--pt-border); font-size:0.92rem; background:#FFFFFF; color:var(--pt-text);"
+               oninput="handleLiveSearch(this.value)" onfocus="showSearchTray()">
+        <div id="compSearchTray" class="search-results-tray"></div>
+      </div>
+
+      <!-- Category Filter -->
+      <div>
+        <select id="compCategorySelect" class="form-control" style="width:100%; padding:11px 14px; border-radius:10px; border:1.5px solid var(--pt-border); font-size:0.92rem; background:#FFFFFF; color:var(--pt-text);"
+                onchange="handleCategoryFilter(this.value)">
+          <option value="">All Categories</option>
+          <option value="Appliances">Appliances</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Fashion">Fashion</option>
+          <option value="Footwear">Footwear</option>
+          <option value="Home & Kitchen">Home & Kitchen</option>
+          <option value="Mobiles">Mobiles</option>
+          <option value="Personal Care">Personal Care</option>
+          <option value="Sports & Fitness">Sports & Fitness</option>
+          <option value="Watches & Accessories">Watches & Accessories</option>
         </select>
       </div>
-      <button class="btn btn-primary" onclick="addProductFromSelect()" style="padding:10px 22px; background:linear-gradient(135deg, #C4A6F5, #A78BFA, #D6B875); color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer; height:44px; display:inline-flex; align-items:center; gap:6px;">
-        <span>+ Add to Compare</span>
-      </button>
+
+      <!-- Add Button -->
+      <div>
+        <button class="btn-primary-pt" onclick="openProductSelectorModal()" style="white-space:nowrap; height:46px;">
+          <span>🔍 Browse Catalogue</span>
+        </button>
+      </div>
     </div>
 
     <!-- Active Selected Products Badges Strip -->
-    <div id="selectedPillsStrip" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; padding-top:14px; border-top:1px solid #EAE1F4;">
-      <span style="font-size:0.84rem; color:#94a3b8;">Selected Products:</span>
-      <div id="selectedPillsContainer" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+    <div style="background:var(--pt-bg); border:1px solid var(--pt-border); border-radius:12px; padding:14px 18px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span style="font-size:0.84rem; font-weight:700; color:var(--pt-text-muted); text-transform:uppercase; letter-spacing:0.5px;">
+          Currently Selected Products:
+        </span>
+        <span id="selectionInstruction" style="font-size:0.8rem; color:var(--pt-text-muted);">
+          Select at least two products to begin side-by-side comparison.
+        </span>
+      </div>
+      <div id="selectedPillsContainer" style="display:flex; flex-wrap:wrap; gap:10px; min-height:36px; align-items:center;">
+        <span style="font-size:0.85rem; color:var(--pt-text-muted); font-style:italic;">No products selected yet. Pick from above or try a quick preset below.</span>
+      </div>
     </div>
 
-    <!-- Priority Weight Controls -->
-    <div style="margin-top:20px; padding-top:16px; border-top:1px solid #EAE1F4;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <div style="font-size:0.85rem; font-weight:700; color:#c084fc; text-transform:uppercase; letter-spacing:0.5px;">
-          🎛️ Customize Decision Priority Weights
-        </div>
-        <span style="font-size:0.8rem; color:#94a3b8;">Weights adjust Agent D's Best Matching Candidate</span>
+    <!-- Quick Comparison Presets Strip -->
+    <div id="presetsSection" style="margin-top:18px;">
+      <div style="font-size:0.82rem; font-weight:700; color:var(--pt-text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">
+        ⚡ Instant Quick Comparison Presets:
       </div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
-        <div style="background:#F7F3FF; padding:12px 14px; border-radius:8px; border:1px solid #EAE1F4;">
-          <div style="display:flex; justify-content:space-between; font-size:0.82rem; color:#81778E; margin-bottom:6px;">
-            <span style="font-weight:600;">Price Value</span>
-            <strong id="wPriceVal" style="color:#a855f7;">35%</strong>
-          </div>
-          <input type="range" id="wPrice" min="0" max="100" value="35" style="width:100%; accent-color:#a855f7;" oninput="updateWeightsUI()">
-        </div>
-        <div style="background:#F7F3FF; padding:12px 14px; border-radius:8px; border:1px solid #EAE1F4;">
-          <div style="display:flex; justify-content:space-between; font-size:0.82rem; color:#81778E; margin-bottom:6px;">
-            <span style="font-weight:600;">Customer Rating</span>
-            <strong id="wRatingVal" style="color:#a855f7;">30%</strong>
-          </div>
-          <input type="range" id="wRating" min="0" max="100" value="30" style="width:100%; accent-color:#a855f7;" oninput="updateWeightsUI()">
-        </div>
-        <div style="background:#F7F3FF; padding:12px 14px; border-radius:8px; border:1px solid #EAE1F4;">
-          <div style="display:flex; justify-content:space-between; font-size:0.82rem; color:#81778E; margin-bottom:6px;">
-            <span style="font-weight:600;">Feature Richness</span>
-            <strong id="wSpecsVal" style="color:#a855f7;">20%</strong>
-          </div>
-          <input type="range" id="wSpecs" min="0" max="100" value="20" style="width:100%; accent-color:#a855f7;" oninput="updateWeightsUI()">
-        </div>
-        <div style="background:#F7F3FF; padding:12px 14px; border-radius:8px; border:1px solid #EAE1F4;">
-          <div style="display:flex; justify-content:space-between; font-size:0.82rem; color:#81778E; margin-bottom:6px;">
-            <span style="font-weight:600;">Brand Affinity</span>
-            <strong id="wBrandVal" style="color:#a855f7;">15%</strong>
-          </div>
-          <input type="range" id="wBrand" min="0" max="100" value="15" style="width:100%; accent-color:#a855f7;" oninput="updateWeightsUI()">
-        </div>
+      <div id="presetsGrid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
+        <!-- Dynamic Presets -->
       </div>
     </div>
   </section>
 
-  <!-- Winner Decision Banner -->
-  <div id="comparisonWinnerBanner" class="winner-card" style="display:none; background:linear-gradient(135deg, #F7F3FF 0%, #FFFDF9 50%, #E9DDFB 100%); border:1.5px solid #C4A6F5; border-radius:12px; padding:20px 24px; margin-bottom:24px; box-shadow:0 8px 24px rgba(168, 85, 247, 0.2);">
-    <div style="display:flex; align-items:flex-start; gap:16px;">
-      <div style="font-size:2.2rem; line-height:1;">🏆</div>
-      <div style="flex:1;">
-        <div style="display:inline-block; background:#a855f7; color:#403653; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:12px; text-transform:uppercase; margin-bottom:6px; letter-spacing:0.5px;">
-          Agent D Top Pick
-        </div>
-        <h3 id="winnerProductName" style="margin:0 0 6px 0; font-size:1.25rem; font-weight:800; color:#403653;">Product Name</h3>
-        <p id="winnerReason" style="margin:0; font-size:0.92rem; color:#e2e8f0; line-height:1.5;">Explanation of why this product won the comparison...</p>
+  <!-- ========================================================================= -->
+  <!-- SECTION 2: SIDE-BY-SIDE COMPARISON -->
+  <!-- ========================================================================= -->
+  <section class="comp-card section-anchor" id="sectionSideBySide">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+      <div>
+        <h2 style="margin:0 0 4px 0; font-size:1.25rem; font-weight:800; color:var(--pt-text);">
+          2. Side-by-Side Comparison
+        </h2>
+        <p style="margin:0; font-size:0.88rem; color:var(--pt-text-muted);">
+          Examine products in clearly distinguishable columns with aligned attributes.
+        </p>
+      </div>
+
+      <!-- Show Only Differences Toggle -->
+      <div style="display:flex; align-items:center; gap:10px; background:var(--pt-bg); border:1px solid var(--pt-border); padding:6px 14px; border-radius:24px;">
+        <label for="toggleDiffOnly" style="font-size:0.85rem; font-weight:700; color:var(--pt-text); cursor:pointer; margin:0;">
+          Show only differences
+        </label>
+        <input type="checkbox" id="toggleDiffOnly" style="accent-color:#8B5CF6; width:18px; height:18px; cursor:pointer;" onchange="toggleShowDifferences(this.checked)">
       </div>
     </div>
-  </div>
 
-  <!-- Comparison Table Card with Horizontal Scroll -->
-  <section class="card" id="comparisonTableCard" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:0; overflow:hidden;">
-    <div style="overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%;">
-      <table class="table comparison-table" id="comparisonTable" style="width:100%; min-width:760px; border-collapse:collapse; margin:0;">
+    <!-- Comparison Table Container -->
+    <div class="table-scroll-container" id="sideBySideTableContainer">
+      <table class="pt-comp-table" id="comparisonTable">
         <thead>
-          <tr id="comparisonTableHead" style="background:#F7F3FF; border-bottom:2px solid #EAE1F4;">
-            <th class="spec-col-header" style="width:220px; padding:18px 20px; text-align:left; font-size:0.9rem; color:#94a3b8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; position:sticky; left:0; background:#F7F3FF; z-index:2;">
-              Criteria &amp; Metrics
-            </th>
+          <tr id="comparisonTableHead">
+            <th class="sticky-col">Products &amp; Criteria</th>
             <!-- Dynamic product headers -->
           </tr>
         </thead>
         <tbody id="comparisonTableBody">
-          <tr>
-            <td colspan="5" class="text-center py-5" style="padding:48px 20px; text-align:center;">
-              <div class="empty-state">
-                <span class="empty-icon" style="font-size:2.6rem; display:block; margin-bottom:12px;">⚖️</span>
-                <h4 style="color:#403653; font-size:1.2rem; margin:0 0 6px 0;">No Products Selected for Comparison</h4>
-                <p style="color:#94a3b8; font-size:0.9rem; max-width:440px; margin:0 auto 16px auto;">
-                  Select at least two products from the catalogue dropdown above or click the "Compare" button on any product card in the store.
-                </p>
-                <button class="btn btn-primary" onclick="loadSampleComparison()" style="padding:10px 20px; background:linear-gradient(135deg, #C4A6F5, #A78BFA, #D6B875); color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer;">
-                  Load Recommended Comparison
-                </button>
-              </div>
-            </td>
-          </tr>
+          <!-- Populated dynamically -->
         </tbody>
       </table>
     </div>
+
+    <!-- Empty State Container -->
+    <div id="comparisonEmptyState" style="display:none; padding:48px 20px; text-align:center;">
+      <span style="font-size:3rem; display:block; margin-bottom:12px;">⚖️</span>
+      <h3 style="color:var(--pt-text); margin:0 0 8px 0; font-size:1.3rem;">No Products Selected for Comparison</h3>
+      <p style="color:var(--pt-text-muted); font-size:0.92rem; max-width:480px; margin:0 auto 20px auto; line-height:1.5;">
+        Select at least two products from the search selector above or choose an instant comparison preset to view side-by-side specs.
+      </p>
+      <button class="btn-primary-pt" onclick="loadSampleComparison()">
+        <span>⚡ Load Sample Comparison</span>
+      </button>
+    </div>
   </section>
 
+  <!-- ========================================================================= -->
+  <!-- SECTION 3: FEATURE AND SPECIFICATION ANALYSIS -->
+  <!-- ========================================================================= -->
+  <section class="comp-card section-anchor" id="sectionFeatureAnalysis">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+      <div>
+        <h2 style="margin:0 0 4px 0; font-size:1.25rem; font-weight:800; color:var(--pt-text);">
+          3. Feature &amp; Specification Analysis
+        </h2>
+        <p style="margin:0; font-size:0.88rem; color:var(--pt-text-muted);">
+          Category-aware attributes grouped logically. Best available values are highlighted with <span class="badge-gold">Best in Row</span>.
+        </p>
+      </div>
+      <div id="specMetricsSummary" style="font-size:0.82rem; color:var(--pt-text-muted);">
+        <!-- Summary tags (shared vs unique counts) -->
+      </div>
+    </div>
+
+    <!-- Grouped Specs Accordion Container -->
+    <div id="specGroupsContainer" style="display:flex; flex-direction:column; gap:14px;">
+      <!-- Populated dynamically with collapsible groups -->
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- SECTION 4: PRICE AND VALUE COMPARISON -->
+  <!-- ========================================================================= -->
+  <section class="comp-card section-anchor" id="sectionPriceValue">
+    <div style="margin-bottom:18px;">
+      <h2 style="margin:0 0 4px 0; font-size:1.25rem; font-weight:800; color:var(--pt-text);">
+        4. Price and Value Comparison
+      </h2>
+      <p style="margin:0; font-size:0.88rem; color:var(--pt-text-muted);">
+        Transparent financial breakdown comparing selling price, MRP, discounts, price difference vs lowest, and explainable value ratings.
+      </p>
+    </div>
+
+    <!-- Price Comparison Cards Grid -->
+    <div id="priceValueCardsGrid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px;">
+      <!-- Populated dynamically -->
+    </div>
+
+    <!-- Affordability Context from Feature 4 -->
+    <div id="budgetAffordabilityNotice" style="margin-top:16px; padding:14px 18px; border-radius:12px; background:var(--pt-bg); border:1px solid var(--pt-border); display:none;">
+      <!-- Dynamic Budget context -->
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- SECTION 5: PROS AND CONS -->
+  <!-- ========================================================================= -->
+  <section class="comp-card section-anchor" id="sectionProsCons">
+    <div style="margin-bottom:18px;">
+      <h2 style="margin:0 0 4px 0; font-size:1.25rem; font-weight:800; color:var(--pt-text);">
+        5. Fact-Based Pros &amp; Cons
+      </h2>
+      <p style="margin:0; font-size:0.88rem; color:var(--pt-text-muted);">
+        Objective advantages and limitations strictly grounded in catalogue records, pricing, and genuine customer ratings.
+      </p>
+    </div>
+
+    <!-- Pros & Cons Grid -->
+    <div id="prosConsCardsGrid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px;">
+      <!-- Populated dynamically -->
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- SECTION 6: SMART DECISION ASSISTANT -->
+  <!-- ========================================================================= -->
+  <section class="comp-card section-anchor" id="sectionDecisionAssistant">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;">
+      <div>
+        <div style="display:inline-flex; align-items:center; gap:6px; background:var(--pt-secondary); padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:800; color:var(--pt-text); margin-bottom:6px;">
+          <span>🤖 EXPLAINABLE DECISION LOGIC</span>
+        </div>
+        <h2 style="margin:0 0 4px 0; font-size:1.25rem; font-weight:800; color:var(--pt-text);">
+          6. Smart Decision Assistant
+        </h2>
+        <p style="margin:0; font-size:0.88rem; color:var(--pt-text-muted);">
+          Adjust priority sliders to reflect your shopping goals. PreTwin normalizes metrics and explains the tradeoffs.
+        </p>
+      </div>
+
+      <button class="btn-outline-pt" onclick="resetDecisionWeights()" style="font-size:0.82rem; padding:6px 14px;">
+        <span>↺ Reset Weights</span>
+      </button>
+    </div>
+
+    <!-- Priority Weight Sliders -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:12px; margin-bottom:20px;">
+      <!-- Lowest Price Slider -->
+      <div class="weight-slider-card">
+        <div style="display:flex; justify-content:space-between; font-size:0.84rem; margin-bottom:6px;">
+          <span style="font-weight:700; color:var(--pt-text);">💰 Lowest Price</span>
+          <strong id="wPriceVal" style="color:#7C3AED;">35%</strong>
+        </div>
+        <input type="range" id="wPrice" min="0" max="100" value="35" oninput="onWeightSliderChange()">
+      </div>
+
+      <!-- Feature & Specs Slider -->
+      <div class="weight-slider-card">
+        <div style="display:flex; justify-content:space-between; font-size:0.84rem; margin-bottom:6px;">
+          <span style="font-weight:700; color:var(--pt-text);">⚙️ Specs Richness</span>
+          <strong id="wSpecsVal" style="color:#7C3AED;">25%</strong>
+        </div>
+        <input type="range" id="wSpecs" min="0" max="100" value="25" oninput="onWeightSliderChange()">
+      </div>
+
+      <!-- Value for Money Slider -->
+      <div class="weight-slider-card">
+        <div style="display:flex; justify-content:space-between; font-size:0.84rem; margin-bottom:6px;">
+          <span style="font-weight:700; color:var(--pt-text);">💎 Value for Money</span>
+          <strong id="wValueVal" style="color:#7C3AED;">20%</strong>
+        </div>
+        <input type="range" id="wValue" min="0" max="100" value="20" oninput="onWeightSliderChange()">
+      </div>
+
+      <!-- Customer Rating Slider -->
+      <div class="weight-slider-card">
+        <div style="display:flex; justify-content:space-between; font-size:0.84rem; margin-bottom:6px;">
+          <span style="font-weight:700; color:var(--pt-text);">⭐ Customer Rating</span>
+          <strong id="wRatingVal" style="color:#7C3AED;">15%</strong>
+        </div>
+        <input type="range" id="wRating" min="0" max="100" value="15" oninput="onWeightSliderChange()">
+      </div>
+
+      <!-- Brand Affinity Slider -->
+      <div class="weight-slider-card">
+        <div style="display:flex; justify-content:space-between; font-size:0.84rem; margin-bottom:6px;">
+          <span style="font-weight:700; color:var(--pt-text);">🏷️ Brand Affinity</span>
+          <strong id="wBrandVal" style="color:#7C3AED;">5%</strong>
+        </div>
+        <input type="range" id="wBrand" min="0" max="100" value="5" oninput="onWeightSliderChange()">
+      </div>
+    </div>
+
+    <!-- Decision Banner / Recommendation Outcome -->
+    <div id="decisionBannerCard" style="background:linear-gradient(135deg, #FDFBFF 0%, #F5EEFF 100%); border:1.5px solid var(--pt-primary); border-radius:14px; padding:22px 26px; box-shadow:0 6px 20px rgba(196,166,245,0.18);">
+      <div style="display:flex; align-items:flex-start; gap:16px;">
+        <span id="decisionIcon" style="font-size:2.2rem; line-height:1;">🏆</span>
+        <div style="flex:1;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap;">
+            <span id="decisionOutcomeBadge" style="background:#7C3AED; color:#FFFFFF; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:12px; text-transform:uppercase;">
+              Top Recommendation
+            </span>
+            <span id="decisionScorePill" style="background:var(--pt-secondary); color:var(--pt-text); font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:12px;">
+              Score: 92.4 pts
+            </span>
+          </div>
+          <h3 id="decisionTitle" style="margin:0 0 8px 0; font-size:1.3rem; font-weight:800; color:var(--pt-text);">
+            Product Recommendation
+          </h3>
+          <p id="decisionReasonText" style="margin:0 0 10px 0; font-size:0.92rem; color:var(--pt-text); line-height:1.5;">
+            Calculated multi-attribute rationale...
+          </p>
+          <div id="decisionTradeoffText" style="font-size:0.85rem; color:var(--pt-text-muted); line-height:1.4; background:#FFFFFF; padding:10px 14px; border-radius:8px; border:1px solid var(--pt-border);">
+            Tradeoff breakdown...
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- SECTION 7: FINAL DECISION AND PRODUCT ACTIONS -->
+  <!-- ========================================================================= -->
+  <section class="comp-card section-anchor" id="sectionFinalActions">
+    <div style="margin-bottom:18px;">
+      <h2 style="margin:0 0 4px 0; font-size:1.25rem; font-weight:800; color:var(--pt-text);">
+        7. Final Decision &amp; Product Actions
+      </h2>
+      <p style="margin:0; font-size:0.88rem; color:var(--pt-text-muted);">
+        Take immediate action on your preferred product: view full details, save to Wishlist, or add to Cart for checkout.
+      </p>
+    </div>
+
+    <!-- Product Action Cards Grid -->
+    <div id="finalActionCardsGrid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:18px;">
+      <!-- Populated dynamically -->
+    </div>
+
+    <!-- Bottom Secondary Actions -->
+    <div style="margin-top:24px; padding-top:16px; border-top:1px solid var(--pt-border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <button class="btn-outline-pt" onclick="window.location.href='/discovery'">
+        <span>← Explore More in Smart Discovery</span>
+      </button>
+      <div style="display:flex; gap:10px;">
+        <button class="btn-outline-pt" onclick="promptClearAllComparison()">
+          <span>Clear Comparison</span>
+        </button>
+        <button class="btn-primary-pt" onclick="window.location.href='/cart'">
+          <span>Go to Cart 🛒</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Product Catalogue Picker Modal -->
+<div id="cataloguePickerModal" style="display:none; position:fixed; inset:0; background:rgba(64,54,83,0.5); z-index:9999; backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:20px;">
+  <div style="background:#FFFDF9; border:1.5px solid var(--pt-border); border-radius:18px; max-width:760px; width:100%; max-height:85vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 40px rgba(64,54,83,0.2);">
+    <div style="padding:18px 24px; border-bottom:1px solid var(--pt-border); display:flex; justify-content:space-between; align-items:center;">
+      <h3 style="margin:0; font-size:1.2rem; font-weight:800; color:var(--pt-text);">Choose a Product from Catalogue</h3>
+      <button onclick="closeProductSelectorModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--pt-text);">&times;</button>
+    </div>
+    <div style="padding:14px 24px; border-bottom:1px solid var(--pt-border); display:flex; gap:10px;">
+      <input type="text" id="modalSearchInput" placeholder="Filter by product name..." style="flex:1; padding:9px 14px; border-radius:8px; border:1px solid var(--pt-border);" oninput="filterModalProducts(this.value)">
+    </div>
+    <div id="modalProductsGrid" style="flex:1; overflow-y:auto; padding:18px 24px; display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:14px;">
+      <!-- Loaded dynamically -->
+    </div>
+  </div>
 </div>
 {% endblock %}
 

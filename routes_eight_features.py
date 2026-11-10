@@ -20,6 +20,7 @@ from flask import request, jsonify, session
 import database
 import services.search_intelligence_service as sis
 import services.budget_intelligence_service as bis
+import services.comparison_service as comp_svc
 from config import Config
 
 
@@ -1112,11 +1113,46 @@ def register_eight_features_routes(app, get_user_id_fn, row_to_dict_fn, error_fn
     # FEATURE 5: Product Comparison and Decision Support
     # =========================================================================
 
-    @app.route("/api/comparison/weighted", methods=["POST"])
-    def weighted_comparison():
+    @app.route("/api/comparison/search", methods=["GET"])
+    def comparison_search_products():
+        """Search catalogue products to add to comparison."""
+        try:
+            query = request.args.get("q", "")
+            category = request.args.get("category", "")
+            limit = min(50, max(1, int(request.args.get("limit", 24))))
+            products = comp_svc.ProductSelectionEngine.search_catalogue(query, category, limit)
+            return jsonify({
+                "products": products,
+                "count": len(products),
+                "query": query,
+                "category": category
+            })
+        except Exception as e:
+            return error_fn(f"Comparison search failed: {str(e)}", 500)
+
+    @app.route("/api/comparison/presets", methods=["GET"])
+    def comparison_presets():
+        """Fetch quick-start comparison presets across major categories."""
+        try:
+            presets = comp_svc.ProductSelectionEngine.get_comparison_presets()
+            return jsonify({
+                "presets": presets,
+                "count": len(presets)
+            })
+        except Exception as e:
+            return error_fn(f"Failed to fetch presets: {str(e)}", 500)
+
+    @app.route("/api/comparison/analyze", methods=["POST"])
+    def comparison_analyze():
         """
-        Multi-attribute product comparison with custom user priority weights.
-        Returns pros/cons, review summarization, and tradeoff analysis.
+        Full 7-Section Comprehensive Product Comparison & Decision Analysis:
+        - Product selection & validation
+        - Side-by-side aligned matrix with 'Show only differences'
+        - Feature and specification analysis (category-aware)
+        - Price and value comparison with budget affordability
+        - Fact-based pros and cons
+        - Smart decision assistant with custom priority weights
+        - Tenant-isolated saved comparison session
         """
         try:
             data = request.get_json() or {}
@@ -1124,93 +1160,93 @@ def register_eight_features_routes(app, get_user_id_fn, row_to_dict_fn, error_fn
             if not product_ids or not isinstance(product_ids, list):
                 return error_fn("List of product_ids is required", 400)
 
-            # Limit to 4 products for clean side-by-side
+            # Max 4 products limit
+            product_ids = product_ids[:4]
+            weights = data.get("weights", {"price": 35, "specs": 25, "value": 20, "rating": 15, "brand": 5})
+            show_diff_only = bool(data.get("show_differences_only", False))
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+
+            res = comp_svc.run_comprehensive_comparison(
+                product_ids=product_ids,
+                user_id=user_id,
+                weights=weights,
+                show_differences_only=show_diff_only
+            )
+            if not res.get("success"):
+                return error_fn(res.get("error", "Comparison failed"), 400)
+
+            return jsonify(res)
+        except Exception as e:
+            return error_fn(f"Comparison analysis failed: {str(e)}", 500)
+
+    @app.route("/api/comparison/saved", methods=["GET", "POST"])
+    def comparison_saved_session():
+        """Tenant-isolated comparison session get/save for authenticated customers."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            requested_user_id = request.args.get("user_id")
+
+            # Tenant isolation check: if a specific user_id is requested, it must match authenticated session
+            if requested_user_id and str(requested_user_id).isdigit():
+                if int(requested_user_id) != user_id:
+                    return error_fn("Forbidden: You cannot access another customer's comparison session.", 403)
+
+            if request.method == "POST":
+                data = request.get_json() or {}
+                product_ids = data.get("product_ids", [])
+                clean_ids = [int(x) for x in product_ids if str(x).isdigit()][:4]
+                comp_svc.ComparisonSessionEngine.save_user_comparison(user_id, clean_ids)
+                return jsonify({
+                    "success": True,
+                    "saved_ids": clean_ids,
+                    "user_id": user_id
+                })
+            else:
+                saved_ids = comp_svc.ComparisonSessionEngine.get_user_comparison(user_id)
+                return jsonify({
+                    "saved_ids": saved_ids,
+                    "user_id": user_id
+                })
+        except Exception as e:
+            return error_fn(f"Saved comparison failed: {str(e)}", 500)
+
+    @app.route("/api/comparison/weighted", methods=["POST"])
+    def weighted_comparison():
+        """
+        Multi-attribute product comparison with custom user priority weights.
+        Returns products with scores/pros/cons, and winner decision rationale.
+        Maintains backward compatibility with test suites.
+        """
+        try:
+            data = request.get_json() or {}
+            product_ids = data.get("product_ids", [])
+            if not product_ids or not isinstance(product_ids, list):
+                return error_fn("List of product_ids is required", 400)
+
             product_ids = product_ids[:4]
             weights = data.get("weights", {"price": 35, "rating": 30, "specs": 20, "brand": 15})
-            w_price = float(weights.get("price", 35))
-            w_rating = float(weights.get("rating", 30))
-            w_specs = float(weights.get("specs", 20))
-            w_brand = float(weights.get("brand", 15))
-            total_w = w_price + w_rating + w_specs + w_brand or 100.0
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
 
-            products = []
-            for pid in product_ids:
-                row = database.query_db("SELECT * FROM products WHERE id = ?", (pid,), one=True)
-                if row:
-                    p = row_to_dict_fn(row)
-                    p["specifications"] = _parse_json(p.get("specifications"), {})
-                    products.append(p)
-
-            if not products:
+            # Validate products exist
+            db_products = comp_svc.ProductSelectionEngine.validate_and_fetch_products(product_ids)
+            if not db_products:
                 return error_fn("None of the specified products were found", 404)
 
-            max_price = max([float(p.get("price", 1)) for p in products]) or 1.0
+            analysis = comp_svc.run_comprehensive_comparison(
+                product_ids=[p["id"] for p in db_products],
+                user_id=user_id,
+                weights=weights
+            )
 
-            ranked = []
-            for p in products:
-                price = float(p.get("price", 0))
-                rating = float(p.get("rating", 4.0))
-                specs = p.get("specifications") or {}
-                spec_count = len(specs) if isinstance(specs, dict) else 3
-
-                # Normalised scores 0..100
-                price_score = max(0, (1.0 - (price / (max_price * 1.1)))) * 100
-                rating_score = (rating / 5.0) * 100
-                spec_score = min(100.0, (spec_count / 6.0) * 100)
-                brand_score = 80.0  # reputable baseline
-
-                composite = (
-                    (price_score * w_price) +
-                    (rating_score * w_rating) +
-                    (spec_score * w_specs) +
-                    (brand_score * w_brand)
-                ) / total_w
-
-                # Generate dynamic pros/cons
-                pros = []
-                cons = []
-                if price <= max_price * 0.75:
-                    pros.append(f"Highly cost-effective (₹{int(price):,})")
-                else:
-                    cons.append("Premium priced in this comparison")
-
-                if rating >= 4.3:
-                    pros.append(f"Strong customer acclaim ({rating}★)")
-                elif rating < 3.9:
-                    cons.append(f"Average user rating ({rating}★)")
-
-                if spec_count >= 5:
-                    pros.append(f"Comprehensive feature set ({spec_count} key specs)")
-
-                if not pros:
-                    pros.append("Solid balanced performance")
-                if not cons:
-                    cons.append("Minor tradeoffs in brand prestige")
-
-                p["scores"] = {
-                    "price_score": round(price_score, 1),
-                    "rating_score": round(rating_score, 1),
-                    "spec_score": round(spec_score, 1),
-                    "brand_score": round(brand_score, 1),
-                    "composite": round(composite, 1)
-                }
-                p["pros"] = pros
-                p["cons"] = cons
-                p["review_summary"] = f"Customers highlight excellent value and reliability. {int(rating * 19)}% verified satisfaction."
-                p["compatibility"] = "Universal standard compatibility with standard accessories."
-                ranked.append(p)
-
-            ranked.sort(key=lambda x: x["scores"]["composite"], reverse=True)
-            winner = ranked[0]
-
+            # Return response conforming to existing schema expected by tests
             return jsonify({
-                "products": ranked,
-                "winner": {
-                    "id": winner["id"],
-                    "name": winner["name"],
-                    "score": winner["scores"]["composite"],
-                    "decision_reason": f"Winner by {winner['scores']['composite']} composite score, balancing your priority on {'price' if w_price >= 35 else 'quality'} and ratings."
-                }
+                "products": analysis.get("products", []),
+                "winner": analysis.get("winner", {}),
+                "is_comparable": analysis.get("is_comparable", False),
+                "side_by_side": analysis.get("side_by_side", {}),
+                "spec_analysis": analysis.get("spec_analysis", {}),
+                "price_value": analysis.get("price_value", {}),
+                "pros_cons": analysis.get("pros_cons", {})
             })
         except Exception as e:
             return error_fn(f"Comparison failed: {str(e)}", 500)
