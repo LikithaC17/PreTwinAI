@@ -152,6 +152,11 @@ CREATE TABLE IF NOT EXISTS predictions (
     confidence_label TEXT DEFAULT '',
     recommended_action TEXT DEFAULT '',
     status TEXT DEFAULT 'active',
+    last_purchased_date DATE,
+    estimated_purchase_date DATE,
+    actual_purchase_date DATE,
+    expected_quantity INTEGER DEFAULT 1,
+    expected_price REAL DEFAULT 0.0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -358,6 +363,7 @@ CREATE TABLE IF NOT EXISTS shopping_reminders (
     estimated_cycle_days INTEGER DEFAULT 30,
     next_reminder_date DATE NOT NULL,
     last_purchased_date DATE,
+    is_enabled INTEGER DEFAULT 1,
     status TEXT DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

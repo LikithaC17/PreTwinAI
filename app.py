@@ -2738,20 +2738,38 @@ def dismiss_recommendation():
 
 
 # ---------------------------------------------------------------------------
-# API – Predictions
+# API – Feature 2: Predictive Shopping Intelligence
 # ---------------------------------------------------------------------------
+
+@app.route("/api/predictions/dashboard", methods=["GET"])
+def get_predictions_dashboard():
+    """Retrieve comprehensive 6-section Predictive Shopping Intelligence payload."""
+    try:
+        user_id = get_current_user_id() or Config.DEFAULT_DEMO_USER_ID
+        from services.predictive_intelligence_service import PredictiveIntelligenceCoordinator
+        dash = PredictiveIntelligenceCoordinator.get_dashboard(user_id)
+        return jsonify(dash)
+    except Exception as exc:
+        logger.exception("Error in /api/predictions/dashboard: %s", exc)
+        return _error(str(exc), 500)
+
 
 @app.route("/api/predictions", methods=["GET"])
 def get_predictions():
-    """Get the latest predictions for user 1."""
+    """Get predictions for the authenticated user, synced with predictive intelligence."""
     try:
+        user_id = get_current_user_id() or Config.DEFAULT_DEMO_USER_ID
+        from services.predictive_intelligence_service import PredictiveIntelligenceCoordinator
+        PredictiveIntelligenceCoordinator.get_dashboard(user_id)
+
         rows = database.query_db(
             """
             SELECT * FROM predictions
-            WHERE user_id = 1
-            ORDER BY created_at DESC
-            LIMIT 20
-            """
+            WHERE user_id = ?
+            ORDER BY created_at DESC, id DESC
+            LIMIT 25
+            """,
+            (user_id,)
         )
         predictions = []
         for row in rows:
@@ -2774,28 +2792,81 @@ def get_predictions():
 
 @app.route("/api/predictions", methods=["POST"])
 def run_predictions():
-    """Trigger Agent B (prediction agent) specifically."""
+    """Trigger fresh predictions calculation for authenticated customer."""
     try:
-        from agents.orchestrator import AgentOrchestrator
+        user_id = get_current_user_id() or Config.DEFAULT_DEMO_USER_ID
+        from services.predictive_intelligence_service import PredictiveIntelligenceCoordinator
+        dash = PredictiveIntelligenceCoordinator.get_dashboard(user_id)
+        items = dash["sections"]["upcoming_needs"]["items"]
+        run_id = str(uuid.uuid4())
 
-        orchestrator = AgentOrchestrator()
-        result = orchestrator.run_agent_b(user_id=1)
-
-        predictions = result.get("predictions", [])
-        run_id = result.get("run_id", str(uuid.uuid4()))
-
-        return jsonify({"predictions": predictions, "run_id": run_id})
-
-    except ImportError:
-        # Orchestrator not yet available – return informative placeholder
         return jsonify({
-            "predictions": [],
-            "run_id": str(uuid.uuid4()),
-            "message": "Orchestrator not yet available. Build agents first.",
-        }), 202
+            "predictions": items,
+            "run_id": run_id,
+            "success": True,
+            "total": len(items)
+        })
 
     except Exception as exc:
-        return _error(str(exc))
+        return _error(str(exc), 500)
+
+
+@app.route("/api/predictions/<int:prediction_id>/action", methods=["POST"])
+def action_prediction(prediction_id):
+    """Handle actions on predictions: wishlist, dismiss, purchased."""
+    try:
+        user_id = get_current_user_id() or Config.DEFAULT_DEMO_USER_ID
+        data = request.get_json(force=True) or {}
+        action = (data.get("action") or "dismiss").lower()
+
+        pred_row = database.query_db("SELECT * FROM predictions WHERE id = ? AND user_id = ?", (prediction_id, user_id), one=True)
+        if not pred_row:
+            return _error("Prediction not found", 404)
+
+        pred = dict(pred_row)
+
+        if action == "wishlist":
+            # Add matching product to wishlist if product_id available
+            pid = data.get("product_id")
+            if not pid:
+                # Search product by name
+                p_match = database.query_db(
+                    "SELECT id FROM products WHERE name LIKE ? OR category LIKE ? LIMIT 1",
+                    (f"%{pred['predicted_product']}%", f"%{pred['predicted_category']}%"),
+                    one=True
+                )
+                pid = p_match["id"] if p_match else 1
+            database.execute_db(
+                "INSERT OR IGNORE INTO wishlist_items (user_id, product_id) VALUES (?, ?)",
+                (user_id, pid)
+            )
+            return jsonify({"success": True, "action": "wishlist", "message": "Added to wishlist!"})
+
+        elif action in ("dismiss", "dismissed"):
+            database.execute_db(
+                "UPDATE predictions SET status = 'dismissed' WHERE id = ? AND user_id = ?",
+                (prediction_id, user_id)
+            )
+            return jsonify({"success": True, "action": "dismiss", "message": "Prediction dismissed."})
+
+        elif action in ("purchased", "fulfilled", "confirm"):
+            today_str = datetime.now().strftime("%Y-%m-%d")
+            database.execute_db(
+                "UPDATE predictions SET status = 'fulfilled', actual_purchase_date = ? WHERE id = ? AND user_id = ?",
+                (today_str, prediction_id, user_id)
+            )
+            # Log to feedback
+            database.execute_db(
+                """INSERT INTO user_feedback (user_id, item_type, item_id, feedback_type, rating, comment)
+                   VALUES (?, 'prediction', ?, 'confirm', 5, 'User marked prediction as fulfilled.')""",
+                (user_id, prediction_id)
+            )
+            return jsonify({"success": True, "action": "purchased", "message": "Marked as purchased! Prediction recorded as fulfilled."})
+
+        return _error("Invalid action", 400)
+
+    except Exception as exc:
+        return _error(str(exc), 500)
 
 
 # ---------------------------------------------------------------------------

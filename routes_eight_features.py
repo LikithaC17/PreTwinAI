@@ -256,6 +256,55 @@ def register_eight_features_routes(app, get_user_id_fn, row_to_dict_fn, error_fn
         except Exception as e:
             return error_fn(f"Failed to update reminder: {str(e)}", 500)
 
+    @app.route("/api/predictions/reminders/<int:reminder_id>", methods=["PUT"])
+    def update_reminder_details(reminder_id):
+        """Edit reminder fields: next_reminder_date, is_enabled, title, estimated_cycle_days."""
+        try:
+            user_id = get_user_id_fn()
+            data = request.get_json() or {}
+            
+            updates = []
+            params = []
+            
+            if "next_reminder_date" in data:
+                updates.append("next_reminder_date = ?")
+                params.append(data["next_reminder_date"])
+            if "is_enabled" in data:
+                updates.append("is_enabled = ?")
+                params.append(1 if data["is_enabled"] else 0)
+            if "title" in data and data["title"].strip():
+                updates.append("title = ?")
+                params.append(data["title"].strip())
+            if "estimated_cycle_days" in data:
+                updates.append("estimated_cycle_days = ?")
+                params.append(int(data["estimated_cycle_days"]))
+            if "status" in data:
+                updates.append("status = ?")
+                params.append(data["status"])
+                
+            if updates:
+                params.extend([reminder_id, user_id])
+                database.execute_db(
+                    f"UPDATE shopping_reminders SET {', '.join(updates)} WHERE id = ? AND user_id = ?",
+                    tuple(params)
+                )
+            return jsonify({"success": True, "message": "Reminder updated successfully."})
+        except Exception as e:
+            return error_fn(f"Failed to edit reminder: {str(e)}", 500)
+
+    @app.route("/api/predictions/reminders/<int:reminder_id>", methods=["DELETE"])
+    def delete_shopping_reminder(reminder_id):
+        """Delete or dismiss a replenishment reminder."""
+        try:
+            user_id = get_user_id_fn()
+            database.execute_db(
+                "DELETE FROM shopping_reminders WHERE id = ? AND user_id = ?",
+                (reminder_id, user_id)
+            )
+            return jsonify({"success": True, "message": "Reminder removed."})
+        except Exception as e:
+            return error_fn(f"Failed to delete reminder: {str(e)}", 500)
+
     @app.route("/api/predictions/<int:prediction_id>/feedback", methods=["POST"])
     def submit_prediction_feedback(prediction_id):
         """Submit user feedback for continuous reinforcement learning."""
