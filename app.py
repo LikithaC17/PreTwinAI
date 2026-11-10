@@ -508,8 +508,13 @@ def budget_page():
     return render_template("budget.html")
 
 
-@app.route("/smart-cart")
 @app.route("/smart-card")
+@app.route("/shopping-card")
+def smart_card_page():
+    return render_template("smart_card.html")
+
+
+@app.route("/smart-cart")
 def smart_cart_page():
     return render_template("smart_cart.html")
 

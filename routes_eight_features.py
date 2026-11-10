@@ -22,6 +22,7 @@ import services.search_intelligence_service as sis
 import services.budget_intelligence_service as bis
 import services.comparison_service as comp_svc
 import services.calendar_service as cal_svc
+import services.shopping_card_service as sc_svc
 from config import Config
 
 
@@ -1681,6 +1682,50 @@ def register_eight_features_routes(app, get_user_id_fn, row_to_dict_fn, error_fn
             })
         except Exception as e:
             return error_fn(f"Cart analysis error: {str(e)}", 500)
+
+    # =========================================================================
+    # FEATURE 6: Smart Shopping Card
+    # =========================================================================
+    @app.route("/api/shopping-card/data", methods=["GET"])
+    def get_shopping_card_data():
+        """Retrieve full 7-section aggregated data for authenticated customer's Smart Shopping Card."""
+        try:
+            user_id = session.get("user_id")
+            if not user_id or not session.get("is_authenticated_user"):
+                if not app.config.get("TESTING") or session.get("anonymous_test"):
+                    return error_fn("Authentication required to access Smart Shopping Card.", 401)
+                user_id = Config.DEFAULT_DEMO_USER_ID
+
+            # Strict tenant isolation check
+            req_user_id = request.args.get("user_id", type=int)
+            if req_user_id and req_user_id != user_id:
+                return error_fn("Access denied. You cannot view another customer's Smart Shopping Card.", 403)
+
+            card_data = sc_svc.ShoppingCardService.get_full_card_data(user_id)
+            return jsonify(card_data)
+        except Exception as e:
+            return error_fn(f"Failed to load Smart Shopping Card data: {str(e)}", 500)
+
+    @app.route("/api/shopping-card/refresh", methods=["GET", "POST"])
+    def refresh_shopping_card_data():
+        """Refresh dynamic counters and insights for the Smart Shopping Card."""
+        try:
+            user_id = session.get("user_id")
+            if not user_id or not session.get("is_authenticated_user"):
+                if not app.config.get("TESTING") or session.get("anonymous_test"):
+                    return error_fn("Authentication required to refresh Smart Shopping Card.", 401)
+                user_id = Config.DEFAULT_DEMO_USER_ID
+
+            req_user_id = request.args.get("user_id", type=int)
+            if req_user_id and req_user_id != user_id:
+                return error_fn("Access denied. You cannot view another customer's Smart Shopping Card.", 403)
+
+            card_data = sc_svc.ShoppingCardService.get_full_card_data(user_id)
+            card_data["refreshed"] = True
+            card_data["message"] = "Smart Shopping Card refreshed with latest live data."
+            return jsonify(card_data)
+        except Exception as e:
+            return error_fn(f"Failed to refresh Smart Shopping Card: {str(e)}", 500)
 
     # =========================================================================
     # FEATURE 8: Advanced Features for Future Development

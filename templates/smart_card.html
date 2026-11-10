@@ -1,0 +1,1452 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Shopping Card — PreTwin AI{% endblock %}
+
+{% block extra_head %}
+<style>
+/* PreTwin AI Soft Lavender & Warm Ivory Theme - Scoped for Smart Shopping Card */
+:root {
+  --pt-card-bg: #F7F3FF;
+  --pt-card-surface: #FFFDF9;
+  --pt-card-accent: #C4A6F5;
+  --pt-card-accent-soft: #E9DDFB;
+  --pt-card-gold: #D6B875;
+  --pt-card-text: #403653;
+  --pt-card-muted: #81778E;
+  --pt-card-border: #EAE1F4;
+}
+
+.pretwin-smart-card-wrapper {
+  background: var(--pt-card-bg);
+  color: var(--pt-card-text);
+  min-height: calc(100vh - 180px);
+  padding: 28px 20px 60px;
+  font-family: inherit;
+}
+
+.sc-container {
+  max-width: 1220px;
+  margin: 0 auto;
+}
+
+/* Page Header & Intro */
+.sc-header-card {
+  background: linear-gradient(135deg, #FFFDF9 0%, #F7F3FF 50%, #E9DDFB 100%);
+  border: 1px solid var(--pt-card-border);
+  border-radius: 20px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 28px rgba(64, 54, 83, 0.04);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.sc-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #E9DDFB;
+  color: #403653;
+  padding: 5px 14px;
+  border-radius: 30px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border: 1px solid var(--pt-card-accent);
+  margin-bottom: 8px;
+}
+
+.sc-header-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--pt-card-text);
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+}
+
+.sc-header-subtitle {
+  color: var(--pt-card-muted);
+  font-size: 0.95rem;
+  margin: 0;
+  max-width: 650px;
+}
+
+.sc-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Primary Digital Membership Card (Hero) */
+.hero-digital-card-wrap {
+  margin-bottom: 32px;
+}
+
+.pretwin-digital-card {
+  background: linear-gradient(135deg, #FFFDF9 0%, #FBF8FF 50%, #F2EAFF 100%);
+  border: 1.5px solid #C4A6F5;
+  border-radius: 22px;
+  padding: 28px 32px;
+  color: var(--pt-card-text);
+  box-shadow: 0 16px 40px rgba(196, 166, 245, 0.22), 0 2px 8px rgba(64, 54, 83, 0.05);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pretwin-digital-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 48px rgba(196, 166, 245, 0.28);
+}
+
+.card-gold-shine {
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(214, 184, 117, 0.18) 0%, rgba(214, 184, 117, 0) 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.card-lavender-shine {
+  position: absolute;
+  bottom: -40%;
+  left: -10%;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(196, 166, 245, 0.25) 0%, rgba(196, 166, 245, 0) 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.card-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 22px;
+  border-bottom: 1px dashed #EAE1F4;
+  padding-bottom: 16px;
+}
+
+.card-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-brand-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #C4A6F5, #A78BFA, #D6B875);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 1.35rem;
+  box-shadow: 0 4px 12px rgba(196, 166, 245, 0.4);
+}
+
+.card-brand-text h4 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--pt-card-text);
+  letter-spacing: -0.01em;
+}
+
+.card-brand-text span {
+  font-size: 0.78rem;
+  color: #81778E;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.card-chip-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFFDF9;
+  border: 1px solid #D6B875;
+  border-radius: 12px;
+  padding: 6px 14px;
+  color: #403653;
+  font-size: 0.88rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(214, 184, 117, 0.15);
+}
+
+.card-chip-hologram {
+  width: 20px;
+  height: 15px;
+  background: linear-gradient(135deg, #D6B875, #FFF, #C4A6F5);
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.card-body-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .card-body-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+.card-avatar-box {
+  position: relative;
+  width: 82px;
+  height: 82px;
+  margin: 0 auto;
+}
+
+.card-avatar-img {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #D6B875;
+  box-shadow: 0 6px 16px rgba(64, 54, 83, 0.1);
+}
+
+.card-avatar-monogram {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #C4A6F5 0%, #A78BFA 60%, #D6B875 100%);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.7rem;
+  font-weight: 800;
+  border: 3px solid #D6B875;
+  box-shadow: 0 6px 16px rgba(196, 166, 245, 0.35);
+}
+
+.card-user-info h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--pt-card-text);
+}
+
+.card-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #E8F5E9;
+  color: #1B5E20;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  border: 1px solid #A5D6A7;
+  margin-bottom: 8px;
+}
+
+.card-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.card-pref-chip {
+  background: #E9DDFB;
+  color: #403653;
+  padding: 2px 9px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid #D4C0F5;
+}
+
+.card-financial-box {
+  background: #FFFDF9;
+  border: 1.5px solid #D6B875;
+  border-radius: 16px;
+  padding: 16px 20px;
+  min-width: 240px;
+  text-align: right;
+  box-shadow: 0 4px 14px rgba(214, 184, 117, 0.12);
+}
+
+@media (max-width: 768px) {
+  .card-financial-box {
+    text-align: center;
+  }
+}
+
+.card-points-label {
+  font-size: 0.78rem;
+  color: var(--pt-card-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.card-points-value {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--pt-card-text);
+  margin: 0;
+  line-height: 1.1;
+}
+
+.card-points-value span {
+  color: #D6B875;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.card-credits-subtext {
+  font-size: 0.85rem;
+  color: #10B981;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* 7 Sections Navigation Pills Bar */
+.sc-nav-tabs-bar {
+  background: #FFFDF9;
+  border: 1px solid var(--pt-card-border);
+  border-radius: 16px;
+  padding: 8px 12px;
+  margin-bottom: 28px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(64, 54, 83, 0.03);
+}
+
+.sc-tab-btn {
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  padding: 8px 16px;
+  color: var(--pt-card-muted);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.sc-tab-btn:hover {
+  background: #F7F3FF;
+  color: var(--pt-card-text);
+}
+
+.sc-tab-btn.active {
+  background: linear-gradient(135deg, #C4A6F5, #A78BFA);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(196, 166, 245, 0.35);
+}
+
+/* Common Section Card Styling */
+.sc-section-card {
+  background: var(--pt-card-surface);
+  border: 1px solid var(--pt-card-border);
+  border-radius: 20px;
+  padding: 26px 28px;
+  margin-bottom: 28px;
+  box-shadow: 0 8px 24px rgba(64, 54, 83, 0.04);
+}
+
+.sc-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1.5px solid #F3EDFC;
+  padding-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.sc-section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sc-section-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #E9DDFB;
+  color: #403653;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  border: 1px solid #C4A6F5;
+}
+
+.sc-section-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--pt-card-text);
+}
+
+.sc-section-subtitle {
+  font-size: 0.85rem;
+  color: var(--pt-card-muted);
+  margin: 2px 0 0 0;
+}
+
+/* Section 1: Identity Grid */
+.identity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.identity-cell {
+  background: #FDFBFF;
+  border: 1px solid var(--pt-card-border);
+  border-radius: 14px;
+  padding: 14px 18px;
+}
+
+.identity-cell-label {
+  font-size: 0.78rem;
+  color: var(--pt-card-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.identity-cell-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--pt-card-text);
+  margin: 0;
+}
+
+/* Section 2: Overview 4-tile grid */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.overview-tile {
+  background: #FDFBFF;
+  border: 1.5px solid var(--pt-card-border);
+  border-radius: 16px;
+  padding: 18px;
+  transition: transform 0.2s, border-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.overview-tile:hover {
+  transform: translateY(-2px);
+  border-color: var(--pt-card-accent);
+}
+
+.overview-tile-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.overview-tile-info h4 {
+  margin: 0;
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--pt-card-text);
+}
+
+.overview-tile-info p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--pt-card-muted);
+  font-weight: 600;
+}
+
+.overview-nav-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.overview-nav-btn {
+  background: #FFFDF9;
+  border: 1px solid var(--pt-card-border);
+  color: var(--pt-card-text);
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.overview-nav-btn:hover {
+  background: #E9DDFB;
+  color: #403653;
+  border-color: #C4A6F5;
+}
+
+/* Section 3: Rewards */
+.rewards-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.rewards-metric-card {
+  background: #FDFBFF;
+  border: 1px solid var(--pt-card-border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  text-align: center;
+}
+
+.rewards-metric-card h5 {
+  font-size: 0.78rem;
+  color: var(--pt-card-muted);
+  text-transform: uppercase;
+  margin: 0 0 6px 0;
+  letter-spacing: 0.04em;
+}
+
+.rewards-metric-card .val {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--pt-card-text);
+  margin: 0;
+}
+
+.rewards-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.reward-benefit-box {
+  background: linear-gradient(135deg, #FFFDF9, #F7F3FF);
+  border: 1px solid #EAE1F4;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.reward-benefit-box i {
+  color: #D6B875;
+  font-size: 1.25rem;
+  margin-top: 2px;
+}
+
+.reward-benefit-box h6 {
+  margin: 0 0 3px 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--pt-card-text);
+}
+
+.reward-benefit-box p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--pt-card-muted);
+  line-height: 1.35;
+}
+
+/* Section 4: Budget & Savings */
+.budget-summary-box {
+  background: #FDFBFF;
+  border: 1px solid var(--pt-card-border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.budget-progress-bar-wrap {
+  width: 100%;
+  height: 12px;
+  background: #EAE1F4;
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 12px 0 8px 0;
+}
+
+.budget-progress-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #10B981, #C4A6F5);
+  transition: width 0.4s ease;
+}
+
+.savings-goals-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.savings-goal-card {
+  background: #FFFDF9;
+  border: 1px solid var(--pt-card-border);
+  border-radius: 14px;
+  padding: 14px 18px;
+}
+
+/* Section 5: Orders & Activity */
+.orders-table-wrap {
+  overflow-x: auto;
+}
+
+.sc-orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.sc-orders-table th {
+  background: #F7F3FF;
+  color: var(--pt-card-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.74rem;
+  letter-spacing: 0.05em;
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1.5px solid var(--pt-card-border);
+}
+
+.sc-orders-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--pt-card-border);
+  color: var(--pt-card-text);
+  font-weight: 500;
+}
+
+/* Section 6: Insights */
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.insight-card {
+  background: #FDFBFF;
+  border: 1.5px solid var(--pt-card-border);
+  border-radius: 16px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.insight-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--pt-card-accent);
+}
+
+.insight-badge {
+  display: inline-block;
+  background: #E9DDFB;
+  color: #403653;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  border: 1px solid #D4C0F5;
+  align-self: flex-start;
+}
+
+.insight-card h5 {
+  margin: 0 0 6px 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--pt-card-text);
+}
+
+.insight-card p {
+  font-size: 0.85rem;
+  color: var(--pt-card-muted);
+  line-height: 1.45;
+  margin: 0 0 14px 0;
+}
+
+.insight-link {
+  color: #8B5CF6;
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.insight-link:hover {
+  text-decoration: underline;
+}
+
+/* Section 7: Quick Actions Grid */
+.actions-shortcuts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.shortcut-action-card {
+  background: #FDFBFF;
+  border: 1px solid var(--pt-card-border);
+  border-radius: 16px;
+  padding: 16px 18px;
+  text-decoration: none;
+  color: var(--pt-card-text);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s ease;
+}
+
+.shortcut-action-card:hover {
+  background: #F7F3FF;
+  border-color: var(--pt-card-accent);
+  transform: translateY(-2px);
+  color: #403653;
+}
+
+.shortcut-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #E9DDFB;
+  color: #403653;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.shortcut-info h5 {
+  margin: 0 0 2px 0;
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: var(--pt-card-text);
+}
+
+.shortcut-info p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--pt-card-muted);
+}
+
+.card-mgmt-toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px dashed var(--pt-card-border);
+}
+
+.mgmt-btn {
+  background: #FFFDF9;
+  border: 1px solid var(--pt-card-border);
+  border-radius: 12px;
+  padding: 9px 18px;
+  color: var(--pt-card-text);
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.mgmt-btn:hover {
+  background: #E9DDFB;
+  border-color: var(--pt-card-accent);
+}
+
+.mgmt-btn-primary {
+  background: linear-gradient(135deg, #C4A6F5, #A78BFA);
+  color: #FFFFFF;
+  border: none;
+}
+
+.mgmt-btn-primary:hover {
+  background: linear-gradient(135deg, #B593F2, #9674FA);
+  color: #FFFFFF;
+}
+
+/* Modal for Privacy Safe Share */
+.sc-modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(64, 54, 83, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.sc-modal-box {
+  background: #FFFDF9;
+  border: 1px solid var(--pt-card-border);
+  border-radius: 20px;
+  max-width: 480px;
+  width: 100%;
+  padding: 24px;
+  box-shadow: 0 16px 40px rgba(64, 54, 83, 0.2);
+}
+
+/* Print Friendly Stylesheet */
+@media print {
+  body {
+    background: #FFFFFF !important;
+  }
+  .pretwin-navbar, .footer, .sc-header-actions, .sc-nav-tabs-bar, .card-mgmt-toolbar, .overview-nav-links, .sc-modal-backdrop {
+    display: none !important;
+  }
+  .sc-section-card, .pretwin-digital-card {
+    box-shadow: none !important;
+    border: 1px solid #CCC !important;
+    page-break-inside: avoid;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pretwin-smart-card-wrapper">
+  <div class="sc-container">
+
+    <!-- Top Header Banner -->
+    <div class="sc-header-card">
+      <div>
+        <div class="sc-header-badge">
+          <i class="bi bi-credit-card-2-front-fill"></i> PreTwin AI Digital Companion
+        </div>
+        <h1 class="sc-header-title">Smart Shopping Card</h1>
+        <p class="sc-header-subtitle">
+          Your personalised digital shopping identity, transparent rewards ledger, and AI shopping companion all in one place.
+        </p>
+      </div>
+      <div class="sc-header-actions">
+        <button class="mgmt-btn" id="btnRefreshTop" onclick="refreshCardData()">
+          <i class="bi bi-arrow-clockwise"></i> Refresh Card
+        </button>
+        <button class="mgmt-btn" onclick="window.print()">
+          <i class="bi bi-printer"></i> Print Card
+        </button>
+        <button class="mgmt-btn mgmt-btn-primary" onclick="openShareModal()">
+          <i class="bi bi-share"></i> Share Card
+        </button>
+      </div>
+    </div>
+
+    <!-- PRIMARY DIGITAL MEMBERSHIP CARD (HERO) -->
+    <div class="hero-digital-card-wrap">
+      <div class="card pretwin-digital-card" id="primaryDigitalCard">
+        <div class="card-gold-shine"></div>
+        <div class="card-lavender-shine"></div>
+
+        <!-- Card Top Bar -->
+        <div class="card-top-bar">
+          <div class="card-brand">
+            <div class="card-brand-icon">
+              <i class="bi bi-stars"></i>
+            </div>
+            <div class="card-brand-text">
+              <h4>PreTwin AI Smart Shopping Card</h4>
+              <span>PreTwin Digital Card · Your Future. Your Style. Your Twin.</span>
+            </div>
+          </div>
+          <div class="card-chip-badge">
+            <span class="card-chip-hologram"></span>
+            <span id="dscMaskedId">#PRE-10001</span>
+          </div>
+        </div>
+
+        <!-- Card Body Grid -->
+        <div class="card-body-grid">
+          <!-- Avatar Box -->
+          <div class="card-avatar-box">
+            <div id="avatarContainer">
+              <div class="card-avatar-monogram" id="dscMonogram">PT</div>
+            </div>
+          </div>
+
+          <!-- Customer Identity Details -->
+          <div class="card-user-info">
+            <div class="card-status-pill" id="dscCardStatus">
+              <i class="bi bi-patch-check-fill"></i> Active Verified Member
+            </div>
+            <h3 id="dscUserName">PreTwin Shopper</h3>
+            <p style="margin:0; font-size:0.86rem; color:#81778E;">
+              <span id="dscMemberSince">Member</span> · <span id="dscPersonality">Practical Smart Shopper</span>
+            </p>
+            <div class="card-chips-row" id="dscCategoriesRow">
+              <span class="card-pref-chip">Electronics</span>
+              <span class="card-pref-chip">Fashion</span>
+            </div>
+          </div>
+
+          <!-- Financial Snapshot (Reward Points & Rupee Value) -->
+          <div class="card-financial-box">
+            <div class="card-points-label">Available Reward Points</div>
+            <h2 class="card-points-value">
+              <span id="dscRewardPoints">0</span> <span style="font-size:0.9rem; color:#81778E; font-weight:600;">pts</span>
+            </h2>
+            <div class="card-credits-subtext" id="dscCreditsSubtext">
+              Equiv. ₹<span id="dscRewardRupees">0.00</span> Shopping Credits
+            </div>
+            <div style="font-size:0.75rem; color:#81778E; margin-top:4px;">
+              <span id="dscSavedAmount">0</span> saved across orders
+            </div>
+            <!-- Test assertion fallback element for zero credits -->
+            <div id="dscZeroCreditsNotice" style="display:none; font-size:0.75rem; color:#81778E;">
+              No shopping credits available (₹0)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 SECTIONS NAVIGATION TABS -->
+    <div class="sc-nav-tabs-bar" id="scNavTabs">
+      <button class="sc-tab-btn active" onclick="scrollToSection('sec-identity')">
+        <i class="bi bi-person-badge"></i> 1. Shopping Identity
+      </button>
+      <button class="sc-tab-btn" onclick="scrollToSection('sec-overview')">
+        <i class="bi bi-speedometer2"></i> 2. Overview
+      </button>
+      <button class="sc-tab-btn" onclick="scrollToSection('sec-rewards')">
+        <i class="bi bi-gem"></i> 3. Rewards & Benefits
+      </button>
+      <button class="sc-tab-btn" onclick="scrollToSection('sec-budget')">
+        <i class="bi bi-pie-chart"></i> 4. Budget & Savings
+      </button>
+      <button class="sc-tab-btn" onclick="scrollToSection('sec-orders')">
+        <i class="bi bi-box-seam"></i> 5. Orders Activity
+      </button>
+      <button class="sc-tab-btn" onclick="scrollToSection('sec-insights')">
+        <i class="bi bi-lightbulb"></i> 6. AI Insights
+      </button>
+      <button class="sc-tab-btn" onclick="scrollToSection('sec-actions')">
+        <i class="bi bi-grid-fill"></i> 7. Quick Actions
+      </button>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 1: MY SMART SHOPPING IDENTITY -->
+    <!-- =================================================================== -->
+    <div class="sc-section-card" id="sec-identity">
+      <div class="sc-section-header">
+        <div class="sc-section-title-wrap">
+          <div class="sc-section-icon"><i class="bi bi-person-badge"></i></div>
+          <div>
+            <h3 class="sc-section-title">1. My Smart Shopping Identity</h3>
+            <p class="sc-section-subtitle">Personalised shopping profile, digital twin alignment, and verified preferences.</p>
+          </div>
+        </div>
+        <div>
+          <a href="/twin" class="overview-nav-btn">
+            <i class="bi bi-pencil-square"></i> Edit Twin Preferences
+          </a>
+        </div>
+      </div>
+
+      <div class="identity-grid">
+        <div class="identity-cell">
+          <div class="identity-cell-label">Display Name</div>
+          <p class="identity-cell-value" id="identDisplayName">—</p>
+        </div>
+        <div class="identity-cell">
+          <div class="identity-cell-label">PreTwin Account ID</div>
+          <p class="identity-cell-value" id="identAccountId">—</p>
+        </div>
+        <div class="identity-cell">
+          <div class="identity-cell-label">Membership Tier</div>
+          <p class="identity-cell-value" id="identCardTier">PreTwin Classic</p>
+        </div>
+        <div class="identity-cell">
+          <div class="identity-cell-label">Member Since</div>
+          <p class="identity-cell-value" id="identMemberSince">—</p>
+        </div>
+        <div class="identity-cell">
+          <div class="identity-cell-label">Shopping Personality</div>
+          <p class="identity-cell-value" id="identPersonality">—</p>
+        </div>
+        <div class="identity-cell">
+          <div class="identity-cell-label">Spending Frequency</div>
+          <p class="identity-cell-value" id="identFrequency">Regular</p>
+        </div>
+      </div>
+
+      <div style="margin-top:18px;">
+        <div class="identity-cell-label">Preferred Categories</div>
+        <div class="card-chips-row" id="identCategoriesRow" style="margin-top:6px;">
+          <span class="card-pref-chip">All Categories</span>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <div class="identity-cell-label">Preferred Brands & Styles</div>
+        <div class="card-chips-row" id="identBrandsRow" style="margin-top:6px;">
+          <span class="card-pref-chip">Top Rated</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 2: MY SHOPPING OVERVIEW -->
+    <!-- =================================================================== -->
+    <div class="sc-section-card" id="sec-overview">
+      <div class="sc-section-header">
+        <div class="sc-section-title-wrap">
+          <div class="sc-section-icon"><i class="bi bi-speedometer2"></i></div>
+          <div>
+            <h3 class="sc-section-title">2. My Shopping Overview</h3>
+            <p class="sc-section-subtitle">Real-time counts for eligible purchases, in-transit deliveries, wishlist, and cart.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="overview-grid">
+        <div class="overview-tile">
+          <div class="overview-tile-icon" style="background:#E8F5E9; color:#1B5E20;">
+            <i class="bi bi-check2-circle"></i>
+          </div>
+          <div class="overview-tile-info">
+            <h4 id="statCompletedOrders">0</h4>
+            <p>Eligible Completed Orders</p>
+          </div>
+        </div>
+
+        <div class="overview-tile">
+          <div class="overview-tile-icon" style="background:#FFF3E0; color:#E65100;">
+            <i class="bi bi-truck"></i>
+          </div>
+          <div class="overview-tile-info">
+            <h4 id="statActiveOrders">0</h4>
+            <p>Active Shipments</p>
+          </div>
+        </div>
+
+        <div class="overview-tile">
+          <div class="overview-tile-icon" style="background:#FCE4EC; color:#C2185B;">
+            <i class="bi bi-heart"></i>
+          </div>
+          <div class="overview-tile-info">
+            <h4 id="statWishlistCount">0</h4>
+            <p>Saved Wishlist Items</p>
+          </div>
+        </div>
+
+        <div class="overview-tile">
+          <div class="overview-tile-icon" style="background:#EDE7F6; color:#512DA8;">
+            <i class="bi bi-cart3"></i>
+          </div>
+          <div class="overview-tile-info">
+            <h4 id="statCartCount">0</h4>
+            <p>Current Cart Items</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#FDFBFF; border:1px solid #EAE1F4; border-radius:14px; padding:14px 18px; margin-bottom:18px;">
+        <p style="margin:0; font-size:0.9rem; font-weight:600; color:#403653;" id="overviewSummaryText">
+          Loading live shopping activity...
+        </p>
+      </div>
+
+      <div class="overview-nav-links">
+        <a href="/orders" class="overview-nav-btn"><i class="bi bi-box-seam"></i> My Orders</a>
+        <a href="/wishlist" class="overview-nav-btn"><i class="bi bi-heart"></i> Wishlist</a>
+        <a href="/cart" class="overview-nav-btn"><i class="bi bi-cart3"></i> Shopping Cart</a>
+        <a href="/discovery" class="overview-nav-btn"><i class="bi bi-compass"></i> Product Catalogue</a>
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 3: MY REWARDS AND BENEFITS -->
+    <!-- =================================================================== -->
+    <div class="sc-section-card" id="sec-rewards">
+      <div class="sc-section-header">
+        <div class="sc-section-title-wrap">
+          <div class="sc-section-icon"><i class="bi bi-gem"></i></div>
+          <div>
+            <h3 class="sc-section-title">3. My Rewards and Benefits</h3>
+            <p class="sc-section-subtitle">Verified ledger balance: 5 points per completed purchase · 100 points = ₹1.00.</p>
+          </div>
+        </div>
+        <div>
+          <a href="/rewards" class="overview-nav-btn"><i class="bi bi-box-arrow-up-right"></i> View Full Rewards Page</a>
+        </div>
+      </div>
+
+      <div class="rewards-metrics-row">
+        <div class="rewards-metric-card">
+          <h5>Available Balance</h5>
+          <div class="val" id="rwBalancePoints">0</div>
+          <div style="font-size:0.8rem; color:#81778E; margin-top:2px;">Points</div>
+        </div>
+        <div class="rewards-metric-card">
+          <h5>Equivalent Value</h5>
+          <div class="val" style="color:#10B981;" id="rwRupeeValue">₹0.00</div>
+          <div style="font-size:0.8rem; color:#81778E; margin-top:2px;">Instant Checkout Discount</div>
+        </div>
+        <div class="rewards-metric-card">
+          <h5>Lifetime Earned</h5>
+          <div class="val" id="rwLifetimeEarned">0</div>
+          <div style="font-size:0.8rem; color:#81778E; margin-top:2px;">Total Points Earned</div>
+        </div>
+        <div class="rewards-metric-card">
+          <h5>Points Redeemed</h5>
+          <div class="val" id="rwLifetimeRedeemed">0</div>
+          <div style="font-size:0.8rem; color:#81778E; margin-top:2px;">Used in Past Purchases</div>
+        </div>
+      </div>
+
+      <h5 style="font-size:0.95rem; font-weight:700; color:#403653; margin:0 0 12px 0;">Eligible Member Benefits</h5>
+      <div class="rewards-benefits-grid">
+        <div class="reward-benefit-box">
+          <i class="bi bi-check-circle-fill"></i>
+          <div>
+            <h6>Instant Checkout Credits</h6>
+            <p>Redeem 100 reward points for ₹1 discount directly in the shopping cart and checkout.</p>
+          </div>
+        </div>
+        <div class="reward-benefit-box">
+          <i class="bi bi-arrow-repeat"></i>
+          <div>
+            <h6>5 Points Per Eligible Purchase</h6>
+            <p>Every delivered order automatically credits 5 reward points to your verified balance.</p>
+          </div>
+        </div>
+        <div class="reward-benefit-box">
+          <i class="bi bi-bell-fill"></i>
+          <div>
+            <h6>Predictive Deal Access</h6>
+            <p>Priority notification when items in your replenishment cycle go on price drop.</p>
+          </div>
+        </div>
+      </div>
+
+      <h5 style="font-size:0.95rem; font-weight:700; color:#403653; margin:16px 0 10px 0;">Recent Reward Ledger Transactions</h5>
+      <div class="orders-table-wrap">
+        <table class="sc-orders-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Type</th>
+              <th>Points</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody id="rewardTransactionsBody">
+            <tr><td colspan="5" style="text-align:center; color:#81778E;">No reward transactions yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 4: MY BUDGET AND SAVINGS SNAPSHOT -->
+    <!-- =================================================================== -->
+    <div class="sc-section-card" id="sec-budget">
+      <div class="sc-section-header">
+        <div class="sc-section-title-wrap">
+          <div class="sc-section-icon"><i class="bi bi-pie-chart"></i></div>
+          <div>
+            <h3 class="sc-section-title">4. My Budget and Savings Snapshot</h3>
+            <p class="sc-section-subtitle">Overview of monthly shopping allocations, active savings goals, and spending health.</p>
+          </div>
+        </div>
+        <div>
+          <a href="/budget" class="overview-nav-btn"><i class="bi bi-sliders"></i> Budget Intelligence</a>
+          <a href="/savings" class="overview-nav-btn"><i class="bi bi-piggy-bank"></i> Savings Goals</a>
+        </div>
+      </div>
+
+      <div class="budget-summary-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div>
+            <div class="identity-cell-label">Current Monthly Shopping Budget</div>
+            <h3 style="margin:0; font-size:1.6rem; font-weight:800; color:#403653;" id="bsOverallBudget">Not Set</h3>
+          </div>
+          <div style="text-align:right;">
+            <div class="identity-cell-label">Remaining Budget</div>
+            <h3 style="margin:0; font-size:1.6rem; font-weight:800; color:#10B981;" id="bsRemainingBudget">—</h3>
+          </div>
+        </div>
+
+        <div class="budget-progress-bar-wrap">
+          <div class="budget-progress-bar-fill" id="bsProgressBar" style="width: 0%;"></div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; font-size:0.82rem; color:#81778E; margin-top:4px;">
+          <span>Spent this month: <strong id="bsCurrentSpent">₹0.00</strong></span>
+          <span id="bsUtilizationText">0% utilized</span>
+        </div>
+
+        <div id="bsUnconfiguredMsg" style="display:none; margin-top:14px; background:#FFF3CD; color:#856404; padding:10px 14px; border-radius:10px; font-size:0.86rem;">
+          <i class="bi bi-exclamation-triangle-fill"></i> No monthly budget configured yet. Configure one in Budget Intelligence to prevent overspending.
+        </div>
+      </div>
+
+      <h5 style="font-size:0.95rem; font-weight:700; color:#403653; margin:16px 0 10px 0;">Active Savings Goals</h5>
+      <div class="savings-goals-list" id="savingsGoalsList">
+        <div style="color:#81778E; font-size:0.88rem; padding:10px;">No active savings goals found.</div>
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 5: MY ORDERS AND SHOPPING ACTIVITY -->
+    <!-- =================================================================== -->
+    <div class="sc-section-card" id="sec-orders">
+      <div class="sc-section-header">
+        <div class="sc-section-title-wrap">
+          <div class="sc-section-icon"><i class="bi bi-box-seam"></i></div>
+          <div>
+            <h3 class="sc-section-title">5. My Orders and Shopping Activity</h3>
+            <p class="sc-section-subtitle">Real-time tracking of active shipments and recent purchase history.</p>
+          </div>
+        </div>
+        <div>
+          <a href="/orders" class="overview-nav-btn"><i class="bi bi-box-arrow-up-right"></i> All Orders</a>
+        </div>
+      </div>
+
+      <h5 style="font-size:0.95rem; font-weight:700; color:#403653; margin:0 0 10px 0;">Active Shipments</h5>
+      <div class="orders-table-wrap" style="margin-bottom:24px;">
+        <table class="sc-orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Date</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Track</th>
+            </tr>
+          </thead>
+          <tbody id="activeOrdersTableBody">
+            <tr><td colspan="6" style="text-align:center; color:#81778E;">No active shipments in transit.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h5 style="font-size:0.95rem; font-weight:700; color:#403653; margin:0 0 10px 0;">Recently Completed Purchases</h5>
+      <div class="orders-table-wrap">
+        <table class="sc-orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Delivered Date</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="completedOrdersTableBody">
+            <tr><td colspan="6" style="text-align:center; color:#81778E;">No completed orders yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 6: MY PERSONALISED SHOPPING INSIGHTS -->
+    <!-- =================================================================== -->
+    <div class="sc-section-card" id="sec-insights">
+      <div class="sc-section-header">
+        <div class="sc-section-title-wrap">
+          <div class="sc-section-icon"><i class="bi bi-lightbulb"></i></div>
+          <div>
+            <h3 class="sc-section-title">6. My Personalised Shopping Insights</h3>
+            <p class="sc-section-subtitle">Intelligent updates from your Digital Twin, Predictions, and Shopping Calendar.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="insights-grid" id="insightsGrid">
+        <!-- Rendered dynamically by smart_card.js -->
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 7: QUICK ACTIONS AND CARD MANAGEMENT -->
+    <!-- =================================================================== -->
+    <div class="sc-section-card" id="sec-actions">
+      <div class="sc-section-header">
+        <div class="sc-section-title-wrap">
+          <div class="sc-section-icon"><i class="bi bi-grid-fill"></i></div>
+          <div>
+            <h3 class="sc-section-title">7. Quick Actions and Card Management</h3>
+            <p class="sc-section-subtitle">Instant navigation shortcuts across PreTwin AI and card utility tools.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions-shortcuts-grid">
+        <a href="/profile" class="shortcut-action-card">
+          <div class="shortcut-icon"><i class="bi bi-person-circle"></i></div>
+          <div class="shortcut-info">
+            <h5>View My Profile</h5>
+            <p>Manage account & delivery addresses</p>
+          </div>
+        </a>
+
+        <a href="/discovery" class="shortcut-action-card">
+          <div class="shortcut-icon"><i class="bi bi-search"></i></div>
+          <div class="shortcut-info">
+            <h5>Browse Products</h5>
+            <p>AI product discovery & search</p>
+          </div>
+        </a>
+
+        <a href="/wishlist" class="shortcut-action-card">
+          <div class="shortcut-icon"><i class="bi bi-heart"></i></div>
+          <div class="shortcut-info">
+            <h5>Open Wishlist</h5>
+            <p>Saved products & price drop alerts</p>
+          </div>
+        </a>
+
+        <a href="/cart" class="shortcut-action-card">
+          <div class="shortcut-icon"><i class="bi bi-cart3"></i></div>
+          <div class="shortcut-info">
+            <h5>View Shopping Cart</h5>
+            <p>Current shopping basket & checkout</p>
+          </div>
+        </a>
+
+        <a href="/orders" class="shortcut-action-card">
+          <div class="shortcut-icon"><i class="bi bi-box-seam"></i></div>
+          <div class="shortcut-info">
+            <h5>View My Orders</h5>
+            <p>Order history, status & tracking</p>
+          </div>
+        </a>
+
+        <a href="/rewards" class="shortcut-action-card">
+          <div class="shortcut-icon"><i class="bi bi-gem"></i></div>
+          <div class="shortcut-info">
+            <h5>Check Rewards</h5>
+            <p>Reward points & discount credits</p>
+          </div>
+        </a>
+
+        <a href="/budget" class="shortcut-action-card">
+          <div class="shortcut-icon"><i class="bi bi-pie-chart"></i></div>
+          <div class="shortcut-info">
+            <h5>Budget Intelligence</h5>
+            <p>Spending ceilings & category caps</p>
+          </div>
+        </a>
+
+        <a href="/calendar" class="shortcut-action-card">
+          <div class="shortcut-icon"><i class="bi bi-calendar3"></i></div>
+          <div class="shortcut-info">
+            <h5>Shopping Calendar</h5>
+            <p>Predictive occasions & milestones</p>
+          </div>
+        </a>
+
+        <a href="/twin" class="shortcut-action-card">
+          <div class="shortcut-icon"><i class="bi bi-sliders"></i></div>
+          <div class="shortcut-info">
+            <h5>Manage Twin Preferences</h5>
+            <p>Update style, brands & categories</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="card-mgmt-toolbar">
+        <button class="mgmt-btn" onclick="refreshCardData()">
+          <i class="bi bi-arrow-clockwise"></i> Refresh Card Data
+        </button>
+        <button class="mgmt-btn" onclick="window.print()">
+          <i class="bi bi-printer"></i> Print / Download Card
+        </button>
+        <button class="mgmt-btn mgmt-btn-primary" onclick="openShareModal()">
+          <i class="bi bi-share"></i> Privacy-Safe Share
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Privacy Safe Share Modal -->
+<div class="sc-modal-backdrop" id="shareModal">
+  <div class="sc-modal-box">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h4 style="margin:0; font-weight:800; color:#403653;">Share Smart Shopping Card</h4>
+      <button style="background:none; border:none; font-size:1.4rem; cursor:pointer;" onclick="closeShareModal()">&times;</button>
+    </div>
+    <p style="font-size:0.86rem; color:#81778E; margin-bottom:16px;">
+      This privacy-safe summary displays only your verified shopping membership status. Your passwords, delivery addresses, and payment methods are never shared.
+    </p>
+    <div style="background:#F7F3FF; border:1px solid #EAE1F4; border-radius:12px; padding:14px; font-family:monospace; font-size:0.85rem; color:#403653; margin-bottom:18px; white-space:pre-wrap;" id="safeShareText">
+PreTwin AI Smart Shopping Card
+Member: Alex Johnson
+Card ID: #PRE-10001
+Status: Verified Member
+Tagline: Your Future. Your Style. Your Twin.
+Visit: https://pretwinshop.ai
+    </div>
+    <div style="display:flex; justify-content:flex-end; gap:10px;">
+      <button class="mgmt-btn" onclick="closeShareModal()">Close</button>
+      <button class="mgmt-btn mgmt-btn-primary" onclick="copyShareText()">
+        <i class="bi bi-clipboard"></i> Copy to Clipboard
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Included Scripts -->
+<script src="/static/js/smart_cart.js"></script>
+<script src="/static/js/smart_card.js"></script>
+{% endblock %}
