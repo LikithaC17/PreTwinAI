@@ -1,198 +1,802 @@
 {% extends "base.html" %}
 
 {% block title %}Budget and Price Intelligence — PreTwin AI{% endblock %}
+
 {% block extra_head %}
 <style>
-/* PreTwin Lavender & Warm Ivory Theme Scoped for Budget Page */
+/* PreTwin Lavender & Warm Ivory Theme for Budget Dashboard */
 .budget-page-wrapper {
   background: #F7F3FF !important;
   color: #403653 !important;
-  border-radius: 24px !important;
-  padding: 24px 20px 48px !important;
+  border-radius: 20px !important;
+  padding: 20px 16px 48px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
-.budget-page-wrapper .card {
+.budget-card {
   background: #FFFDF9 !important;
-  border: 1px solid #EAE1F4 !important;
-  color: #403653 !important;
-  box-shadow: 0 6px 20px rgba(64, 54, 83, 0.04) !important;
-}
-.budget-page-wrapper h1, .budget-page-wrapper h2, .budget-page-wrapper h3, .budget-page-wrapper h4 {
-  color: #403653 !important;
-}
-.budget-page-wrapper .form-control, .budget-page-wrapper select, .budget-page-wrapper input {
-  background: #FFFFFF !important;
   border: 1.5px solid #EAE1F4 !important;
+  border-radius: 14px !important;
   color: #403653 !important;
+  box-shadow: 0 4px 16px rgba(64, 54, 83, 0.04) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.budget-page-wrapper table th {
-  color: #81778E !important;
-  border-bottom: 1px solid #EAE1F4 !important;
-  background: #F7F3FF !important;
+.budget-card:hover {
+  box-shadow: 0 6px 20px rgba(196, 166, 245, 0.15) !important;
 }
-.budget-page-wrapper table td {
+.budget-nav-btn {
+  background: #FFFDF9;
+  border: 1.5px solid #EAE1F4;
+  color: #81778E;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.budget-nav-btn:hover {
+  background: #F7F3FF;
+  color: #403653;
+  border-color: #C4A6F5;
+}
+.budget-nav-btn.active {
+  background: #E9DDFB !important;
   color: #403653 !important;
-  border-bottom: 1px solid #EAE1F4 !important;
+  border-color: #C4A6F5 !important;
+  box-shadow: 0 4px 12px rgba(196, 166, 245, 0.3) !important;
+}
+.budget-pill {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.budget-date-chip {
+  background: #FFFDF9;
+  border: 1px solid #EAE1F4;
+  color: #81778E;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.budget-date-chip.active, .budget-date-chip:hover {
+  background: #E9DDFB;
+  color: #403653;
+  border-color: #C4A6F5;
+  font-weight: 700;
+}
+.stat-tile {
+  background: #ffffff;
+  border: 1px solid #EAE1F4;
+  border-radius: 12px;
+  padding: 16px;
+}
+.budget-modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(64, 54, 83, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.budget-modal-content {
+  background: #FFFDF9;
+  border: 1.5px solid #EAE1F4;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+  box-shadow: 0 16px 40px rgba(64, 54, 83, 0.2);
+  position: relative;
+}
+.custom-progress-bg {
+  background: #EAE1F4;
+  border-radius: 8px;
+  height: 8px;
+  overflow: hidden;
+}
+.custom-progress-bar {
+  background: linear-gradient(90deg, #C4A6F5 0%, #A78BFA 60%, #D6B875 100%);
+  height: 100%;
+  border-radius: 8px;
+  transition: width 0.4s ease;
 }
 </style>
 {% endblock %}
 
-
 {% block content %}
-<div class="container budget-page-wrapper" style="max-width: 1240px; margin: 24px auto; padding: 24px 20px 48px;">
-  <!-- Header Banner -->
-  <div class="card" style="background: linear-gradient(135deg, #F7F3FF 0%, #FFFDF9 50%, #E9DDFB 100%); border: 1px solid #EAE1F4; padding: 28px; border-radius: 16px; margin-bottom: 24px; color: #403653; box-shadow: 0 8px 24px rgba(64,54,83,0.05);">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+<div class="container budget-page-wrapper" style="max-width: 1360px; margin: 16px auto 40px;">
+  
+  <!-- ==================================================================
+       DASHBOARD HEADER & MAIN SPENDING SUMMARY
+       ================================================================== -->
+  <header class="budget-card" style="padding: 24px 28px; margin-bottom: 20px; background: linear-gradient(135deg, #F7F3FF 0%, #FFFDF9 50%, #E9DDFB 100%);">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
       <div>
-        <div style="display:inline-flex; align-items:center; gap:8px; background:#E9DDFB; padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:700; color:#403653; margin-bottom:10px; border:1px solid #C4A6F5;">
-          <span>📉 INTELLIGENT COMMERCE</span>
-          <span>•</span>
-          <span>PRICE DROP ALERTS &amp; BUY/WAIT ADVICE</span>
+        <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <span class="budget-pill" style="background: #E9DDFB; color: #403653; border: 1px solid #C4A6F5;">
+            <span>💼 FINANCIAL INTELLIGENCE</span>
+          </span>
+          <span class="budget-pill" id="budgetPeriodBadge" style="background: #FFFDF9; color: #81778E; border: 1px solid #EAE1F4;">
+            Period: Monthly
+          </span>
+          <span class="budget-pill" id="budgetHealthBadge" style="background: #D1FAE5; color: #065F46; border: 1px solid #A7F3D0;">
+            Healthy
+          </span>
         </div>
-        <h1 style="font-size:1.9rem; font-weight:700; margin:0 0 8px 0; color:#403653;">Budget and Price Intelligence</h1>
-        <p style="margin:0; color:#81778E; font-size:0.95rem; max-width:720px; line-height:1.5;">
-          Monitor real-time price volatility, track discounts, analyse 30–90 day price history curves, and receive data-driven buy vs. wait recommendations.
+        <h1 style="font-size: 1.7rem; font-weight: 800; color: #403653; margin: 0 0 6px 0;">Budget and Price Intelligence</h1>
+        <p style="margin: 0; color: #81778E; font-size: 0.88rem; max-width: 780px; line-height: 1.5;">
+          Establish shopping limits, track verified expenditures, compare catalogue price points, plan savings goals, and verify purchase affordability before checkout.
         </p>
       </div>
-      <div style="text-align:right;">
-        <a href="/savings" class="btn btn-secondary" style="background:rgba(255,255,255,0.12); color:#403653; border:1px solid rgba(255,255,255,0.2); padding:10px 18px; border-radius:8px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:600;">
-          <span>💰 Smart Savings Plans</span>
-        </a>
+
+      <!-- Quick Summary Badges & Actions -->
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <div style="background: #FFFDF9; border: 1px solid #EAE1F4; padding: 10px 16px; border-radius: 12px; text-align: right;">
+          <div style="font-size: 0.72rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Remaining Budget</div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: #403653;">
+            ₹<span id="budgetRemaining">0</span>
+          </div>
+        </div>
+        <button onclick="openBudgetModal()" style="background: linear-gradient(135deg, #C4A6F5 0%, #B28BF4 60%, #D6B875 100%); color: #ffffff; border: none; padding: 11px 18px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 14px rgba(196,166,245,0.35);">
+          ⚙️ Manage Budget
+        </button>
       </div>
     </div>
-  </div>
+  </header>
 
-  <!-- Budget Overview Stats -->
-  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px; margin-bottom: 24px;">
-    <!-- Monthly Budget Card -->
-    <div class="card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:20px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <span style="color:#94a3b8; font-size:0.85rem; font-weight:600; text-transform:uppercase;">Monthly Twin Budget</span>
-        <span id="budgetHealthBadge" style="background:#10b981; color:#403653; font-size:0.75rem; padding:3px 8px; border-radius:12px; font-weight:600;">Healthy</span>
-      </div>
-      <div style="font-size:1.8rem; font-weight:700; color:#403653; margin-bottom:4px;">
-        ₹<span id="monthlySpent">0</span> <span style="font-size:1rem; color:#64748b; font-weight:400;">/ ₹<span id="budgetMax">15,000</span></span>
-      </div>
-      <div style="background:#EAE1F4; border-radius:6px; height:8px; overflow:hidden; margin:10px 0;">
-        <div id="budgetProgressBar" style="background:linear-gradient(90deg, #6366f1, #a855f7); width:0%; height:100%; transition:width 0.4s ease;"></div>
-      </div>
-      <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#94a3b8;">
-        <span>Spent: <span id="budgetSpentPercent">0%</span></span>
-        <span>Remaining: ₹<span id="budgetRemaining">15,000</span></span>
-      </div>
-    </div>
+  <!-- ==================================================================
+       SEVEN SECTIONS NAVIGATION STRIP
+       ================================================================== -->
+  <nav style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px;" aria-label="Budget Sections Navigation" id="budgetNavStrip">
+    <button class="budget-nav-btn active" onclick="switchBudgetSection('budget-section-setup', this)">
+      <span>📋</span> My Shopping Budget
+    </button>
+    <button class="budget-nav-btn" onclick="switchBudgetSection('budget-section-spending', this)">
+      <span>📊</span> My Spending Overview
+    </button>
+    <button class="budget-nav-btn" onclick="switchBudgetSection('budget-section-categories', this)">
+      <span>🏷️</span> Category-wise Tracking
+    </button>
+    <button class="budget-nav-btn" onclick="switchBudgetSection('budget-section-pricing', this)">
+      <span>📉</span> Price Intelligence
+    </button>
+    <button class="budget-nav-btn" onclick="switchBudgetSection('budget-section-savings', this)">
+      <span>💰</span> Smart Savings Planner
+    </button>
+    <button class="budget-nav-btn" onclick="switchBudgetSection('budget-section-affordability', this)">
+      <span>🛒</span> Purchase Affordability
+    </button>
+    <button class="budget-nav-btn" onclick="switchBudgetSection('budget-section-insights', this)">
+      <span>💡</span> Budget Insights &amp; Alerts
+    </button>
+  </nav>
 
-    <!-- Active Price Alerts -->
-    <div class="card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:20px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <span style="color:#94a3b8; font-size:0.85rem; font-weight:600; text-transform:uppercase;">Price Drop Alerts</span>
-        <span style="font-size:1.2rem;">🔔</span>
-      </div>
-      <div style="font-size:1.8rem; font-weight:700; color:#22d3ee; margin-bottom:4px;" id="totalTrackedCount">
-        0
-      </div>
-      <p style="margin:0; font-size:0.85rem; color:#94a3b8;">
-        <strong id="activeDropsCount" style="color:#10b981;">0 drops reached</strong> target price.
-      </p>
-    </div>
-
-    <!-- Savings Potential -->
-    <div class="card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:20px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <span style="color:#94a3b8; font-size:0.85rem; font-weight:600; text-transform:uppercase;">Unlocked Savings</span>
-        <span style="font-size:1.2rem;">🏷️</span>
-      </div>
-      <div style="font-size:1.8rem; font-weight:700; color:#10b981; margin-bottom:4px;">
-        ₹<span id="unlockedSavings">0</span>
-      </div>
-      <p style="margin:0; font-size:0.85rem; color:#94a3b8;">
-        Calculated from tracked items currently at lowest prices.
-      </p>
-    </div>
-  </div>
-
-  <!-- Interactive 60-Day Price History & AI Wait-vs-Buy Advisor -->
-  <div class="card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:24px; margin-bottom:24px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:20px;">
-      <div>
-        <h3 style="margin:0 0 4px 0; color:#403653; font-size:1.25rem;">60-Day Price History &amp; Buy-or-Wait Advisor</h3>
-        <p style="margin:0; color:#94a3b8; font-size:0.85rem;">Select any product to inspect historical pricing and AI timing prediction.</p>
-      </div>
-      <div style="display:flex; gap:10px; align-items:center;">
-        <select id="priceHistoryProductSelect" style="background:#1e293b; color:#403653; border:1px solid #334155; padding:8px 12px; border-radius:8px; font-size:0.9rem; min-width:240px;" onchange="loadProductPriceHistory(this.value)">
-          <option value="1">Wireless Over-Ear ANC Headphones</option>
-          <option value="2">Mechanical RGB Gaming Keyboard</option>
-          <option value="3">4K Ultra HD Smart LED TV (55 inch)</option>
-          <option value="4">Men's Breathable Running Shoes</option>
-          <option value="5">Smart Stainless Steel Electric Kettle</option>
-        </select>
-        <button class="btn btn-primary" onclick="trackCurrentProduct()" style="padding:8px 14px; border-radius:8px; font-size:0.85rem; background:#6366f1; color:#403653; border:none; cursor:pointer;">
-          + Track Price Drop
+  <!-- ==================================================================
+       SECTION 1: MY SHOPPING BUDGET
+       ================================================================== -->
+  <section id="budget-section-setup" class="budget-section-panel" style="display: block;">
+    <!-- Welcome First-Time Setup Card (if no custom budget set) -->
+    <div id="firstTimeBudgetBanner" class="budget-card" style="display: none; padding: 24px; margin-bottom: 20px; background: linear-gradient(135deg, #FFFDF9 0%, #F7F3FF 100%); border: 1.5px dashed #C4A6F5;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div style="display: flex; gap: 16px; align-items: center;">
+          <span style="font-size: 2rem; background: #E9DDFB; width: 54px; height: 54px; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #C4A6F5;">🎯</span>
+          <div>
+            <h3 style="margin: 0 0 4px 0; font-size: 1.15rem; color: #403653; font-weight: 800;">Welcome! Establish Your Shopping Budget</h3>
+            <p style="margin: 0; color: #81778E; font-size: 0.85rem; max-width: 600px;">
+              Take control of your shopping expenditure. Set a monthly, weekly, or custom budget to track spending, receive limit alerts, and verify checkout affordability.
+            </p>
+          </div>
+        </div>
+        <button onclick="openBudgetModal()" style="background: #C4A6F5; color: #ffffff; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer;">
+          Set My Budget Now &rarr;
         </button>
       </div>
     </div>
 
-    <!-- AI Advisor Banner -->
-    <div id="aiAdvisorBox" style="background:#F7F3FF; border:1px solid #EAE1F4; border-radius:10px; padding:16px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-      <div style="display:flex; align-items:center; gap:14px;">
-        <div id="advisorBadge" style="background:#10b981; color:#403653; font-weight:700; padding:6px 14px; border-radius:8px; font-size:0.9rem; letter-spacing:0.5px;">
-          BUY NOW
-        </div>
+    <!-- Active Budget Summary Card -->
+    <div class="budget-card" style="padding: 24px; margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
         <div>
-          <div style="font-weight:600; color:#403653; font-size:0.95rem;" id="advisorTitle">Current Price is at 60-Day Low</div>
-          <div style="color:#81778E; font-size:0.85rem;" id="advisorReason">Historical data indicates current price is within 3% of the recorded all-time low.</div>
+          <h2 style="font-size: 1.1rem; font-weight: 800; color: #403653; margin: 0 0 4px 0;">Active Shopping Budget</h2>
+          <span style="font-size: 0.8rem; color: #81778E;" id="budgetPeriodDates">Period: Nov 1, 2026 - Nov 30, 2026</span>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button onclick="openBudgetModal()" style="background: #E9DDFB; color: #403653; border: 1px solid #C4A6F5; padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">
+            ✏️ Edit Budget
+          </button>
+          <button onclick="confirmResetBudget()" style="background: #FFFDF9; color: #ef4444; border: 1px solid #fca5a5; padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">
+            ↺ Reset
+          </button>
         </div>
       </div>
-      <div style="display:flex; gap:20px; font-size:0.85rem;">
-        <div>
-          <span style="color:#94a3b8;">Lowest:</span> <strong style="color:#10b981;">₹<span id="statLowest">--</span></strong>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
+        <div class="stat-tile">
+          <div style="font-size: 0.74rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Overall Budget</div>
+          <div style="font-size: 1.5rem; font-weight: 800; color: #403653; margin: 4px 0;">
+            ₹<span id="budgetMax">0</span>
+          </div>
+          <span style="font-size: 0.76rem; color: #81778E;" id="budgetPeriodTypeLabel">Monthly allocation</span>
         </div>
-        <div>
-          <span style="color:#94a3b8;">Average:</span> <strong style="color:#403653;">₹<span id="statAverage">--</span></strong>
+        <div class="stat-tile">
+          <div style="font-size: 0.74rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Eligible Spent</div>
+          <div style="font-size: 1.5rem; font-weight: 800; color: #6B34A6; margin: 4px 0;">
+            ₹<span id="monthlySpent">0</span>
+          </div>
+          <span style="font-size: 0.76rem; color: #81778E;"><span id="budgetSpentPercent">0%</span> of budget</span>
         </div>
-        <div>
-          <span style="color:#94a3b8;">Highest:</span> <strong style="color:#ef4444;">₹<span id="statHighest">--</span></strong>
+        <div class="stat-tile">
+          <div style="font-size: 0.74rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Remaining Balance</div>
+          <div style="font-size: 1.5rem; font-weight: 800; color: #10b981; margin: 4px 0;">
+            ₹<span id="budgetRemainingCard">0</span>
+          </div>
+          <span style="font-size: 0.76rem; color: #10b981;">Available for shopping</span>
         </div>
+        <div class="stat-tile">
+          <div style="font-size: 0.74rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Budget Health</div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: #403653; margin: 6px 0;" id="budgetHealthStatus">
+            Healthy
+          </div>
+          <span style="font-size: 0.76rem; color: #81778E;">Based on actual orders</span>
+        </div>
+      </div>
+
+      <!-- Main Progress Bar -->
+      <div style="margin-bottom: 8px;">
+        <div class="custom-progress-bg" style="height: 10px;">
+          <div id="budgetProgressBar" class="custom-progress-bar" style="width: 0%;"></div>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: #81778E;">
+        <span>₹0</span>
+        <span>Target: ₹<span id="budgetProgressTarget">0</span></span>
       </div>
     </div>
 
-    <!-- Price Chart Container -->
-    <div style="position:relative; height:280px; width:100%;">
-      <canvas id="priceHistoryChart"></canvas>
+    <!-- Budget History Table -->
+    <div class="budget-card" style="padding: 24px;">
+      <h3 style="font-size: 1rem; font-weight: 800; color: #403653; margin: 0 0 14px 0;">Budget Period History</h3>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 1.5px solid #EAE1F4; color: #81778E; font-size: 0.75rem; text-transform: uppercase;">
+              <th style="padding: 10px 12px;">Period Type</th>
+              <th style="padding: 10px 12px;">Date Range</th>
+              <th style="padding: 10px 12px;">Target Budget</th>
+              <th style="padding: 10px 12px;">Actual Spend</th>
+              <th style="padding: 10px 12px;">Utilization</th>
+              <th style="padding: 10px 12px;">Outcome</th>
+            </tr>
+          </thead>
+          <tbody id="budgetHistoryTableBody">
+            <tr>
+              <td colspan="6" style="padding: 20px; text-align: center; color: #81778E;">Loading budget history...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Active Tracked Products Table -->
-  <div class="card" style="background:#FFFDF9; border:1px solid #EAE1F4; border-radius:12px; padding:24px; margin-bottom:24px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
-      <h3 style="margin:0; color:#403653; font-size:1.25rem;">Active Price Drop Alerts</h3>
-      <span style="font-size:0.85rem; color:#94a3b8;">PreTwin checks catalogue prices automatically</span>
+  <!-- ==================================================================
+       SECTION 2: MY SPENDING OVERVIEW
+       ================================================================== -->
+  <section id="budget-section-spending" class="budget-section-panel" style="display: none;">
+    <div class="budget-card" style="padding: 24px; margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
+        <div>
+          <h2 style="font-size: 1.15rem; font-weight: 800; color: #403653; margin: 0 0 4px 0;">Eligible Spending Overview</h2>
+          <span style="font-size: 0.8rem; color: #81778E;" id="spendingFilterLabel">Current Month • Completed and paid purchases only</span>
+        </div>
+
+        <!-- Date Filter Buttons -->
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="spendingDateFilters">
+          <button class="budget-date-chip active" onclick="loadSpendingOverview('current_month', this)">This Month</button>
+          <button class="budget-date-chip" onclick="loadSpendingOverview('last_month', this)">Last Month</button>
+          <button class="budget-date-chip" onclick="loadSpendingOverview('last_30_days', this)">Last 30 Days</button>
+          <button class="budget-date-chip" onclick="loadSpendingOverview('last_90_days', this)">Last 90 Days</button>
+          <button class="budget-date-chip" onclick="loadSpendingOverview('year_to_date', this)">Year to Date</button>
+          <button class="budget-date-chip" onclick="loadSpendingOverview('all_time', this)">All Time</button>
+        </div>
+      </div>
+
+      <!-- 4 Spending Metrics -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="stat-tile">
+          <div style="font-size: 0.74rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Total Spending</div>
+          <div style="font-size: 1.6rem; font-weight: 800; color: #403653; margin: 4px 0;">
+            ₹<span id="overviewTotalSpent">0</span>
+          </div>
+          <span style="font-size: 0.76rem; color: #81778E;">Eligible completed orders</span>
+        </div>
+        <div class="stat-tile">
+          <div style="font-size: 0.74rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Eligible Purchases</div>
+          <div style="font-size: 1.6rem; font-weight: 800; color: #6B34A6; margin: 4px 0;">
+            <span id="overviewEligibleCount">0</span>
+          </div>
+          <span style="font-size: 0.76rem; color: #81778E;">Excludes cancelled &amp; refunded</span>
+        </div>
+        <div class="stat-tile">
+          <div style="font-size: 0.74rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Average Order Value</div>
+          <div style="font-size: 1.6rem; font-weight: 800; color: #403653; margin: 4px 0;">
+            ₹<span id="overviewAov">0</span>
+          </div>
+          <span style="font-size: 0.76rem; color: #81778E;">Average spent per order</span>
+        </div>
+        <div class="stat-tile">
+          <div style="font-size: 0.74rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Remaining Budget</div>
+          <div style="font-size: 1.6rem; font-weight: 800; color: #10b981; margin: 4px 0;">
+            ₹<span id="overviewRemaining">0</span>
+          </div>
+          <span style="font-size: 0.76rem; color: #10b981;">From current allocation</span>
+        </div>
+      </div>
+
+      <!-- Monthly Trend Chart / Bar Display -->
+      <h3 style="font-size: 0.95rem; font-weight: 800; color: #403653; margin: 0 0 12px 0;">Monthly Spending Trend (Last 6 Months)</h3>
+      <div id="monthlyTrendBars" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 24px; padding: 16px; background: #ffffff; border: 1px solid #EAE1F4; border-radius: 12px;">
+        <!-- Populated via JS -->
+      </div>
+
+      <!-- Recent Purchases Table -->
+      <h3 style="font-size: 0.95rem; font-weight: 800; color: #403653; margin: 0 0 12px 0;">Recent Eligible Purchases</h3>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 1.5px solid #EAE1F4; color: #81778E; font-size: 0.75rem; text-transform: uppercase;">
+              <th style="padding: 10px 12px;">Order #</th>
+              <th style="padding: 10px 12px;">Date</th>
+              <th style="padding: 10px 12px;">Items</th>
+              <th style="padding: 10px 12px;">Amount</th>
+              <th style="padding: 10px 12px;">Payment Method</th>
+              <th style="padding: 10px 12px;">Status</th>
+            </tr>
+          </thead>
+          <tbody id="overviewRecentOrdersBody">
+            <tr>
+              <td colspan="6" style="padding: 20px; text-align: center; color: #81778E;">Loading recent purchases...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       SECTION 3: CATEGORY-WISE BUDGET TRACKING
+       ================================================================== -->
+  <section id="budget-section-categories" class="budget-section-panel" style="display: none;">
+    <div class="budget-card" style="padding: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
+        <div>
+          <h2 style="font-size: 1.15rem; font-weight: 800; color: #403653; margin: 0 0 4px 0;">Category-wise Budget Tracking</h2>
+          <span style="font-size: 0.8rem; color: #81778E;">Monitor where your money goes across all product categories</span>
+        </div>
+        <button onclick="openCategoryLimitsModal()" style="background: #E9DDFB; color: #403653; border: 1px solid #C4A6F5; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.82rem; cursor: pointer;">
+          ⚙️ Edit Category Limits
+        </button>
+      </div>
+
+      <!-- Category Overspending Alerts Container -->
+      <div id="categoryAlertsContainer" style="margin-bottom: 18px;"></div>
+
+      <!-- Categories Progress Grid -->
+      <div id="categoryTrackingGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
+        <div style="grid-column: 1/-1; text-align: center; padding: 32px; color: #81778E;">Loading category tracking...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       SECTION 4: PRICE INTELLIGENCE
+       ================================================================== -->
+  <section id="budget-section-pricing" class="budget-section-panel" style="display: none;">
+    <div class="budget-card" style="padding: 24px; margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+        <div>
+          <h2 style="font-size: 1.15rem; font-weight: 800; color: #403653; margin: 0 0 4px 0;">Catalogue Price Intelligence</h2>
+          <span style="font-size: 0.8rem; color: #81778E;">Real product prices, discount analysis, unit prices &amp; affordable alternatives</span>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <label for="priceHistoryProductSelect" style="font-size: 0.8rem; font-weight: 700; color: #81778E;">Inspect Product:</label>
+          <select id="priceHistoryProductSelect" style="background: #ffffff; color: #403653; border: 1.5px solid #EAE1F4; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; max-width: 300px;" onchange="loadProductPriceHistory(this.value)">
+            <!-- Populated via JS -->
+          </select>
+          <button onclick="trackCurrentProduct()" style="padding: 8px 14px; border-radius: 8px; font-size: 0.82rem; background: #C4A6F5; color: #ffffff; border: none; font-weight: 700; cursor: pointer;">
+            + Track Drop
+          </button>
+        </div>
+      </div>
+
+      <!-- Product Price Breakdown Tile -->
+      <div id="productPriceMetricsTile" style="background: #ffffff; border: 1px solid #EAE1F4; border-radius: 12px; padding: 18px; margin-bottom: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px;">
+        <div>
+          <span style="font-size: 0.72rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Selling Price</span>
+          <div style="font-size: 1.35rem; font-weight: 800; color: #403653; margin: 2px 0;" id="intelSellingPrice">₹0</div>
+          <span style="font-size: 0.74rem; color: #10b981; font-weight: 700;" id="intelDiscountBadge">0% off</span>
+        </div>
+        <div>
+          <span style="font-size: 0.72rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Original MRP</span>
+          <div style="font-size: 1.15rem; color: #81778E; text-decoration: line-through; margin: 2px 0;" id="intelMrp">₹0</div>
+          <span style="font-size: 0.74rem; color: #81778E;">PreTwin Verified</span>
+        </div>
+        <div>
+          <span style="font-size: 0.72rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Unit Economics</span>
+          <div style="font-size: 0.92rem; font-weight: 700; color: #403653; margin: 4px 0;" id="intelUnitPrice">Standard Unit</div>
+          <span style="font-size: 0.74rem; color: #81778E;">Per unit / 100g estimate</span>
+        </div>
+        <div>
+          <span style="font-size: 0.72rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Value Assessment</span>
+          <div style="font-size: 0.92rem; font-weight: 800; color: #6B34A6; margin: 4px 0;" id="intelValueLabel">Good Value</div>
+          <span style="font-size: 0.74rem; color: #81778E;" id="intelValueReason">vs. category average</span>
+        </div>
+      </div>
+
+      <!-- AI Advisor Banner -->
+      <div id="aiAdvisorBox" style="background: #F7F3FF; border: 1.5px solid #EAE1F4; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div id="advisorBadge" style="background: #10b981; color: #ffffff; font-weight: 800; padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; letter-spacing: 0.5px;">
+            BUY NOW
+          </div>
+          <div>
+            <div style="font-weight: 700; color: #403653; font-size: 0.95rem;" id="advisorTitle">Timing Recommendation</div>
+            <div style="color: #81778E; font-size: 0.82rem;" id="advisorReason">Analysis indicates this price point is at or near its 60-day low.</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 20px; font-size: 0.82rem;">
+          <div><span style="color: #81778E;">Lowest:</span> <strong style="color: #10b981;">₹<span id="statLowest">--</span></strong></div>
+          <div><span style="color: #81778E;">Average:</span> <strong style="color: #403653;">₹<span id="statAverage">--</span></strong></div>
+          <div><span style="color: #81778E;">Highest:</span> <strong style="color: #ef4444;">₹<span id="statHighest">--</span></strong></div>
+        </div>
+      </div>
+
+      <!-- Price History Chart -->
+      <div style="position: relative; height: 260px; width: 100%; margin-bottom: 24px;">
+        <canvas id="priceHistoryChart"></canvas>
+      </div>
+
+      <!-- Affordable Alternatives in Same Category -->
+      <h3 style="font-size: 0.95rem; font-weight: 800; color: #403653; margin: 0 0 12px 0;">Affordable Catalogue Alternatives</h3>
+      <div id="affordableAlternativesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin-bottom: 24px;">
+        <!-- Populated via JS -->
+      </div>
     </div>
 
-    <div style="overflow-x:auto;">
-      <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.9rem; color:#81778E;">
-        <thead>
-          <tr style="border-bottom:1px solid #EAE1F4; color:#94a3b8; font-size:0.8rem; text-transform:uppercase;">
-            <th style="padding:10px 14px;">Product</th>
-            <th style="padding:10px 14px;">Category</th>
-            <th style="padding:10px 14px;">Target Price</th>
-            <th style="padding:10px 14px;">Current Price</th>
-            <th style="padding:10px 14px;">Status</th>
-            <th style="padding:10px 14px;">Action</th>
-          </tr>
-        </thead>
-        <tbody id="trackedTableBody">
-          <tr>
-            <td colspan="6" style="padding:24px; text-align:center; color:#64748b;">
-              Loading tracked products...
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Active Tracked Products Table -->
+    <div class="budget-card" style="padding: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div>
+          <h3 style="margin: 0; color: #403653; font-size: 1.05rem; font-weight: 800;">Active Price Drop Alerts</h3>
+          <span style="font-size: 0.8rem; color: #81778E;">Tracking <span id="totalTrackedCount">0</span> items (<span id="activeDropsCount">0 drops reached</span>) • Total Unlocked Savings: ₹<span id="unlockedSavings">0</span></span>
+        </div>
+      </div>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 1.5px solid #EAE1F4; color: #81778E; font-size: 0.75rem; text-transform: uppercase;">
+              <th style="padding: 10px 12px;">Product</th>
+              <th style="padding: 10px 12px;">Category</th>
+              <th style="padding: 10px 12px;">Target Price</th>
+              <th style="padding: 10px 12px;">Current Price</th>
+              <th style="padding: 10px 12px;">Status</th>
+              <th style="padding: 10px 12px;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="trackedTableBody">
+            <tr>
+              <td colspan="6" style="padding: 24px; text-align: center; color: #81778E;">Loading tracked products...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+  </section>
+
+  <!-- ==================================================================
+       SECTION 5: SMART SAVINGS PLANNER
+       ================================================================== -->
+  <section id="budget-section-savings" class="budget-section-panel" style="display: none;">
+    <div class="budget-card" style="padding: 24px; margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <h2 style="font-size: 1.15rem; font-weight: 800; color: #403653; margin: 0;">Smart Savings Goals</h2>
+            <span class="budget-pill" style="background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A;">
+              Non-Shopping Reserve
+            </span>
+          </div>
+          <span style="font-size: 0.8rem; color: #81778E;">Save towards planned purchases. Savings contributions are distinct from actual shopping expenditures.</span>
+        </div>
+        <button onclick="openNewSavingsGoalModal()" style="background: linear-gradient(135deg, #C4A6F5 0%, #B28BF4 60%, #D6B875 100%); color: #ffffff; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; font-size: 0.82rem; cursor: pointer;">
+          + New Savings Goal
+        </button>
+      </div>
+
+      <!-- Savings Overview Tiles -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="stat-tile">
+          <div style="font-size: 0.74rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Total Saved</div>
+          <div style="font-size: 1.5rem; font-weight: 800; color: #10b981; margin: 4px 0;">
+            ₹<span id="savingsTotalSaved">0</span>
+          </div>
+          <span style="font-size: 0.76rem; color: #81778E;">Accumulated deposits</span>
+        </div>
+        <div class="stat-tile">
+          <div style="font-size: 0.74rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Combined Target</div>
+          <div style="font-size: 1.5rem; font-weight: 800; color: #403653; margin: 4px 0;">
+            ₹<span id="savingsTotalTarget">0</span>
+          </div>
+          <span style="font-size: 0.76rem; color: #81778E;">Across all active goals</span>
+        </div>
+        <div class="stat-tile">
+          <div style="font-size: 0.74rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Active Goals</div>
+          <div style="font-size: 1.5rem; font-weight: 800; color: #6B34A6; margin: 4px 0;">
+            <span id="savingsActiveGoalsCount">0</span>
+          </div>
+          <span style="font-size: 0.76rem; color: #81778E;">In progress</span>
+        </div>
+        <div class="stat-tile">
+          <div style="font-size: 0.74rem; color: #81778E; text-transform: uppercase; font-weight: 700;">Overall Progress</div>
+          <div style="font-size: 1.5rem; font-weight: 800; color: #403653; margin: 4px 0;">
+            <span id="savingsOverallProgress">0%</span>
+          </div>
+          <span style="font-size: 0.76rem; color: #81778E;">Progress towards completion</span>
+        </div>
+      </div>
+
+      <!-- Savings Goals List -->
+      <div id="savingsGoalsContainer" style="display: flex; flex-direction: column; gap: 16px;">
+        <div style="text-align: center; padding: 32px; color: #81778E;">Loading savings goals...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       SECTION 6: SMART PURCHASE AFFORDABILITY
+       ================================================================== -->
+  <section id="budget-section-affordability" class="budget-section-panel" style="display: none;">
+    <div class="budget-card" style="padding: 24px;">
+      <div style="margin-bottom: 20px;">
+        <h2 style="font-size: 1.15rem; font-weight: 800; color: #403653; margin: 0 0 4px 0;">Smart Purchase Affordability</h2>
+        <span style="font-size: 0.8rem; color: #81778E;">Pre-checkout financial simulation: evaluate the impact of proposed purchases on your budget before finalizing orders.</span>
+      </div>
+
+      <!-- Simulator Control & Summary Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; margin-bottom: 24px;">
+        
+        <!-- Left: Cart Input -->
+        <div style="background: #ffffff; border: 1px solid #EAE1F4; border-radius: 14px; padding: 20px;">
+          <h3 style="font-size: 0.92rem; font-weight: 800; color: #403653; margin: 0 0 12px 0;">Proposed Cart Purchase</h3>
+          
+          <div style="margin-bottom: 14px;">
+            <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #81778E; margin-bottom: 6px;">
+              Cart Value (₹)
+            </label>
+            <input 
+              type="number" 
+              id="affordabilityCartInput" 
+              placeholder="e.g. 2500" 
+              style="width: 100%; box-sizing: border-box; padding: 10px 14px; border: 1.5px solid #EAE1F4; border-radius: 8px; font-size: 1rem; font-weight: 700; color: #403653;"
+              oninput="recalculateAffordability(this.value)"
+            >
+          </div>
+
+          <div style="display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;">
+            <button onclick="setAffordabilityPreset(500)" style="background: #F7F3FF; border: 1px solid #EAE1F4; padding: 4px 10px; border-radius: 12px; font-size: 0.74rem; cursor: pointer;">₹500</button>
+            <button onclick="setAffordabilityPreset(1500)" style="background: #F7F3FF; border: 1px solid #EAE1F4; padding: 4px 10px; border-radius: 12px; font-size: 0.74rem; cursor: pointer;">₹1,500</button>
+            <button onclick="setAffordabilityPreset(3000)" style="background: #F7F3FF; border: 1px solid #EAE1F4; padding: 4px 10px; border-radius: 12px; font-size: 0.74rem; cursor: pointer;">₹3,000</button>
+            <button onclick="setAffordabilityPreset(5000)" style="background: #F7F3FF; border: 1px solid #EAE1F4; padding: 4px 10px; border-radius: 12px; font-size: 0.74rem; cursor: pointer;">₹5,000</button>
+            <button onclick="syncLiveCartAffordability()" style="background: #E9DDFB; border: 1px solid #C4A6F5; color: #403653; padding: 4px 10px; border-radius: 12px; font-size: 0.74rem; font-weight: 700; cursor: pointer;">Sync Live Cart</button>
+          </div>
+
+          <div style="font-size: 0.8rem; color: #81778E; line-height: 1.6;">
+            <div>• Free shipping automatically applies on subtotal &ge; ₹500.</div>
+            <div>• Budget checks inform you without blocking checkout.</div>
+          </div>
+        </div>
+
+        <!-- Right: Calculation Breakdown -->
+        <div style="background: #FFFDF9; border: 1.5px solid #EAE1F4; border-radius: 14px; padding: 20px;">
+          <h3 style="font-size: 0.92rem; font-weight: 800; color: #403653; margin: 0 0 14px 0;">Financial Impact Breakdown</h3>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.86rem; color: #403653;">
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: #81778E;">Current Monthly Budget:</span>
+              <strong id="affordBudget">₹0</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: #81778E;">Already Spent This Period:</span>
+              <span id="affordSpent">₹0</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: #81778E;">Remaining Before Purchase:</span>
+              <strong style="color: #10b981;" id="affordRemainingBefore">₹0</strong>
+            </div>
+            <hr style="border: none; border-top: 1px dashed #EAE1F4; margin: 4px 0;">
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: #81778E;">Proposed Cart Subtotal:</span>
+              <span id="affordCartSubtotal">₹0</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: #81778E;">Applicable Shipping Charges:</span>
+              <span id="affordShipping">₹0</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: #81778E; font-weight: 700;">Final Payable Amount:</span>
+              <strong style="font-size: 1rem; color: #403653;" id="affordFinalPayable">₹0</strong>
+            </div>
+            <hr style="border: none; border-top: 1.5px solid #EAE1F4; margin: 4px 0;">
+            <div style="display: flex; justify-content: space-between;">
+              <span style="font-weight: 700;">Remaining Balance After Purchase:</span>
+              <strong style="font-size: 1.1rem;" id="affordRemainingAfter">₹0</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+              <span style="color: #81778E;">Projected Budget Utilization:</span>
+              <span style="font-weight: 700;" id="affordUtilizationAfter">0%</span>
+            </div>
+          </div>
+
+          <!-- Result Banner -->
+          <div id="affordabilityAlertBox" style="margin-top: 16px; padding: 12px 14px; border-radius: 10px; font-size: 0.84rem; font-weight: 600;">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       SECTION 7: BUDGET INSIGHTS AND ALERTS
+       ================================================================== -->
+  <section id="budget-section-insights" class="budget-section-panel" style="display: none;">
+    <div class="budget-card" style="padding: 24px;">
+      <div style="margin-bottom: 20px;">
+        <h2 style="font-size: 1.15rem; font-weight: 800; color: #403653; margin: 0 0 4px 0;">Financial Insights &amp; Observations</h2>
+        <span style="font-size: 0.8rem; color: #81778E;">Transparent, rule-based observations drawn directly from your verified spending data</span>
+      </div>
+
+      <!-- Alerts List -->
+      <h3 style="font-size: 0.95rem; font-weight: 800; color: #403653; margin: 0 0 12px 0;">Active Financial Alerts</h3>
+      <div id="insightsAlertsList" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;">
+        <!-- Populated via JS -->
+      </div>
+
+      <!-- Observations & Opportunities -->
+      <h3 style="font-size: 0.95rem; font-weight: 800; color: #403653; margin: 0 0 12px 0;">Spending Observations &amp; Savings Opportunities</h3>
+      <div id="insightsObservationsList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
+        <!-- Populated via JS -->
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ==================================================================
+     MODALS
+     ================================================================== -->
+
+<!-- Modal 1: Manage/Setup Budget Modal -->
+<div id="budgetManageModal" class="budget-modal-backdrop">
+  <div class="budget-modal-content">
+    <button onclick="closeBudgetModal()" style="position: absolute; right: 20px; top: 20px; background: #F7F3FF; border: 1px solid #EAE1F4; border-radius: 50%; width: 32px; height: 32px; font-size: 1.1rem; cursor: pointer;">&times;</button>
+    <h3 style="font-size: 1.15rem; font-weight: 800; color: #403653; margin: 0 0 6px 0;">Set Up Shopping Budget</h3>
+    <p style="font-size: 0.8rem; color: #81778E; margin: 0 0 18px 0;">Define your spending target and allocate category limits.</p>
+
+    <form onsubmit="submitBudgetForm(event)">
+      <div style="margin-bottom: 14px;">
+        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #81778E; margin-bottom: 6px;">Budget Period</label>
+        <select id="modalBudgetPeriod" onchange="toggleCustomDates(this.value)" style="width: 100%; padding: 10px; border: 1.5px solid #EAE1F4; border-radius: 8px; font-size: 0.88rem; color: #403653;">
+          <option value="monthly">Monthly (1st to last day of month)</option>
+          <option value="weekly">Weekly (Monday to Sunday)</option>
+          <option value="custom">Custom Date Period</option>
+        </select>
+      </div>
+
+      <div id="modalCustomDatesGroup" style="display: none; gap: 10px; margin-bottom: 14px;">
+        <div style="flex: 1;">
+          <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #81778E; margin-bottom: 4px;">Start Date</label>
+          <input type="date" id="modalPeriodStart" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1.5px solid #EAE1F4; border-radius: 8px; font-size: 0.85rem;">
+        </div>
+        <div style="flex: 1;">
+          <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #81778E; margin-bottom: 4px;">End Date</label>
+          <input type="date" id="modalPeriodEnd" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1.5px solid #EAE1F4; border-radius: 8px; font-size: 0.85rem;">
+        </div>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #81778E; margin-bottom: 6px;">Overall Budget Limit (₹)</label>
+        <input type="number" id="modalOverallBudget" required min="100" step="50" placeholder="e.g. 15000" style="width: 100%; box-sizing: border-box; padding: 10px 14px; border: 1.5px solid #EAE1F4; border-radius: 8px; font-size: 1rem; font-weight: 700; color: #403653;">
+      </div>
+
+      <h4 style="font-size: 0.88rem; font-weight: 800; color: #403653; margin: 16px 0 8px 0;">Category Allocations (Optional)</h4>
+      <div id="modalCategoryInputs" style="display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto; padding-right: 4px; margin-bottom: 18px;">
+        <!-- Populated via JS -->
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button type="button" onclick="closeBudgetModal()" style="background: #F7F3FF; border: 1px solid #EAE1F4; padding: 9px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">Cancel</button>
+        <button type="submit" style="background: #C4A6F5; color: #ffffff; border: none; padding: 9px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer;">Save Budget</button>
+      </div>
+    </form>
   </div>
 </div>
+
+<!-- Modal 2: New Savings Goal Modal -->
+<div id="newSavingsGoalModal" class="budget-modal-backdrop">
+  <div class="budget-modal-content">
+    <button onclick="closeNewSavingsGoalModal()" style="position: absolute; right: 20px; top: 20px; background: #F7F3FF; border: 1px solid #EAE1F4; border-radius: 50%; width: 32px; height: 32px; font-size: 1.1rem; cursor: pointer;">&times;</button>
+    <h3 style="font-size: 1.15rem; font-weight: 800; color: #403653; margin: 0 0 6px 0;">Create Savings Goal</h3>
+    <p style="font-size: 0.8rem; color: #81778E; margin: 0 0 16px 0;">Target a planned purchase and track contributions without affecting your shopping budget.</p>
+
+    <form onsubmit="submitNewSavingsGoal(event)">
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #81778E; margin-bottom: 4px;">Goal Title</label>
+        <input type="text" id="goalTitleInput" required placeholder="e.g. Sony ANC Headphones or Laptop Upgrade" style="width: 100%; box-sizing: border-box; padding: 10px; border: 1.5px solid #EAE1F4; border-radius: 8px; font-size: 0.88rem;">
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #81778E; margin-bottom: 4px;">Target Amount (₹)</label>
+        <input type="number" id="goalTargetInput" required min="500" step="100" placeholder="e.g. 8000" style="width: 100%; box-sizing: border-box; padding: 10px; border: 1.5px solid #EAE1F4; border-radius: 8px; font-size: 0.88rem;">
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #81778E; margin-bottom: 4px;">Target Date</label>
+        <input type="date" id="goalTargetDateInput" required style="width: 100%; box-sizing: border-box; padding: 10px; border: 1.5px solid #EAE1F4; border-radius: 8px; font-size: 0.88rem;">
+      </div>
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #81778E; margin-bottom: 4px;">Initial Deposit (₹, Optional)</label>
+        <input type="number" id="goalInitialSavedInput" min="0" placeholder="0" style="width: 100%; box-sizing: border-box; padding: 10px; border: 1.5px solid #EAE1F4; border-radius: 8px; font-size: 0.88rem;">
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button type="button" onclick="closeNewSavingsGoalModal()" style="background: #F7F3FF; border: 1px solid #EAE1F4; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">Cancel</button>
+        <button type="submit" style="background: #C4A6F5; color: #ffffff; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer;">Create Goal</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal 3: Deposit Contribution Modal -->
+<div id="savingsDepositModal" class="budget-modal-backdrop">
+  <div class="budget-modal-content">
+    <button onclick="closeSavingsDepositModal()" style="position: absolute; right: 20px; top: 20px; background: #F7F3FF; border: 1px solid #EAE1F4; border-radius: 50%; width: 32px; height: 32px; font-size: 1.1rem; cursor: pointer;">&times;</button>
+    <h3 style="font-size: 1.15rem; font-weight: 800; color: #403653; margin: 0 0 6px 0;">Add Savings Deposit</h3>
+    <p style="font-size: 0.8rem; color: #81778E; margin: 0 0 16px 0;" id="depositGoalTitle">Goal Name</p>
+
+    <form onsubmit="submitSavingsDeposit(event)">
+      <input type="hidden" id="depositPlanId">
+      <div style="margin-bottom: 14px;">
+        <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #81778E; margin-bottom: 4px;">Deposit Amount (₹)</label>
+        <input type="number" id="depositAmountInput" required min="50" step="50" placeholder="e.g. 1000" style="width: 100%; box-sizing: border-box; padding: 10px; border: 1.5px solid #EAE1F4; border-radius: 8px; font-size: 1rem; font-weight: 700;">
+      </div>
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #81778E; margin-bottom: 4px;">Note (Optional)</label>
+        <input type="text" id="depositNoteInput" placeholder="e.g. Monthly salary savings" style="width: 100%; box-sizing: border-box; padding: 10px; border: 1.5px solid #EAE1F4; border-radius: 8px; font-size: 0.85rem;">
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button type="button" onclick="closeSavingsDepositModal()" style="background: #F7F3FF; border: 1px solid #EAE1F4; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">Cancel</button>
+        <button type="submit" style="background: #10b981; color: #ffffff; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer;">Deposit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="/static/js/budget.js"></script>
 {% endblock %}

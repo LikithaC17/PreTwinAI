@@ -552,6 +552,55 @@ def init_db():
         )
     """)
 
+    # --- customer_budgets (Feature 4: Budget & Price Intelligence) ---
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS customer_budgets (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            budget_period TEXT DEFAULT 'monthly',
+            period_start DATE NOT NULL,
+            period_end DATE NOT NULL,
+            overall_budget REAL NOT NULL,
+            status TEXT DEFAULT 'active',
+            notes TEXT DEFAULT '',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+    """)
+
+    # --- category_budget_allocations (Feature 4: Category Tracking) ---
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS category_budget_allocations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            budget_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            category TEXT NOT NULL,
+            allocated_amount REAL NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (budget_id) REFERENCES customer_budgets(id) ON DELETE CASCADE,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            UNIQUE(budget_id, category)
+        )
+    """)
+
+    # --- budget_alerts (Feature 4: Financial Insights & Alerts) ---
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS budget_alerts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            budget_id INTEGER,
+            alert_type TEXT NOT NULL,
+            title TEXT NOT NULL,
+            message TEXT NOT NULL,
+            severity TEXT DEFAULT 'info',
+            is_read INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+    """)
+
     # Column migrations for predictions and shopping_reminders
     try:
         pred_cols = [r[1] for r in cursor.execute("PRAGMA table_info(predictions)").fetchall()]

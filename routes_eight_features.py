@@ -19,6 +19,7 @@ from datetime import datetime, timedelta, timezone
 from flask import request, jsonify, session
 import database
 import services.search_intelligence_service as sis
+import services.budget_intelligence_service as bis
 from config import Config
 
 
@@ -787,27 +788,21 @@ def register_eight_features_routes(app, get_user_id_fn, row_to_dict_fn, error_fn
 
     @app.route("/api/budget/overview", methods=["GET"])
     def get_budget_overview():
-        """Retrieve total budget, active price drops, monthly spend, and savings analytics."""
+        """
+        Comprehensive budget, spending, category allocations, price drop tracking,
+        and financial overview metrics.
+        """
         try:
             user_id = get_user_id_fn()
 
-            # Active preferences for budget limits
-            pref = database.query_db(
-                "SELECT budget_min, budget_max FROM shopping_preferences WHERE user_id = ?",
-                (user_id,),
-                one=True
-            )
-            b_min = float(pref["budget_min"]) if pref and pref["budget_min"] else 1000.0
-            b_max = float(pref["budget_max"]) if pref and pref["budget_max"] else 20000.0
+            # Active budget
+            active_budget = bis.BudgetManagementEngine.get_active_budget(user_id)
+            b_max = float(active_budget["overall_budget"]) if active_budget else 0.0
+            b_min = 1000.0
 
-            # Calculate month's purchases
-            thirty_days_ago = (datetime.utcnow() - timedelta(days=30)).strftime("%Y-%m-%d")
-            spend_row = database.query_db(
-                "SELECT COALESCE(SUM(price * quantity), 0) AS total_spent, COUNT(*) as count FROM purchase_history WHERE user_id = ? AND purchase_date >= ?",
-                (user_id, thirty_days_ago),
-                one=True
-            )
-            spent = float(spend_row["total_spent"]) if spend_row else 0.0
+            # Real spending in active period (or current month)
+            spending = bis.SpendingCalculationEngine.get_spending_overview(user_id, date_filter="current_month")
+            spent = spending["total_spent"]
 
             # Tracked price drops
             tracked = database.query_db(
@@ -829,21 +824,161 @@ def register_eight_features_routes(app, get_user_id_fn, row_to_dict_fn, error_fn
                     active_drops_count += 1
                 tracked_list.append(item)
 
-            budget_percent = min(100.0, round((spent / b_max) * 100, 1)) if b_max > 0 else 0
+            budget_percent = min(100.0, round((spent / b_max) * 100, 1)) if b_max > 0 else 0.0
 
             return jsonify({
                 "budget_min": b_min,
                 "budget_max": b_max,
                 "monthly_spent": spent,
-                "budget_remaining": max(0.0, b_max - spent),
+                "budget_remaining": max(0.0, round(b_max - spent, 2)),
                 "budget_used_percentage": budget_percent,
                 "tracked_items": tracked_list,
                 "total_tracked": len(tracked_list),
                 "active_price_drops": active_drops_count,
-                "budget_health": "Healthy" if budget_percent < 75 else ("Attention" if budget_percent < 90 else "Critical")
+                "budget_health": "Healthy" if budget_percent < 75 else ("Attention" if budget_percent < 90 else "Critical"),
+                "has_budget": active_budget is not None and (active_budget.get("has_custom_budget", False) or b_max > 0),
+                "budget_period": active_budget.get("budget_period", "monthly") if active_budget else "monthly",
+                "period_start": active_budget.get("period_start", "") if active_budget else "",
+                "period_end": active_budget.get("period_end", "") if active_budget else "",
+                "category_allocations": active_budget.get("category_allocations", {}) if active_budget else {},
+                "eligible_purchases_count": spending["eligible_purchases_count"],
+                "average_order_value": spending["average_order_value"],
+                "monthly_trend": spending["monthly_trend"],
+                "recent_purchases": spending["recent_purchases"],
             })
         except Exception as e:
             return error_fn(f"Failed to fetch budget overview: {str(e)}", 500)
+
+    @app.route("/api/budget/manage", methods=["POST"])
+    def manage_customer_budget():
+        """Create, edit, or update customer shopping budget with category limits."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            data = request.get_json() or {}
+            period = data.get("budget_period", "monthly")
+            amount = float(data.get("overall_budget", 0))
+            p_start = data.get("period_start")
+            p_end = data.get("period_end")
+            allocations = data.get("category_allocations", {})
+            notes = data.get("notes", "")
+
+            if amount <= 0:
+                return error_fn("Overall budget must be greater than zero.", 400)
+
+            result = bis.BudgetManagementEngine.save_budget(
+                user_id=user_id,
+                budget_period=period,
+                overall_budget=amount,
+                period_start=p_start,
+                period_end=p_end,
+                category_allocations=allocations,
+                notes=notes,
+            )
+            return jsonify(result)
+        except Exception as e:
+            return error_fn(f"Failed to save budget: {str(e)}", 500)
+
+    @app.route("/api/budget/reset", methods=["POST"])
+    def reset_customer_budget():
+        """Reset active budget with customer confirmation."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            result = bis.BudgetManagementEngine.reset_budget(user_id)
+            return jsonify(result)
+        except Exception as e:
+            return error_fn(f"Failed to reset budget: {str(e)}", 500)
+
+    @app.route("/api/budget/history", methods=["GET"])
+    def get_customer_budget_history():
+        """Retrieve customer's historical budget periods and spending outcomes."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            history = bis.BudgetManagementEngine.get_budget_history(user_id)
+            return jsonify({"history": history, "total_periods": len(history)})
+        except Exception as e:
+            return error_fn(f"Failed to fetch budget history: {str(e)}", 500)
+
+    @app.route("/api/budget/spending-overview", methods=["GET"])
+    def get_spending_overview_filtered():
+        """Retrieve spending metrics with custom date filter ('current_month', 'last_month', etc.)."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            d_filter = request.args.get("date_filter", "current_month")
+            c_start = request.args.get("start_date")
+            c_end = request.args.get("end_date")
+            result = bis.SpendingCalculationEngine.get_spending_overview(
+                user_id, date_filter=d_filter, custom_start=c_start, custom_end=c_end
+            )
+            return jsonify(result)
+        except Exception as e:
+            return error_fn(f"Failed to fetch spending overview: {str(e)}", 500)
+
+    @app.route("/api/budget/categories", methods=["GET", "POST"])
+    def manage_category_budget_tracking():
+        """GET category-wise tracking or POST to update category limits."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            if request.method == "POST":
+                data = request.get_json() or {}
+                allocations = data.get("category_allocations", {})
+                active_budget = bis.BudgetManagementEngine.get_active_budget(user_id)
+                overall = float(active_budget.get("overall_budget", 10000.0)) if active_budget else 10000.0
+                period = active_budget.get("budget_period", "monthly") if active_budget else "monthly"
+                result = bis.BudgetManagementEngine.save_budget(
+                    user_id=user_id,
+                    budget_period=period,
+                    overall_budget=overall,
+                    category_allocations=allocations,
+                )
+                return jsonify(result)
+
+            tracking = bis.CategoryBudgetEngine.get_category_tracking(user_id)
+            return jsonify(tracking)
+        except Exception as e:
+            return error_fn(f"Category budget error: {str(e)}", 500)
+
+    @app.route("/api/budget/price-intelligence", methods=["GET"])
+    def get_price_intelligence_endpoint():
+        """Analyze product prices, MRPs, discounts, unit prices, and catalogue alternatives."""
+        try:
+            product_id = request.args.get("product_id", 1, type=int)
+            intel = bis.PriceIntelligenceEngine.get_product_price_intelligence(product_id)
+            return jsonify(intel)
+        except Exception as e:
+            return error_fn(f"Price intelligence error: {str(e)}", 500)
+
+    @app.route("/api/budget/affordability", methods=["POST"])
+    def evaluate_purchase_affordability():
+        """Pre-checkout cart affordability check without restricting checkout."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            data = request.get_json() or {}
+            subtotal = float(data.get("cart_subtotal", 0.0))
+            items = data.get("cart_items", [])
+            result = bis.PurchaseAffordabilityEngine.evaluate_affordability(user_id, subtotal, items)
+            return jsonify(result)
+        except Exception as e:
+            return error_fn(f"Affordability calculation error: {str(e)}", 500)
+
+    @app.route("/api/budget/insights", methods=["GET"])
+    def get_budget_insights():
+        """Retrieve rule-based, verified budget alerts and financial health observations."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            result = bis.BudgetAlertsAndInsightsEngine.get_insights_and_alerts(user_id)
+            return jsonify(result)
+        except Exception as e:
+            return error_fn(f"Insights error: {str(e)}", 500)
+
+    @app.route("/api/budget/savings-summary", methods=["GET"])
+    def get_savings_summary_for_budget():
+        """Integrated Smart Savings Plans summary for budget dashboard."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            result = bis.SavingsPlannerIntegrationEngine.get_savings_summary(user_id)
+            return jsonify(result)
+        except Exception as e:
+            return error_fn(f"Savings summary error: {str(e)}", 500)
 
     @app.route("/api/budget/track", methods=["POST"])
     def track_product_price():
@@ -927,12 +1062,11 @@ def register_eight_features_routes(app, get_user_id_fn, row_to_dict_fn, error_fn
             if rows and len(rows) >= 5:
                 history = [{"price": float(r["price"]), "date": r["recorded_date"]} for r in rows]
             else:
-                # Synthesize 45-day realistic price fluctuation curve
+                # 45-day realistic price fluctuation curve for baseline comparison
                 base = current_price
-                today = datetime.utcnow().date()
+                today = datetime.now(timezone.utc).date()
                 for i in range(45, -1, -3):
                     d_str = (today - timedelta(days=i)).strftime("%Y-%m-%d")
-                    # Fluctuate between 0.90 and 1.15 of base price
                     factor = 1.0 + 0.08 * ((i % 5) - 2) / 2.0
                     if i == 0:
                         p_val = current_price
