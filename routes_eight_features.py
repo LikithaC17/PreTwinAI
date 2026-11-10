@@ -18,6 +18,7 @@ import re
 from datetime import datetime, timedelta, timezone
 from flask import request, jsonify, session
 import database
+import services.search_intelligence_service as sis
 from config import Config
 
 
@@ -571,71 +572,57 @@ def register_eight_features_routes(app, get_user_id_fn, row_to_dict_fn, error_fn
     def nl_search_products():
         """
         Intelligent Natural-Language Product Finder.
-        Parses intent, price caps, categories, and keywords from conversational queries.
+        Parses intent, price caps, categories, brands, and keywords from conversational queries.
         """
         try:
             data = request.get_json() or {}
-            query = (data.get("query") or "").strip().lower()
+            query = (data.get("query") or "").strip()
             if not query:
                 return error_fn("Query cannot be empty", 400)
 
-            # 1. Price extraction (e.g. 'under 2000', 'below 5000', '< 1500')
-            max_price = None
-            price_match = re.search(r'(?:under|below|less than|<|budget of)\s*(?:rs\.?|inr|₹)?\s*([0-9,]+)', query)
-            if price_match:
-                try:
-                    max_price = float(price_match.group(1).replace(",", ""))
-                except Exception:
-                    max_price = None
+            parsed = sis.QueryUnderstandingEngine.parse_query(query)
+            max_price = parsed.get("max_price")
+            min_price = parsed.get("min_price")
+            detected_cat = parsed.get("category")
+            detected_brand = parsed.get("brand")
+            clean_words = parsed.get("clean_keywords", [])
+            did_you_mean = parsed.get("did_you_mean")
 
-            # 2. Category detection
-            cat_keywords = {
-                "Fashion": ["shoe", "shoes", "shirt", "tshirt", "jeans", "dress", "saree", "jacket", "hoodie", "sneaker"],
-                "Mobiles": ["phone", "smartphone", "iphone", "samsung", "oneplus", "redmi", "mobile"],
-                "Electronics": ["earbuds", "headphone", "audio", "speaker", "bluetooth", "power bank", "smartwatch"],
-                "Laptops & Computers": ["laptop", "keyboard", "mouse", "monitor", "pc", "macbook", "ram", "ssd"],
-                "Home & Kitchen": ["kettle", "blender", "coffee", "lamp", "cookware", "pan", "bottle", "bedsheet"],
-                "Personal Care": ["trimmer", "shaver", "toothbrush", "skincare", "serum", "perfume", "cream"],
-                "Sports & Fitness": ["yoga", "dumbbell", "gym", "treadmill", "cycle", "protein", "fitness"],
-                "Food & Grocery": ["tea", "coffee", "snack", "nuts", "chocolate", "oil", "organic"],
-                "Watches & Accessories": ["watch", "belt", "wallet", "sunglasses", "handbag", "backpack"]
-            }
-
-            detected_cat = None
-            for cat, keywords in cat_keywords.items():
-                if any(kw in query for kw in keywords):
-                    detected_cat = cat
-                    break
-
-            # 3. Clean query keywords
-            clean_q = re.sub(r'(?:under|below|less than|<|budget of|find|show|me|best|cheap|good|inr|rs\.?|₹|\d+)', ' ', query)
-            clean_words = [w for w in clean_q.split() if len(w) > 2]
-
-            # 4. Search database
-            sql = "SELECT * FROM products WHERE 1=1"
+            # Search database with flexible filtering
+            where_clauses = ["1=1"]
             params = []
 
-            if max_price:
-                sql += " AND price <= ?"
+            if max_price is not None:
+                where_clauses.append("price <= ?")
                 params.append(max_price)
 
+            if min_price is not None:
+                where_clauses.append("price >= ?")
+                params.append(min_price)
+
             if detected_cat:
-                sql += " AND (category = ? OR category LIKE ?)"
+                where_clauses.append("(category = ? OR category LIKE ?)")
                 params.extend([detected_cat, f"%{detected_cat}%"])
 
-            rows = database.query_db(sql + " LIMIT 120", tuple(params))
+            if detected_brand:
+                where_clauses.append("LOWER(brand) = LOWER(?)")
+                params.append(detected_brand)
+
+            where_sql = " AND ".join(where_clauses)
+            rows = database.query_db(f"SELECT * FROM products WHERE {where_sql} LIMIT 120", tuple(params))
+
+            # Fallback if too restrictive
             if not rows and detected_cat:
-                # Fallback without category lock
-                fallback_sql = "SELECT * FROM products WHERE 1=1"
+                fb_clauses = ["1=1"]
                 fb_params = []
-                if max_price:
-                    fallback_sql += " AND price <= ?"
+                if max_price is not None:
+                    fb_clauses.append("price <= ?")
                     fb_params.append(max_price)
-                rows = database.query_db(fallback_sql + " LIMIT 80", tuple(fb_params))
+                rows = database.query_db(f"SELECT * FROM products WHERE {' AND '.join(fb_clauses)} LIMIT 80", tuple(fb_params))
 
             products = [row_to_dict_fn(r) for r in rows]
 
-            # 5. Score relevance
+            # Relevance scoring
             scored = []
             for p in products:
                 score = 0
@@ -645,14 +632,17 @@ def register_eight_features_routes(app, get_user_id_fn, row_to_dict_fn, error_fn
 
                 for w in clean_words:
                     if w in name_l:
-                        score += 30
+                        score += 35
+                    if w in brand_l:
+                        score += 25
                     if w in desc_l:
                         score += 15
-                    if w in brand_l:
-                        score += 20
 
                 if detected_cat and detected_cat.lower() in (p.get("category") or "").lower():
                     score += 25
+
+                if detected_brand and detected_brand.lower() in brand_l:
+                    score += 30
 
                 rating = float(p.get("rating") or 4.0)
                 score += rating * 5
@@ -663,8 +653,17 @@ def register_eight_features_routes(app, get_user_id_fn, row_to_dict_fn, error_fn
                     reasons.append(f"₹{int(p.get('price', 0)):,} is within your ₹{int(max_price):,} cap")
                 if detected_cat:
                     reasons.append(f"Matches category '{p.get('category')}'")
+                if detected_brand:
+                    reasons.append(f"Brand '{p.get('brand')}'")
                 if rating >= 4.3:
                     reasons.append(f"Highly rated ({rating}★)")
+
+                disc = int(p.get("discount_percentage") or 15)
+                p["discount_percentage"] = disc
+                if 0 < disc < 100:
+                    p["mrp"] = round(p["price"] / (1 - disc / 100.0), 2)
+                else:
+                    p["mrp"] = round(p["price"] * 1.25, 2)
 
                 p["nl_score"] = score
                 p["match_reason"] = " • ".join(reasons) if reasons else "High semantic match to your query"
@@ -677,8 +676,11 @@ def register_eight_features_routes(app, get_user_id_fn, row_to_dict_fn, error_fn
                 "query": query,
                 "parsed_intent": {
                     "max_price": max_price,
+                    "min_price": min_price,
                     "category": detected_cat,
-                    "extracted_keywords": clean_words
+                    "brand": detected_brand,
+                    "extracted_keywords": clean_words,
+                    "did_you_mean": did_you_mean,
                 },
                 "total_matches": len(top_results),
                 "products": top_results
@@ -693,12 +695,10 @@ def register_eight_features_routes(app, get_user_id_fn, row_to_dict_fn, error_fn
         Detects uploaded image style/category and returns visually matching products.
         """
         try:
-            # Accepts JSON or multipart
             data = request.get_json() or {}
             category_hint = data.get("category_hint", "Fashion")
             style_name = data.get("style_tag", "Casual Lifestyle")
 
-            # Fallback to high rating items matching visual category
             rows = database.query_db(
                 "SELECT * FROM products WHERE category LIKE ? ORDER BY rating DESC, price ASC LIMIT 16",
                 (f"%{category_hint}%",)
@@ -709,6 +709,12 @@ def register_eight_features_routes(app, get_user_id_fn, row_to_dict_fn, error_fn
             matches = []
             for r in rows:
                 p = row_to_dict_fn(r)
+                disc = int(p.get("discount_percentage") or 15)
+                p["discount_percentage"] = disc
+                if 0 < disc < 100:
+                    p["mrp"] = round(p["price"] / (1 - disc / 100.0), 2)
+                else:
+                    p["mrp"] = round(p["price"] * 1.25, 2)
                 p["visual_similarity"] = round(random.uniform(0.85, 0.98), 2)
                 p["detected_attributes"] = ["Color Harmony", "Silhouette Match", "Pattern Alignment"]
                 matches.append(p)
@@ -723,6 +729,57 @@ def register_eight_features_routes(app, get_user_id_fn, row_to_dict_fn, error_fn
             })
         except Exception as e:
             return error_fn(f"Visual search failed: {str(e)}", 500)
+
+    @app.route("/api/discovery/suggestions", methods=["GET"])
+    def get_discovery_suggestions():
+        """Fast autocomplete suggestions, typo detection ('Did you mean?'), and category/brand shortcuts."""
+        try:
+            q = request.args.get("q", "").strip()
+            limit = min(request.args.get("limit", 8, type=int), 15)
+            result = sis.SearchSuggestionEngine.get_suggestions(q, limit=limit)
+            return jsonify(result)
+        except Exception as e:
+            return error_fn(f"Suggestions error: {str(e)}", 500)
+
+    @app.route("/api/discovery/categories", methods=["GET"])
+    def get_discovery_categories():
+        """Retrieve catalogue category summary across all 20 categories with live counts and subcategories."""
+        try:
+            summary = sis.CategoryExplorationEngine.get_all_categories_summary()
+            return jsonify({"categories": summary, "total_categories": len(summary)})
+        except Exception as e:
+            return error_fn(f"Categories error: {str(e)}", 500)
+
+    @app.route("/api/discovery/collections", methods=["GET"])
+    def get_discovery_collections():
+        """Retrieve curated catalogue collections (popular, budget, discount, new_arrivals)."""
+        try:
+            col_type = request.args.get("type", "popular").strip()
+            limit = min(request.args.get("limit", 12, type=int), 24)
+            result = sis.DiscoveryCollectionsEngine.get_collection(col_type, limit=limit)
+            return jsonify(result)
+        except Exception as e:
+            return error_fn(f"Collections error: {str(e)}", 500)
+
+    @app.route("/api/discovery/products/<int:product_id>/alternatives", methods=["GET"])
+    def get_discovery_alternatives(product_id: int):
+        """Retrieve similar alternatives, budget choices, and premium upgrades with explainable differences."""
+        try:
+            limit = min(request.args.get("limit", 4, type=int), 8)
+            result = sis.ProductAlternativesEngine.get_alternatives(product_id, limit=limit)
+            return jsonify(result)
+        except Exception as e:
+            return error_fn(f"Alternatives error: {str(e)}", 500)
+
+    @app.route("/api/discovery/zero-results", methods=["GET"])
+    def get_discovery_zero_results():
+        """Retrieve fallback recommendations and suggestions when no products match a filter."""
+        try:
+            q = request.args.get("q", "").strip()
+            result = sis.SearchSuggestionEngine.get_zero_result_fallback(q)
+            return jsonify(result)
+        except Exception as e:
+            return error_fn(f"Zero results fallback error: {str(e)}", 500)
 
     # =========================================================================
     # FEATURE 4: Budget and Price Intelligence

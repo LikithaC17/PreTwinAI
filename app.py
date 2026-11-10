@@ -1936,9 +1936,9 @@ def get_products():
         total = count_row["total"] if count_row else 0
 
         # Sorting
-        if sort in ("price_asc", "price-low", "price_low_to_high", "price-low-to-high"):
+        if sort in ("price_asc", "price-low", "price_low_to_high", "price-low-to-high", "price-asc"):
             order_sql = "ORDER BY price ASC, id ASC"
-        elif sort in ("price_desc", "price-high", "price_high_to_low", "price-high-to-low"):
+        elif sort in ("price_desc", "price-high", "price_high_to_low", "price-high-to-low", "price-desc"):
             order_sql = "ORDER BY price DESC, id ASC"
         elif sort in ("rating", "rating_desc", "customer_rating"):
             order_sql = "ORDER BY rating DESC, price ASC"
