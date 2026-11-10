@@ -21,6 +21,7 @@ import database
 import services.search_intelligence_service as sis
 import services.budget_intelligence_service as bis
 import services.comparison_service as comp_svc
+import services.calendar_service as cal_svc
 from config import Config
 
 
@@ -566,7 +567,186 @@ def register_eight_features_routes(app, get_user_id_fn, row_to_dict_fn, error_fn
         except Exception as e:
             return error_fn(f"Feedback recording failed: {str(e)}", 500)
 
+    
+    # -------------------------------------------------------------------------
+    # Extended Endpoints for Future Predictive Calendar (7 Sections)
+    # -------------------------------------------------------------------------
+
+    @app.route("/api/calendar/view", methods=["GET"])
+    def get_calendar_view_endpoint():
+        """Retrieve month, week, or day view with activities, leap-year dates, and status codes."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            mode = request.args.get("mode", "month")
+            target_date = request.args.get("date")
+            event_type = request.args.get("event_type", "ALL")
+            view_data = cal_svc.CalendarService.get_calendar_view(
+                user_id=user_id,
+                mode=mode,
+                target_date_str=target_date,
+                event_type=event_type
+            )
+            return jsonify(view_data)
+        except Exception as e:
+            return error_fn(f"Failed to render calendar view: {str(e)}", 500)
+
+    @app.route("/api/calendar/predictions", methods=["GET"])
+    def get_calendar_predictions_endpoint():
+        """Retrieve recurring replenishment predictions calculated from completed purchase history."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            data = cal_svc.CalendarService.get_upcoming_predictions(user_id)
+            return jsonify(data)
+        except Exception as e:
+            return error_fn(f"Failed to calculate replenishment predictions: {str(e)}", 500)
+
+    @app.route("/api/calendar/predictions/convert", methods=["POST"])
+    def convert_prediction_to_plan():
+        """Convert an accepted prediction into an active customer shopping plan."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            data = request.get_json(force=True) or {}
+            title = data.get("product_name") or data.get("title") or "Replenishment Plan"
+            target_date = data.get("predicted_next_date") or data.get("target_date")
+            category = data.get("category", "General")
+            budget = float(data.get("estimated_budget") or 0.0)
+
+            res = cal_svc.CalendarService.create_shopping_plan(user_id, {
+                "title": f"Restock: {title}",
+                "target_date": target_date,
+                "category": category,
+                "estimated_budget": budget,
+                "notes": f"Converted from AI repeat prediction for {title}."
+            })
+            return jsonify(res), 201
+        except Exception as e:
+            return error_fn(f"Failed to convert prediction: {str(e)}", 500)
+
+    @app.route("/api/calendar/plans", methods=["GET", "POST"])
+    def calendar_plans_endpoint():
+        """Manage customer shopping plans (Active, Completed, Cancelled, Overdue)."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            if request.method == "POST":
+                data = request.get_json(force=True) or {}
+                res = cal_svc.CalendarService.create_shopping_plan(user_id, data)
+                return jsonify(res), 201
+            else:
+                status_filter = request.args.get("status")
+                plans = cal_svc.CalendarService.get_shopping_plans(user_id, status_filter=status_filter)
+                return jsonify({"plans": plans, "total": len(plans)})
+        except ValueError as ve:
+            return error_fn(str(ve), 400)
+        except Exception as e:
+            return error_fn(f"Plans operation failed: {str(e)}", 500)
+
+    @app.route("/api/calendar/plans/<int:plan_id>", methods=["PUT", "DELETE"])
+    def calendar_single_plan_endpoint(plan_id: int):
+        """Update or delete customer shopping plan with strict ownership check."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            if request.method == "DELETE":
+                success = cal_svc.CalendarService.delete_shopping_plan(user_id, plan_id)
+                if not success:
+                    return error_fn("Plan not found or unauthorized.", 404)
+                return jsonify({"success": True, "message": "Shopping plan deleted."})
+            else:
+                data = request.get_json(force=True) or {}
+                success = cal_svc.CalendarService.update_shopping_plan(user_id, plan_id, data)
+                if not success:
+                    return error_fn("Plan not found or unauthorized.", 404)
+                return jsonify({"success": True, "message": "Shopping plan updated."})
+        except Exception as e:
+            return error_fn(f"Plan update failed: {str(e)}", 500)
+
+    @app.route("/api/calendar/occasions", methods=["GET", "POST"])
+    def calendar_occasions_endpoint():
+        """Manage personal occasions and festive preparations."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            if request.method == "POST":
+                data = request.get_json(force=True) or {}
+                res = cal_svc.CalendarService.create_occasion(user_id, data)
+                return jsonify(res), 201
+            else:
+                occasions = cal_svc.CalendarService.get_occasions(user_id)
+                return jsonify({"occasions": occasions, "total": len(occasions)})
+        except ValueError as ve:
+            return error_fn(str(ve), 400)
+        except Exception as e:
+            return error_fn(f"Occasions operation failed: {str(e)}", 500)
+
+    @app.route("/api/calendar/occasions/<int:occasion_id>", methods=["DELETE"])
+    def delete_occasion_endpoint(occasion_id: int):
+        """Delete occasion with ownership check."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            success = cal_svc.CalendarService.delete_occasion(user_id, occasion_id)
+            if not success:
+                return error_fn("Occasion not found or unauthorized.", 404)
+            return jsonify({"success": True, "message": "Occasion removed."})
+        except Exception as e:
+            return error_fn(f"Delete occasion failed: {str(e)}", 500)
+
+    @app.route("/api/calendar/budget-summary", methods=["GET"])
+    def calendar_budget_summary():
+        """Retrieve future shopping budget breakdown and Feature 4 budget context."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            summary = cal_svc.CalendarService.get_future_budget_summary(user_id)
+            return jsonify(summary)
+        except Exception as e:
+            return error_fn(f"Failed to calculate future shopping budget: {str(e)}", 500)
+
+    @app.route("/api/calendar/reminders", methods=["GET"])
+    def calendar_reminders_endpoint():
+        """Fetch active in-app reminders for user."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            reminders = cal_svc.CalendarService.get_in_app_reminders(user_id)
+            return jsonify({"reminders": reminders, "total": len(reminders)})
+        except Exception as e:
+            return error_fn(f"Failed to fetch reminders: {str(e)}", 500)
+
+    @app.route("/api/calendar/reminders/<int:reminder_id>/snooze", methods=["POST"])
+    def snooze_reminder_endpoint(reminder_id: int):
+        """Snooze in-app reminder by specified days."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            data = request.get_json(force=True) or {}
+            days = max(1, int(data.get("days", 3)))
+            success = cal_svc.CalendarService.snooze_reminder(user_id, reminder_id, days)
+            if not success:
+                return error_fn("Reminder not found or unauthorized.", 404)
+            return jsonify({"success": True, "message": f"Reminder snoozed for {days} days."})
+        except Exception as e:
+            return error_fn(f"Failed to snooze reminder: {str(e)}", 500)
+
+    @app.route("/api/calendar/reminders/<int:reminder_id>/dismiss", methods=["POST"])
+    def dismiss_reminder_endpoint(reminder_id: int):
+        """Dismiss in-app reminder."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            success = cal_svc.CalendarService.dismiss_reminder(user_id, reminder_id)
+            if not success:
+                return error_fn("Reminder not found or unauthorized.", 404)
+            return jsonify({"success": True, "message": "Reminder dismissed."})
+        except Exception as e:
+            return error_fn(f"Failed to dismiss reminder: {str(e)}", 500)
+
+    @app.route("/api/calendar/analytics", methods=["GET"])
+    def calendar_analytics_endpoint():
+        """Factual planning statistics: completion rate, on-time plans, and totals."""
+        try:
+            user_id = get_user_id_fn() or Config.DEFAULT_DEMO_USER_ID
+            data = cal_svc.CalendarService.get_calendar_analytics(user_id)
+            return jsonify(data)
+        except Exception as e:
+            return error_fn(f"Failed to fetch calendar analytics: {str(e)}", 500)
+
     # =========================================================================
+
+# =========================================================================
     # FEATURE 3: Smart Product Discovery
     # =========================================================================
 

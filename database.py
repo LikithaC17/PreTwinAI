@@ -507,6 +507,58 @@ def init_db():
         except Exception:
             pass
 
+    # --- customer_shopping_plans (Future Predictive Calendar - Section 3: My Shopping Plans) ---
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS customer_shopping_plans (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            category TEXT DEFAULT 'All',
+            product_id INTEGER,
+            target_date DATE NOT NULL,
+            estimated_budget REAL DEFAULT 0.0,
+            quantity INTEGER DEFAULT 1,
+            priority TEXT DEFAULT 'Medium',
+            notes TEXT DEFAULT '',
+            status TEXT DEFAULT 'active',
+            completed_at TIMESTAMP,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+    """)
+
+    # --- customer_shopping_occasions (Future Predictive Calendar - Section 4: Occasions & Events) ---
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS customer_shopping_occasions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            event_name TEXT NOT NULL,
+            event_date DATE NOT NULL,
+            prep_start_date DATE,
+            occasion_type TEXT DEFAULT 'Custom',
+            shopping_requirements TEXT DEFAULT '',
+            estimated_budget REAL DEFAULT 0.0,
+            notes TEXT DEFAULT '',
+            reminder_days_before INTEGER DEFAULT 7,
+            status TEXT DEFAULT 'active',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+    """)
+
+    # Safe migration for reminders table columns
+    for rcol, rtype in [
+        ("snooze_until", "DATE"),
+        ("source_type", "TEXT DEFAULT 'custom'"),
+        ("plan_id", "INTEGER"),
+        ("occasion_id", "INTEGER"),
+    ]:
+        try:
+            cursor.execute(f"ALTER TABLE shopping_reminders ADD COLUMN {rcol} {rtype}")
+        except Exception:
+            pass
+
     # --- shopping_tasks (Feature 6: Shopping Task Planner & Autonomous Research) ---
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS shopping_tasks (
